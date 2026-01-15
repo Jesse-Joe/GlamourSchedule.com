@@ -162,6 +162,11 @@ class Application
         $this->router->get('/review/{uuid}', 'BookingController@showReview');
         $this->router->post('/review/{uuid}', 'BookingController@submitReview');
 
+        // Waitlist
+        $this->router->post('/waitlist/{businessSlug}', 'BookingController@addToWaitlist');
+        $this->router->get('/api/waitlist/status', 'BookingController@getWaitlistStatus');
+        $this->router->post('/waitlist/{uuid}/cancel', 'BookingController@cancelWaitlist');
+
         // Payments
         $this->router->get('/payment/create/{bookingUuid}', 'PaymentController@create');
         $this->router->get('/payment/return/{bookingUuid}', 'PaymentController@returnUrl');

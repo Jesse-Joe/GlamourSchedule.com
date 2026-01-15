@@ -255,6 +255,9 @@ class BookingController extends Controller
             $this->sendBusinessCancellationNotice($booking, $businessFee, $isLateCancel);
         }
 
+        // Check waitlist and notify first person
+        $this->notifyWaitlistForCancellation($booking);
+
         return $this->redirect("/booking/$uuid");
     }
 
@@ -931,5 +934,317 @@ HTML;
                 [round($stats['avg_rating'], 1), $stats['total_reviews'], $businessId]
             );
         }
+    }
+
+    // ==================== WAITLIST FUNCTIONS ====================
+
+    /**
+     * Add to waitlist when slot is full
+     */
+    public function addToWaitlist(string $businessSlug): string
+    {
+        $business = $this->getBusinessBySlug($businessSlug);
+        if (!$business) {
+            return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+        }
+
+        if (!$this->verifyCsrf()) {
+            return $this->json(['error' => 'Ongeldige aanvraag'], 400);
+        }
+
+        $serviceId = (int)($_POST['service_id'] ?? 0);
+        $date = $_POST['date'] ?? '';
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $preferredTimeStart = $_POST['preferred_time_start'] ?? null;
+        $preferredTimeEnd = $_POST['preferred_time_end'] ?? null;
+        $notes = trim($_POST['notes'] ?? '');
+
+        // Validate
+        if (!$serviceId || !$date || !$name || !$email) {
+            return $this->json(['error' => 'Vul alle verplichte velden in'], 400);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->json(['error' => 'Ongeldig e-mailadres'], 400);
+        }
+
+        $service = $this->getServiceById($serviceId);
+        if (!$service || $service['business_id'] != $business['id']) {
+            return $this->json(['error' => 'Ongeldige dienst'], 400);
+        }
+
+        // Check if already on waitlist for this date/service
+        $stmt = $this->db->query(
+            "SELECT id FROM booking_waitlist
+             WHERE business_id = ? AND service_id = ? AND requested_date = ? AND email = ? AND status = 'waiting'",
+            [$business['id'], $serviceId, $date, $email]
+        );
+        if ($stmt->fetch()) {
+            return $this->json(['error' => 'Je staat al op de wachtlijst voor deze datum'], 400);
+        }
+
+        $uuid = $this->generateUuid();
+        $userId = $_SESSION['user_id'] ?? null;
+
+        $this->db->query(
+            "INSERT INTO booking_waitlist (uuid, business_id, service_id, user_id, email, name, phone,
+             requested_date, preferred_time_start, preferred_time_end, notes, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'waiting')",
+            [$uuid, $business['id'], $serviceId, $userId, $email, $name, $phone,
+             $date, $preferredTimeStart, $preferredTimeEnd, $notes ?: null]
+        );
+
+        // Send confirmation email
+        $this->sendWaitlistConfirmationEmail([
+            'name' => $name,
+            'email' => $email,
+            'business_name' => $business['name'],
+            'service_name' => $service['name'],
+            'date' => $date
+        ]);
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Je staat nu op de wachtlijst. We sturen je een e-mail zodra er een plek vrijkomt.'
+        ]);
+    }
+
+    /**
+     * Notify waitlist when a booking is cancelled
+     */
+    private function notifyWaitlistForCancellation(array $booking): void
+    {
+        try {
+            // Get service name
+            $stmt = $this->db->query("SELECT name FROM services WHERE id = ?", [$booking['service_id']]);
+            $service = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $serviceName = $service['name'] ?? 'Dienst';
+
+            // Find first person on waitlist for this business/date
+            $stmt = $this->db->query(
+                "SELECT w.*, b.company_name as business_name, b.slug as business_slug
+                 FROM booking_waitlist w
+                 JOIN businesses b ON w.business_id = b.id
+                 WHERE w.business_id = ? AND w.requested_date = ? AND w.status = 'waiting'
+                 ORDER BY w.created_at ASC
+                 LIMIT 1",
+                [$booking['business_id'], $booking['appointment_date']]
+            );
+            $waitlistEntry = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($waitlistEntry) {
+                // Update waitlist status
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+24 hours'));
+                $this->db->query(
+                    "UPDATE booking_waitlist SET status = 'notified', notified_at = NOW(), expires_at = ? WHERE id = ?",
+                    [$expiresAt, $waitlistEntry['id']]
+                );
+
+                // Send notification email
+                $this->sendWaitlistNotificationEmail([
+                    'name' => $waitlistEntry['name'],
+                    'email' => $waitlistEntry['email'],
+                    'business_name' => $waitlistEntry['business_name'],
+                    'business_slug' => $waitlistEntry['business_slug'],
+                    'service_name' => $serviceName,
+                    'date' => $booking['appointment_date'],
+                    'time' => $booking['appointment_time']
+                ]);
+
+                error_log("Waitlist notification sent to {$waitlistEntry['email']} for {$booking['appointment_date']}");
+            }
+        } catch (\Exception $e) {
+            error_log("Failed to notify waitlist: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send waitlist confirmation email
+     */
+    private function sendWaitlistConfirmationEmail(array $data): void
+    {
+        $dateFormatted = date('d-m-Y', strtotime($data['date']));
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#000000,#404040);padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">📋</div>
+                            <h1 style="margin:0;font-size:24px;">Je staat op de wachtlijst!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Hoi <strong>{$data['name']}</strong>,</p>
+                            <p style="font-size:16px;color:#555;line-height:1.6;">
+                                Je staat nu op de wachtlijst voor een afspraak bij <strong>{$data['business_name']}</strong>.
+                            </p>
+
+                            <div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:25px 0;">
+                                <p style="margin:0;color:#666;"><strong>Dienst:</strong> {$data['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#666;"><strong>Gewenste datum:</strong> {$dateFormatted}</p>
+                            </div>
+
+                            <div style="background:#fffbeb;border-left:4px solid #000000;padding:15px 20px;border-radius:0 8px 8px 0;">
+                                <p style="margin:0;color:#000000;font-size:14px;">
+                                    <strong>Wat gebeurt er nu?</strong><br>
+                                    Zodra er een plek vrijkomt, sturen we je direct een e-mail. Je hebt dan 24 uur om te boeken.
+                                </p>
+                            </div>
+
+                            <p style="font-size:14px;color:#888;text-align:center;margin-top:30px;">
+                                We houden je op de hoogte!
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($data['email'], "Je staat op de wachtlijst - {$data['business_name']}", $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send waitlist confirmation: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send notification when slot becomes available
+     */
+    private function sendWaitlistNotificationEmail(array $data): void
+    {
+        $dateFormatted = date('d-m-Y', strtotime($data['date']));
+        $timeFormatted = date('H:i', strtotime($data['time']));
+        $bookingUrl = "https://new.glamourschedule.nl/business/{$data['business_slug']}?date={$data['date']}&time={$data['time']}";
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#16a34a,#15803d);padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">🎉</div>
+                            <h1 style="margin:0;font-size:24px;">Er is een plek vrijgekomen!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Goed nieuws <strong>{$data['name']}</strong>!</p>
+                            <p style="font-size:16px;color:#555;line-height:1.6;">
+                                Er is een afspraak geannuleerd bij <strong>{$data['business_name']}</strong> en jij staat bovenaan de wachtlijst!
+                            </p>
+
+                            <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #16a34a;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
+                                <p style="margin:0;color:#166534;font-size:14px;">Beschikbare plek</p>
+                                <p style="margin:10px 0 0;color:#15803d;font-size:24px;font-weight:700;">
+                                    {$dateFormatted} om {$timeFormatted}
+                                </p>
+                                <p style="margin:10px 0 0;color:#166534;">{$data['service_name']}</p>
+                            </div>
+
+                            <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
+                                <p style="margin:0;color:#92400e;font-size:14px;">
+                                    <strong>⏰ Let op!</strong><br>
+                                    Je hebt <strong>24 uur</strong> om te boeken, daarna gaat de plek naar de volgende persoon op de wachtlijst.
+                                </p>
+                            </div>
+
+                            <p style="text-align:center;margin:30px 0;">
+                                <a href="{$bookingUrl}" style="display:inline-block;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:18px 50px;border-radius:50px;text-decoration:none;font-weight:700;font-size:17px;box-shadow:0 4px 15px rgba(22,163,74,0.4);">
+                                    Nu Boeken →
+                                </a>
+                            </p>
+
+                            <p style="font-size:14px;color:#888;text-align:center;">
+                                Kun je toch niet? Geen probleem, we sturen de plek door naar de volgende.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($data['email'], "🎉 Plek vrijgekomen bij {$data['business_name']}!", $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send waitlist notification: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get waitlist status for a user
+     */
+    public function getWaitlistStatus(): string
+    {
+        header('Content-Type: application/json');
+
+        $email = $_GET['email'] ?? '';
+        if (!$email) {
+            return json_encode(['error' => 'Email required']);
+        }
+
+        $stmt = $this->db->query(
+            "SELECT w.*, b.company_name as business_name, s.name as service_name
+             FROM booking_waitlist w
+             JOIN businesses b ON w.business_id = b.id
+             JOIN services s ON w.service_id = s.id
+             WHERE w.email = ? AND w.status IN ('waiting', 'notified')
+             ORDER BY w.requested_date ASC",
+            [$email]
+        );
+        $entries = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return json_encode(['waitlist' => $entries]);
+    }
+
+    /**
+     * Cancel waitlist entry
+     */
+    public function cancelWaitlist(string $uuid): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->json(['error' => 'Ongeldige aanvraag'], 400);
+        }
+
+        $this->db->query(
+            "UPDATE booking_waitlist SET status = 'cancelled' WHERE uuid = ?",
+            [$uuid]
+        );
+
+        return $this->json(['success' => true, 'message' => 'Je bent van de wachtlijst verwijderd']);
     }
 }
