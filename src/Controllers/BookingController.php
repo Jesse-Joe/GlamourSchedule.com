@@ -1070,45 +1070,61 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
-                        <td style="background:linear-gradient(135deg,#000000,#404040);padding:40px;text-align:center;color:#fff;">
-                            <div style="font-size:48px;margin-bottom:10px;">📋</div>
-                            <h1 style="margin:0;font-size:24px;">Je staat op de wachtlijst!</h1>
+                        <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
+                            <h1 style="margin:0;font-size:28px;font-weight:700;">Wachtlijst Bevestiging</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;font-size:16px;">{$data['business_name']}</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Hoi <strong>{$data['name']}</strong>,</p>
-                            <p style="font-size:16px;color:#555;line-height:1.6;">
+                            <p style="font-size:18px;color:#333;margin:0 0 25px;">Beste <strong>{$data['name']}</strong>,</p>
+                            <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 30px;">
                                 Je staat nu op de wachtlijst voor een afspraak bij <strong>{$data['business_name']}</strong>.
                             </p>
 
-                            <div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0;color:#666;"><strong>Dienst:</strong> {$data['service_name']}</p>
-                                <p style="margin:10px 0 0;color:#666;"><strong>Gewenste datum:</strong> {$dateFormatted}</p>
+                            <div style="background:linear-gradient(135deg,#fffbeb,#faf5ff);border-radius:12px;padding:25px;margin-bottom:30px;">
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                                            <span style="color:#666;font-size:14px;">Dienst</span><br>
+                                            <strong style="color:#333;font-size:16px;">{$data['service_name']}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:12px 0;">
+                                            <span style="color:#666;font-size:14px;">Gewenste datum</span><br>
+                                            <strong style="color:#000000;font-size:18px;">{$dateFormatted}</strong>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
 
-                            <div style="background:#fffbeb;border-left:4px solid #000000;padding:15px 20px;border-radius:0 8px 8px 0;">
-                                <p style="margin:0;color:#000000;font-size:14px;">
-                                    <strong>Wat gebeurt er nu?</strong><br>
-                                    Zodra er een plek vrijkomt, sturen we je direct een e-mail. Je hebt dan 24 uur om te boeken.
+                            <div style="background:#f5f5f5;border-left:4px solid #000000;padding:20px;border-radius:0 8px 8px 0;">
+                                <p style="margin:0;color:#333;font-size:14px;">
+                                    <strong>Wat gebeurt er nu?</strong><br><br>
+                                    Zodra er een plek vrijkomt op jouw gewenste datum, sturen we je direct een e-mail.
+                                    Je hebt dan 24 uur om te boeken voordat de plek naar de volgende persoon gaat.
                                 </p>
                             </div>
 
-                            <p style="font-size:14px;color:#888;text-align:center;margin-top:30px;">
+                            <p style="font-size:14px;color:#888;text-align:center;margin:25px 0 0;">
                                 We houden je op de hoogte!
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule</p>
+                        <td style="background:#fafafa;padding:25px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule - Beauty & Wellness Platform</p>
                         </td>
                     </tr>
                 </table>
@@ -1121,7 +1137,7 @@ HTML;
 
         try {
             $mailer = new Mailer();
-            $mailer->send($data['email'], "Je staat op de wachtlijst - {$data['business_name']}", $htmlBody);
+            $mailer->send($data['email'], "Wachtlijst bevestiging - {$data['business_name']}", $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send waitlist confirmation: " . $e->getMessage());
         }
@@ -1146,8 +1162,7 @@ HTML;
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
-                        <td style="background:linear-gradient(135deg,#16a34a,#15803d);padding:40px;text-align:center;color:#fff;">
-                            <div style="font-size:48px;margin-bottom:10px;">🎉</div>
+                        <td style="background:linear-gradient(135deg,#000000,#000000);padding:40px;text-align:center;color:#fff;">
                             <h1 style="margin:0;font-size:24px;">Er is een plek vrijgekomen!</h1>
                         </td>
                     </tr>
@@ -1158,24 +1173,24 @@ HTML;
                                 Er is een afspraak geannuleerd bij <strong>{$data['business_name']}</strong> en jij staat bovenaan de wachtlijst!
                             </p>
 
-                            <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #16a34a;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#166534;font-size:14px;">Beschikbare plek</p>
-                                <p style="margin:10px 0 0;color:#15803d;font-size:24px;font-weight:700;">
+                            <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
+                                <p style="margin:0;color:#666;font-size:14px;">Beschikbare plek</p>
+                                <p style="margin:10px 0 0;color:#000000;font-size:24px;font-weight:700;">
                                     {$dateFormatted} om {$timeFormatted}
                                 </p>
-                                <p style="margin:10px 0 0;color:#166534;">{$data['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#666;">{$data['service_name']}</p>
                             </div>
 
-                            <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
-                                <p style="margin:0;color:#92400e;font-size:14px;">
-                                    <strong>⏰ Let op!</strong><br>
+                            <div style="background:#fafafa;border-left:4px solid #000000;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
+                                <p style="margin:0;color:#333;font-size:14px;">
+                                    <strong>Let op!</strong><br>
                                     Je hebt <strong>24 uur</strong> om te boeken, daarna gaat de plek naar de volgende persoon op de wachtlijst.
                                 </p>
                             </div>
 
                             <p style="text-align:center;margin:30px 0;">
-                                <a href="{$bookingUrl}" style="display:inline-block;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:18px 50px;border-radius:50px;text-decoration:none;font-weight:700;font-size:17px;box-shadow:0 4px 15px rgba(22,163,74,0.4);">
-                                    Nu Boeken →
+                                <a href="{$bookingUrl}" style="display:inline-block;background:#000000;color:#fff;padding:18px 50px;border-radius:50px;text-decoration:none;font-weight:700;font-size:17px;">
+                                    Nu Boeken
                                 </a>
                             </p>
 
@@ -1186,7 +1201,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule</p>
+                            <p style="margin:0;color:#666;font-size:13px;">GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1199,7 +1214,7 @@ HTML;
 
         try {
             $mailer = new Mailer();
-            $mailer->send($data['email'], "🎉 Plek vrijgekomen bij {$data['business_name']}!", $htmlBody);
+            $mailer->send($data['email'], "Plek vrijgekomen bij {$data['business_name']}", $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send waitlist notification: " . $e->getMessage());
         }
