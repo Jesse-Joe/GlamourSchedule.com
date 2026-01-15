@@ -1,0 +1,385 @@
+/**
+ * Concept 5: LUXURY BLACK & GOLD
+ * Premium, elegant, exclusive - Black background with gold accents
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --black: #0a0a0a;
+    --black-2: #141414;
+    --black-3: #1f1f1f;
+    --gold: #d4af37;
+    --gold-light: #f4e4bc;
+    --gold-dark: #b8960f;
+    --white: #ffffff;
+    --gray: #888888;
+}
+
+body {
+    font-family: 'Cormorant Garamond', 'Didot', serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* Gold Particle Background */
+.luxury-bg {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 0% 100%, rgba(212,175,55,0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 100% 100%, rgba(212,175,55,0.05) 0%, transparent 40%);
+    z-index: -1;
+}
+
+/* Navigation */
+.nav-luxury {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    z-index: 100;
+}
+
+.logo-luxury {
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+}
+
+.nav-links-luxury {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links-luxury a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.nav-links-luxury a:hover {
+    color: var(--gold);
+}
+
+.btn-luxury {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-luxury:hover {
+    background: var(--gold);
+    color: var(--black);
+}
+
+.btn-luxury-filled {
+    background: var(--gold);
+    color: var(--black);
+}
+
+.btn-luxury-filled:hover {
+    background: var(--gold-light);
+}
+
+/* Hero */
+.hero-luxury {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+}
+
+.hero-luxury::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 50%;
+}
+
+.hero-luxury::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 50%;
+}
+
+.hero-luxury h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 300;
+    letter-spacing: 15px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-luxury h1 span {
+    color: var(--gold);
+    font-style: italic;
+    letter-spacing: 5px;
+}
+
+.hero-divider {
+    width: 100px;
+    height: 1px;
+    background: var(--gold);
+    margin: 2rem auto;
+}
+
+.hero-luxury p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 500px;
+    line-height: 1.9;
+    letter-spacing: 1px;
+    margin-bottom: 3rem;
+}
+
+/* Search */
+.search-luxury {
+    display: flex;
+    max-width: 600px;
+    border: 1px solid rgba(212,175,55,0.3);
+    background: rgba(255,255,255,0.02);
+}
+
+.search-luxury input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    outline: none;
+}
+
+.search-luxury input::placeholder {
+    color: var(--gray);
+}
+
+.search-luxury button {
+    padding: 1.25rem 2rem;
+    background: var(--gold);
+    border: none;
+    color: var(--black);
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.search-luxury button:hover {
+    background: var(--gold-light);
+}
+
+/* Cards */
+.grid-luxury {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(212,175,55,0.2);
+}
+
+.card-luxury {
+    padding: 4rem 3rem;
+    border-right: 1px solid rgba(212,175,55,0.2);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    text-align: center;
+    transition: all 0.4s;
+}
+
+.card-luxury:hover {
+    background: rgba(212,175,55,0.05);
+}
+
+.card-luxury:nth-child(3n) {
+    border-right: none;
+}
+
+.card-icon-luxury {
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+}
+
+.card-luxury h3 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.card-luxury p {
+    color: var(--gray);
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+/* Section */
+.section-luxury {
+    padding: 6rem 3rem;
+}
+
+.section-title-luxury {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title-luxury span {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.section-title-luxury h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+}
+
+/* CTA */
+.cta-luxury {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+.cta-luxury h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.cta-luxury p {
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    opacity: 0.8;
+}
+
+.cta-luxury .btn-luxury {
+    border-color: var(--black);
+    color: var(--black);
+}
+
+.cta-luxury .btn-luxury:hover {
+    background: var(--black);
+    color: var(--gold);
+}
+
+/* Footer */
+.footer-luxury {
+    background: var(--black-2);
+    padding: 4rem 3rem 2rem;
+    border-top: 1px solid rgba(212,175,55,0.2);
+}
+
+.footer-grid-luxury {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-luxury h4 {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+.footer-luxury ul {
+    list-style: none;
+}
+
+.footer-luxury li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-luxury a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.footer-luxury a:hover {
+    color: var(--gold);
+}
+
+.footer-bottom-luxury {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid-luxury { grid-template-columns: repeat(2, 1fr); }
+    .card-luxury:nth-child(2n) { border-right: none; }
+    .card-luxury:nth-child(3n) { border-right: 1px solid rgba(212,175,55,0.2); }
+    .footer-grid-luxury { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .nav-links-luxury { display: none; }
+    .grid-luxury { grid-template-columns: 1fr; }
+    .card-luxury { border-right: none !important; }
+    .hero-luxury::before, .hero-luxury::after { display: none; }
+    .footer-grid-luxury { grid-template-columns: 1fr; }
+}

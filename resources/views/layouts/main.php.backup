@@ -1,0 +1,2798 @@
+<!DOCTYPE html>
+<?php
+// Determine theme: URL param > user preference > localStorage (handled by JS)
+$forcedTheme = $_GET['theme'] ?? null;
+$userTheme = $_SESSION['theme_preference'] ?? null;
+$defaultTheme = $forcedTheme ?? $userTheme ?? 'light';
+$isLoggedIn = isset($_SESSION['user_id']);
+?>
+<html lang="<?= $lang ?>" data-theme="<?= $defaultTheme ?>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $pageTitle ?? 'GlamourSchedule' ?> - Beauty Booking Platform</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+
+    <!-- Google Fonts - Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/themes.css?v=20260114-modern-v5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Theme - Inline Critical CSS */
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --primary-light: #a78bfa;
+            --primary-rgb: 124, 58, 237;
+            --secondary: #f43f5e;
+            --accent: #f59e0b;
+            --bg-deep: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #f43f5e 100%);
+        }
+        [data-theme="light"] {
+            --bg-deep: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        /* Premium Preloader - Modern */
+        .gs-preloader {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #7c3aed 0%, #f43f5e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .gs-preloader::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: preloaderPulse 3s ease-in-out infinite;
+        }
+        @keyframes preloaderPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        .gs-preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .gs-preloader-content {
+            text-align: center;
+            animation: preloader-pulse 2s ease-in-out infinite;
+        }
+        .gs-spinner {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .gs-spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: white;
+            animation: gs-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .gs-spinner-ring:nth-child(2) {
+            width: 90px;
+            height: 90px;
+            top: 15px;
+            left: 15px;
+            border-top-color: rgba(255,255,255,0.7);
+            animation-delay: -0.15s;
+            animation-direction: reverse;
+        }
+        .gs-spinner-ring:nth-child(3) {
+            width: 70px;
+            height: 70px;
+            top: 25px;
+            left: 25px;
+            border-top-color: rgba(255,255,255,0.5);
+            animation-delay: -0.3s;
+        }
+        .gs-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+        }
+        .gs-preloader-text {
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            opacity: 0.9;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .gs-dots {
+            display: inline-block;
+            animation: gs-dots 1.5s infinite;
+        }
+        @keyframes gs-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes preloader-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        @keyframes gs-dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        .gs-sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: gs-sparkle-anim 2s ease-in-out infinite;
+        }
+        .gs-sparkle:nth-child(4) { top: 0; left: 50%; animation-delay: 0s; }
+        .gs-sparkle:nth-child(5) { top: 50%; right: 0; animation-delay: 0.3s; }
+        .gs-sparkle:nth-child(6) { bottom: 0; left: 50%; animation-delay: 0.6s; }
+        .gs-sparkle:nth-child(7) { top: 50%; left: 0; animation-delay: 0.9s; }
+        @keyframes gs-sparkle-anim {
+            0%, 100% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 100px;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: #ffffff,
+                        #ffffff,
+                        #ffffff 0px, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        @media (min-width: 769px) {
+            body { padding-bottom: 0; }
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0.75rem 1rem;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+            position: sticky !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            border-radius: 0 !important;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(124, 58, 237, 0.08);
+        }
+        [data-theme="dark"] .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom-color: rgba(124, 58, 237, 0.2);
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .navbar-brand {
+            color: #0f172a;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            justify-self: center;
+        }
+        .navbar-brand i {
+            color: #7c3aed;
+            font-size: 1.1rem;
+        }
+        [data-theme="dark"] .navbar-brand {
+            color: #f1f5f9;
+        }
+        [data-theme="dark"] .navbar-brand i {
+            color: #a78bfa;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        /* Hamburger Button - Website Version */
+        .hamburger-btn {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5a5450;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        .hamburger-btn:hover {
+            background: rgba(212, 175, 155, 0.2);
+            border-color: rgba(212, 175, 155, 0.4);
+        }
+        [data-theme="dark"] .hamburger-btn {
+            background: rgba(212, 175, 155, 0.08);
+            border-color: rgba(212, 175, 155, 0.15);
+            color: #b0a8a0;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-btn {
+            background: rgba(212, 175, 155, 0.1);
+            border: 1px solid rgba(212, 175, 155, 0.2);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5a5450;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .theme-toggle-btn:hover {
+            background: rgba(212, 175, 155, 0.2);
+        }
+        [data-theme="dark"] .theme-toggle-btn {
+            background: rgba(212, 175, 155, 0.08);
+            border-color: rgba(212, 175, 155, 0.15);
+            color: #c4a090;
+        }
+
+        /* Side Menu - Website Version */
+        .side-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .side-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            max-width: 85vw;
+            height: 100%;
+            background: rgba(255, 252, 248, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 30px rgba(0,0,0,0.1);
+        }
+        .side-menu.active {
+            transform: translateX(0);
+        }
+        [data-theme="dark"] .side-menu {
+            background: rgba(20, 18, 16, 0.98);
+        }
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(212, 175, 155, 0.2);
+        }
+        .side-menu-brand {
+            color: #2a2420;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .side-menu-brand i {
+            color: #a08070;
+        }
+        [data-theme="dark"] .side-menu-brand {
+            color: #f5f2ef;
+        }
+        .side-menu-close {
+            background: rgba(212, 175, 155, 0.1);
+            border: 1px solid rgba(212, 175, 155, 0.2);
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6a6460;
+            transition: all 0.3s;
+        }
+        .side-menu-close:hover {
+            background: #a08070;
+            border-color: #a08070;
+            color: white;
+        }
+        .side-menu-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+        .side-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 1.25rem;
+            color: #4a4440;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .side-menu-link:hover {
+            background: rgba(212, 175, 155, 0.1);
+            color: #a08070;
+        }
+        .side-menu-link.active {
+            background: rgba(212, 175, 155, 0.15);
+            color: #a08070;
+            border-left-color: #a08070;
+        }
+        .side-menu-link i {
+            width: 20px;
+            text-align: center;
+            color: #a08070;
+        }
+        [data-theme="dark"] .side-menu-link {
+            color: #d0c8c0;
+        }
+        [data-theme="dark"] .side-menu-link:hover {
+            background: rgba(212, 175, 155, 0.08);
+        }
+        .side-menu-link.side-menu-logout {
+            color: #dc2626;
+        }
+        .side-menu-link.side-menu-logout i {
+            color: #dc2626;
+        }
+        .side-menu-divider {
+            height: 1px;
+            background: rgba(212, 175, 155, 0.2);
+            margin: 0.75rem 1.25rem;
+        }
+        .side-menu-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(212, 175, 155, 0.2);
+        }
+        .side-menu-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .side-menu-lang span {
+            color: #6a6460;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+        .side-menu-lang a {
+            padding: 0.4rem 0.7rem;
+            background: rgba(212, 175, 155, 0.1);
+            color: #5a5450;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(212, 175, 155, 0.2);
+            transition: all 0.2s;
+        }
+        .side-menu-lang a:hover {
+            background: rgba(212, 175, 155, 0.2);
+        }
+        .side-menu-lang a.active {
+            background: #a08070;
+            color: white;
+            border-color: #a08070;
+        }
+        [data-theme="dark"] .side-menu-lang span {
+            color: #9a928a;
+        }
+        [data-theme="dark"] .side-menu-lang a {
+            background: rgba(212, 175, 155, 0.08);
+            color: #b0a8a0;
+            border-color: rgba(212, 175, 155, 0.15);
+        }
+
+        /* Desktop: Always show hamburger menu, hide bottom nav */
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none !important;
+            }
+            .more-menu, .more-menu-overlay {
+                display: none !important;
+            }
+            .footer {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        /* Mobile Browser Mode: Show hamburger, hide bottom nav */
+        @media (max-width: 768px) {
+            body.browser-mode .bottom-nav {
+                display: none !important;
+            }
+            body.browser-mode .more-menu,
+            body.browser-mode .more-menu-overlay {
+                display: none !important;
+            }
+            body.browser-mode .footer {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        /* Mobile PWA Mode: Hide hamburger, show bottom nav */
+        body.pwa-mode .hamburger-btn {
+            display: none !important;
+        }
+        body.pwa-mode .side-menu,
+        body.pwa-mode .side-menu-overlay {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            body.pwa-mode .bottom-nav {
+                display: flex !important;
+            }
+            body.pwa-mode .footer {
+                margin-bottom: 5rem !important;
+            }
+        }
+
+        /* Legacy menu toggle - no longer needed */
+        .menu-toggle {
+                display: none !important;
+            }
+            .navbar-nav {
+                display: none !important;
+            }
+        }
+
+        /* Desktop: Show navbar items inline */
+        @media (min-width: 769px) {
+            .navbar-nav {
+                display: flex;
+            }
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+        }
+        .btn-primary:hover { box-shadow: 0 12px 40px rgba(124, 58, 237, 0.4); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(124, 58, 237, 0.2); }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 16px 48px rgba(124, 58, 237, 0.15);
+            transform: translateY(-4px);
+        }
+        [data-theme="light"] .card {
+            background: #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.03);
+            color: var(--text);
+            backdrop-filter: blur(10px);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px #000000;
+        }
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+        }
+        .alert-success { border-left: 4px solid #10b981; }
+        .alert-danger { border-left: 4px solid #ef4444; }
+        .alert-warning { border-left: 4px solid #f59e0b; }
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .text-center { text-align: center; }
+        .mt-2 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .footer {
+            background: var(--bg-card);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
+        }
+        .lang-switch { display: flex; gap: 0.25rem; }
+        .lang-switch a {
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #f5f5f5;
+            color: #666;
+        }
+        .lang-switch a:hover {
+            background: #e5e7eb;
+            color: #333;
+        }
+        .lang-switch a.active {
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+        }
+        [data-theme="dark"] .lang-switch a {
+            background: #262626;
+            color: #999;
+        }
+        [data-theme="dark"] .lang-switch a:hover {
+            background: #333;
+            color: #fff;
+        }
+        [data-theme="dark"] .lang-switch a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .theme-toggle {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #000000;
+        }
+        [data-theme="light"] .theme-toggle {
+            background: rgba(0,0,0,0.05);
+            color: #333;
+        }
+    </style>
+    <script>
+        // Check if preloader should be shown (only once per session)
+        if (sessionStorage.getItem('gs_preloader_shown')) {
+            document.write('<style>.gs-preloader{display:none!important}</style>');
+        }
+    </script>
+</head>
+<body>
+    <!-- Animated Glamour Background -->
+    <div class="glamour-bg">
+        <i class="fas fa-cut glamour-icon glamour-icon-1"></i>
+        <i class="fas fa-spa glamour-icon glamour-icon-2"></i>
+        <i class="fas fa-gem glamour-icon glamour-icon-3"></i>
+        <i class="fas fa-star glamour-icon glamour-icon-4"></i>
+        <i class="fas fa-heart glamour-icon glamour-icon-5"></i>
+        <i class="fas fa-magic glamour-icon glamour-icon-6"></i>
+        <i class="fas fa-feather glamour-icon glamour-icon-7"></i>
+        <i class="fas fa-crown glamour-icon glamour-icon-8"></i>
+        <i class="fas fa-sparkles glamour-icon glamour-icon-9"></i>
+        <i class="fas fa-leaf glamour-icon glamour-icon-10"></i>
+    </div>
+
+    <!-- PIN Lock Screen -->
+    <?php
+    $showPinLock = false;
+    if (isset($_SESSION['user_id']) && !isset($_SESSION['pin_verified'])) {
+        // Check if user has PIN enabled
+        $pinStmt = $this->db->query("SELECT pin_enabled FROM users WHERE id = ?", [$_SESSION['user_id']]);
+        $pinUser = $pinStmt->fetch(\PDO::FETCH_ASSOC);
+        $showPinLock = !empty($pinUser['pin_enabled']);
+    }
+    ?>
+    <?php if ($showPinLock): ?>
+    <div class="pin-lock-screen" id="pinLockScreen">
+        <div class="pin-lock-content">
+            <div class="pin-lock-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Voer je PIN in</h2>
+            <p>Voer je 6-cijferige code in om door te gaan</p>
+
+            <div class="pin-lock-inputs" id="lockPinInputs">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+                <input type="tel" maxlength="1" class="pin-lock-digit" inputmode="numeric" autocomplete="off">
+            </div>
+
+            <p class="pin-lock-error" id="pinLockError" style="display:none">
+                <i class="fas fa-exclamation-circle"></i> <span id="pinErrorText">Onjuiste PIN</span>
+            </p>
+
+            <a href="/logout" class="pin-lock-logout">
+                <i class="fas fa-sign-out-alt"></i> Uitloggen
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Pull to Refresh Indicator -->
+    <div class="pull-refresh" id="pullRefresh">
+        <div class="pull-refresh-icon">
+            <i class="fas fa-sync-alt"></i>
+        </div>
+        <span>Laat los om te verversen</span>
+    </div>
+
+    <!-- GS Preloader - Shows only once per session -->
+    <div class="gs-preloader" id="gsPreloader">
+        <div class="gs-preloader-content">
+            <div class="gs-spinner">
+                <div class="gs-spinner-ring"></div>
+                <div class="gs-spinner-ring"></div>
+                <div class="gs-spinner-ring"></div>
+                <div class="gs-sparkle"></div>
+                <div class="gs-sparkle"></div>
+                <div class="gs-sparkle"></div>
+                <div class="gs-sparkle"></div>
+                <span class="gs-logo">GS</span>
+            </div>
+            <p class="gs-preloader-text">Loading<span class="gs-dots">...</span></p>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            <button class="hamburger-btn" onclick="toggleSideMenu()" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <a href="/" class="navbar-brand"><i class="fas fa-spa"></i> GlamourSchedule</a>
+        <div class="navbar-right">
+            <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Theme">
+                <i class="fas fa-moon" id="themeIconNav"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Side Menu (Website Version) -->
+    <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+    <aside class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <a href="/" class="side-menu-brand"><i class="fas fa-spa"></i> GlamourSchedule</a>
+            <button class="side-menu-close" onclick="closeSideMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="side-menu-nav">
+            <a href="/" class="side-menu-link <?= ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') ? 'active' : '' ?>">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/search" class="side-menu-link <?= strpos($_SERVER['REQUEST_URI'], '/search') === 0 ? 'active' : '' ?>">
+                <i class="fas fa-search"></i> <?= $translations['search'] ?? 'Zoeken' ?>
+            </a>
+            <?php if (isset($user)): ?>
+                <a href="/dashboard" class="side-menu-link <?= $_SERVER['REQUEST_URI'] === '/dashboard' ? 'active' : '' ?>">
+                    <i class="fas fa-user"></i> <?= $translations['dashboard'] ?? 'Dashboard' ?>
+                </a>
+                <a href="/dashboard/bookings" class="side-menu-link <?= strpos($_SERVER['REQUEST_URI'], '/dashboard/bookings') === 0 ? 'active' : '' ?>">
+                    <i class="fas fa-calendar-check"></i> <?= $translations['bookings'] ?? 'Boekingen' ?>
+                </a>
+                <a href="/dashboard/settings" class="side-menu-link">
+                    <i class="fas fa-cog"></i> <?= $translations['settings'] ?? 'Instellingen' ?>
+                </a>
+            <?php else: ?>
+                <a href="/login" class="side-menu-link <?= strpos($_SERVER['REQUEST_URI'], '/login') === 0 ? 'active' : '' ?>">
+                    <i class="fas fa-sign-in-alt"></i> <?= $translations['login'] ?? 'Inloggen' ?>
+                </a>
+                <a href="/register" class="side-menu-link <?= strpos($_SERVER['REQUEST_URI'], '/register') === 0 ? 'active' : '' ?>">
+                    <i class="fas fa-user-plus"></i> <?= $translations['register'] ?? 'Registreren' ?>
+                </a>
+            <?php endif; ?>
+            <div class="side-menu-divider"></div>
+            <a href="/business/register" class="side-menu-link">
+                <i class="fas fa-store"></i> <?= $translations['for_business'] ?? 'Voor Bedrijven' ?>
+            </a>
+            <a href="/sales/login" class="side-menu-link">
+                <i class="fas fa-handshake"></i> Sales Portal
+            </a>
+            <a href="/about" class="side-menu-link">
+                <i class="fas fa-info-circle"></i> <?= $translations['about'] ?? 'Over ons' ?>
+            </a>
+            <a href="/contact" class="side-menu-link">
+                <i class="fas fa-envelope"></i> <?= $translations['contact'] ?? 'Contact' ?>
+            </a>
+            <div class="side-menu-divider"></div>
+            <a href="/terms" class="side-menu-link">
+                <i class="fas fa-file-alt"></i> <?= $translations['terms'] ?? 'Voorwaarden' ?>
+            </a>
+            <a href="/privacy" class="side-menu-link">
+                <i class="fas fa-shield-alt"></i> <?= $translations['privacy'] ?? 'Privacy' ?>
+            </a>
+            <?php if (isset($user)): ?>
+                <div class="side-menu-divider"></div>
+                <a href="/logout" class="side-menu-link side-menu-logout">
+                    <i class="fas fa-sign-out-alt"></i> <?= $translations['logout'] ?? 'Uitloggen' ?>
+                </a>
+            <?php endif; ?>
+        </nav>
+        <div class="side-menu-footer">
+            <div class="side-menu-lang">
+                <span>Taal:</span>
+                <a href="?lang=nl" class="<?= $lang === 'nl' ? 'active' : '' ?>">NL</a>
+                <a href="?lang=en" class="<?= $lang === 'en' ? 'active' : '' ?>">EN</a>
+                <a href="?lang=de" class="<?= $lang === 'de' ? 'active' : '' ?>">DE</a>
+                <a href="?lang=fr" class="<?= $lang === 'fr' ? 'active' : '' ?>">FR</a>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <?php if (isset($flashMessage)): ?>
+            <div class="container">
+                <div class="alert alert-<?= $flashType ?? 'success' ?>"><?= $flashMessage ?></div>
+            </div>
+        <?php endif; ?>
+        <?= $content ?? '' ?>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <?= $translations['copyright'] ?? date('Y') . ' GlamourSchedule. All rights reserved.' ?></p>
+        <p style="margin-top:0.5rem;color:var(--text-light);font-size:0.9rem;">
+            <a href="/about" style="color:var(--text-light)"><?= $translations['about'] ?? 'Over ons' ?></a> |
+            <a href="/terms" style="color:var(--text-light)"><?= $translations['terms'] ?? 'Terms' ?></a> |
+            <a href="/privacy" style="color:var(--text-light)"><?= $translations['privacy'] ?? 'Privacy' ?></a> |
+            <a href="/contact" style="color:var(--text-light)"><?= $translations['contact'] ?? 'Contact' ?></a> |
+            <a href="/sales/login" style="color:var(--text-light)">Sales Portal</a>
+        </p>
+        <p style="margin-top:0.75rem;color:var(--text-light);font-size:0.85rem;">
+            <a href="https://www.kvk.nl/zoeken/?source=all&q=81973667" target="_blank" rel="noopener" style="color:var(--text-light);text-decoration:none;">
+                <i class="fas fa-building"></i> KVK: 81973667
+            </a>
+        </p>
+        <p style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+            <a href="https://phantrium.com" target="_blank" rel="noopener" style="color:var(--text-light);font-size:0.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;transition:color 0.3s">
+                <i class="fas fa-code" style="color:#7c3aed"></i>
+                <span>Ontwikkeld door <strong style="color:#7c3aed">Phantrium</strong></span>
+            </a>
+        </p>
+    </footer>
+
+    <!-- Bottom Navigation (Mobile App-like) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="/" class="bottom-nav-item <?= ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') ? 'active' : '' ?>">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="/search" class="bottom-nav-item <?= strpos($_SERVER['REQUEST_URI'], '/search') === 0 ? 'active' : '' ?>">
+            <i class="fas fa-search"></i>
+            <span>Zoeken</span>
+        </a>
+        <?php if (isset($user)): ?>
+            <a href="/dashboard/bookings" class="bottom-nav-item <?= strpos($_SERVER['REQUEST_URI'], '/dashboard/bookings') === 0 || strpos($_SERVER['REQUEST_URI'], '/booking') === 0 ? 'active' : '' ?>">
+                <i class="fas fa-calendar-check"></i>
+                <span>Boekingen</span>
+            </a>
+            <a href="/dashboard" class="bottom-nav-item <?= $_SERVER['REQUEST_URI'] === '/dashboard' ? 'active' : '' ?>">
+                <i class="fas fa-user"></i>
+                <span>Profiel</span>
+            </a>
+        <?php else: ?>
+            <a href="/login" class="bottom-nav-item <?= strpos($_SERVER['REQUEST_URI'], '/login') === 0 ? 'active' : '' ?>">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Inloggen</span>
+            </a>
+            <a href="/register" class="bottom-nav-item <?= strpos($_SERVER['REQUEST_URI'], '/register') === 0 ? 'active' : '' ?>">
+                <i class="fas fa-user-plus"></i>
+                <span>Account</span>
+            </a>
+        <?php endif; ?>
+        <button type="button" class="bottom-nav-item" onclick="toggleMoreMenu()">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Meer</span>
+        </button>
+    </nav>
+
+    <!-- More Menu Overlay -->
+    <div class="more-menu-overlay" id="moreMenuOverlay" onclick="closeMoreMenu()"></div>
+    <div class="more-menu" id="moreMenu">
+        <div class="more-menu-header">
+            <h3>Meer opties</h3>
+            <button onclick="closeMoreMenu()" class="more-menu-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="more-menu-grid">
+            <?php if (isset($user)): ?>
+                <a href="/dashboard" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-home" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/dashboard/bookings" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-calendar-check" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Boekingen</span>
+                </a>
+                <a href="/dashboard/settings" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-cog" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Instellingen</span>
+                </a>
+                <a href="/dashboard/security" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-shield-alt" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Beveiliging</span>
+                </a>
+            <?php else: ?>
+                <a href="/login" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-sign-in-alt" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Inloggen</span>
+                </a>
+                <a href="/register" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                        <i class="fas fa-user-plus" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Registreren</span>
+                </a>
+            <?php endif; ?>
+            <a href="/business/register" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-store" style="color:#7c3aed"></i>
+                </div>
+                <span>Voor Bedrijven</span>
+            </a>
+            <button onclick="toggleTheme(); closeMoreMenu();" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-moon" id="themeIconMenu" style="color:#7c3aed"></i>
+                </div>
+                <span id="themeTextMenu">Donker thema</span>
+            </button>
+            <a href="/about" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-info-circle" style="color:#7c3aed"></i>
+                </div>
+                <span>Over ons</span>
+            </a>
+            <a href="/terms" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-file-alt" style="color:#7c3aed"></i>
+                </div>
+                <span>Voorwaarden</span>
+            </a>
+            <a href="/privacy" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-user-shield" style="color:#7c3aed"></i>
+                </div>
+                <span>Privacy</span>
+            </a>
+            <a href="/contact" class="more-menu-item">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-envelope" style="color:#7c3aed"></i>
+                </div>
+                <span>Contact</span>
+            </a>
+            <button onclick="showInstallApp()" class="more-menu-item" id="installAppBtn">
+                <div class="more-menu-icon" style="background:#f8fafc;border:2px solid #7c3aed">
+                    <i class="fas fa-download" style="color:#7c3aed"></i>
+                </div>
+                <span>Installeer App</span>
+            </button>
+            <?php if (isset($user)): ?>
+                <a href="/logout" class="more-menu-item">
+                    <div class="more-menu-icon" style="background:#dc2626">
+                        <i class="fas fa-sign-out-alt" style="color:#7c3aed"></i>
+                    </div>
+                    <span>Uitloggen</span>
+                </a>
+            <?php endif; ?>
+        </div>
+        <div class="more-menu-lang">
+            <span>Taal:</span>
+            <a href="?lang=nl" class="<?= $lang === 'nl' ? 'active' : '' ?>">NL</a>
+            <a href="?lang=en" class="<?= $lang === 'en' ? 'active' : '' ?>">EN</a>
+            <a href="?lang=de" class="<?= $lang === 'de' ? 'active' : '' ?>">DE</a>
+            <a href="?lang=fr" class="<?= $lang === 'fr' ? 'active' : '' ?>">FR</a>
+        </div>
+    </div>
+
+    <script>
+        const isUserLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
+        const userSavedTheme = '<?= $userTheme ?? '' ?>';
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeUI(next);
+
+            // Save to database if logged in
+            if (isUserLoggedIn) {
+                fetch('/api/theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme: next })
+                }).catch(err => console.log('Theme save failed:', err));
+            }
+        }
+
+        function updateThemeUI(theme) {
+            const iconMenu = document.getElementById('themeIconMenu');
+            const textMenu = document.getElementById('themeTextMenu');
+            if (iconMenu && textMenu) {
+                if (theme === 'dark') {
+                    iconMenu.classList.remove('fa-moon');
+                    iconMenu.classList.add('fa-sun');
+                    textMenu.textContent = 'Licht thema';
+                } else {
+                    iconMenu.classList.remove('fa-sun');
+                    iconMenu.classList.add('fa-moon');
+                    textMenu.textContent = 'Donker thema';
+                }
+            }
+        }
+
+        // Theme initialization: user preference > localStorage
+        (function initTheme() {
+            // If user is logged in and has a saved preference, use that
+            if (isUserLoggedIn && userSavedTheme) {
+                document.documentElement.setAttribute('data-theme', userSavedTheme);
+                localStorage.setItem('theme', userSavedTheme);
+            } else {
+                // Otherwise use localStorage
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                }
+            }
+
+            // Update UI after DOM loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                updateThemeUI(currentTheme);
+            });
+        })();
+
+        // Side Menu Functions (Website Version)
+        function toggleSideMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('sideMenuOverlay');
+            menu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSideMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('sideMenuOverlay');
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close side menu on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSideMenu();
+            }
+        });
+
+        // PWA Detection - Toggle UI based on standalone/browser mode
+        (function() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                || window.navigator.standalone
+                || document.referrer.includes('android-app://');
+
+            if (isStandalone) {
+                document.body.classList.add('pwa-mode');
+            } else {
+                document.body.classList.add('browser-mode');
+            }
+
+            // Listen for display mode changes
+            window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+                if (e.matches) {
+                    document.body.classList.remove('browser-mode');
+                    document.body.classList.add('pwa-mode');
+                } else {
+                    document.body.classList.remove('pwa-mode');
+                    document.body.classList.add('browser-mode');
+                }
+            });
+        })();
+
+        // GS Preloader Logic - Hide after page load, show only once per session
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('gsPreloader');
+            if (preloader && !sessionStorage.getItem('gs_preloader_shown')) {
+                // Wait a bit for visual effect, then hide
+                setTimeout(function() {
+                    preloader.classList.add('hidden');
+                    // Mark as shown for this session
+                    sessionStorage.setItem('gs_preloader_shown', 'true');
+                    // Remove from DOM after transition
+                    setTimeout(function() {
+                        preloader.remove();
+                    }, 600);
+                }, 800);
+            } else if (preloader) {
+                // Already shown this session, remove immediately
+                preloader.remove();
+            }
+        });
+    </script>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-banner" style="display:none">
+        <div class="cookie-content">
+            <div class="cookie-header">
+                <i class="fas fa-cookie-bite"></i>
+                <h3><?= $translations['cookie_title'] ?? 'Cookie instellingen' ?></h3>
+            </div>
+            <p><?= $translations['cookie_text'] ?? 'Wij gebruiken cookies om je ervaring te verbeteren, gepersonaliseerde content te tonen en ons verkeer te analyseren. Je kunt kiezen welke cookies je accepteert.' ?></p>
+
+            <div class="cookie-options">
+                <label class="cookie-option">
+                    <input type="checkbox" checked disabled>
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_essential'] ?? 'Essentieel' ?></strong>
+                        <small><?= $translations['cookie_essential_desc'] ?? 'Noodzakelijk voor het functioneren van de website' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookieAnalytics">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_analytics'] ?? 'Analytisch' ?></strong>
+                        <small><?= $translations['cookie_analytics_desc'] ?? 'Helpt ons te begrijpen hoe bezoekers onze site gebruiken' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookieMarketing">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_marketing'] ?? 'Marketing' ?></strong>
+                        <small><?= $translations['cookie_marketing_desc'] ?? 'Voor relevante advertenties op basis van je interesses' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookiePersonalization">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_personalization'] ?? 'Personalisatie' ?></strong>
+                        <small><?= $translations['cookie_personalization_desc'] ?? 'Voor gepersonaliseerde aanbevelingen van salons' ?></small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="cookie-buttons">
+                <button onclick="acceptAllCookies()" class="cookie-btn cookie-btn-accept">
+                    <i class="fas fa-check"></i> <?= $translations['cookie_accept_all'] ?? 'Alles accepteren' ?>
+                </button>
+                <button onclick="saveSelectedCookies()" class="cookie-btn cookie-btn-save">
+                    <?= $translations['cookie_save'] ?? 'Selectie opslaan' ?>
+                </button>
+                <button onclick="rejectAllCookies()" class="cookie-btn cookie-btn-reject">
+                    <?= $translations['cookie_reject'] ?? 'Alleen essentieel' ?>
+                </button>
+            </div>
+
+            <p class="cookie-footer">
+                <a href="/privacy"><?= $translations['privacy'] ?? 'Privacybeleid' ?></a> |
+                <a href="/terms"><?= $translations['terms'] ?? 'Voorwaarden' ?></a>
+            </p>
+        </div>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div id="pwaInstallPrompt" class="pwa-prompt" style="display:none">
+        <div class="pwa-content">
+            <button class="pwa-close" onclick="closePwaPrompt()">&times;</button>
+            <div class="pwa-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3><?= $translations['pwa_title'] ?? 'Installeer GlamourSchedule' ?></h3>
+            <p><?= $translations['pwa_text'] ?? 'Voeg onze app toe aan je startscherm voor snelle toegang tot beauty boekingen!' ?></p>
+
+            <div class="pwa-benefits">
+                <div class="pwa-benefit"><i class="fas fa-bolt"></i> <?= $translations['pwa_fast'] ?? 'Sneller laden' ?></div>
+                <div class="pwa-benefit"><i class="fas fa-bell"></i> <?= $translations['pwa_notifications'] ?? 'Meldingen' ?></div>
+                <div class="pwa-benefit"><i class="fas fa-wifi-slash"></i> <?= $translations['pwa_offline'] ?? 'Offline werken' ?></div>
+            </div>
+
+            <button onclick="installPwa()" class="pwa-install-btn" id="pwaInstallBtn">
+                <i class="fas fa-download"></i> <?= $translations['pwa_install'] ?? 'Installeren' ?>
+            </button>
+
+            <div class="pwa-instructions" id="pwaInstructions" style="display:none">
+                <h4><?= $translations['pwa_how'] ?? 'Hoe te installeren:' ?></h4>
+                <div class="pwa-steps" id="pwaStepsIos" style="display:none">
+                    <p><strong>iPhone/iPad (Safari):</strong></p>
+                    <ol>
+                        <li>Tik op het <i class="fas fa-share-square"></i> Deel icoon onderaan</li>
+                        <li>Scroll naar beneden en tik op "Zet op beginscherm"</li>
+                        <li>Tik op "Voeg toe" rechtsboven</li>
+                    </ol>
+                </div>
+                <div class="pwa-steps" id="pwaStepsAndroid" style="display:none">
+                    <p><strong>Android (Chrome):</strong></p>
+                    <ol>
+                        <li>Tik op het <i class="fas fa-ellipsis-v"></i> menu rechtsboven</li>
+                        <li>Tik op "Toevoegen aan startscherm"</li>
+                        <li>Tik op "Toevoegen" om te bevestigen</li>
+                    </ol>
+                </div>
+                <div class="pwa-steps" id="pwaStepsDesktop" style="display:none">
+                    <p><strong>Desktop (Chrome):</strong></p>
+                    <ol>
+                        <li>Klik op het <i class="fas fa-plus-circle"></i> icoon in de adresbalk</li>
+                        <li>Of klik op menu <i class="fas fa-ellipsis-v"></i> > "Installeren"</li>
+                    </ol>
+                </div>
+            </div>
+
+            <button class="pwa-later" onclick="closePwaPrompt()">
+                <?= $translations['pwa_later'] ?? 'Misschien later' ?>
+            </button>
+        </div>
+    </div>
+
+    <!-- Install App Modal (triggered from More menu) -->
+    <div class="install-modal-overlay" id="installModalOverlay" onclick="closeInstallModal()"></div>
+    <div class="install-modal" id="installModal">
+        <button class="install-modal-close" onclick="closeInstallModal()"><i class="fas fa-times"></i></button>
+        <div class="install-modal-icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <h3>Installeer GlamourSchedule</h3>
+        <p>Voeg de app toe aan je startscherm voor snelle toegang!</p>
+
+        <div class="install-benefits">
+            <div class="install-benefit"><i class="fas fa-bolt"></i> Sneller</div>
+            <div class="install-benefit"><i class="fas fa-bell"></i> Meldingen</div>
+            <div class="install-benefit"><i class="fas fa-th-large"></i> App-icoon</div>
+        </div>
+
+        <!-- Android/Chrome Install Button -->
+        <button class="install-modal-btn" id="installModalBtn" onclick="triggerInstall()">
+            <i class="fas fa-download"></i> Nu Installeren
+        </button>
+
+        <!-- iOS Instructions -->
+        <div class="install-ios-steps" id="installIosSteps">
+            <div class="ios-step">
+                <div class="ios-step-num">1</div>
+                <div class="ios-step-text">
+                    Tik op <i class="fas fa-share-square" style="color:#D4AF37"></i> <strong>Delen</strong> onderaan Safari
+                </div>
+            </div>
+            <div class="ios-step">
+                <div class="ios-step-num">2</div>
+                <div class="ios-step-text">
+                    Scroll en tik op <i class="fas fa-plus-square" style="color:#D4AF37"></i> <strong>Zet op beginscherm</strong>
+                </div>
+            </div>
+            <div class="ios-step">
+                <div class="ios-step-num">3</div>
+                <div class="ios-step-text">
+                    Tik op <strong>Voeg toe</strong> rechtsboven
+                </div>
+            </div>
+        </div>
+
+        <!-- Already Installed Message -->
+        <div class="install-already" id="installAlready">
+            <i class="fas fa-check-circle"></i>
+            <span>App is al geïnstalleerd!</span>
+        </div>
+    </div>
+
+    <style>
+    /* Cookie Banner Styles - Glamour Theme */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, #fdfcfa 0%, #faf8f5 100%);
+        border-top: 1px solid rgba(212, 175, 155, 0.3);
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        z-index: 99999;
+        animation: slideUp 0.5s ease;
+    }
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+    [data-theme="dark"] .cookie-banner {
+        background: linear-gradient(180deg, #1a1714 0%, #141210 100%);
+        border-top: 1px solid rgba(212, 175, 155, 0.15);
+    }
+    .cookie-content {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+    .cookie-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    .cookie-header i {
+        font-size: 1.5rem;
+        color: #a08070;
+    }
+    .cookie-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #1a1714;
+    }
+    [data-theme="dark"] .cookie-header h3 {
+        color: #f5f2ef;
+    }
+    [data-theme="dark"] .cookie-header i {
+        color: #c4a090;
+    }
+    .cookie-content > p {
+        color: #5a5450;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+    [data-theme="dark"] .cookie-content > p {
+        color: #b0a8a0;
+    }
+    .cookie-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+    .cookie-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(212, 175, 155, 0.1);
+        border: 1px solid rgba(212, 175, 155, 0.2);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .cookie-option:hover {
+        background: rgba(212, 175, 155, 0.2);
+        border-color: rgba(212, 175, 155, 0.4);
+    }
+    [data-theme="dark"] .cookie-option {
+        background: rgba(212, 175, 155, 0.08);
+        border-color: rgba(212, 175, 155, 0.15);
+    }
+    [data-theme="dark"] .cookie-option:hover {
+        background: rgba(212, 175, 155, 0.15);
+    }
+    .cookie-option input {
+        margin-top: 0.25rem;
+        accent-color: #a08070;
+        width: 18px;
+        height: 18px;
+    }
+    .cookie-label strong {
+        display: block;
+        font-size: 0.9rem;
+        color: #1a1714;
+    }
+    [data-theme="dark"] .cookie-label strong {
+        color: #f5f2ef;
+    }
+    .cookie-label small {
+        color: #6a6460;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+    [data-theme="dark"] .cookie-label small {
+        color: #9a928a;
+    }
+    .cookie-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .cookie-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    .cookie-btn-accept {
+        background: linear-gradient(135deg, #a08070 0%, #8a7060 100%);
+        color: white;
+    }
+    .cookie-btn-accept:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(160, 128, 112, 0.4);
+    }
+    .cookie-btn-save {
+        background: #1a1714;
+        color: white;
+        border: none;
+    }
+    [data-theme="dark"] .cookie-btn-save {
+        background: #f5f2ef;
+        color: #1a1714;
+    }
+    .cookie-btn-reject {
+        background: transparent;
+        color: #5a5450;
+        border: 1px solid rgba(0,0,0,0.15);
+    }
+    .cookie-btn-reject:hover {
+        border-color: rgba(0,0,0,0.3);
+    }
+    [data-theme="dark"] .cookie-btn-reject {
+        color: #b0a8a0;
+        border-color: rgba(255,255,255,0.15);
+    }
+    .cookie-footer {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: #6a6460;
+    }
+    [data-theme="dark"] .cookie-footer {
+        color: #9a928a;
+    }
+    .cookie-footer a {
+        color: #a08070;
+        text-decoration: underline;
+    }
+    .cookie-footer a:hover {
+        color: #8a7060;
+    }
+
+    /* PWA Install Prompt */
+    .pwa-prompt {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 340px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+        z-index: 99998;
+        animation: slideInRight 0.5s ease;
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    [data-theme="dark"] .pwa-prompt {
+        background: #000000;
+    }
+    .pwa-content {
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+    }
+    .pwa-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-light);
+        cursor: pointer;
+    }
+    .pwa-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+    .pwa-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+    .pwa-content h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+    }
+    .pwa-content > p {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    .pwa-benefits {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    .pwa-benefit {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+    .pwa-benefit i {
+        color: #000000;
+        margin-right: 0.25rem;
+    }
+    .pwa-install-btn {
+        width: 100%;
+        padding: 0.9rem;
+        background: #000000;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .pwa-install-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+    }
+    .pwa-instructions {
+        text-align: left;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--secondary);
+        border-radius: 12px;
+    }
+    .pwa-instructions h4 {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+    }
+    .pwa-steps ol {
+        margin: 0;
+        padding-left: 1.25rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    .pwa-steps li {
+        margin-bottom: 0.5rem;
+    }
+    .pwa-later {
+        background: none;
+        border: none;
+        color: var(--text-light);
+        font-size: 0.85rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+    .pwa-later:hover {
+        color: #000000;
+    }
+
+    @media (max-width: 480px) {
+        .pwa-prompt {
+            left: 10px;
+            right: 10px;
+            width: auto;
+            bottom: 90px;
+        }
+        .cookie-options {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Install App Modal */
+    .install-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 100000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .install-modal-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+    .install-modal {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border-radius: 24px 24px 0 0;
+        padding: 2rem 1.5rem;
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+        z-index: 100001;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .install-modal.active {
+        display: block;
+        transform: translateY(0);
+    }
+    [data-theme="dark"] .install-modal {
+        background: #000000;
+    }
+    .install-modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--secondary);
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-light);
+    }
+    .install-modal-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+    }
+    .install-modal-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    .install-modal h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.25rem;
+    }
+    .install-modal > p {
+        color: var(--text-light);
+        margin: 0 0 1.25rem;
+        font-size: 0.9rem;
+    }
+    .install-benefits {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .install-benefit {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .install-benefit i {
+        color: #000000;
+    }
+    .install-modal-btn {
+        width: 100%;
+        padding: 1rem;
+        background: #000000;
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+    }
+    .install-modal-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+    }
+    .install-modal-btn:active {
+        transform: scale(0.98);
+    }
+    .install-ios-steps {
+        display: none;
+        text-align: left;
+        margin-top: 0.5rem;
+    }
+    .ios-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .ios-step:last-child {
+        border-bottom: none;
+    }
+    .ios-step-num {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    .ios-step-text {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        padding-top: 0.2rem;
+    }
+    .install-already {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 12px;
+        color: #D4AF37;
+        font-weight: 600;
+    }
+    .install-already i {
+        font-size: 1.25rem;
+    }
+
+    /* Bottom Navigation Bar - Glamour Style */
+    .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        background: rgba(255, 252, 248, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(212, 175, 155, 0.3);
+        border-radius: 24px;
+        padding: 0.75rem 0.5rem;
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+        z-index: 9999;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    @media (max-width: 768px) {
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .footer {
+            margin-bottom: 5rem;
+        }
+    }
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        color: #6a6460;
+        text-decoration: none;
+        font-size: 0.65rem;
+        font-weight: 600;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: none;
+        border: 2px solid transparent;
+        cursor: pointer;
+        min-width: 64px;
+        position: relative;
+    }
+    .bottom-nav-item i {
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+        transition: transform 0.3s, color 0.3s;
+    }
+    .bottom-nav-item.active {
+        color: #a08070;
+        background: rgba(212, 175, 155, 0.15);
+        border-color: rgba(212, 175, 155, 0.4);
+        border-radius: 12px;
+    }
+    .bottom-nav-item.active i {
+        transform: scale(1.15);
+        color: #a08070;
+    }
+    .bottom-nav-item:hover {
+        color: #a08070;
+        background: rgba(212, 175, 155, 0.1);
+        border-color: rgba(212, 175, 155, 0.3);
+        border-radius: 12px;
+        transform: translateY(-2px);
+    }
+    [data-theme="dark"] .bottom-nav {
+        background: rgba(20, 18, 16, 0.98);
+        border-color: rgba(212, 175, 155, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    [data-theme="dark"] .bottom-nav-item {
+        color: #9a928a;
+    }
+    [data-theme="dark"] .bottom-nav-item.active {
+        color: #c4a090;
+        background: rgba(212, 175, 155, 0.1);
+        border-color: rgba(212, 175, 155, 0.25);
+    }
+    [data-theme="dark"] .bottom-nav-item:hover {
+        color: #c4a090;
+        background: rgba(212, 175, 155, 0.08);
+    }
+
+    /* More Menu - Glamour Style */
+    .more-menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .more-menu-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+    .more-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 252, 248, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 28px 28px 0 0;
+        padding: 1.5rem;
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+        z-index: 10001;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 85vh;
+        overflow-y: auto;
+        border-top: 1px solid rgba(212, 175, 155, 0.3);
+        box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+    }
+    .more-menu.active {
+        transform: translateY(0);
+    }
+    [data-theme="dark"] .more-menu {
+        background: rgba(20, 18, 16, 0.98);
+        border-top-color: rgba(212, 175, 155, 0.15);
+    }
+    .more-menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(212, 175, 155, 0.2);
+    }
+    .more-menu-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2a2420;
+    }
+    [data-theme="dark"] .more-menu-header h3 {
+        color: #f5f2ef;
+    }
+    .more-menu-close {
+        background: rgba(212, 175, 155, 0.1);
+        border: 1px solid rgba(212, 175, 155, 0.3);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #6a6460;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    .more-menu-close:hover {
+        background: #a08070;
+        border-color: #a08070;
+        color: white;
+        transform: rotate(90deg);
+    }
+    [data-theme="dark"] .more-menu-close {
+        background: rgba(212, 175, 155, 0.08);
+        border-color: rgba(212, 175, 155, 0.2);
+        color: #9a928a;
+    }
+    .more-menu-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    @media (max-width: 400px) {
+        .more-menu-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    .more-menu-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        text-decoration: none;
+        color: var(--text);
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.75rem;
+        text-align: center;
+        font-weight: 500;
+    }
+    .more-menu-item:hover {
+        background: #000000;
+        transform: translateY(-2px);
+    }
+    .more-menu-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        box-shadow: 0 4px 15px #000000;
+        transition: all 0.3s;
+    }
+    .more-menu-item:hover .more-menu-icon {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px #000000;
+    }
+    .more-menu-lang {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(212, 175, 155, 0.2);
+    }
+    .more-menu-lang span {
+        color: #6a6460;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    [data-theme="dark"] .more-menu-lang span {
+        color: #9a928a;
+    }
+    .more-menu-lang a {
+        padding: 0.5rem 0.9rem;
+        background: rgba(212, 175, 155, 0.1);
+        color: #5a5450;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: 1px solid rgba(212, 175, 155, 0.2);
+    }
+    .more-menu-lang a:hover {
+        background: rgba(212, 175, 155, 0.2);
+        border-color: rgba(212, 175, 155, 0.4);
+        transform: translateY(-1px);
+    }
+    .more-menu-lang a.active {
+        background: #a08070;
+        color: white;
+        border-color: #a08070;
+    }
+    [data-theme="dark"] .more-menu-lang a {
+        background: rgba(212, 175, 155, 0.08);
+        color: #b0a8a0;
+        border-color: rgba(212, 175, 155, 0.15);
+    }
+    [data-theme="dark"] .more-menu-lang a:hover {
+        background: rgba(212, 175, 155, 0.15);
+    }
+    [data-theme="dark"] .more-menu-lang a.active {
+        background: #a08070;
+        color: white;
+    }
+
+    /* PIN Lock Screen */
+    .pin-lock-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+    .pin-lock-content {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        max-width: 360px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    [data-theme="dark"] .pin-lock-content {
+        background: #000000;
+    }
+    .pin-lock-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    .pin-lock-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+    .pin-lock-content h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+    }
+    .pin-lock-content > p {
+        color: var(--text-light);
+        margin: 0 0 2rem;
+        font-size: 0.9rem;
+    }
+    .pin-lock-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .pin-lock-digit {
+        width: 45px;
+        height: 55px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: var(--white);
+        color: var(--text);
+        transition: all 0.2s;
+        -webkit-text-security: disc;
+    }
+    .pin-lock-digit:focus {
+        border-color: #000000;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+    }
+    .pin-lock-digit.filled {
+        border-color: #000000;
+        background: rgba(255,215,0,0.05);
+    }
+    .pin-lock-digit.error {
+        border-color: #D4AF37;
+        animation: shake 0.5s;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+    .pin-lock-error {
+        color: #D4AF37;
+        font-size: 0.9rem;
+        margin: 0 0 1rem;
+    }
+    .pin-lock-logout {
+        color: var(--text-light);
+        text-decoration: none;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .pin-lock-logout:hover {
+        color: #000000;
+    }
+    @media (max-width: 380px) {
+        .pin-lock-digit {
+            width: 40px;
+            height: 48px;
+            font-size: 1.25rem;
+        }
+    }
+
+    /* Pull to Refresh */
+    .pull-refresh {
+        position: fixed;
+        top: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--white);
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 9998;
+        transition: top 0.3s ease;
+        font-size: 0.85rem;
+        color: var(--text-light);
+        opacity: 0;
+        visibility: hidden;
+    }
+    .pull-refresh.visible {
+        top: 80px;
+        opacity: 1;
+        visibility: visible;
+    }
+    .pull-refresh.refreshing {
+        top: 80px;
+        opacity: 1;
+        visibility: visible;
+    }
+    .pull-refresh-icon {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85rem;
+    }
+    .pull-refresh.refreshing .pull-refresh-icon i {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    [data-theme="dark"] .pull-refresh {
+        background: #000000;
+    }
+    </style>
+
+    <script>
+    // Cookie Consent Management
+    const CookieConsent = {
+        init() {
+            if (!this.hasConsent()) {
+                setTimeout(() => {
+                    document.getElementById('cookieConsent').style.display = 'block';
+                }, 1000);
+            }
+        },
+        hasConsent() {
+            return document.cookie.includes('gs_consent=');
+        },
+        getConsent() {
+            const match = document.cookie.match(/gs_consent=([^;]+)/);
+            return match ? JSON.parse(decodeURIComponent(match[1])) : null;
+        }
+    };
+
+    function acceptAllCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: true,
+            marketing: true,
+            personalization: true
+        });
+    }
+
+    function rejectAllCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: false,
+            marketing: false,
+            personalization: false
+        });
+    }
+
+    function saveSelectedCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: document.getElementById('cookieAnalytics').checked,
+            marketing: document.getElementById('cookieMarketing').checked,
+            personalization: document.getElementById('cookiePersonalization').checked
+        });
+    }
+
+    function saveCookiePreferences(prefs) {
+        // Save to cookie
+        const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `gs_consent=${encodeURIComponent(JSON.stringify(prefs))}; expires=${expires}; path=/; SameSite=Lax`;
+
+        // Send to server
+        fetch('/api/consent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(prefs)
+        }).catch(() => {});
+
+        // Hide banner
+        document.getElementById('cookieConsent').style.display = 'none';
+
+        // Show PWA prompt after cookie consent
+        setTimeout(() => {
+            PwaPrompt.checkAndShow();
+        }, 30000);
+    }
+
+    // PWA Install Prompt
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    const PwaPrompt = {
+        checkAndShow() {
+            if (sessionStorage.getItem('pwa_prompt_closed')) return;
+            if (window.matchMedia('(display-mode: standalone)').matches) return;
+            if (!CookieConsent.hasConsent()) return;
+
+            document.getElementById('pwaInstallPrompt').style.display = 'block';
+            this.showInstructions();
+        },
+        showInstructions() {
+            const ua = navigator.userAgent;
+            const isIos = /iPad|iPhone|iPod/.test(ua);
+            const isAndroid = /Android/.test(ua);
+
+            if (!deferredPrompt) {
+                document.getElementById('pwaInstructions').style.display = 'block';
+                document.getElementById('pwaInstallBtn').style.display = 'none';
+
+                if (isIos) {
+                    document.getElementById('pwaStepsIos').style.display = 'block';
+                } else if (isAndroid) {
+                    document.getElementById('pwaStepsAndroid').style.display = 'block';
+                } else {
+                    document.getElementById('pwaStepsDesktop').style.display = 'block';
+                }
+            }
+        }
+    };
+
+    function installPwa() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                if (result.outcome === 'accepted') {
+                    fetch('/api/pwa-installed', { method: 'POST' }).catch(() => {});
+                }
+                deferredPrompt = null;
+                closePwaPrompt();
+            });
+        }
+    }
+
+    function closePwaPrompt() {
+        document.getElementById('pwaInstallPrompt').style.display = 'none';
+        sessionStorage.setItem('pwa_prompt_closed', 'true');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        CookieConsent.init();
+    });
+
+    // More Menu Toggle
+    function toggleMoreMenu() {
+        const overlay = document.getElementById('moreMenuOverlay');
+        const menu = document.getElementById('moreMenu');
+        const isActive = menu.classList.contains('active');
+
+        if (isActive) {
+            closeMoreMenu();
+        } else {
+            overlay.classList.add('active');
+            menu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeMoreMenu() {
+        const overlay = document.getElementById('moreMenuOverlay');
+        const menu = document.getElementById('moreMenu');
+        overlay.classList.remove('active');
+        menu.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // PIN Lock Screen Handler
+    (function() {
+        const lockScreen = document.getElementById('pinLockScreen');
+        if (!lockScreen) return;
+
+        const inputs = lockScreen.querySelectorAll('.pin-lock-digit');
+        const errorEl = document.getElementById('pinLockError');
+        const errorText = document.getElementById('pinErrorText');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    } else {
+                        // All digits entered, verify PIN
+                        verifyPinCode();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                    inputs[index - 1].classList.remove('filled');
+                }
+            });
+
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = paste.replace(/[^0-9]/g, '').slice(0, 6);
+                digits.split('').forEach((digit, i) => {
+                    if (inputs[i]) {
+                        inputs[i].value = digit;
+                        inputs[i].classList.add('filled');
+                    }
+                });
+                if (digits.length === 6) verifyPinCode();
+            });
+        });
+
+        // Focus first input
+        inputs[0].focus();
+
+        async function verifyPinCode() {
+            let pin = '';
+            inputs.forEach(input => pin += input.value);
+
+            if (pin.length !== 6) return;
+
+            try {
+                const response = await fetch('/api/verify-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    lockScreen.style.transition = 'opacity 0.3s';
+                    lockScreen.style.opacity = '0';
+                    setTimeout(() => lockScreen.remove(), 300);
+                } else {
+                    showError(data.error || 'Onjuiste PIN');
+                    inputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('filled');
+                        input.classList.add('error');
+                    });
+                    setTimeout(() => {
+                        inputs.forEach(input => input.classList.remove('error'));
+                        inputs[0].focus();
+                    }, 500);
+                }
+            } catch (e) {
+                showError('Netwerkfout. Probeer opnieuw.');
+            }
+        }
+
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorEl.style.display = 'block';
+            setTimeout(() => errorEl.style.display = 'none', 3000);
+        }
+    })();
+
+    // Pull to Refresh - improved version
+    (function() {
+        const pullRefresh = document.getElementById('pullRefresh');
+        if (!pullRefresh) return;
+
+        let startY = 0;
+        let pulling = false;
+        let isRefreshing = false;
+        const threshold = 80;
+
+        function resetPullRefresh() {
+            pulling = false;
+            if (!isRefreshing) {
+                pullRefresh.classList.remove('visible');
+                pullRefresh.querySelector('span').textContent = 'Trek naar beneden...';
+            }
+        }
+
+        document.addEventListener('touchstart', function(e) {
+            if (isRefreshing) return;
+            if (window.scrollY <= 0) {
+                startY = e.touches[0].pageY;
+                pulling = true;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!pulling || isRefreshing) return;
+
+            const currentY = e.touches[0].pageY;
+            const diff = currentY - startY;
+
+            // Only show if scrolled to top and pulling down
+            if (diff > 20 && window.scrollY <= 0) {
+                pullRefresh.classList.add('visible');
+                if (diff > threshold) {
+                    pullRefresh.querySelector('span').textContent = 'Laat los om te verversen';
+                } else {
+                    pullRefresh.querySelector('span').textContent = 'Trek naar beneden...';
+                }
+            } else if (diff < 0 || window.scrollY > 0) {
+                // Scrolling up or page scrolled - hide
+                pullRefresh.classList.remove('visible');
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            if (!pulling || isRefreshing) return;
+
+            const endY = e.changedTouches[0].pageY;
+            const diff = endY - startY;
+
+            if (pullRefresh.classList.contains('visible') && diff > threshold) {
+                isRefreshing = true;
+                pullRefresh.classList.add('refreshing');
+                pullRefresh.querySelector('span').textContent = 'Verversen...';
+                setTimeout(() => {
+                    location.reload();
+                }, 400);
+            } else {
+                resetPullRefresh();
+            }
+        }, { passive: true });
+
+        // Handle touch cancel
+        document.addEventListener('touchcancel', resetPullRefresh, { passive: true });
+
+        // Failsafe: hide after 3 seconds if still visible and not refreshing
+        setInterval(() => {
+            if (pullRefresh.classList.contains('visible') && !isRefreshing && !pulling) {
+                pullRefresh.classList.remove('visible');
+            }
+        }, 3000);
+    })();
+
+    // PIN Lock on app reopen - check if user was away
+    (function() {
+        const PIN_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+        const lastActivity = localStorage.getItem('gs_last_activity');
+        const now = Date.now();
+
+        // Update last activity on any interaction
+        function updateActivity() {
+            localStorage.setItem('gs_last_activity', Date.now().toString());
+        }
+
+        // Check if PIN should be required (user was away)
+        if (lastActivity && (now - parseInt(lastActivity)) > PIN_TIMEOUT) {
+            // User was away for more than 5 minutes - require PIN re-verification
+            // This is handled server-side, but we can trigger a session check
+            fetch('/api/verify-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ check_session: true })
+            }).catch(() => {});
+        }
+
+        // Track activity
+        document.addEventListener('touchstart', updateActivity, { passive: true });
+        document.addEventListener('click', updateActivity, { passive: true });
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                // App became visible - check if we need PIN
+                const lastAct = localStorage.getItem('gs_last_activity');
+                if (lastAct && (Date.now() - parseInt(lastAct)) > PIN_TIMEOUT) {
+                    // Reload to trigger server-side PIN check
+                    location.reload();
+                }
+            } else {
+                updateActivity();
+            }
+        });
+
+        updateActivity(); // Initial activity mark
+    })();
+
+    // Install App Modal Functions
+    function showInstallApp() {
+        closeMoreMenu(); // Close the more menu first
+
+        const overlay = document.getElementById('installModalOverlay');
+        const modal = document.getElementById('installModal');
+        const installBtn = document.getElementById('installModalBtn');
+        const iosSteps = document.getElementById('installIosSteps');
+        const alreadyInstalled = document.getElementById('installAlready');
+        const menuBtn = document.getElementById('installAppBtn');
+
+        // Check if already installed (PWA standalone mode)
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            installBtn.style.display = 'none';
+            iosSteps.style.display = 'none';
+            alreadyInstalled.style.display = 'flex';
+        } else {
+            alreadyInstalled.style.display = 'none';
+
+            // Check if iOS
+            const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIos) {
+                // iOS: Show instructions (no automatic install available)
+                installBtn.style.display = 'none';
+                iosSteps.style.display = 'block';
+            } else if (deferredPrompt) {
+                // Android/Chrome: Can install automatically
+                installBtn.style.display = 'flex';
+                iosSteps.style.display = 'none';
+            } else {
+                // Browser doesn't support install prompt - show generic message
+                installBtn.innerHTML = '<i class="fas fa-info-circle"></i> Gebruik browser menu';
+                installBtn.style.display = 'flex';
+                installBtn.onclick = function() {
+                    alert('Open het browserMenu (⋮) en kies "Toevoegen aan startscherm" of "App installeren".');
+                };
+                iosSteps.style.display = 'none';
+            }
+        }
+
+        // Show modal
+        setTimeout(() => {
+            overlay.classList.add('active');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }, 100);
+    }
+
+    function closeInstallModal() {
+        const overlay = document.getElementById('installModalOverlay');
+        const modal = document.getElementById('installModal');
+        overlay.classList.remove('active');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function triggerInstall() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                if (result.outcome === 'accepted') {
+                    // Track installation
+                    fetch('/api/pwa-installed', { method: 'POST' }).catch(() => {});
+
+                    // Show success state
+                    const installBtn = document.getElementById('installModalBtn');
+                    const alreadyInstalled = document.getElementById('installAlready');
+                    installBtn.style.display = 'none';
+                    alreadyInstalled.style.display = 'flex';
+                }
+                deferredPrompt = null;
+            });
+        }
+    }
+
+    // Hide install button if already in standalone mode
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        }
+
+        // Initialize push notifications
+        initPushNotifications();
+    });
+
+    // Push Notification Functions
+    async function initPushNotifications() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.log('Push notifications not supported');
+            return;
+        }
+
+        try {
+            // Register service worker
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('Service Worker registered');
+
+            // Check if user is logged in and hasn't been asked yet
+            const isLoggedIn = <?= isset($_SESSION['user_id']) ? 'true' : 'false' ?>;
+            const pushAsked = localStorage.getItem('gs_push_asked');
+
+            if (isLoggedIn && !pushAsked && Notification.permission === 'default') {
+                // Show push notification prompt after 30 seconds
+                setTimeout(() => {
+                    showPushPrompt();
+                }, 30000);
+            }
+
+            // If permission already granted, ensure subscription
+            if (Notification.permission === 'granted') {
+                await subscribeToPush(registration);
+            }
+        } catch (error) {
+            console.error('Service Worker registration failed:', error);
+        }
+    }
+
+    function showPushPrompt() {
+        const prompt = document.createElement('div');
+        prompt.id = 'pushPrompt';
+        prompt.innerHTML = `
+            <div class="push-prompt-overlay" onclick="closePushPrompt()"></div>
+            <div class="push-prompt-modal">
+                <div class="push-prompt-icon"><i class="fas fa-bell"></i></div>
+                <h3>Meldingen Inschakelen</h3>
+                <p>Ontvang herinneringen voor je afspraken zodat je niets mist!</p>
+                <div class="push-prompt-buttons">
+                    <button class="push-prompt-btn-yes" onclick="enablePushNotifications()">
+                        <i class="fas fa-check"></i> Ja, graag!
+                    </button>
+                    <button class="push-prompt-btn-no" onclick="closePushPrompt()">Later</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(prompt);
+    }
+
+    function closePushPrompt() {
+        const prompt = document.getElementById('pushPrompt');
+        if (prompt) prompt.remove();
+        localStorage.setItem('gs_push_asked', '1');
+    }
+
+    async function enablePushNotifications() {
+        closePushPrompt();
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const registration = await navigator.serviceWorker.ready;
+                await subscribeToPush(registration);
+                showToast('Meldingen ingeschakeld!', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to enable push:', error);
+        }
+    }
+
+    async function subscribeToPush(registration) {
+        try {
+            const response = await fetch('/api/push/vapid-key');
+            const { publicKey } = await response.json();
+            if (!publicKey) return;
+
+            const applicationServerKey = urlBase64ToUint8Array(publicKey);
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+            });
+
+            await fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subscription.toJSON())
+            });
+        } catch (error) {
+            console.error('Failed to subscribe:', error);
+        }
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
+        toast.style.cssText = `position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:${type === 'success' ? '#D4AF37' : '#404040'};color:white;padding:0.75rem 1.25rem;border-radius:10px;z-index:100010;display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;box-shadow:0 4px 15px rgba(0,0,0,0.2);`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    </script>
+    <style>
+    .push-prompt-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:100002}
+    .push-prompt-modal{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--white);border-radius:20px;padding:1.5rem;z-index:100003;text-align:center;max-width:320px;width:calc(100% - 2rem);box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+    [data-theme="dark"] .push-prompt-modal{background:#000000}
+    .push-prompt-icon{width:60px;height:60px;background:linear-gradient(135deg,#000000,#1a1a1a);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+    .push-prompt-icon i{font-size:1.5rem;color:white}
+    .push-prompt-modal h3{margin:0 0 0.5rem;font-size:1.1rem}
+    .push-prompt-modal p{margin:0 0 1rem;color:var(--text-light);font-size:0.9rem}
+    .push-prompt-buttons{display:flex;flex-direction:column;gap:0.5rem}
+    .push-prompt-btn-yes{background:linear-gradient(135deg,#000000,#000000);color:white;border:none;padding:0.875rem;border-radius:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+    .push-prompt-btn-no{background:transparent;color:var(--text-light);border:none;padding:0.5rem;cursor:pointer}
+    </style>
+</body>
+</html>

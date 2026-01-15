@@ -1,0 +1,311 @@
+/**
+ * Concept 19: ZENITH
+ * Ultra-minimal with maximum whitespace and precise typography
+ * Inspired by: Concept 11 elegance + Japanese minimalism
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --white: #ffffff;
+    --paper: #fcfcfc;
+    --ink: #1a1a1a;
+    --ash: #8a8a8a;
+    --mist: #c5c5c5;
+    --line: #f0f0f0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    min-height: 100vh;
+}
+
+/* Navigation - Ultra minimal */
+.nav-zen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    z-index: 100;
+}
+
+.logo-zen {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+}
+
+.nav-links-zen {
+    display: flex;
+    gap: 4rem;
+    list-style: none;
+}
+
+.nav-links-zen a {
+    color: var(--ash);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.nav-links-zen a:hover {
+    color: var(--ink);
+}
+
+.btn-zen {
+    padding: 0.6rem 1.5rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-zen:hover {
+    background: var(--ink);
+    color: var(--white);
+}
+
+.btn-zen-filled {
+    background: var(--ink);
+    color: var(--white);
+}
+
+.btn-zen-filled:hover {
+    background: transparent;
+    color: var(--ink);
+}
+
+/* Hero - Maximum space */
+.hero-zen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12rem 2rem;
+}
+
+.hero-zen h1 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 400;
+    letter-spacing: 20px;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    color: var(--ink);
+}
+
+.hero-zen-line {
+    width: 1px;
+    height: 80px;
+    background: var(--mist);
+    margin-bottom: 3rem;
+}
+
+.hero-zen p {
+    font-size: 0.85rem;
+    color: var(--ash);
+    max-width: 350px;
+    line-height: 2;
+    letter-spacing: 0.5px;
+    margin-bottom: 4rem;
+}
+
+/* Search */
+.search-zen {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-zen input {
+    padding: 0.8rem 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--mist);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    outline: none;
+    width: 250px;
+    text-align: center;
+}
+
+.search-zen input::placeholder {
+    color: var(--mist);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+}
+
+.search-zen input:focus {
+    border-color: var(--ink);
+}
+
+.search-zen button {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.search-zen button:hover {
+    opacity: 0.5;
+}
+
+/* Section */
+.section-zen {
+    padding: 8rem 6rem;
+    text-align: center;
+}
+
+.section-zen h2 {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 4rem;
+}
+
+/* Grid - Clean list */
+.grid-zen {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.card-zen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--line);
+    transition: all 0.3s;
+}
+
+.card-zen:first-child {
+    border-top: 1px solid var(--line);
+}
+
+.card-zen:hover {
+    padding-left: 2rem;
+}
+
+.card-zen:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card-zen-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.card-number {
+    font-size: 0.65rem;
+    color: var(--mist);
+    letter-spacing: 2px;
+}
+
+.card-zen h3 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.card-zen p {
+    font-size: 0.75rem;
+    color: var(--ash);
+    letter-spacing: 1px;
+}
+
+.card-arrow {
+    font-size: 0.8rem;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s;
+}
+
+/* CTA */
+.cta-zen {
+    padding: 10rem 6rem;
+    text-align: center;
+    background: var(--paper);
+}
+
+.cta-zen h2 {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.cta-zen p {
+    color: var(--ash);
+    font-size: 0.8rem;
+    margin-bottom: 3rem;
+    letter-spacing: 1px;
+}
+
+/* Footer */
+.footer-zen {
+    padding: 4rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-zen p {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--mist);
+}
+
+.footer-zen a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links-zen { display: none; }
+    .nav-zen { padding: 2rem; }
+    .hero-zen { padding: 8rem 2rem; }
+    .section-zen { padding: 5rem 2rem; }
+    .card-zen { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .card-zen:hover { padding-left: 0; }
+    .cta-zen { padding: 6rem 2rem; }
+    .footer-zen { flex-direction: column; gap: 1rem; text-align: center; padding: 3rem 2rem; }
+}

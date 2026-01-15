@@ -1,0 +1,381 @@
+/**
+ * Concept 20: PRESTIGE
+ * Premium hybrid - Elegant dark header with pristine white content
+ * The ultimate blend of Concept 10 + 11 + 15
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --black: #0a0a0a;
+    --onyx: #151515;
+    --white: #ffffff;
+    --snow: #fafafa;
+    --cream: #f5f5f5;
+    --silver: #b0b0b0;
+    --gray: #707070;
+    --charcoal: #3a3a3a;
+    --line: #e8e8e8;
+    --line-dark: #252525;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--white);
+    color: var(--charcoal);
+    min-height: 100vh;
+}
+
+/* Navigation - Premium dark */
+.nav-prestige {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--black);
+    z-index: 100;
+}
+
+.logo-prestige {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.nav-links-prestige {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links-prestige a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links-prestige a:hover {
+    color: var(--white);
+}
+
+.btn-prestige {
+    padding: 0.7rem 1.75rem;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-prestige:hover {
+    background: var(--cream);
+}
+
+.btn-prestige-dark {
+    background: var(--black);
+    color: var(--white);
+    border: 1px solid var(--line);
+}
+
+.btn-prestige-dark:hover {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+}
+
+/* Hero - Dark top section */
+.hero-prestige {
+    background: var(--black);
+    color: var(--white);
+    padding: 12rem 5rem 8rem;
+    text-align: center;
+}
+
+.hero-tag {
+    display: inline-block;
+    padding: 0.4rem 1.25rem;
+    border: 1px solid var(--line-dark);
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 2.5rem;
+}
+
+.hero-prestige h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.hero-prestige h1 span {
+    font-weight: 300;
+    color: var(--silver);
+}
+
+.hero-divider-prestige {
+    width: 50px;
+    height: 1px;
+    background: var(--silver);
+    margin: 2rem auto;
+}
+
+.hero-prestige p {
+    font-size: 0.95rem;
+    color: var(--silver);
+    max-width: 450px;
+    margin: 0 auto;
+    line-height: 1.9;
+}
+
+/* Search - Transition element */
+.search-section {
+    background: var(--black);
+    padding: 0 5rem 5rem;
+}
+
+.search-prestige {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.search-prestige input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--charcoal);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.search-prestige input::placeholder {
+    color: var(--silver);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.search-prestige button {
+    padding: 1.25rem 2rem;
+    background: var(--black);
+    border: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 0.4rem;
+    border-radius: 2px;
+    transition: background 0.3s;
+}
+
+.search-prestige button:hover {
+    background: var(--charcoal);
+}
+
+/* Content - Clean white */
+.section-prestige {
+    padding: 6rem 5rem;
+    background: var(--white);
+}
+
+.section-title-prestige {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title-prestige span {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--silver);
+}
+
+.section-title-prestige h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+    color: var(--charcoal);
+}
+
+/* Grid - Refined cards */
+.grid-prestige {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.card-prestige {
+    background: var(--snow);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s;
+    border: 1px solid transparent;
+}
+
+.card-prestige:hover {
+    background: var(--white);
+    border-color: var(--line);
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.card-prestige:hover .card-icon-prestige {
+    background: var(--black);
+    color: var(--white);
+}
+
+.card-icon-prestige {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 1.5rem;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--charcoal);
+    transition: all 0.4s;
+}
+
+.card-prestige h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    color: var(--charcoal);
+}
+
+.card-prestige p {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--gray);
+}
+
+/* Stats */
+.stats-prestige {
+    display: flex;
+    justify-content: center;
+    gap: 6rem;
+    padding: 4rem 5rem;
+    background: var(--cream);
+}
+
+.stat-prestige {
+    text-align: center;
+}
+
+.stat-prestige h3 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -1px;
+}
+
+.stat-prestige p {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 0.5rem;
+}
+
+/* CTA - Dark section */
+.cta-prestige {
+    background: var(--black);
+    color: var(--white);
+    padding: 6rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 4rem auto;
+}
+
+.cta-prestige h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.cta-prestige p {
+    color: var(--silver);
+    font-size: 0.85rem;
+}
+
+.cta-prestige .btn-prestige:hover {
+    background: var(--snow);
+}
+
+/* Footer */
+.footer-prestige {
+    background: var(--black);
+    padding: 3rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-prestige p {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--silver);
+}
+
+.footer-prestige a {
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid-prestige { grid-template-columns: repeat(2, 1fr); }
+    .cta-prestige { flex-direction: column; text-align: center; gap: 2rem; }
+    .stats-prestige { gap: 3rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links-prestige { display: none; }
+    .nav-prestige { padding: 1.25rem 2rem; }
+    .hero-prestige { padding: 10rem 2rem 6rem; }
+    .search-section { padding: 0 2rem 4rem; }
+    .grid-prestige { grid-template-columns: 1fr; }
+    .section-prestige { padding: 4rem 2rem; }
+    .stats-prestige { flex-direction: column; gap: 2rem; padding: 3rem 2rem; }
+    .cta-prestige { margin: 2rem 1rem; padding: 3rem 2rem; }
+    .footer-prestige { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
+}

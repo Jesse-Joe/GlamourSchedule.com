@@ -1,0 +1,17 @@
+{
+    "name": "glamourschedule/platform",
+    "description": "GlamourSchedule Beauty Booking Platform",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "vlucas/phpdotenv": "^5.5",
+        "mollie/mollie-api-php": "^3.7",
+        "phpmailer/phpmailer": "^7.0",
+        "minishlink/web-push": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GlamourSchedule\\": "src/"
+        }
+    }
+}

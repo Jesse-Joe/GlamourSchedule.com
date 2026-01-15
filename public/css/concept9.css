@@ -1,0 +1,312 @@
+/**
+ * Concept 9: DARK ROSE
+ * Elegant dark theme with deep rose/burgundy accents
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --black: #0a0608;
+    --black-2: #140d10;
+    --black-3: #1f1418;
+    --rose: #e11d48;
+    --rose-light: #fb7185;
+    --rose-dark: #be123c;
+    --blush: #fda4af;
+    --white: #fff1f2;
+    --gray: #78716c;
+}
+
+body {
+    font-family: 'Tenor Sans', 'Cormorant', serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* Rose Glow Background */
+.bg-rose {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(225, 29, 72, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(190, 18, 60, 0.05) 0%, transparent 50%);
+    z-index: -1;
+}
+
+/* Navigation */
+.nav-rose {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 6, 8, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(225, 29, 72, 0.1);
+    z-index: 100;
+}
+
+.logo-rose {
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 4px;
+}
+
+.logo-rose span {
+    color: var(--rose);
+}
+
+.nav-links-rose {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links-rose a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    transition: color 0.3s;
+}
+
+.nav-links-rose a:hover {
+    color: var(--rose-light);
+}
+
+.btn-rose {
+    padding: 0.85rem 2rem;
+    background: var(--rose);
+    color: var(--white);
+    border: none;
+    border-radius: 0;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-rose:hover {
+    background: var(--rose-light);
+    box-shadow: 0 0 40px rgba(225, 29, 72, 0.3);
+}
+
+.btn-rose-outline {
+    background: transparent;
+    border: 1px solid var(--rose);
+    color: var(--rose-light);
+}
+
+/* Hero */
+.hero-rose {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+}
+
+.hero-rose::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent, var(--rose), transparent);
+}
+
+.hero-content-rose {
+    position: relative;
+}
+
+.hero-rose h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    letter-spacing: 3px;
+}
+
+.hero-rose h1 span {
+    font-style: italic;
+    color: var(--rose);
+}
+
+.hero-divider-rose {
+    width: 60px;
+    height: 1px;
+    background: var(--rose);
+    margin: 2rem auto;
+}
+
+.hero-rose p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 450px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+}
+
+/* Search */
+.search-rose {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 1px solid rgba(225, 29, 72, 0.3);
+    background: rgba(225, 29, 72, 0.03);
+}
+
+.search-rose:focus-within {
+    border-color: var(--rose);
+}
+
+.search-rose input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    outline: none;
+}
+
+.search-rose button {
+    padding: 1.25rem 2rem;
+    background: var(--rose);
+    border: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+/* Grid */
+.grid-rose {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card-rose {
+    padding: 3rem 2rem;
+    border: 1px solid rgba(225, 29, 72, 0.1);
+    text-align: center;
+    transition: all 0.4s;
+}
+
+.card-rose:hover {
+    background: rgba(225, 29, 72, 0.05);
+    border-color: rgba(225, 29, 72, 0.3);
+}
+
+.card-icon-rose {
+    font-size: 2rem;
+    color: var(--rose);
+    margin-bottom: 1.5rem;
+}
+
+.card-rose h3 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+}
+
+.card-rose p {
+    color: var(--gray);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* Section */
+.section-rose {
+    padding: 6rem 3rem;
+}
+
+.section-title-rose {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title-rose span {
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    color: var(--rose);
+}
+
+.section-title-rose h2 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 5px;
+    margin-top: 1rem;
+}
+
+/* CTA */
+.cta-rose {
+    background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+.cta-rose h2 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+}
+
+.cta-rose p {
+    max-width: 450px;
+    margin: 0 auto 2rem;
+    opacity: 0.9;
+}
+
+.cta-rose .btn-rose {
+    background: var(--white);
+    color: var(--rose-dark);
+}
+
+/* Footer */
+.footer-rose {
+    background: var(--black-2);
+    border-top: 1px solid rgba(225, 29, 72, 0.1);
+    padding: 4rem 3rem 2rem;
+    text-align: center;
+}
+
+.footer-rose p {
+    color: var(--gray);
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+}
+
+.footer-rose a {
+    color: var(--rose-light);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid-rose { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .nav-links-rose { display: none; }
+    .grid-rose { grid-template-columns: 1fr; }
+}

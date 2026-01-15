@@ -1,0 +1,762 @@
+<?php ob_start(); ?>
+
+<style>
+.settings-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.settings-section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.settings-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.settings-section-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+}
+.settings-section-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+.settings-section-header p {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+@media (max-width: 500px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group:last-child {
+    margin-bottom: 0;
+}
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    background: var(--white);
+    color: var(--text);
+    transition: all 0.2s;
+}
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+}
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+.btn-block {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+}
+.settings-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--secondary);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    margin-bottom: 0.75rem;
+}
+.settings-link:last-child {
+    margin-bottom: 0;
+}
+.settings-link:hover {
+    background: rgba(0,0,0,0.05);
+    transform: translateX(4px);
+}
+.settings-link-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.settings-link-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+.settings-link h4 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+.settings-link p {
+    margin: 0.25rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+.settings-link i.fa-chevron-right {
+    color: var(--text-light);
+}
+.danger-zone {
+    border: 2px solid #f5f5f5;
+    background: #f5f5f5;
+}
+[data-theme="dark"] .danger-zone {
+    border-color: #450a0a;
+    background: #1c0a0a;
+}
+.danger-zone .settings-section-header {
+    border-bottom-color: #e5e5e5;
+}
+[data-theme="dark"] .danger-zone .settings-section-header {
+    border-bottom-color: #450a0a;
+}
+.btn-danger-outline {
+    background: transparent;
+    color: #333333;
+    border: 2px solid #333333;
+}
+.btn-danger-outline:hover {
+    background: #333333;
+    color: white;
+}
+.delete-confirm-box {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 2px solid #333333;
+}
+[data-theme="dark"] .delete-confirm-box {
+    background: var(--white);
+}
+.delete-confirm-box.show {
+    display: block;
+}
+.info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.info-badge-success {
+    background: #f5f5f5;
+    color: #166534;
+}
+.info-badge-warning {
+    background: #ffffff;
+    color: #000000;
+}
+
+/* iOS Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 51px;
+    height: 31px;
+    flex-shrink: 0;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e5ea;
+    transition: .3s;
+    border-radius: 31px;
+}
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 27px;
+    width: 27px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-slider {
+    background: #000000;
+}
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+.toggle-switch input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.settings-toggle-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--secondary);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+}
+.settings-toggle-item:last-child {
+    margin-bottom: 0;
+}
+.settings-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.settings-toggle-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+.settings-toggle-item h4 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+.settings-toggle-item p {
+    margin: 0.25rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+[data-theme="dark"] .toggle-slider {
+    background-color: #3a3a3c;
+}
+
+/* Password Toggle */
+.password-wrapper {
+    position: relative;
+}
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.password-toggle:hover {
+    color: var(--primary);
+}
+.password-wrapper .form-control {
+    padding-right: 44px;
+}
+</style>
+
+<div class="container settings-container">
+    <h2 style="margin:0 0 1.5rem;display:flex;align-items:center;gap:0.75rem">
+        <i class="fas fa-cog" style="color:var(--primary)"></i> Instellingen
+    </h2>
+
+    <?php if ($message): ?>
+        <div class="alert alert-<?= $messageType ?>" style="margin-bottom:1.5rem">
+            <i class="fas fa-<?= $messageType === 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i>
+            <?= htmlspecialchars($message) ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Profile Section -->
+    <div class="settings-section">
+        <div class="settings-section-header">
+            <div class="settings-section-icon" style="background:linear-gradient(135deg,#404040,#1d4ed8)">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>
+                <h3>Profiel</h3>
+                <p>Je persoonlijke gegevens</p>
+            </div>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+            <input type="hidden" name="action" value="update_profile">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Voornaam *</label>
+                    <input type="text" name="first_name" class="form-control" value="<?= htmlspecialchars($user['first_name'] ?? '') ?>" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Achternaam</label>
+                    <input type="text" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name'] ?? '') ?>">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">E-mailadres</label>
+                <input type="email" class="form-control" value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled style="opacity:0.7">
+                <small style="color:var(--text-light);font-size:0.8rem">E-mailadres kan niet worden gewijzigd</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Telefoonnummer</label>
+                <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" placeholder="+31 6 12345678">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Taal</label>
+                <select name="language" class="form-control form-select">
+                    <option value="nl" <?= ($user['language'] ?? 'nl') === 'nl' ? 'selected' : '' ?>>Nederlands</option>
+                    <option value="en" <?= ($user['language'] ?? '') === 'en' ? 'selected' : '' ?>>English</option>
+                    <option value="de" <?= ($user['language'] ?? '') === 'de' ? 'selected' : '' ?>>Deutsch</option>
+                    <option value="fr" <?= ($user['language'] ?? '') === 'fr' ? 'selected' : '' ?>>Français</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-block">
+                <i class="fas fa-save"></i> Opslaan
+            </button>
+        </form>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="settings-section">
+        <div class="settings-section-header">
+            <div class="settings-section-icon" style="background:linear-gradient(135deg,#000000,#262626)">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+                <h3>Beveiliging</h3>
+                <p>Bescherm je account</p>
+            </div>
+        </div>
+
+        <a href="/dashboard/security" class="settings-link">
+            <div class="settings-link-content">
+                <div class="settings-link-icon" style="background:linear-gradient(135deg,#000000,#262626)">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div>
+                    <h4>PIN Code</h4>
+                    <p>Beveilig app toegang met 6-cijferige code</p>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+                <?php if (!empty($user['pin_enabled'])): ?>
+                    <span class="info-badge info-badge-success"><i class="fas fa-check"></i> Actief</span>
+                <?php else: ?>
+                    <span class="info-badge info-badge-warning"><i class="fas fa-times"></i> Uit</span>
+                <?php endif; ?>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="settings-section">
+        <div class="settings-section-header">
+            <div class="settings-section-icon" style="background:linear-gradient(135deg,#000000,#000000)">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div>
+                <h3>Meldingen</h3>
+                <p>Beheer je notificatie voorkeuren</p>
+            </div>
+        </div>
+
+        <div class="settings-toggle-item">
+            <div class="settings-toggle-content">
+                <div class="settings-toggle-icon" style="background:linear-gradient(135deg,#000000,#000000)">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div>
+                    <h4>Push Meldingen</h4>
+                    <p id="pushStatusText">Ontvang herinneringen voor afspraken</p>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="pushToggle" onchange="togglePushNotifications(this)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div id="pushNotSupported" style="display:none;padding:1rem;background:rgba(239,68,68,0.1);border-radius:12px;margin-top:0.75rem">
+            <p style="margin:0;font-size:0.85rem;color:#333333">
+                <i class="fas fa-exclamation-triangle"></i>
+                Push meldingen worden niet ondersteund op dit apparaat of in deze browser.
+            </p>
+        </div>
+
+        <div id="pushBlocked" style="display:none;padding:1rem;background:rgba(245,158,11,0.1);border-radius:12px;margin-top:0.75rem">
+            <p style="margin:0;font-size:0.85rem;color:#404040">
+                <i class="fas fa-ban"></i>
+                Push meldingen zijn geblokkeerd. Ga naar je browser/apparaat instellingen om dit te wijzigen.
+            </p>
+        </div>
+    </div>
+
+    <!-- Password Change Section -->
+    <div class="settings-section">
+        <div class="settings-section-header">
+            <div class="settings-section-icon" style="background:linear-gradient(135deg,#000000,#404040)">
+                <i class="fas fa-key"></i>
+            </div>
+            <div>
+                <h3>Wachtwoord wijzigen</h3>
+                <p>Kies een sterk wachtwoord</p>
+            </div>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+            <input type="hidden" name="action" value="change_password">
+
+            <div class="form-group">
+                <label class="form-label">Huidig wachtwoord</label>
+                <div class="password-wrapper">
+                    <input type="password" name="current_password" id="current_password" class="form-control" placeholder="Je huidige wachtwoord" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('current_password', this)" aria-label="Wachtwoord tonen">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nieuw wachtwoord</label>
+                <div class="password-wrapper">
+                    <input type="password" name="new_password" id="new_password" class="form-control" placeholder="Minimaal 8 tekens" minlength="8" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('new_password', this)" aria-label="Wachtwoord tonen">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Bevestig nieuw wachtwoord</label>
+                <div class="password-wrapper">
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Herhaal nieuw wachtwoord" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)" aria-label="Wachtwoord tonen">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-block" style="background:linear-gradient(135deg,#000000,#404040)">
+                <i class="fas fa-key"></i> Wachtwoord wijzigen
+            </button>
+        </form>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="settings-section danger-zone">
+        <div class="settings-section-header">
+            <div class="settings-section-icon" style="background:linear-gradient(135deg,#333333,#dc2626)">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+                <h3>Account verwijderen</h3>
+                <p>Dit kan niet ongedaan worden gemaakt</p>
+            </div>
+        </div>
+
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem;line-height:1.6">
+            Als je je account verwijdert, worden al je gegevens permanent verwijderd.
+            Lopende boekingen worden geannuleerd. Deze actie kan niet ongedaan worden gemaakt.
+        </p>
+
+        <button type="button" class="btn btn-danger-outline btn-block" onclick="toggleDeleteConfirm()">
+            <i class="fas fa-trash-alt"></i> Account verwijderen
+        </button>
+
+        <div class="delete-confirm-box" id="deleteConfirmBox">
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                <input type="hidden" name="action" value="delete_account">
+
+                <p style="color:#dc2626;font-weight:600;margin-bottom:1rem">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Weet je zeker dat je je account wilt verwijderen?
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label">Je wachtwoord</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="delete_password" id="delete_password" class="form-control" placeholder="Voer je wachtwoord in" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('delete_password', this)" aria-label="Wachtwoord tonen">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Type "VERWIJDER" ter bevestiging</label>
+                    <input type="text" name="delete_confirmation" class="form-control" placeholder="VERWIJDER" required>
+                </div>
+
+                <div style="display:flex;gap:0.75rem">
+                    <button type="button" class="btn btn-secondary" style="flex:1" onclick="toggleDeleteConfirm()">
+                        Annuleren
+                    </button>
+                    <button type="submit" class="btn btn-danger" style="flex:1">
+                        <i class="fas fa-trash-alt"></i> Definitief verwijderen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Info -->
+    <div class="settings-section" style="background:var(--secondary)">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+            <div style="width:50px;height:50px;background:linear-gradient(135deg,var(--primary),#000000);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.25rem;font-weight:700">
+                <?= strtoupper(substr($user['first_name'] ?? 'U', 0, 1)) ?>
+            </div>
+            <div>
+                <h4 style="margin:0"><?= htmlspecialchars(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?></h4>
+                <p style="margin:0.25rem 0 0;color:var(--text-light);font-size:0.85rem"><?= htmlspecialchars($user['email'] ?? '') ?></p>
+            </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text-light)">
+            <p style="margin:0"><i class="fas fa-calendar-alt"></i> Lid sinds <?= date('d-m-Y', strtotime($user['created_at'] ?? 'now')) ?></p>
+            <?php if (!empty($user['email_verified'])): ?>
+                <p style="margin:0.25rem 0 0;color:#333333"><i class="fas fa-check-circle"></i> E-mail geverifieerd</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleDeleteConfirm() {
+    const box = document.getElementById('deleteConfirmBox');
+    box.classList.toggle('show');
+    if (box.classList.contains('show')) {
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Push Notification Toggle
+document.addEventListener('DOMContentLoaded', async function() {
+    const toggle = document.getElementById('pushToggle');
+    const statusText = document.getElementById('pushStatusText');
+    const notSupported = document.getElementById('pushNotSupported');
+    const blocked = document.getElementById('pushBlocked');
+
+    // Check if push notifications are supported
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        toggle.disabled = true;
+        notSupported.style.display = 'block';
+        statusText.textContent = 'Niet ondersteund';
+        return;
+    }
+
+    // Check permission status
+    if (Notification.permission === 'denied') {
+        toggle.disabled = true;
+        blocked.style.display = 'block';
+        statusText.textContent = 'Geblokkeerd';
+        return;
+    }
+
+    // Register service worker first
+    try {
+        await navigator.serviceWorker.register('/sw.js');
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+            toggle.checked = true;
+            statusText.textContent = 'Meldingen zijn ingeschakeld';
+        } else {
+            toggle.checked = false;
+            statusText.textContent = 'Ontvang herinneringen voor afspraken';
+        }
+    } catch (error) {
+        console.error('Error checking subscription:', error);
+        statusText.textContent = 'Fout bij laden: ' + error.message;
+    }
+});
+
+async function togglePushNotifications(checkbox) {
+    const statusText = document.getElementById('pushStatusText');
+    const blocked = document.getElementById('pushBlocked');
+
+    checkbox.disabled = true;
+    statusText.textContent = 'Bezig...';
+
+    if (checkbox.checked) {
+        // Enable push notifications
+        try {
+            // Step 1: Request permission
+            statusText.textContent = 'Toestemming vragen...';
+            const permission = await Notification.requestPermission();
+
+            if (permission === 'granted') {
+                // Step 2: Get service worker
+                statusText.textContent = 'Service worker laden...';
+                await navigator.serviceWorker.register('/sw.js');
+                const registration = await navigator.serviceWorker.ready;
+
+                // Step 3: Get VAPID key
+                statusText.textContent = 'Sleutel ophalen...';
+                const response = await fetch('/api/push/vapid-key');
+                const { publicKey } = await response.json();
+
+                if (!publicKey) {
+                    throw new Error('Geen VAPID sleutel');
+                }
+
+                // Step 4: Subscribe to push
+                statusText.textContent = 'Abonneren...';
+                const applicationServerKey = urlBase64ToUint8Array(publicKey);
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: applicationServerKey
+                });
+
+                // Step 5: Save to server
+                statusText.textContent = 'Opslaan...';
+                const saveResponse = await fetch('/api/push/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(subscription.toJSON())
+                });
+
+                const saveResult = await saveResponse.json();
+                if (!saveResult.success) {
+                    throw new Error('Opslaan mislukt');
+                }
+
+                statusText.textContent = 'Meldingen zijn ingeschakeld';
+                showToast('Push meldingen ingeschakeld!', 'success');
+            } else if (permission === 'denied') {
+                checkbox.checked = false;
+                checkbox.disabled = true;
+                blocked.style.display = 'block';
+                statusText.textContent = 'Geblokkeerd door browser';
+            } else {
+                checkbox.checked = false;
+                statusText.textContent = 'Toestemming geweigerd';
+            }
+        } catch (error) {
+            console.error('Error enabling push:', error);
+            checkbox.checked = false;
+            statusText.textContent = 'Fout: ' + error.message;
+            showToast('Fout: ' + error.message, 'error');
+        }
+    } else {
+        // Disable push notifications
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+
+            if (subscription) {
+                await fetch('/api/push/unsubscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ endpoint: subscription.endpoint })
+                });
+
+                await subscription.unsubscribe();
+            }
+
+            statusText.textContent = 'Ontvang herinneringen voor afspraken';
+            showToast('Push meldingen uitgeschakeld', 'info');
+        } catch (error) {
+            console.error('Error disabling push:', error);
+            checkbox.checked = true;
+            showToast('Er ging iets mis', 'error');
+        }
+    }
+
+    checkbox.disabled = false;
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+function showToast(message, type = 'info') {
+    // Use global showToast if available, otherwise create simple one
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, type);
+        return;
+    }
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:8px;color:white;font-weight:500;z-index:10000;animation:fadeIn 0.3s';
+    toast.style.background = type === 'success' ? '#333333' : type === 'error' ? '#333333' : '#6b7280';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+
+<?php $content = ob_get_clean(); ?>
+<?php include BASE_PATH . '/resources/views/layouts/main.php'; ?>

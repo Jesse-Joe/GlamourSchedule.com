@@ -1,0 +1,352 @@
+/**
+ * Concept 7: MIDNIGHT SAPPHIRE
+ * Premium dark theme with deep blue accents
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --black: #05080f;
+    --black-2: #0a1020;
+    --black-3: #111a30;
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+    --blue-dark: #1d4ed8;
+    --cyan: #06b6d4;
+    --white: #f0f9ff;
+    --gray: #64748b;
+}
+
+body {
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* Starfield Background */
+.bg-stars {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3) 0%, transparent 100%);
+    z-index: -1;
+}
+
+/* Navigation */
+.nav-sapphire {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5, 8, 15, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    z-index: 100;
+}
+
+.logo-sapphire {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-sapphire i {
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links-sapphire {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+}
+
+.nav-links-sapphire a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.nav-links-sapphire a:hover {
+    color: var(--blue-light);
+}
+
+.btn-sapphire {
+    padding: 0.75rem 1.75rem;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-sapphire:hover {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Hero */
+.hero-sapphire {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+}
+
+.hero-sapphire::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(60px);
+}
+
+.hero-content-sapphire {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-sapphire h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+}
+
+.hero-sapphire h1 span {
+    background: linear-gradient(135deg, var(--blue-light), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-sapphire p {
+    font-size: 1.15rem;
+    color: var(--gray);
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+}
+
+/* Search */
+.search-sapphire {
+    display: flex;
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--black-2);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.search-sapphire:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+}
+
+.search-sapphire input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-sapphire button {
+    padding: 1rem 1.75rem;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0.5rem;
+    border-radius: 10px;
+}
+
+/* Grid */
+.grid-sapphire {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 4rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card-sapphire {
+    background: linear-gradient(135deg, var(--black-2), var(--black-3));
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-sapphire::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.card-sapphire:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-6px);
+}
+
+.card-sapphire:hover::before {
+    transform: scaleX(1);
+}
+
+.card-icon-sapphire {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+}
+
+.card-sapphire h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-sapphire p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Section */
+.section-sapphire {
+    padding: 5rem 3rem;
+}
+
+.section-title-sapphire {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title-sapphire span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-title-sapphire h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-top: 0.75rem;
+}
+
+/* CTA */
+.cta-sapphire {
+    background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+    padding: 5rem 3rem;
+    text-align: center;
+    margin: 3rem;
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-sapphire::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%);
+}
+
+.cta-sapphire h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.cta-sapphire p {
+    max-width: 450px;
+    margin: 0 auto 2rem;
+    opacity: 0.9;
+    position: relative;
+}
+
+.cta-sapphire .btn-sapphire {
+    background: var(--white);
+    color: var(--blue-dark);
+    position: relative;
+}
+
+/* Footer */
+.footer-sapphire {
+    background: var(--black-2);
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+    padding: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-sapphire p {
+    color: var(--gray);
+}
+
+.footer-sapphire a {
+    color: var(--blue-light);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links-sapphire { display: none; }
+    .cta-sapphire { margin: 2rem 1rem; }
+    .footer-sapphire { flex-direction: column; gap: 1rem; }
+}

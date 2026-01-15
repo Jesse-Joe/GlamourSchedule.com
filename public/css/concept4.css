@@ -1,0 +1,311 @@
+/**
+ * Concept 4: NATURE ORGANIC
+ * Earthy, warm, natural - Greens, browns, organic shapes
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --forest: #2d5a27;
+    --sage: #9caf88;
+    --cream: #f5f0e8;
+    --sand: #d4c4a8;
+    --terracotta: #c67d4d;
+    --brown: #5c4033;
+    --white: #fffef9;
+}
+
+body {
+    font-family: 'DM Sans', 'Lora', serif;
+    background: var(--cream);
+    color: var(--brown);
+    min-height: 100vh;
+}
+
+/* Leaf Pattern Background */
+.nature-bg {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(156,175,136,0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(198,125,77,0.15) 0%, transparent 50%);
+    z-index: -1;
+}
+
+/* Navigation */
+.nav-nature {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem 2rem;
+    background: rgba(245,240,232,0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo-nature {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem;
+    color: var(--forest);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-nature i {
+    color: var(--sage);
+}
+
+.nav-links-nature {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links-nature a {
+    color: var(--brown);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.nav-links-nature a:hover {
+    color: var(--forest);
+}
+
+.btn-nature {
+    padding: 0.75rem 1.5rem;
+    background: var(--forest);
+    color: var(--white);
+    border: none;
+    border-radius: 100px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-nature:hover {
+    background: var(--terracotta);
+    transform: scale(1.05);
+}
+
+/* Hero */
+.hero-nature {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 6rem 4rem;
+    gap: 4rem;
+}
+
+.hero-nature h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--forest);
+    margin-bottom: 1.5rem;
+}
+
+.hero-nature h1 span {
+    font-style: italic;
+    color: var(--terracotta);
+}
+
+.hero-nature p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--brown);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.hero-image-nature {
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(135deg, var(--sage), var(--forest));
+    border-radius: 200px 200px 100px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    color: rgba(255,255,255,0.3);
+}
+
+/* Search */
+.search-nature {
+    display: flex;
+    background: var(--white);
+    border-radius: 100px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    max-width: 500px;
+}
+
+.search-nature input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+}
+
+.search-nature button {
+    padding: 1rem 2rem;
+    background: var(--forest);
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    border-radius: 100px;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.search-nature button:hover {
+    background: var(--terracotta);
+}
+
+/* Cards */
+.grid-nature {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card-nature {
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    transition: all 0.4s;
+}
+
+.card-nature:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+.card-img-nature {
+    height: 200px;
+    background: linear-gradient(135deg, var(--sage), var(--forest));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.card-body-nature {
+    padding: 1.5rem;
+}
+
+.card-body-nature h3 {
+    font-family: 'Lora', serif;
+    font-size: 1.25rem;
+    color: var(--forest);
+    margin-bottom: 0.5rem;
+}
+
+.card-body-nature p {
+    color: var(--brown);
+    opacity: 0.7;
+    font-size: 0.95rem;
+}
+
+/* Section */
+.section-nature {
+    padding: 6rem 4rem;
+}
+
+.section-title-nature {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title-nature span {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--terracotta);
+    margin-bottom: 0.5rem;
+}
+
+.section-title-nature h2 {
+    font-family: 'Lora', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--forest);
+}
+
+/* CTA */
+.cta-nature {
+    background: var(--forest);
+    color: var(--white);
+    padding: 6rem 4rem;
+    text-align: center;
+    border-radius: 60px;
+    margin: 4rem;
+}
+
+.cta-nature h2 {
+    font-family: 'Lora', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.cta-nature p {
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.cta-nature .btn-nature {
+    background: var(--white);
+    color: var(--forest);
+}
+
+.cta-nature .btn-nature:hover {
+    background: var(--terracotta);
+    color: var(--white);
+}
+
+/* Footer */
+.footer-nature {
+    background: var(--brown);
+    color: var(--cream);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-nature a {
+    color: var(--sage);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-nature { grid-template-columns: 1fr; padding: 6rem 2rem; }
+    .hero-image-nature { height: 300px; order: -1; }
+}
+
+@media (max-width: 768px) {
+    .nav-links-nature { display: none; }
+    .section-nature, .grid-nature { padding: 3rem 1.5rem; }
+    .cta-nature { margin: 2rem 1rem; padding: 4rem 2rem; }
+    .footer-nature { flex-direction: column; gap: 1rem; text-align: center; }
+}

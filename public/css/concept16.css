@@ -1,0 +1,331 @@
+/**
+ * Concept 16: DUALIST
+ * Split personality - Dark meets Light with dramatic contrast
+ * Inspired by: Concept 10 (dark) + Concept 15 (light)
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --black: #0a0a0a;
+    --white: #fafafa;
+    --gray-dark: #404040;
+    --gray-light: #a0a0a0;
+    --line: #2a2a2a;
+    --line-light: #e5e5e5;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+}
+
+/* Navigation - Dark bar */
+.nav-dual {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--black);
+    z-index: 100;
+}
+
+.logo-dual {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+}
+
+.nav-links-dual {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links-dual a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.nav-links-dual a:hover {
+    color: var(--white);
+}
+
+.btn-dual {
+    padding: 0.7rem 1.75rem;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-dual:hover {
+    background: var(--gray-light);
+}
+
+.btn-dual-dark {
+    background: var(--black);
+    color: var(--white);
+}
+
+.btn-dual-dark:hover {
+    background: var(--gray-dark);
+}
+
+/* Hero - Split design */
+.hero-dual {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.hero-dark {
+    background: var(--black);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 4rem;
+}
+
+.hero-light {
+    background: var(--white);
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 4rem;
+}
+
+.hero-dual h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    line-height: 1.4;
+}
+
+.hero-dual h1 strong {
+    font-weight: 600;
+    display: block;
+}
+
+.hero-content {
+    max-width: 400px;
+}
+
+.hero-content p {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--gray-light);
+}
+
+.hero-light .hero-content p {
+    color: var(--gray-dark);
+}
+
+/* Search */
+.search-dual {
+    display: flex;
+    margin-top: 2.5rem;
+    border: 1px solid var(--line);
+}
+
+.hero-light .search-dual {
+    border-color: var(--line-light);
+}
+
+.search-dual input {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    outline: none;
+}
+
+.search-dual input::placeholder {
+    color: var(--gray-light);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+}
+
+.hero-light .search-dual input::placeholder {
+    color: var(--gray-dark);
+}
+
+.search-dual button {
+    padding: 1rem 1.5rem;
+    background: var(--white);
+    border: none;
+    color: var(--black);
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.hero-light .search-dual button {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* Grid - Alternating */
+.grid-dual {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.card-dual {
+    padding: 4rem 3rem;
+    text-align: center;
+    transition: all 0.4s;
+}
+
+.card-dual:nth-child(odd) {
+    background: var(--black);
+    color: var(--white);
+}
+
+.card-dual:nth-child(even) {
+    background: var(--white);
+    color: var(--black);
+}
+
+.card-dual:hover {
+    padding-top: 3.5rem;
+    padding-bottom: 4.5rem;
+}
+
+.card-icon-dual {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 1.5rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.card-dual:hover .card-icon-dual {
+    opacity: 1;
+}
+
+.card-dual h3 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.card-dual p {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    opacity: 0.7;
+}
+
+/* CTA */
+.cta-dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.cta-dark, .cta-light {
+    padding: 5rem 4rem;
+    text-align: center;
+}
+
+.cta-dark {
+    background: var(--black);
+    color: var(--white);
+}
+
+.cta-light {
+    background: var(--white);
+    color: var(--black);
+    border-top: 1px solid var(--line-light);
+}
+
+.cta-dual h2 {
+    font-size: 1.25rem;
+    font-weight: 300;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.cta-dual p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-bottom: 2rem;
+}
+
+/* Footer */
+.footer-dual {
+    background: var(--black);
+    color: var(--white);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+}
+
+.footer-dual p {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.footer-dual a {
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-dual, .grid-dual, .cta-dual { grid-template-columns: 1fr; }
+    .hero-dark { min-height: 60vh; }
+    .hero-light { min-height: 60vh; }
+}
+
+@media (max-width: 768px) {
+    .nav-links-dual { display: none; }
+    .nav-dual { padding: 1.25rem 2rem; }
+    .hero-dark, .hero-light { padding: 4rem 2rem; }
+    .card-dual { padding: 3rem 2rem; }
+    .footer-dual { flex-direction: column; gap: 1rem; text-align: center; }
+}

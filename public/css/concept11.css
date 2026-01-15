@@ -1,0 +1,366 @@
+/**
+ * Concept 11: IVORY NOIR
+ * Clean white theme with black accents
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --white: #ffffff;
+    --white-2: #fafafa;
+    --white-3: #f5f5f5;
+    --black: #0a0a0a;
+    --black-2: #171717;
+    --gray: #737373;
+    --gray-light: #a3a3a3;
+    --border: #e5e5e5;
+}
+
+body {
+    font-family: 'Didact Gothic', 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+}
+
+/* Navigation */
+.nav-ivory {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+}
+
+.logo-ivory {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+}
+
+.nav-links-ivory {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-links-ivory a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.nav-links-ivory a:hover {
+    color: var(--black);
+}
+
+.btn-ivory {
+    padding: 0.75rem 2rem;
+    background: var(--black);
+    color: var(--white);
+    border: 1px solid var(--black);
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-ivory:hover {
+    background: transparent;
+    color: var(--black);
+}
+
+.btn-ivory-outline {
+    background: transparent;
+    color: var(--black);
+}
+
+.btn-ivory-outline:hover {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* Hero */
+.hero-ivory {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem;
+    position: relative;
+}
+
+.hero-ivory::before,
+.hero-ivory::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+}
+
+.hero-ivory::before {
+    top: 0;
+    height: 150px;
+}
+
+.hero-ivory::after {
+    bottom: 0;
+    height: 150px;
+}
+
+.hero-ivory h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: 15px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    color: var(--black);
+}
+
+.hero-ivory h1 span {
+    display: block;
+    font-size: 0.4em;
+    letter-spacing: 8px;
+    color: var(--gray);
+    margin-top: 1rem;
+}
+
+.hero-divider-ivory {
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--black), transparent);
+    margin: 2rem auto;
+}
+
+.hero-ivory p {
+    font-size: 0.95rem;
+    color: var(--gray);
+    max-width: 400px;
+    line-height: 1.9;
+    letter-spacing: 1px;
+    margin-bottom: 3rem;
+}
+
+/* Search */
+.search-ivory {
+    display: flex;
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--white);
+}
+
+.search-ivory:focus-within {
+    border-color: var(--black);
+}
+
+.search-ivory input {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--black);
+    font-family: inherit;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+.search-ivory input::placeholder {
+    color: var(--gray-light);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+}
+
+.search-ivory button {
+    padding: 1.25rem 2rem;
+    background: var(--black);
+    border: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-ivory button:hover {
+    background: var(--black-2);
+}
+
+/* Grid */
+.grid-ivory {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+}
+
+.card-ivory {
+    padding: 4rem 3rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.5s;
+    background: var(--white);
+}
+
+.card-ivory:nth-child(3n) {
+    border-right: none;
+}
+
+.card-ivory:hover {
+    background: var(--white-2);
+}
+
+.card-ivory:hover .card-icon-ivory {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+}
+
+.card-icon-ivory {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 2rem;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--gray);
+    transition: all 0.3s;
+}
+
+.card-ivory h3 {
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--black);
+}
+
+.card-ivory p {
+    color: var(--gray);
+    font-size: 0.85rem;
+    line-height: 1.8;
+}
+
+/* Section */
+.section-ivory {
+    padding: 6rem 4rem;
+}
+
+.section-title-ivory {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title-ivory span {
+    font-size: 0.7rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gray);
+}
+
+.section-title-ivory h2 {
+    font-size: 1.75rem;
+    font-weight: 300;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    color: var(--black);
+}
+
+/* CTA */
+.cta-ivory {
+    background: var(--black);
+    color: var(--white);
+    padding: 6rem 4rem;
+    text-align: center;
+}
+
+.cta-ivory h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.cta-ivory p {
+    max-width: 400px;
+    margin: 0 auto 2rem;
+    color: var(--gray-light);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.cta-ivory .btn-ivory {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+}
+
+.cta-ivory .btn-ivory:hover {
+    background: transparent;
+    color: var(--white);
+}
+
+/* Footer */
+.footer-ivory {
+    background: var(--white-2);
+    border-top: 1px solid var(--border);
+    padding: 4rem;
+    text-align: center;
+}
+
+.footer-ivory p {
+    color: var(--gray);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.footer-ivory a {
+    color: var(--black);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid-ivory { grid-template-columns: repeat(2, 1fr); }
+    .card-ivory:nth-child(2n) { border-right: none; }
+    .card-ivory:nth-child(3n) { border-right: 1px solid var(--border); }
+}
+
+@media (max-width: 768px) {
+    .nav-links-ivory { display: none; }
+    .nav-ivory { padding: 1.5rem 2rem; }
+    .grid-ivory { grid-template-columns: 1fr; }
+    .card-ivory { border-right: none !important; }
+    .section-ivory { padding: 4rem 2rem; }
+}

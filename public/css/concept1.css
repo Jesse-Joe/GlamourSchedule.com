@@ -1,0 +1,276 @@
+/**
+ * Concept 1: NEON CYBERPUNK
+ * Electric neon colors, dark background, futuristic vibe
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --neon-pink: #ff00ff;
+    --neon-blue: #00ffff;
+    --neon-green: #39ff14;
+    --neon-yellow: #ffff00;
+    --dark: #0a0a0a;
+    --dark-2: #141414;
+    --dark-3: #1e1e1e;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* Animated Grid Background */
+.cyber-bg {
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(255,0,255,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+    z-index: -1;
+}
+
+@keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+
+/* Navigation */
+.nav-cyber {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 2rem;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--neon-pink);
+    box-shadow: 0 0 20px rgba(255,0,255,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo-cyber {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+    text-decoration: none;
+}
+
+.nav-links-cyber {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links-cyber a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+}
+
+.nav-links-cyber a:hover {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+}
+
+.btn-cyber {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.btn-cyber:hover {
+    background: var(--neon-green);
+    color: var(--dark);
+    box-shadow: 0 0 30px var(--neon-green);
+}
+
+/* Hero */
+.hero-cyber {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem;
+}
+
+.hero-cyber h1 {
+    font-size: clamp(3rem, 10vw, 8rem);
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: glitch 3s infinite;
+}
+
+@keyframes glitch {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 2px); }
+    94% { transform: translate(2px, -2px); }
+    96% { transform: translate(-2px, -2px); }
+    98% { transform: translate(2px, 2px); }
+}
+
+.hero-cyber p {
+    font-size: 1.25rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    letter-spacing: 2px;
+}
+
+/* Search */
+.search-cyber {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid var(--neon-blue);
+    background: rgba(0,255,255,0.05);
+}
+
+.search-cyber input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-cyber input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+.search-cyber button {
+    padding: 1rem 2rem;
+    background: var(--neon-blue);
+    border: none;
+    color: var(--dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.search-cyber button:hover {
+    background: var(--neon-pink);
+    box-shadow: 0 0 30px var(--neon-pink);
+}
+
+/* Cards */
+.grid-cyber {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card-cyber {
+    background: var(--dark-2);
+    border: 1px solid var(--neon-pink);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.card-cyber::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+    animation: scanline 2s linear infinite;
+}
+
+@keyframes scanline {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.card-cyber:hover {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 30px rgba(0,255,255,0.3);
+    transform: translateY(-5px);
+}
+
+.card-cyber h3 {
+    color: var(--neon-pink);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.card-cyber p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+}
+
+/* Section */
+.section-cyber {
+    padding: 6rem 2rem;
+}
+
+.section-title-cyber {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title-cyber h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: var(--neon-blue);
+    text-shadow: 0 0 20px var(--neon-blue);
+}
+
+/* Footer */
+.footer-cyber {
+    background: var(--dark-2);
+    border-top: 1px solid var(--neon-pink);
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.footer-cyber p {
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links-cyber { display: none; }
+    .hero-cyber h1 { letter-spacing: 4px; }
+}
