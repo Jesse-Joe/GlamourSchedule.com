@@ -1,52 +1,520 @@
 <?php ob_start(); ?>
 
-<!-- Search Header -->
-<section class="hero-prestige" style="padding-top: 8rem; padding-bottom: 3rem; min-height: auto;">
-    <h1 style="font-size: 2rem;">Zoek <span>Salons</span></h1>
-    <div class="hero-divider"></div>
-    <p>Vind de perfecte salon voor jouw behandeling</p>
-</section>
+<style>
+    .search-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    @media (max-width: 768px) {
+        .search-container {
+            padding: 0;
+            margin: 0;
+        }
+        .search-card {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+    }
+    .search-card {
+        background: #ffffff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .search-header {
+        background: #ffffff;
+        color: #000000;
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 2px solid #000000;
+    }
+    .search-header i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #000000;
+    }
+    .search-header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #000000;
+    }
+    .search-header p {
+        margin: 0.5rem 0 0;
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
 
-<div class="search-section" style="padding-bottom: 3rem;">
-    <form action="/search" method="GET" class="search-prestige" style="max-width: 900px;">
-        <div class="search-input-group" style="flex: 2;">
+    /* Category Tabs */
+    .category-tabs {
+        display: flex;
+        background: #fafafa;
+        border-bottom: 1px solid #e5e7eb;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .category-tab {
+        flex: 1;
+        min-width: 100px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        background: transparent;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #6b7280;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .category-tab:hover {
+        background: #f5f5f5;
+        color: #374151;
+    }
+    .category-tab.active {
+        background: #ffffff;
+        color: #000000;
+        border-bottom: 3px solid #000000;
+        margin-bottom: -1px;
+    }
+    .category-tab i {
+        font-size: 1.2rem;
+    }
+
+    /* Search Form */
+    .search-form-section {
+        padding: 1.5rem 2rem;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .search-form {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .search-input-wrapper {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+    }
+    .search-input-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+    }
+    .search-input {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        background: #ffffff;
+        color: #000000;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: #000000;
+    }
+    .search-input::placeholder {
+        color: #9ca3af;
+    }
+    .search-btn {
+        padding: 0.875rem 2rem;
+        background: #000000;
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .search-btn:hover {
+        background: #333333;
+    }
+
+    /* Results Header */
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 2rem;
+        background: #fafafa;
+        border-bottom: 1px solid #e5e7eb;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .results-count {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+    .results-count strong {
+        color: #000000;
+    }
+    .sort-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .sort-wrapper label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .sort-select {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        background: #ffffff;
+        color: #000000;
+        cursor: pointer;
+    }
+    .sort-select:focus {
+        outline: none;
+        border-color: #000000;
+    }
+
+    /* Results Grid */
+    .results-section {
+        padding: 2rem;
+        background: #ffffff;
+    }
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Business Card - New Style */
+    .salon-card {
+        background: #ffffff;
+        border: 2px solid #e5e7eb;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .salon-card:hover {
+        border-color: #000000;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+    .salon-image {
+        height: 160px;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .salon-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .salon-image i {
+        font-size: 3rem;
+        color: #d1d5db;
+    }
+    .salon-body {
+        padding: 1.25rem;
+    }
+    .salon-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #000000;
+        margin: 0 0 0.5rem;
+    }
+    .salon-location {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.75rem;
+    }
+    .salon-location i {
+        color: #9ca3af;
+    }
+    .salon-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .salon-rating .stars {
+        color: #fbbf24;
+        font-size: 0.85rem;
+    }
+    .salon-rating .count {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+    .salon-btn {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        background: #000000;
+        color: #ffffff;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    .salon-btn:hover {
+        background: #333333;
+    }
+
+    /* Empty State */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fafafa;
+        border-radius: 16px;
+        border: 2px dashed #e5e7eb;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    .empty-state h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #000000;
+        margin: 0 0 0.5rem;
+    }
+    .empty-state p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: #fafafa;
+        border-top: 1px solid #e5e7eb;
+    }
+    .pagination-btn {
+        padding: 0.625rem 1.25rem;
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .pagination-btn:hover:not(:disabled) {
+        border-color: #000000;
+    }
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .pagination-info {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    /* Dark Mode */
+    [data-theme="dark"] .search-card {
+        background: #1a1a1a;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    [data-theme="dark"] .search-header {
+        background: #1a1a1a;
+        color: #ffffff;
+        border-bottom-color: #333333;
+    }
+    [data-theme="dark"] .search-header i,
+    [data-theme="dark"] .search-header h1 {
+        color: #ffffff;
+    }
+    [data-theme="dark"] .search-header p {
+        color: #9ca3af;
+    }
+    [data-theme="dark"] .category-tabs {
+        background: #111111;
+        border-bottom-color: #333333;
+    }
+    [data-theme="dark"] .category-tab {
+        color: #9ca3af;
+    }
+    [data-theme="dark"] .category-tab:hover {
+        background: #222222;
+        color: #ffffff;
+    }
+    [data-theme="dark"] .category-tab.active {
+        background: #1a1a1a;
+        color: #ffffff;
+        border-bottom-color: #ffffff;
+    }
+    [data-theme="dark"] .search-form-section {
+        background: #1a1a1a;
+        border-bottom-color: #333333;
+    }
+    [data-theme="dark"] .search-input {
+        background: #111111;
+        border-color: #333333;
+        color: #ffffff;
+    }
+    [data-theme="dark"] .search-input:focus {
+        border-color: #ffffff;
+    }
+    [data-theme="dark"] .search-btn {
+        background: #ffffff;
+        color: #000000;
+    }
+    [data-theme="dark"] .search-btn:hover {
+        background: #e5e5e5;
+    }
+    [data-theme="dark"] .results-header {
+        background: #111111;
+        border-bottom-color: #333333;
+    }
+    [data-theme="dark"] .results-count strong {
+        color: #ffffff;
+    }
+    [data-theme="dark"] .sort-select {
+        background: #1a1a1a;
+        border-color: #333333;
+        color: #ffffff;
+    }
+    [data-theme="dark"] .sort-select:focus {
+        border-color: #ffffff;
+    }
+    [data-theme="dark"] .results-section {
+        background: #1a1a1a;
+    }
+    [data-theme="dark"] .salon-card {
+        background: #111111;
+        border-color: #333333;
+    }
+    [data-theme="dark"] .salon-card:hover {
+        border-color: #ffffff;
+    }
+    [data-theme="dark"] .salon-image {
+        background: #0a0a0a;
+    }
+    [data-theme="dark"] .salon-name {
+        color: #ffffff;
+    }
+    [data-theme="dark"] .salon-btn {
+        background: #ffffff;
+        color: #000000;
+    }
+    [data-theme="dark"] .salon-btn:hover {
+        background: #e5e5e5;
+    }
+    [data-theme="dark"] .empty-state {
+        background: #111111;
+        border-color: #333333;
+    }
+    [data-theme="dark"] .empty-state h3 {
+        color: #ffffff;
+    }
+    [data-theme="dark"] .pagination {
+        background: #111111;
+        border-top-color: #333333;
+    }
+    [data-theme="dark"] .pagination-btn {
+        background: #1a1a1a;
+        color: #ffffff;
+        border-color: #333333;
+    }
+    [data-theme="dark"] .pagination-btn:hover:not(:disabled) {
+        border-color: #ffffff;
+    }
+</style>
+
+<?php
+$currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
+$categories = [
+    '' => ['label' => 'Alles', 'icon' => 'fa-th-large'],
+    'haar' => ['label' => 'Haar', 'icon' => 'fa-cut'],
+    'nagels' => ['label' => 'Nagels', 'icon' => 'fa-hand-sparkles'],
+    'huid' => ['label' => 'Skincare', 'icon' => 'fa-spa'],
+    'lichaam' => ['label' => 'Massage', 'icon' => 'fa-hands'],
+    'makeup' => ['label' => 'Make-up', 'icon' => 'fa-magic'],
+    'wellness' => ['label' => 'Wellness', 'icon' => 'fa-hot-tub'],
+    'ontharing' => ['label' => 'Ontharing', 'icon' => 'fa-leaf'],
+    'bruinen' => ['label' => 'Bruinen', 'icon' => 'fa-sun'],
+];
+?>
+
+<div class="search-container">
+    <div class="search-card">
+        <!-- Header -->
+        <div class="search-header">
             <i class="fas fa-search"></i>
-            <input type="text" name="q" placeholder="Salon of behandeling..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+            <h1>Zoek Salons</h1>
+            <p>Vind de perfecte salon voor jouw behandeling</p>
         </div>
-        <div class="search-divider"></div>
-        <div class="search-input-group">
-            <i class="fas fa-map-marker-alt"></i>
-            <input type="text" name="location" placeholder="Stad of postcode" value="<?= htmlspecialchars($_GET['location'] ?? '') ?>">
-        </div>
-        <div class="search-divider"></div>
-        <div class="search-input-group">
-            <i class="fas fa-filter"></i>
-            <select name="category" style="border: none; background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--charcoal); outline: none; cursor: pointer;">
-                <option value="">Alle categorieën</option>
-                <option value="haar" <?= ($_GET['category'] ?? '') === 'haar' ? 'selected' : '' ?>>Haar</option>
-                <option value="nagels" <?= ($_GET['category'] ?? '') === 'nagels' ? 'selected' : '' ?>>Nagels</option>
-                <option value="huid" <?= ($_GET['category'] ?? '') === 'huid' ? 'selected' : '' ?>>Skincare</option>
-                <option value="lichaam" <?= ($_GET['category'] ?? '') === 'lichaam' ? 'selected' : '' ?>>Massage</option>
-                <option value="makeup" <?= ($_GET['category'] ?? '') === 'makeup' ? 'selected' : '' ?>>Make-up</option>
-                <option value="wellness" <?= ($_GET['category'] ?? '') === 'wellness' ? 'selected' : '' ?>>Wellness</option>
-                <option value="ontharing" <?= ($_GET['category'] ?? '') === 'ontharing' ? 'selected' : '' ?>>Ontharing</option>
-                <option value="bruinen" <?= ($_GET['category'] ?? '') === 'bruinen' ? 'selected' : '' ?>>Bruinen</option>
-            </select>
-        </div>
-        <button type="submit">Zoeken</button>
-    </form>
-</div>
 
-<!-- Results Section -->
-<section class="section section-light">
-    <div style="max-width: 1100px; margin: 0 auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <p style="font-size: 0.85rem; color: var(--silver);">
-                <span id="results-count"><?= count($businesses ?? []) ?></span> salons gevonden
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <?php foreach ($categories as $key => $cat): ?>
+                <a href="/search<?= $key ? '?category=' . $key : '' ?>"
+                   class="category-tab <?= $currentCategory === $key ? 'active' : '' ?>">
+                    <i class="fas <?= $cat['icon'] ?>"></i>
+                    <span><?= $cat['label'] ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search-form-section">
+            <form action="/search" method="GET" class="search-form">
+                <?php if ($currentCategory): ?>
+                    <input type="hidden" name="category" value="<?= htmlspecialchars($currentCategory) ?>">
+                <?php endif; ?>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" class="search-input" placeholder="Salon of behandeling..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                </div>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="location" class="search-input" placeholder="Stad of postcode" value="<?= htmlspecialchars($_GET['location'] ?? '') ?>">
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Zoeken
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Header -->
+        <div class="results-header">
+            <p class="results-count">
+                <strong><?= count($businesses ?? []) ?></strong> salons gevonden
             </p>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <label style="font-size: 0.75rem; color: var(--silver); letter-spacing: 1px; text-transform: uppercase;">Sorteren:</label>
-                <select id="sort-by" onchange="sortResults(this.value)" style="border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 1rem; font-family: inherit; font-size: 0.85rem; background: rgba(30, 30, 35, 0.8); color: var(--white); cursor: pointer; border-radius: 4px;">
+            <div class="sort-wrapper">
+                <label>Sorteren:</label>
+                <select class="sort-select" onchange="sortResults(this.value)">
                     <option value="rating">Hoogste beoordeling</option>
                     <option value="reviews">Meeste reviews</option>
                     <option value="name">Naam A-Z</option>
@@ -54,58 +522,61 @@
             </div>
         </div>
 
-        <div class="business-grid" id="search-results">
-            <?php if (!empty($businesses)): ?>
-                <?php foreach ($businesses as $biz): ?>
-                <div class="business-card">
-                    <div class="business-image">
-                        <?php if (!empty($biz['logo_url'])): ?>
-                            <img src="<?= htmlspecialchars($biz['logo_url']) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
-                        <?php else: ?>
-                            <i class="fas fa-spa"></i>
-                        <?php endif; ?>
-                    </div>
-                    <div class="business-body">
-                        <h3 class="business-name"><?= htmlspecialchars($biz['name']) ?></h3>
-                        <div class="business-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span><?= htmlspecialchars($biz['city'] ?? 'Nederland') ?></span>
+        <!-- Results Grid -->
+        <div class="results-section">
+            <div class="results-grid">
+                <?php if (!empty($businesses)): ?>
+                    <?php foreach ($businesses as $biz): ?>
+                    <div class="salon-card">
+                        <div class="salon-image">
+                            <?php if (!empty($biz['logo_url'])): ?>
+                                <img src="<?= htmlspecialchars($biz['logo_url']) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
+                            <?php else: ?>
+                                <i class="fas fa-spa"></i>
+                            <?php endif; ?>
                         </div>
-                        <div class="business-rating">
-                            <div class="stars">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <i class="fas fa-star<?= $i <= round($biz['avg_rating'] ?? 5) ? '' : ($i - 0.5 <= ($biz['avg_rating'] ?? 5) ? '-half-alt' : '') ?>"></i>
-                                <?php endfor; ?>
+                        <div class="salon-body">
+                            <h3 class="salon-name"><?= htmlspecialchars($biz['name']) ?></h3>
+                            <div class="salon-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span><?= htmlspecialchars($biz['city'] ?? 'Nederland') ?></span>
                             </div>
-                            <span class="count">(<?= $biz['review_count'] ?? 0 ?>)</span>
+                            <div class="salon-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <i class="fas fa-star<?= $i <= round($biz['avg_rating'] ?? 5) ? '' : ($i - 0.5 <= ($biz['avg_rating'] ?? 5) ? '-half-alt' : '') ?>"></i>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="count">(<?= $biz['review_count'] ?? 0 ?>)</span>
+                            </div>
+                            <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="salon-btn">Bekijk & Boek</a>
                         </div>
-                        <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="business-btn">Bekijk & Boek</a>
                     </div>
-                </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: rgba(25, 25, 30, 0.6); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <i class="fas fa-search" style="font-size: 3rem; color: var(--silver); margin-bottom: 1.5rem; display: block;"></i>
-                    <h3 style="font-size: 1rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--white);">Geen resultaten</h3>
-                    <p style="color: var(--silver); font-size: 0.9rem;">Probeer een andere zoekopdracht of locatie.</p>
-                </div>
-            <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Geen resultaten</h3>
+                        <p>Probeer een andere zoekopdracht of locatie.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Pagination -->
         <?php if (!empty($businesses) && count($businesses) >= 12): ?>
-        <div id="pagination" style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 3rem;">
-            <button class="btn btn-outline btn-sm" id="prev-page" disabled>
+        <div class="pagination">
+            <button class="pagination-btn" id="prev-page" disabled>
                 <i class="fas fa-chevron-left"></i> Vorige
             </button>
-            <span id="page-info" style="font-size: 0.85rem; color: var(--silver);">Pagina 1</span>
-            <button class="btn btn-outline btn-sm" id="next-page">
+            <span class="pagination-info">Pagina 1</span>
+            <button class="pagination-btn" id="next-page">
                 Volgende <i class="fas fa-chevron-right"></i>
             </button>
         </div>
         <?php endif; ?>
     </div>
-</section>
+</div>
 
 <script>
     function sortResults(sortBy) {
