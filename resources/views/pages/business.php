@@ -98,6 +98,26 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .business-hero {
+                margin-top: 20px;
+                min-height: 40vh;
+            }
+
+            .business-header {
+                gap: var(--space-md);
+            }
+
+            .business-avatar {
+                width: 80px;
+                height: 80px;
+            }
+
+            .business-name {
+                font-size: var(--text-2xl);
+            }
+        }
+
         .service-item {
             display: flex;
             justify-content: space-between;
