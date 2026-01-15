@@ -485,4 +485,53 @@ class ApiController extends Controller
 
         return $this->json(['theme' => $result['theme_preference'] ?? 'light']);
     }
+
+    /**
+     * Glamori Chat - Send message
+     */
+    public function glamoriChat(): string
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $message = trim($data['message'] ?? '');
+
+        if (empty($message)) {
+            return $this->json(['error' => 'Message is required'], 400);
+        }
+
+        $userId = $_SESSION['user_id'] ?? null;
+        $businessId = $_SESSION['business_id'] ?? null;
+
+        $glamori = new \GlamourSchedule\Core\Glamori($this->db, $this->lang, $userId, $businessId);
+        $response = $glamori->chat($message);
+
+        return $this->json($response);
+    }
+
+    /**
+     * Glamori Chat - Get welcome message
+     */
+    public function glamoriWelcome(): string
+    {
+        $userId = $_SESSION['user_id'] ?? null;
+        $businessId = $_SESSION['business_id'] ?? null;
+
+        $glamori = new \GlamourSchedule\Core\Glamori($this->db, $this->lang, $userId, $businessId);
+        $response = $glamori->getWelcomeMessage();
+
+        return $this->json($response);
+    }
+
+    /**
+     * Glamori Chat - Get history
+     */
+    public function glamoriHistory(): string
+    {
+        $userId = $_SESSION['user_id'] ?? null;
+        $businessId = $_SESSION['business_id'] ?? null;
+
+        $glamori = new \GlamourSchedule\Core\Glamori($this->db, $this->lang, $userId, $businessId);
+        $history = $glamori->getHistory();
+
+        return $this->json(['messages' => $history]);
+    }
 }

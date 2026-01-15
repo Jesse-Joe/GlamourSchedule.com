@@ -230,5 +230,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             }
         });
     </script>
+
+    <!-- Glamori AI Chatbot -->
+    <?php include BASE_PATH . '/resources/views/components/glamori-chat.php'; ?>
 </body>
 </html>
