@@ -78,6 +78,119 @@ class ApiController extends Controller
     }
 
     /**
+     * Get category groups for search filtering
+     */
+    public function categoryGroups(): string
+    {
+        // Get unique category groups with salon counts
+        $stmt = $this->db->query(
+            "SELECT c.category_group as slug,
+                    COUNT(DISTINCT c.id) as category_count,
+                    (SELECT COUNT(DISTINCT bc.business_id)
+                     FROM business_categories bc
+                     JOIN businesses b ON bc.business_id = b.id
+                     JOIN categories cat ON bc.category_id = cat.id
+                     WHERE cat.category_group = c.category_group AND b.status = 'active') as salon_count
+             FROM categories c
+             WHERE c.is_active = 1 AND c.category_group IS NOT NULL AND c.category_group != ''
+             GROUP BY c.category_group
+             ORDER BY MIN(c.sort_order)"
+        );
+
+        $groups = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Add Dutch labels, icons, descriptions and images for groups
+        $groupData = [
+            'haar' => [
+                'label' => 'Haar',
+                'icon' => 'cut',
+                'desc' => 'Kapper, Barber, Stylist',
+                'image' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop'
+            ],
+            'nagels' => [
+                'label' => 'Nagels',
+                'icon' => 'hand-sparkles',
+                'desc' => 'Manicure, Pedicure, Gel',
+                'image' => 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop'
+            ],
+            'huid' => [
+                'label' => 'Skincare',
+                'icon' => 'spa',
+                'desc' => 'Facial, Skincare',
+                'image' => 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop'
+            ],
+            'lichaam' => [
+                'label' => 'Lichaam',
+                'icon' => 'hands',
+                'desc' => 'Massage, Body',
+                'image' => 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop'
+            ],
+            'makeup' => [
+                'label' => 'Make-up',
+                'icon' => 'magic',
+                'desc' => 'Visagie, Wimpers',
+                'image' => 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=300&fit=crop'
+            ],
+            'ontharing' => [
+                'label' => 'Ontharing',
+                'icon' => 'leaf',
+                'desc' => 'Waxen, Laser',
+                'image' => 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=300&fit=crop'
+            ],
+            'wellness' => [
+                'label' => 'Wellness',
+                'icon' => 'hot-tub',
+                'desc' => 'Spa, Sauna',
+                'image' => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop'
+            ],
+            'bruinen' => [
+                'label' => 'Bruinen',
+                'icon' => 'sun',
+                'desc' => 'Zonnebank, Spray tan',
+                'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop'
+            ],
+            'medisch' => [
+                'label' => 'Medisch',
+                'icon' => 'stethoscope',
+                'desc' => 'Botox, Fillers',
+                'image' => 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop'
+            ],
+            'tattoo' => [
+                'label' => 'Tattoo',
+                'icon' => 'pen-fancy',
+                'desc' => 'Tattoo, Verwijdering',
+                'image' => 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?w=400&h=300&fit=crop'
+            ],
+            'alternatief' => [
+                'label' => 'Alternatief',
+                'icon' => 'om',
+                'desc' => 'Yoga, Reiki',
+                'image' => 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop'
+            ],
+            'fitness' => [
+                'label' => 'Fitness',
+                'icon' => 'dumbbell',
+                'desc' => 'Personal Training',
+                'image' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop'
+            ]
+        ];
+
+        foreach ($groups as &$group) {
+            $data = $groupData[$group['slug']] ?? null;
+            $group['label'] = $data['label'] ?? ucfirst($group['slug']);
+            $group['icon'] = $data['icon'] ?? 'tag';
+            $group['desc'] = $data['desc'] ?? '';
+            $group['image'] = $data['image'] ?? '';
+            $group['salon_count'] = (int)$group['salon_count'];
+        }
+
+        return $this->json([
+            'groups' => $groups,
+            'timestamp' => time()
+        ]);
+    }
+
+    /**
      * Get platform stats for real-time updates
      */
     public function stats(): string

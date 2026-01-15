@@ -180,6 +180,7 @@ class Application
         $this->router->get('/api/availability/{businessId}', 'ApiController@availability');
         $this->router->get('/api/available-times/{businessSlug}', 'BookingController@getAvailableTimes');
         $this->router->get('/api/categories', 'ApiController@categories');
+        $this->router->get('/api/category-groups', 'ApiController@categoryGroups');
         $this->router->get('/api/stats', 'ApiController@stats');
         $this->router->post('/api/consent', 'ApiController@consent');
         $this->router->post('/api/pwa-installed', 'ApiController@pwaInstalled');

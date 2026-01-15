@@ -278,6 +278,90 @@
         background: #333333;
     }
 
+    /* Category Cards */
+    .category-cards-section {
+        padding: 2rem;
+        background: #fafafa;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .category-cards-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #000000;
+        margin: 0 0 1.5rem;
+        text-align: center;
+    }
+    .category-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+    .category-card {
+        position: relative;
+        height: 140px;
+        border-radius: 16px;
+        overflow: hidden;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    .category-card-image {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.5s;
+    }
+    .category-card:hover .category-card-image {
+        transform: scale(1.1);
+    }
+    .category-card-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 100%);
+    }
+    .category-card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        color: #ffffff;
+        z-index: 1;
+    }
+    .category-card-icon {
+        width: 36px;
+        height: 36px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    .category-card-content h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem;
+    }
+    .category-card-content .salon-count {
+        font-size: 0.75rem;
+        opacity: 0.9;
+    }
+    @media (max-width: 768px) {
+        .category-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .category-card {
+            height: 120px;
+        }
+    }
+
     /* Empty State */
     .empty-state {
         grid-column: 1 / -1;
@@ -450,21 +534,17 @@
     [data-theme="dark"] .pagination-btn:hover:not(:disabled) {
         border-color: #ffffff;
     }
+    [data-theme="dark"] .category-cards-section {
+        background: #111111;
+        border-bottom-color: #333333;
+    }
+    [data-theme="dark"] .category-cards-title {
+        color: #ffffff;
+    }
 </style>
 
 <?php
 $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
-$categories = [
-    '' => ['label' => 'Alles', 'icon' => 'fa-th-large'],
-    'haar' => ['label' => 'Haar', 'icon' => 'fa-cut'],
-    'nagels' => ['label' => 'Nagels', 'icon' => 'fa-hand-sparkles'],
-    'huid' => ['label' => 'Skincare', 'icon' => 'fa-spa'],
-    'lichaam' => ['label' => 'Massage', 'icon' => 'fa-hands'],
-    'makeup' => ['label' => 'Make-up', 'icon' => 'fa-magic'],
-    'wellness' => ['label' => 'Wellness', 'icon' => 'fa-hot-tub'],
-    'ontharing' => ['label' => 'Ontharing', 'icon' => 'fa-leaf'],
-    'bruinen' => ['label' => 'Bruinen', 'icon' => 'fa-sun'],
-];
 ?>
 
 <div class="search-container">
@@ -476,15 +556,13 @@ $categories = [
             <p>Vind de perfecte salon voor jouw behandeling</p>
         </div>
 
-        <!-- Category Tabs -->
-        <div class="category-tabs">
-            <?php foreach ($categories as $key => $cat): ?>
-                <a href="/search<?= $key ? '?category=' . $key : '' ?>"
-                   class="category-tab <?= $currentCategory === $key ? 'active' : '' ?>">
-                    <i class="fas <?= $cat['icon'] ?>"></i>
-                    <span><?= $cat['label'] ?></span>
-                </a>
-            <?php endforeach; ?>
+        <!-- Category Tabs - Loaded dynamically -->
+        <div class="category-tabs" id="categoryTabs">
+            <a href="/search" class="category-tab <?= empty($currentCategory) ? 'active' : '' ?>">
+                <i class="fas fa-th-large"></i>
+                <span>Alles</span>
+            </a>
+            <!-- Dynamic tabs loaded via JS -->
         </div>
 
         <!-- Search Form -->
@@ -506,6 +584,16 @@ $categories = [
                 </button>
             </form>
         </div>
+
+        <!-- Category Cards - Only show when no specific category is selected -->
+        <?php if (empty($currentCategory)): ?>
+        <div class="category-cards-section">
+            <h3 class="category-cards-title">Ontdek per categorie</h3>
+            <div class="category-cards-grid" id="categoryCards">
+                <!-- Loaded dynamically via JS -->
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Results Header -->
         <div class="results-header">
@@ -584,6 +672,48 @@ $categories = [
         params.set('sort', sortBy);
         window.location.search = params.toString();
     }
+
+    // Load category groups dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentCategory = '<?= htmlspecialchars($currentCategory) ?>';
+        const tabsContainer = document.getElementById('categoryTabs');
+        const cardsContainer = document.getElementById('categoryCards');
+
+        fetch('/api/category-groups')
+            .then(response => response.json())
+            .then(data => {
+                if (data.groups && data.groups.length > 0) {
+                    data.groups.forEach(group => {
+                        // Add tab
+                        const tab = document.createElement('a');
+                        tab.href = '/search?category=' + encodeURIComponent(group.slug);
+                        tab.className = 'category-tab' + (currentCategory === group.slug ? ' active' : '');
+                        tab.innerHTML = '<i class="fas fa-' + group.icon + '"></i><span>' + group.label + '</span>';
+                        tabsContainer.appendChild(tab);
+
+                        // Add card (only if cards container exists)
+                        if (cardsContainer) {
+                            const card = document.createElement('a');
+                            card.href = '/search?category=' + encodeURIComponent(group.slug);
+                            card.className = 'category-card';
+                            card.innerHTML = `
+                                <div class="category-card-image" style="background-image: url('${group.image}')"></div>
+                                <div class="category-card-overlay"></div>
+                                <div class="category-card-content">
+                                    <div class="category-card-icon"><i class="fas fa-${group.icon}"></i></div>
+                                    <h4>${group.label}</h4>
+                                    <span class="salon-count">${group.salon_count} salon${group.salon_count !== 1 ? 's' : ''}</span>
+                                </div>
+                            `;
+                            cardsContainer.appendChild(card);
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load category groups:', error);
+            });
+    });
 </script>
 
 <?php $content = ob_get_clean(); ?>

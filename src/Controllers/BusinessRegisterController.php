@@ -4,14 +4,23 @@ namespace GlamourSchedule\Controllers;
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
 use GlamourSchedule\Core\PushNotification;
+use GlamourSchedule\Core\GeoIP;
 
 class BusinessRegisterController extends Controller
 {
     // Pricing constants
-    private const REGISTRATION_FEE = 99.99;
-    private const SALES_PARTNER_DISCOUNT = 24.99;
-    private const SALES_PARTNER_COMMISSION = 49.99;
+    private const REGISTRATION_FEE = 29.99;
+    private const SALES_PARTNER_DISCOUNT = 10.00;
+    private const SALES_PARTNER_COMMISSION = 10.00;
     private const COMMISSION_PAYOUT_DAYS = 14; // Bedenktijd
+
+    private GeoIP $geoIP;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->geoIP = new GeoIP($this->db);
+    }
 
     public function show(): string
     {
@@ -19,9 +28,15 @@ class BusinessRegisterController extends Controller
             return $this->redirect('/business/dashboard');
         }
 
+        // Get user location based on IP
+        $location = $this->geoIP->lookup();
+        $countryCode = $location['country_code'];
+        $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
+
+        // Log the visit
+        $this->geoIP->logLocation($location, null, null, '/business/register');
+
         $categories = $this->getCategories();
-        $earlyAdopterCount = $this->getEarlyAdopterCount();
-        $isEarlyAdopter = $earlyAdopterCount < 20;
 
         // Check for referral code in URL
         $referralCode = $_GET['ref'] ?? '';
@@ -35,22 +50,32 @@ class BusinessRegisterController extends Controller
             );
             if ($salesStmt->fetch()) {
                 $hasValidReferral = true;
-                $discountedFee = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT; // €74.99
+                $discountedFee = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT;
             }
         }
+
+        // Determine final price: promo price takes priority over referral discount
+        $regFee = $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? $discountedFee : self::REGISTRATION_FEE);
 
         return $this->view('pages/business/register', [
             'pageTitle' => 'Bedrijf Registreren',
             'categories' => $categories,
-            'isEarlyAdopter' => $isEarlyAdopter,
-            'earlyAdopterCount' => $earlyAdopterCount,
-            'earlyAdopterSpots' => 20 - $earlyAdopterCount,
-            'regFee' => $isEarlyAdopter ? 0.99 : ($hasValidReferral ? $discountedFee : self::REGISTRATION_FEE),
+            'isEarlyAdopter' => $promoInfo['is_promo'],
+            'earlyAdopterCount' => 100 - $promoInfo['spots_left'],
+            'earlyAdopterSpots' => $promoInfo['spots_left'],
+            'regFee' => $regFee,
             'standardFee' => self::REGISTRATION_FEE,
             'discountedFee' => $discountedFee,
             'hasValidReferral' => $hasValidReferral,
             'referralCode' => $referralCode,
-            'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT
+            'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT,
+            // New geo-based data
+            'countryCode' => $countryCode,
+            'countryName' => $location['country_name'],
+            'promoPrice' => $promoInfo['price'],
+            'spotsLeft' => $promoInfo['spots_left'],
+            'isPromo' => $promoInfo['is_promo'],
+            'detectedLanguage' => $location['language']
         ]);
     }
 
@@ -90,8 +115,11 @@ class BusinessRegisterController extends Controller
         }
 
         if (!empty($errors)) {
-            $earlyAdopterCount = $this->getEarlyAdopterCount();
-            $isEarlyAdopter = $earlyAdopterCount < 20;
+            // Get user location for country-based pricing
+            $location = $this->geoIP->lookup();
+            $countryCode = $location['country_code'];
+            $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
+
             $referralCode = trim($_POST['referral_code'] ?? '');
             $hasValidReferral = false;
 
@@ -103,19 +131,27 @@ class BusinessRegisterController extends Controller
                 $hasValidReferral = (bool)$salesStmt->fetch();
             }
 
+            $regFee = $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE);
+
             return $this->view('pages/business/register', [
                 'pageTitle' => 'Bedrijf Registreren',
                 'categories' => $this->getCategories(),
                 'errors' => $errors,
                 'data' => $data,
-                'isEarlyAdopter' => $isEarlyAdopter,
-                'earlyAdopterSpots' => 20 - $earlyAdopterCount,
-                'regFee' => $isEarlyAdopter ? 0.99 : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE),
+                'isEarlyAdopter' => $promoInfo['is_promo'],
+                'earlyAdopterSpots' => $promoInfo['spots_left'],
+                'regFee' => $regFee,
                 'standardFee' => self::REGISTRATION_FEE,
                 'discountedFee' => self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT,
                 'hasValidReferral' => $hasValidReferral,
                 'referralCode' => $referralCode,
-                'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT
+                'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT,
+                'countryCode' => $countryCode,
+                'countryName' => $location['country_name'],
+                'promoPrice' => $promoInfo['price'],
+                'spotsLeft' => $promoInfo['spots_left'],
+                'isPromo' => $promoInfo['is_promo'],
+                'detectedLanguage' => $location['language']
             ]);
         }
 
@@ -136,9 +172,14 @@ class BusinessRegisterController extends Controller
             );
             $userId = $this->db->lastInsertId();
 
-            // Determine early adopter status
-            $earlyAdopterCount = $this->getEarlyAdopterCount();
-            $isEarlyAdopter = $earlyAdopterCount < 20;
+            // Get user location for country-based pricing
+            $location = $this->geoIP->lookup();
+            $countryCode = $location['country_code'];
+            $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
+            $isPromo = $promoInfo['is_promo'];
+
+            // Log the registration attempt
+            $this->geoIP->logLocation($location, null, null, '/business/register [POST]');
 
             // Check for referral code and calculate pricing
             $referralCode = trim($_POST['referral_code'] ?? '');
@@ -155,26 +196,26 @@ class BusinessRegisterController extends Controller
                 $salesUser = $salesStmt->fetch(\PDO::FETCH_ASSOC);
                 if ($salesUser) {
                     $referredBy = $salesUser['id'];
-                    $welcomeDiscount = self::SALES_PARTNER_DISCOUNT; // €24.99 korting
+                    $welcomeDiscount = self::SALES_PARTNER_DISCOUNT;
                     $hasSalesPartnerReferral = true;
                 }
             }
 
             // Determine registration fee and trial period
-            // - Early adopter: €0.99 with trial
-            // - Sales partner referral: €74.99 (NO trial - direct payment)
-            // - Normal: €99.99 with trial
-            if ($isEarlyAdopter) {
-                $regFee = 0.99;
+            // - Country promo (first 100 per country): €0.99 with trial
+            // - Sales partner referral: discounted price (NO trial - direct payment)
+            // - Normal: €29.99 with trial
+            if ($isPromo) {
+                $regFee = $promoInfo['price']; // €0.99
                 $trialEndsAt = date('Y-m-d', strtotime('+14 days'));
                 $subscriptionStatus = 'trial';
             } elseif ($hasSalesPartnerReferral) {
                 // Sales partner referral: NO trial, direct payment required
-                $regFee = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT; // €74.99
+                $regFee = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT;
                 $trialEndsAt = null; // No trial
                 $subscriptionStatus = 'pending'; // Waiting for payment
             } else {
-                $regFee = self::REGISTRATION_FEE; // €99.99
+                $regFee = self::REGISTRATION_FEE;
                 $trialEndsAt = date('Y-m-d', strtotime('+14 days'));
                 $subscriptionStatus = 'trial';
             }
@@ -187,17 +228,24 @@ class BusinessRegisterController extends Controller
                     description, kvk_number,
                     is_early_adopter, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
-                    referral_code, referred_by_sales_partner
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?)",
+                    referral_code, referred_by_sales_partner,
+                    registration_country, registration_ip, promo_applied
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     $businessUuid, $userId, $data['company_name'], $slug, $data['email'], $data['phone'],
                     $data['street'], $data['house_number'], $data['postal_code'], $data['city'],
                     $data['description'], $data['kvk_number'],
-                    $isEarlyAdopter ? 1 : 0,
-                    $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy
+                    $isPromo ? 1 : 0,
+                    $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
+                    $countryCode, $location['ip'], $isPromo ? 1 : 0
                 ]
             );
             $businessId = $this->db->lastInsertId();
+
+            // Increment country registration count if promo was applied
+            if ($isPromo) {
+                $this->geoIP->incrementRegistrationCount($countryCode);
+            }
 
             // If referred by sales partner, create referral record with 14-day payout delay
             if ($referredBy) {
@@ -217,11 +265,12 @@ class BusinessRegisterController extends Controller
                 );
             }
 
-            // Record early adopter
-            if ($isEarlyAdopter) {
+            // Record early adopter (country-based promo)
+            if ($isPromo) {
                 $this->db->query(
-                    "INSERT INTO early_adopters (business_id, position) VALUES (?, ?)",
-                    [$businessId, $earlyAdopterCount + 1]
+                    "INSERT INTO early_adopters (business_id, position, country_code) VALUES (?, ?, ?)
+                     ON DUPLICATE KEY UPDATE position = VALUES(position)",
+                    [$businessId, 100 - $promoInfo['spots_left'] + 1, $countryCode]
                 );
             }
 
