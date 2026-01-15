@@ -125,7 +125,7 @@ class Glamori
     {
         $message = mb_strtolower($message);
 
-        // Get all active intents for the current language
+        // Get all active intents for the current language (fallback to 'nl' if none found)
         $stmt = $this->db->query(
             "SELECT * FROM glamori_intents
              WHERE language = ? AND is_active = 1
@@ -134,6 +134,16 @@ class Glamori
         );
 
         $intents = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Fallback to Dutch if no intents found for current language
+        if (empty($intents) && $this->language !== 'nl') {
+            $stmt = $this->db->query(
+                "SELECT * FROM glamori_intents
+                 WHERE language = 'nl' AND is_active = 1
+                 ORDER BY priority DESC"
+            );
+            $intents = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
 
         $bestMatch = null;
         $highestScore = 0;
@@ -157,7 +167,7 @@ class Glamori
         // If no good match found, use fallback
         if ($highestScore < 0.5 || !$bestMatch) {
             $stmt = $this->db->query(
-                "SELECT * FROM glamori_intents WHERE intent_key = 'fallback' AND language = ?",
+                "SELECT * FROM glamori_intents WHERE intent_key = 'fallback' AND (language = ? OR language = 'nl') LIMIT 1",
                 [$this->language]
             );
             $bestMatch = $stmt->fetch(\PDO::FETCH_ASSOC);
