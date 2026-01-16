@@ -19,9 +19,9 @@ abstract class Controller
      * Detect language based on domain, user preference, and IP location
      *
      * Rules:
-     * - .com domain: Default to English (international site)
-     * - .nl domain: Use IP-based detection (Dutch for NL/BE, etc.)
-     * - User preference (URL param, session, cookie) always takes priority
+     * - .com domain: Always English (international site)
+     * - .nl domain: Always Dutch (Dutch site)
+     * - User preference (URL param) can override
      */
     protected function detectLanguage(): string
     {
@@ -31,47 +31,21 @@ abstract class Controller
         // 1. Check URL parameter (highest priority - explicit user choice)
         if (isset($_GET['lang']) && in_array($_GET['lang'], $availableLangs)) {
             $_SESSION['lang'] = $_GET['lang'];
-            $_SESSION['lang_user_chosen'] = true; // Mark as explicit user choice
+            $_SESSION['lang_user_chosen'] = true;
             setcookie('lang', $_GET['lang'], time() + (365 * 24 * 60 * 60), '/');
             return $_GET['lang'];
         }
 
-        // 2. Check session (user already made a choice this session)
-        if (isset($_SESSION['lang']) && in_array($_SESSION['lang'], $availableLangs)) {
-            return $_SESSION['lang'];
+        // 2. Domain-based language (simple and reliable)
+        // .nl = Dutch, .com = English
+        if ($currentDomain === 'nl') {
+            $_SESSION['lang'] = 'nl';
+            return 'nl';
         }
 
-        // 3. Check cookie (returning user preference)
-        if (isset($_COOKIE['lang']) && in_array($_COOKIE['lang'], $availableLangs)) {
-            $_SESSION['lang'] = $_COOKIE['lang'];
-            $_SESSION['lang_user_chosen'] = true;
-            return $_COOKIE['lang'];
-        }
-
-        // 4. Domain-based defaults with IP detection
-        // Detect country for popup logic
-        $countryData = $this->detectCountryFromIP();
-        $this->detectedCountry = $countryData['country'] ?? null;
-        $_SESSION['detected_country'] = $this->detectedCountry;
-
-        if ($currentDomain === 'com') {
-            // .com is international - always default to English
-            // But store detected country for potential redirect popup
-            $_SESSION['lang'] = 'en';
-            return 'en';
-        }
-
-        // .nl domain - use IP-based language detection
-        $ipLang = $countryData['lang'] ?? 'nl';
-        if (in_array($ipLang, $availableLangs)) {
-            $_SESSION['lang'] = $ipLang;
-            return $ipLang;
-        }
-
-        // 5. Default fallback based on domain
-        $defaultLang = ($currentDomain === 'com') ? 'en' : 'nl';
-        $_SESSION['lang'] = $defaultLang;
-        return $defaultLang;
+        // .com = English
+        $_SESSION['lang'] = 'en';
+        return 'en';
     }
 
     /**
