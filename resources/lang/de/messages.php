@@ -396,4 +396,31 @@ return [
     'domain_popup_switch_en' => 'Zu glamourschedule.com wechseln',
     'domain_popup_stay_nl' => 'Auf niederl?ndischer Seite bleiben',
     'domain_popup_note' => 'Du kannst deine Spracheinstellung jederzeit im Menu andern.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EARLY BIRD POPUP
+    // ═══════════════════════════════════════════════════════════════════════
+    'early_bird_offer' => 'Early Bird Angebot',
+    'start_salon_for' => 'Starte deinen Salon für nur',
+    'early_bird_subtitle' => 'Einmalig für die ersten 100 Unternehmen',
+    'early_bird_feature_1' => '14 Tage kostenlos testen',
+    'early_bird_feature_2' => 'Online-Buchungssystem',
+    'early_bird_feature_3' => 'Eigene Unternehmensseite',
+    'early_bird_feature_4' => 'Keine monatlichen Kosten',
+    'register_now' => 'Jetzt Anmelden',
+    'early_bird_note' => 'Danach €99,99 für neue Unternehmen',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLOBAL SEARCH
+    // ═══════════════════════════════════════════════════════════════════════
+    'salons' => 'Salons',
+    'services' => 'Dienstleistungen',
+    'netherlands' => 'Niederlande',
+    'at' => 'bei',
+    'all_salons' => 'Alle Salons',
+    'marketing_services' => 'Marketing-Dienstleistungen',
+    'platform_features' => 'Plattform-Funktionen',
+    'pages' => 'Seiten',
+    'no_results_for' => 'Keine Ergebnisse für',
+    'search_all_salons' => 'Alle Salons durchsuchen',
 ];

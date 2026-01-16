@@ -385,6 +385,26 @@ return [
     'view' => 'Bekijk',
 
     // ═══════════════════════════════════════════════════════════════════════
+    // NAVIGATIE & LAYOUT
+    // ═══════════════════════════════════════════════════════════════════════
+    'navigation' => 'Navigatie',
+    'my_account' => 'Mijn Account',
+    'my_salon' => 'Mijn Salon',
+    'salon_dashboard' => 'Salon Dashboard',
+    'appointments' => 'Afspraken',
+    'for_business' => 'Voor Bedrijven',
+    'register_salon' => 'Salon Aanmelden',
+    'become_partner' => 'Word Partner',
+    'sales_portal' => 'Sales Portal',
+    'features' => 'Functionaliteit',
+    'footer_desc' => 'Het premium booking platform van Nederland. Vind en boek de beste salons.',
+    'company' => 'Bedrijf',
+    'legal' => 'Juridisch',
+    'rights' => 'Alle rechten voorbehouden.',
+    'developed_by' => 'Ontwikkeld door',
+    'marketing' => 'Marketing',
+
+    // ═══════════════════════════════════════════════════════════════════════
     // DOMEIN/TAAL SWITCH POPUP
     // ═══════════════════════════════════════════════════════════════════════
     'domain_popup_title' => 'We zien dat je in Nederland bent',
@@ -396,4 +416,77 @@ return [
     'domain_popup_switch_en' => 'Ga naar glamourschedule.com',
     'domain_popup_stay_nl' => 'Blijf op Nederlandse site',
     'domain_popup_note' => 'Je kunt je taalvoorkeur altijd wijzigen in het menu.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EARLY BIRD POPUP
+    // ═══════════════════════════════════════════════════════════════════════
+    'early_bird_offer' => 'Early Bird Aanbieding',
+    'start_salon_for' => 'Start je salon voor slechts',
+    'early_bird_subtitle' => 'Eenmalig voor de eerste 100 bedrijven',
+    'early_bird_feature_1' => '14 dagen gratis proberen',
+    'early_bird_feature_2' => 'Online boekingssysteem',
+    'early_bird_feature_3' => 'Eigen bedrijfspagina',
+    'early_bird_feature_4' => 'Geen maandelijkse kosten',
+    'register_now' => 'Nu Aanmelden',
+    'early_bird_note' => 'Daarna €99,99 voor nieuwe bedrijven',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLOBAL SEARCH
+    // ═══════════════════════════════════════════════════════════════════════
+    'salons' => 'Salons',
+    'services' => 'Diensten',
+    'netherlands' => 'Nederland',
+    'at' => 'bij',
+    'all_salons' => 'Alle Salons',
+    'marketing_services' => 'Marketing Services',
+    'platform_features' => 'Platform Functionaliteit',
+    'pages' => 'Pagina\'s',
+    'no_results_for' => 'Geen resultaten voor',
+    'search_all_salons' => 'Zoek in alle salons',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CATEGORIES
+    // ═══════════════════════════════════════════════════════════════════════
+    'categories_title' => 'Ontdek Services',
+    'categories_subtitle' => 'Van haar tot wellness - vind precies wat je zoekt',
+    'cat_hair' => 'Haar',
+    'cat_hair_desc' => 'Kapper, Barber, Stylist',
+    'cat_nails' => 'Nagels',
+    'cat_nails_desc' => 'Manicure, Pedicure, Gel',
+    'cat_skin' => 'Skincare',
+    'cat_skin_desc' => 'Facial, Skincare',
+    'cat_body' => 'Lichaam',
+    'cat_body_desc' => 'Massage, Body',
+    'cat_hairremoval' => 'Ontharing',
+    'cat_hairremoval_desc' => 'Waxen, Laser',
+    'cat_makeup' => 'Make-up',
+    'cat_makeup_desc' => 'Visagie, Wimpers',
+    'cat_wellness' => 'Wellness',
+    'cat_wellness_desc' => 'Spa, Sauna',
+    'cat_tanning' => 'Bruinen',
+    'cat_tanning_desc' => 'Zonnebank, Spray tan',
+    'cat_medical' => 'Medisch',
+    'cat_medical_desc' => 'Botox, Fillers',
+    'cat_alternative' => 'Alternatief',
+    'cat_alternative_desc' => 'Yoga, Reiki',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // HOMEPAGE SECTIONS
+    // ═══════════════════════════════════════════════════════════════════════
+    'featured' => 'Uitgelicht',
+    'featured_businesses' => 'Uitgelichte Bedrijven',
+    'featured_businesses_desc' => 'Premium salons die extra onder de aandacht staan',
+    'slot_available' => 'Plek Beschikbaar',
+    'slot_available_desc' => 'Zet jouw salon in de spotlight en bereik meer klanten',
+    'slot_duration' => '30 dagen uitgelicht',
+    'become_sales_partner' => 'Word Sales Partner',
+    'sales_partner_desc' => 'Verdien commissie door bedrijven aan te melden bij GlamourSchedule',
+    'start_now' => 'Start Nu',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLAMORI CHATBOT
+    // ═══════════════════════════════════════════════════════════════════════
+    'online_always_available' => 'Online - Altijd beschikbaar',
+    'type_your_message' => 'Typ je bericht...',
+    'glamori_welcome' => 'Hallo! Ik ben Glamori. Waarmee kan ik je helpen?',
 ];

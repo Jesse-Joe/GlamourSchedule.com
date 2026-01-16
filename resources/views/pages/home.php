@@ -3,21 +3,21 @@
 <!-- Hero Section with Integrated Search -->
 <section class="hero-prestige">
     <div class="hero-tag"><?= $translations['hero_badge'] ?? 'Premium Booking Platform' ?></div>
-    <h1><?= $translations['hero_title'] ?? 'Boek jouw perfecte afspraak' ?></h1>
+    <h1><?= $translations['hero_title'] ?? 'Book your perfect appointment' ?></h1>
     <div class="hero-divider"></div>
-    <p><?= $translations['hero_subtitle'] ?? 'Ontdek de beste salons en boek direct online. Premium service, altijd de beste prijs.' ?></p>
+    <p><?= $translations['hero_subtitle'] ?? 'Discover the best salons and book online instantly. Premium service, always the best price.' ?></p>
 
     <!-- Search Form inside Hero -->
     <form action="/search" method="GET" class="search-prestige hero-search-form">
         <div class="search-input-group">
             <i class="fas fa-search"></i>
-            <input type="text" name="q" placeholder="<?= $translations['search_what'] ?? 'Wat zoek je? (kapper, nagels, massage...)' ?>">
+            <input type="text" name="q" placeholder="<?= $translations['search_what'] ?? 'What are you looking for? (hairdresser, nails, massage...)' ?>">
         </div>
         <div class="search-input-group">
             <i class="fas fa-map-marker-alt"></i>
-            <input type="text" name="location" placeholder="<?= $translations['search_where'] ?? 'Stad of postcode' ?>">
+            <input type="text" name="location" placeholder="<?= $translations['search_where'] ?? 'City or postal code' ?>">
         </div>
-        <button type="submit"><?= $translations['search'] ?? 'Zoeken' ?></button>
+        <button type="submit"><?= $translations['search'] ?? 'Search' ?></button>
     </form>
 </section>
 
@@ -25,15 +25,15 @@
 <div class="stats-prestige">
     <div class="stat-item">
         <div class="stat-number" id="stat-businesses"><?= number_format($stats['businesses'] ?? 0) ?></div>
-        <div class="stat-label"><?= $translations['stats_salons'] ?? 'Aangesloten Salons' ?></div>
+        <div class="stat-label"><?= $translations['stats_salons'] ?? 'Partner Salons' ?></div>
     </div>
     <div class="stat-item">
         <div class="stat-number" id="stat-bookings"><?= number_format($stats['bookings'] ?? 0) ?></div>
-        <div class="stat-label"><?= $translations['stats_bookings'] ?? 'Boekingen Gemaakt' ?></div>
+        <div class="stat-label"><?= $translations['stats_bookings'] ?? 'Bookings Made' ?></div>
     </div>
     <div class="stat-item">
         <div class="stat-number" id="stat-users"><?= number_format($stats['users'] ?? 0) ?></div>
-        <div class="stat-label"><?= $translations['stats_customers'] ?? 'Tevreden Klanten' ?></div>
+        <div class="stat-label"><?= $translations['stats_customers'] ?? 'Happy Customers' ?></div>
     </div>
 </div>
 
@@ -282,9 +282,9 @@
     </style>
 
     <div class="section-header">
-        <div class="section-tag"><i class="fas fa-star"></i> Uitgelicht</div>
-        <h2 class="section-title">Uitgelichte Bedrijven</h2>
-        <p class="section-subtitle">Premium salons die extra onder de aandacht staan</p>
+        <div class="section-tag"><i class="fas fa-star"></i> <?= $translations['featured'] ?? 'Featured' ?></div>
+        <h2 class="section-title"><?= $translations['featured_businesses'] ?? 'Featured Businesses' ?></h2>
+        <p class="section-subtitle"><?= $translations['featured_businesses_desc'] ?? 'Premium salons that stand out' ?></p>
     </div>
 
     <div class="boosted-grid">
@@ -306,13 +306,13 @@
                 <?php else: ?>
                     <div class="placeholder"><i class="fas fa-spa"></i></div>
                 <?php endif; ?>
-                <span class="boosted-badge"><i class="fas fa-rocket"></i> Uitgelicht</span>
+                <span class="boosted-badge"><i class="fas fa-rocket"></i> <?= $translations['featured'] ?? 'Featured' ?></span>
             </div>
             <div class="boosted-card-body">
                 <h3 class="boosted-card-name"><?= htmlspecialchars($biz['name']) ?></h3>
                 <div class="boosted-card-location">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span><?= htmlspecialchars($biz['city'] ?? 'Nederland') ?></span>
+                    <span><?= htmlspecialchars($biz['city'] ?? ($translations['netherlands'] ?? 'Netherlands')) ?></span>
                 </div>
                 <div class="boosted-card-rating">
                     <div class="stars">
@@ -344,10 +344,10 @@
             <div class="boosted-slot-icon">
                 <i class="fas fa-plus"></i>
             </div>
-            <div class="boosted-slot-title">Plek Beschikbaar</div>
-            <div class="boosted-slot-desc">Zet jouw salon in de spotlight en bereik meer klanten</div>
+            <div class="boosted-slot-title"><?= $translations['slot_available'] ?? 'Spot Available' ?></div>
+            <div class="boosted-slot-desc"><?= $translations['slot_available_desc'] ?? 'Put your salon in the spotlight and reach more customers' ?></div>
             <div class="boosted-slot-price">&euro;299,99</div>
-            <div class="boosted-slot-duration">30 dagen uitgelicht</div>
+            <div class="boosted-slot-duration"><?= $translations['slot_duration'] ?? '30 days featured' ?></div>
         </a>
         <?php endfor; ?>
     </div>
@@ -356,24 +356,24 @@
 <!-- Categories - 10 Groups with Photos -->
 <section class="section section-light">
     <div class="section-header">
-        <div class="section-tag"><?= $translations['categories_label'] ?? 'Categorieën' ?></div>
-        <h2 class="section-title"><?= $translations['categories_title'] ?? 'Ontdek Services' ?></h2>
-        <p class="section-subtitle"><?= $translations['categories_subtitle'] ?? 'Van haar tot wellness - vind precies wat je zoekt' ?></p>
+        <div class="section-tag"><?= $translations['categories_label'] ?? 'Categories' ?></div>
+        <h2 class="section-title"><?= $translations['categories_title'] ?? 'Discover Services' ?></h2>
+        <p class="section-subtitle"><?= $translations['categories_subtitle'] ?? 'From hair to wellness - find exactly what you\'re looking for' ?></p>
     </div>
 
     <div class="category-grid">
         <?php
         $categories = [
-            ['slug' => 'haar', 'name' => 'Haar', 'icon' => 'cut', 'desc' => 'Kapper, Barber, Stylist', 'image' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop'],
-            ['slug' => 'nagels', 'name' => 'Nagels', 'icon' => 'hand-sparkles', 'desc' => 'Manicure, Pedicure, Gel', 'image' => 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop'],
-            ['slug' => 'huid', 'name' => 'Skincare', 'icon' => 'spa', 'desc' => 'Facial, Skincare', 'image' => 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop'],
-            ['slug' => 'lichaam', 'name' => 'Lichaam', 'icon' => 'hands', 'desc' => 'Massage, Body', 'image' => 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop'],
-            ['slug' => 'ontharing', 'name' => 'Ontharing', 'icon' => 'feather', 'desc' => 'Waxen, Laser', 'image' => 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=300&fit=crop'],
-            ['slug' => 'makeup', 'name' => 'Make-up', 'icon' => 'paint-brush', 'desc' => 'Visagie, Wimpers', 'image' => 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=300&fit=crop'],
-            ['slug' => 'wellness', 'name' => 'Wellness', 'icon' => 'hot-tub', 'desc' => 'Spa, Sauna', 'image' => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop'],
-            ['slug' => 'bruinen', 'name' => 'Bruinen', 'icon' => 'sun', 'desc' => 'Zonnebank, Spray tan', 'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop'],
-            ['slug' => 'medisch', 'name' => 'Medisch', 'icon' => 'user-md', 'desc' => 'Botox, Fillers', 'image' => 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop'],
-            ['slug' => 'alternatief', 'name' => 'Alternatief', 'icon' => 'yin-yang', 'desc' => 'Yoga, Reiki', 'image' => 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop'],
+            ['slug' => 'haar', 'name_key' => 'cat_hair', 'name_default' => 'Hair', 'icon' => 'cut', 'desc_key' => 'cat_hair_desc', 'desc_default' => 'Hairdresser, Barber, Stylist', 'image' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop'],
+            ['slug' => 'nagels', 'name_key' => 'cat_nails', 'name_default' => 'Nails', 'icon' => 'hand-sparkles', 'desc_key' => 'cat_nails_desc', 'desc_default' => 'Manicure, Pedicure, Gel', 'image' => 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop'],
+            ['slug' => 'huid', 'name_key' => 'cat_skin', 'name_default' => 'Skincare', 'icon' => 'spa', 'desc_key' => 'cat_skin_desc', 'desc_default' => 'Facial, Skincare', 'image' => 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop'],
+            ['slug' => 'lichaam', 'name_key' => 'cat_body', 'name_default' => 'Body', 'icon' => 'hands', 'desc_key' => 'cat_body_desc', 'desc_default' => 'Massage, Body', 'image' => 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop'],
+            ['slug' => 'ontharing', 'name_key' => 'cat_hairremoval', 'name_default' => 'Hair Removal', 'icon' => 'feather', 'desc_key' => 'cat_hairremoval_desc', 'desc_default' => 'Waxing, Laser', 'image' => 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=300&fit=crop'],
+            ['slug' => 'makeup', 'name_key' => 'cat_makeup', 'name_default' => 'Make-up', 'icon' => 'paint-brush', 'desc_key' => 'cat_makeup_desc', 'desc_default' => 'Make-up, Lashes', 'image' => 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=300&fit=crop'],
+            ['slug' => 'wellness', 'name_key' => 'cat_wellness', 'name_default' => 'Wellness', 'icon' => 'hot-tub', 'desc_key' => 'cat_wellness_desc', 'desc_default' => 'Spa, Sauna', 'image' => 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop'],
+            ['slug' => 'bruinen', 'name_key' => 'cat_tanning', 'name_default' => 'Tanning', 'icon' => 'sun', 'desc_key' => 'cat_tanning_desc', 'desc_default' => 'Sunbed, Spray tan', 'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop'],
+            ['slug' => 'medisch', 'name_key' => 'cat_medical', 'name_default' => 'Medical', 'icon' => 'user-md', 'desc_key' => 'cat_medical_desc', 'desc_default' => 'Botox, Fillers', 'image' => 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop'],
+            ['slug' => 'alternatief', 'name_key' => 'cat_alternative', 'name_default' => 'Alternative', 'icon' => 'yin-yang', 'desc_key' => 'cat_alternative_desc', 'desc_default' => 'Yoga, Reiki', 'image' => 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop'],
         ];
         foreach ($categories as $cat):
         ?>
@@ -382,8 +382,8 @@
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
                 <div class="category-card-icon"><i class="fas fa-<?= $cat['icon'] ?>"></i></div>
-                <h3><?= $cat['name'] ?></h3>
-                <span><?= $cat['desc'] ?></span>
+                <h3><?= $translations[$cat['name_key']] ?? $cat['name_default'] ?></h3>
+                <span><?= $translations[$cat['desc_key']] ?? $cat['desc_default'] ?></span>
             </div>
         </a>
         <?php endforeach; ?>
@@ -394,9 +394,9 @@
 <?php if (!empty($featuredBusinesses)): ?>
 <section class="section section-gray">
     <div class="section-header">
-        <div class="section-tag"><?= $translations['featured_label'] ?? 'Populair' ?></div>
-        <h2 class="section-title"><?= $translations['featured_title'] ?? 'Populaire Salons' ?></h2>
-        <p class="section-subtitle"><?= $translations['featured_subtitle'] ?? 'De best beoordeelde salons bij jou in de buurt' ?></p>
+        <div class="section-tag"><?= $translations['featured_label'] ?? 'Popular' ?></div>
+        <h2 class="section-title"><?= $translations['featured_title'] ?? 'Popular Salons' ?></h2>
+        <p class="section-subtitle"><?= $translations['featured_subtitle'] ?? 'The best rated salons near you' ?></p>
     </div>
 
     <div class="business-grid" style="max-width: 1100px; margin: 0 auto;">
@@ -418,7 +418,7 @@
                 <h3 class="business-name"><?= htmlspecialchars($biz['name']) ?></h3>
                 <div class="business-location">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span><?= htmlspecialchars($biz['city'] ?? 'Nederland') ?></span>
+                    <span><?= htmlspecialchars($biz['city'] ?? ($translations['netherlands'] ?? 'Netherlands')) ?></span>
                 </div>
                 <div class="business-rating">
                     <div class="stars">
@@ -429,7 +429,7 @@
                     <span class="count">(<?= $biz['review_count'] ?? 0 ?>)</span>
                 </div>
                 <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="business-btn">
-                    <?= $translations['view_book'] ?? 'Bekijk & Boek' ?>
+                    <?= $translations['view_book'] ?? 'View & Book' ?>
                 </a>
             </div>
         </div>
@@ -442,14 +442,14 @@
 <section class="section section-light">
     <div class="container" style="max-width: 1100px; margin: 0 auto;">
         <div class="business-cta">
-            <h2><i class="fas fa-store"></i> <?= $translations['have_salon'] ?? 'Heb je een salon?' ?></h2>
-            <p><?= $translations['have_salon_desc'] ?? 'Sluit je aan bij GlamourSchedule en ontvang online boekingen van nieuwe klanten' ?></p>
+            <h2><i class="fas fa-store"></i> <?= $translations['have_salon'] ?? 'Do you have a salon?' ?></h2>
+            <p><?= $translations['have_salon_desc'] ?? 'Join GlamourSchedule and receive online bookings from new customers' ?></p>
             <div class="business-cta-buttons">
                 <a href="/business/register" class="btn btn-primary btn-lg">
-                    <i class="fas fa-rocket"></i> <?= $translations['start_free'] ?? 'Start Gratis' ?>
+                    <i class="fas fa-rocket"></i> <?= $translations['start_free'] ?? 'Start Free' ?>
                 </a>
                 <span class="badge">
-                    <i class="fas fa-tag"></i> <?= str_replace(':count', '100', $translations['first_salons_offer'] ?? 'Eerste 100 salons: slechts') ?> &euro;0,99
+                    <i class="fas fa-tag"></i> <?= str_replace(':count', '100', $translations['first_salons_offer'] ?? 'First 100 salons: only') ?> &euro;0,99
                 </span>
             </div>
         </div>
@@ -457,11 +457,11 @@
         <!-- Sales Partner CTA -->
         <div class="sales-cta">
             <div>
-                <h3><i class="fas fa-handshake"></i> Word Sales Partner</h3>
-                <p>Verdien commissie door bedrijven aan te melden bij GlamourSchedule</p>
+                <h3><i class="fas fa-handshake"></i> <?= $translations['become_sales_partner'] ?? 'Become Sales Partner' ?></h3>
+                <p><?= $translations['sales_partner_desc'] ?? 'Earn commission by referring businesses to GlamourSchedule' ?></p>
             </div>
             <a href="/sales/register" class="btn">
-                <i class="fas fa-arrow-right"></i> Start nu
+                <i class="fas fa-arrow-right"></i> <?= $translations['start_now'] ?? 'Start Now' ?>
             </a>
         </div>
     </div>
@@ -470,26 +470,26 @@
 <!-- How It Works -->
 <section class="section section-gray">
     <div class="section-header">
-        <div class="section-tag"><?= $translations['steps_label'] ?? 'Hoe het werkt' ?></div>
-        <h2 class="section-title"><?= $translations['steps_title'] ?? 'In 3 Stappen Geboekt' ?></h2>
-        <p class="section-subtitle"><?= $translations['steps_subtitle'] ?? 'Snel en eenvoudig je afspraak maken' ?></p>
+        <div class="section-tag"><?= $translations['steps_label'] ?? 'How It Works' ?></div>
+        <h2 class="section-title"><?= $translations['steps_title'] ?? 'Booked in 3 Steps' ?></h2>
+        <p class="section-subtitle"><?= $translations['steps_subtitle'] ?? 'Quick and easy appointment booking' ?></p>
     </div>
 
     <div class="steps-grid">
         <div class="step-card">
             <div class="step-number">1</div>
-            <h3 class="step-title"><?= $translations['step1_title'] ?? 'Zoek een salon' ?></h3>
-            <p class="step-desc"><?= $translations['step1_desc'] ?? 'Vind de perfecte salon bij jou in de buurt op basis van dienst, locatie of reviews' ?></p>
+            <h3 class="step-title"><?= $translations['step1_title'] ?? 'Find a salon' ?></h3>
+            <p class="step-desc"><?= $translations['step1_desc'] ?? 'Find the perfect salon near you based on service, location or reviews' ?></p>
         </div>
         <div class="step-card">
             <div class="step-number">2</div>
-            <h3 class="step-title"><?= $translations['step2_title'] ?? 'Kies een dienst' ?></h3>
-            <p class="step-desc"><?= $translations['step2_desc'] ?? 'Bekijk alle diensten met prijzen, duur en beschikbare tijden in realtime' ?></p>
+            <h3 class="step-title"><?= $translations['step2_title'] ?? 'Choose a service' ?></h3>
+            <p class="step-desc"><?= $translations['step2_desc'] ?? 'View all services with prices, duration and available times in real-time' ?></p>
         </div>
         <div class="step-card">
             <div class="step-number">3</div>
-            <h3 class="step-title"><?= $translations['step3_title'] ?? 'Boek direct' ?></h3>
-            <p class="step-desc"><?= $translations['step3_desc'] ?? 'Bevestig je afspraak met een paar klikken en ontvang direct een bevestiging' ?></p>
+            <h3 class="step-title"><?= $translations['step3_title'] ?? 'Book instantly' ?></h3>
+            <p class="step-desc"><?= $translations['step3_desc'] ?? 'Confirm your appointment with a few clicks and receive instant confirmation' ?></p>
         </div>
     </div>
 </section>
@@ -497,10 +497,10 @@
 <!-- Final CTA -->
 <div class="cta-prestige">
     <div>
-        <h2><?= $translations['cta_title'] ?? 'Laat Je Salon Groeien' ?></h2>
-        <p><?= $translations['cta_subtitle'] ?? 'Sluit je aan bij het premium booking platform.' ?></p>
+        <h2><?= $translations['cta_title'] ?? 'Grow Your Salon' ?></h2>
+        <p><?= $translations['cta_subtitle'] ?? 'Join the premium booking platform.' ?></p>
     </div>
-    <a href="/register?type=business" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Nu' ?></a>
+    <a href="/register?type=business" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Now' ?></a>
 </div>
 
 <script>

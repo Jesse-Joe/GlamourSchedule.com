@@ -385,6 +385,26 @@ return [
     'view' => 'View',
 
     // ═══════════════════════════════════════════════════════════════════════
+    // NAVIGATION & LAYOUT
+    // ═══════════════════════════════════════════════════════════════════════
+    'navigation' => 'Navigation',
+    'my_account' => 'My Account',
+    'my_salon' => 'My Salon',
+    'salon_dashboard' => 'Salon Dashboard',
+    'appointments' => 'Appointments',
+    'for_business' => 'For Business',
+    'register_salon' => 'Register Salon',
+    'become_partner' => 'Become Partner',
+    'sales_portal' => 'Sales Portal',
+    'features' => 'Features',
+    'footer_desc' => 'The premium booking platform. Find and book the best salons.',
+    'company' => 'Company',
+    'legal' => 'Legal',
+    'rights' => 'All rights reserved.',
+    'developed_by' => 'Developed by',
+    'marketing' => 'Marketing',
+
+    // ═══════════════════════════════════════════════════════════════════════
     // DOMAIN/LANGUAGE SWITCH POPUP
     // ═══════════════════════════════════════════════════════════════════════
     'domain_popup_title' => 'We detected you\'re in the Netherlands',
@@ -396,4 +416,77 @@ return [
     'domain_popup_switch_en' => 'Go to glamourschedule.com',
     'domain_popup_stay_nl' => 'Stay on Dutch site',
     'domain_popup_note' => 'You can always change your language preference in the menu.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EARLY BIRD POPUP
+    // ═══════════════════════════════════════════════════════════════════════
+    'early_bird_offer' => 'Early Bird Offer',
+    'start_salon_for' => 'Start your salon for only',
+    'early_bird_subtitle' => 'One-time for the first 100 businesses',
+    'early_bird_feature_1' => '14 days free trial',
+    'early_bird_feature_2' => 'Online booking system',
+    'early_bird_feature_3' => 'Your own business page',
+    'early_bird_feature_4' => 'No monthly costs',
+    'register_now' => 'Register Now',
+    'early_bird_note' => 'After this €99.99 for new businesses',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLOBAL SEARCH
+    // ═══════════════════════════════════════════════════════════════════════
+    'salons' => 'Salons',
+    'services' => 'Services',
+    'netherlands' => 'Netherlands',
+    'at' => 'at',
+    'all_salons' => 'All Salons',
+    'marketing_services' => 'Marketing Services',
+    'platform_features' => 'Platform Features',
+    'pages' => 'Pages',
+    'no_results_for' => 'No results for',
+    'search_all_salons' => 'Search all salons',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CATEGORIES
+    // ═══════════════════════════════════════════════════════════════════════
+    'categories_title' => 'Discover Services',
+    'categories_subtitle' => 'From hair to wellness - find exactly what you\'re looking for',
+    'cat_hair' => 'Hair',
+    'cat_hair_desc' => 'Hairdresser, Barber, Stylist',
+    'cat_nails' => 'Nails',
+    'cat_nails_desc' => 'Manicure, Pedicure, Gel',
+    'cat_skin' => 'Skincare',
+    'cat_skin_desc' => 'Facial, Skincare',
+    'cat_body' => 'Body',
+    'cat_body_desc' => 'Massage, Body',
+    'cat_hairremoval' => 'Hair Removal',
+    'cat_hairremoval_desc' => 'Waxing, Laser',
+    'cat_makeup' => 'Make-up',
+    'cat_makeup_desc' => 'Make-up, Lashes',
+    'cat_wellness' => 'Wellness',
+    'cat_wellness_desc' => 'Spa, Sauna',
+    'cat_tanning' => 'Tanning',
+    'cat_tanning_desc' => 'Sunbed, Spray tan',
+    'cat_medical' => 'Medical',
+    'cat_medical_desc' => 'Botox, Fillers',
+    'cat_alternative' => 'Alternative',
+    'cat_alternative_desc' => 'Yoga, Reiki',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // HOMEPAGE SECTIONS
+    // ═══════════════════════════════════════════════════════════════════════
+    'featured' => 'Featured',
+    'featured_businesses' => 'Featured Businesses',
+    'featured_businesses_desc' => 'Premium salons that stand out',
+    'slot_available' => 'Spot Available',
+    'slot_available_desc' => 'Put your salon in the spotlight and reach more customers',
+    'slot_duration' => '30 days featured',
+    'become_sales_partner' => 'Become Sales Partner',
+    'sales_partner_desc' => 'Earn commission by referring businesses to GlamourSchedule',
+    'start_now' => 'Start Now',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLAMORI CHATBOT
+    // ═══════════════════════════════════════════════════════════════════════
+    'online_always_available' => 'Online - Always available',
+    'type_your_message' => 'Type your message...',
+    'glamori_welcome' => 'Hello! I\'m Glamori. How can I help you?',
 ];

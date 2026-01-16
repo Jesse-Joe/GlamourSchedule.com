@@ -29,51 +29,51 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <div class="global-search-modal" id="globalSearchModal">
         <div class="global-search-header">
             <i class="fas fa-search"></i>
-            <input type="text" id="globalSearchInput" placeholder="Zoek salons, diensten, pagina's..." autocomplete="off" oninput="handleGlobalSearch(this.value)">
+            <input type="text" id="globalSearchInput" placeholder="<?= $translations['search_placeholder'] ?? 'Search salons, services, pages...' ?>" autocomplete="off" oninput="handleGlobalSearch(this.value)">
             <button class="global-search-close" onclick="closeGlobalSearch()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="global-search-results" id="globalSearchResults">
             <div class="search-quick-links">
-                <div class="search-section-title">Snelle links</div>
+                <div class="search-section-title"><?= $translations['quick_links'] ?? 'Quick links' ?></div>
                 <a href="/search" class="search-quick-link" onclick="closeGlobalSearch()">
                     <i class="fas fa-store"></i>
-                    <span>Alle Salons Bekijken</span>
+                    <span><?= $translations['view_all_salons'] ?? 'View All Salons' ?></span>
                 </a>
                 <a href="/search?category=kapper" class="search-quick-link" onclick="closeGlobalSearch()">
                     <i class="fas fa-cut"></i>
-                    <span>Kappers</span>
+                    <span><?= $translations['hairdressers'] ?? 'Hairdressers' ?></span>
                 </a>
                 <a href="/search?category=schoonheid" class="search-quick-link" onclick="closeGlobalSearch()">
                     <i class="fas fa-spa"></i>
-                    <span>Schoonheidsspecialisten</span>
+                    <span><?= $translations['beauty_specialists'] ?? 'Beauty Specialists' ?></span>
                 </a>
                 <a href="/search?category=nagels" class="search-quick-link" onclick="closeGlobalSearch()">
                     <i class="fas fa-hand-sparkles"></i>
-                    <span>Nagelstudio's</span>
+                    <span><?= $translations['nail_salons'] ?? 'Nail Salons' ?></span>
                 </a>
                 <a href="/search?category=massage" class="search-quick-link" onclick="closeGlobalSearch()">
                     <i class="fas fa-hands"></i>
-                    <span>Massage</span>
+                    <span><?= $translations['massage'] ?? 'Massage' ?></span>
                 </a>
             </div>
-            <div class="search-section-title">Pagina's</div>
+            <div class="search-section-title"><?= $translations['pages'] ?? 'Pages' ?></div>
             <a href="/register?type=business" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-rocket"></i>
-                <span>Salon Aanmelden</span>
+                <span><?= $translations['register_salon'] ?? 'Register Salon' ?></span>
             </a>
             <a href="/marketing" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-bullhorn"></i>
-                <span>Marketing Services</span>
+                <span><?= $translations['marketing_services'] ?? 'Marketing Services' ?></span>
             </a>
             <a href="/about" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-cogs"></i>
-                <span>Platform Functionaliteit</span>
+                <span><?= $translations['platform_features'] ?? 'Platform Features' ?></span>
             </a>
             <a href="/contact" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-envelope"></i>
-                <span>Contact</span>
+                <span><?= $translations['contact'] ?? 'Contact' ?></span>
             </a>
         </div>
     </div>
@@ -96,13 +96,13 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         <nav class="sidebar-nav">
             <!-- Main Navigation -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Navigatie</div>
+                <div class="sidebar-section-title"><?= $translations['navigation'] ?? 'Navigation' ?></div>
             </div>
             <a href="/" class="sidebar-link <?= $currentPath === '/' ? 'active' : '' ?>">
-                <i class="fas fa-home"></i> Home
+                <i class="fas fa-home"></i> <?= $translations['home'] ?? 'Home' ?>
             </a>
             <a href="/search" class="sidebar-link <?= $currentPath === '/search' ? 'active' : '' ?>">
-                <i class="fas fa-search"></i> Zoeken
+                <i class="fas fa-search"></i> <?= $translations['search'] ?? 'Search' ?>
             </a>
 
             <div class="sidebar-divider"></div>
@@ -110,32 +110,32 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <!-- Account Section -->
             <?php if ($isLoggedIn): ?>
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Mijn Account</div>
+                <div class="sidebar-section-title"><?= $translations['my_account'] ?? 'My Account' ?></div>
             </div>
             <a href="/dashboard" class="sidebar-link <?= strpos($currentPath, '/dashboard') === 0 ? 'active' : '' ?>">
-                <i class="fas fa-user"></i> Dashboard
+                <i class="fas fa-user"></i> <?= $translations['dashboard'] ?? 'Dashboard' ?>
             </a>
             <a href="/dashboard/bookings" class="sidebar-link">
-                <i class="fas fa-calendar-check"></i> Mijn Boekingen
+                <i class="fas fa-calendar-check"></i> <?= $translations['my_bookings'] ?? 'My Bookings' ?>
             </a>
             <a href="/dashboard/settings" class="sidebar-link">
-                <i class="fas fa-cog"></i> Instellingen
+                <i class="fas fa-cog"></i> <?= $translations['settings'] ?? 'Settings' ?>
             </a>
             <?php endif; ?>
 
             <?php if ($isBusiness): ?>
             <div class="sidebar-divider"></div>
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Mijn Salon</div>
+                <div class="sidebar-section-title"><?= $translations['my_salon'] ?? 'My Salon' ?></div>
             </div>
             <a href="/business/dashboard" class="sidebar-link">
-                <i class="fas fa-store"></i> Salon Dashboard
+                <i class="fas fa-store"></i> <?= $translations['salon_dashboard'] ?? 'Salon Dashboard' ?>
             </a>
             <a href="/business/bookings" class="sidebar-link">
-                <i class="fas fa-calendar-alt"></i> Afspraken
+                <i class="fas fa-calendar-alt"></i> <?= $translations['appointments'] ?? 'Appointments' ?>
             </a>
             <a href="/business/services" class="sidebar-link">
-                <i class="fas fa-list"></i> Diensten
+                <i class="fas fa-list"></i> <?= $translations['services'] ?? 'Services' ?>
             </a>
             <?php endif; ?>
 
@@ -143,36 +143,36 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             <!-- Business & Info -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Voor Bedrijven</div>
+                <div class="sidebar-section-title"><?= $translations['for_business'] ?? 'For Business' ?></div>
             </div>
             <a href="/register?type=business" class="sidebar-link">
-                <i class="fas fa-rocket"></i> Salon Aanmelden
+                <i class="fas fa-rocket"></i> <?= $translations['register_salon'] ?? 'Register Salon' ?>
             </a>
             <a href="/sales/register" class="sidebar-link">
-                <i class="fas fa-handshake"></i> Word Partner
+                <i class="fas fa-handshake"></i> <?= $translations['become_partner'] ?? 'Become Partner' ?>
             </a>
 
             <div class="sidebar-divider"></div>
 
             <!-- Info -->
-            <a href="/marketing" class="sidebar-link"><i class="fas fa-bullhorn"></i> Marketing</a>
-            <a href="/about" class="sidebar-link"><i class="fas fa-cogs"></i> Functionaliteit</a>
-            <a href="/contact" class="sidebar-link"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="/marketing" class="sidebar-link"><i class="fas fa-bullhorn"></i> <?= $translations['marketing'] ?? 'Marketing' ?></a>
+            <a href="/about" class="sidebar-link"><i class="fas fa-cogs"></i> <?= $translations['features'] ?? 'Features' ?></a>
+            <a href="/contact" class="sidebar-link"><i class="fas fa-envelope"></i> <?= $translations['contact'] ?? 'Contact' ?></a>
         </nav>
 
         <div class="sidebar-footer">
             <button class="theme-toggle" onclick="toggleTheme()">
                 <i class="fas fa-sun theme-icon-light"></i>
                 <i class="fas fa-moon theme-icon-dark"></i>
-                <span class="theme-toggle-text">Light Mode</span>
+                <span class="theme-toggle-text"><?= $translations['light_mode'] ?? 'Light Mode' ?></span>
             </button>
             <?php if ($isLoggedIn): ?>
                 <a href="/logout" class="sidebar-btn sidebar-btn-outline">
-                    <i class="fas fa-sign-out-alt"></i> Uitloggen
+                    <i class="fas fa-sign-out-alt"></i> <?= $translations['logout'] ?? 'Logout' ?>
                 </a>
             <?php else: ?>
-                <a href="/login" class="sidebar-btn">Inloggen</a>
-                <a href="/register" class="sidebar-btn sidebar-btn-outline">Registreren</a>
+                <a href="/login" class="sidebar-btn"><?= $translations['login'] ?? 'Login' ?></a>
+                <a href="/register" class="sidebar-btn sidebar-btn-outline"><?= $translations['register'] ?? 'Register' ?></a>
             <?php endif; ?>
         </div>
     </aside>
@@ -189,22 +189,22 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </a>
 
         <ul class="nav-links-prestige" id="navMenu">
-            <li><a href="javascript:void(0)" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Zoeken' ?>"><i class="fas fa-search"></i></a></li>
-            <li><a href="/register?type=business">Salon Aanmelden</a></li>
-            <li><a href="/sales/register">Word Partner</a></li>
-            <li><a href="/sales/login">Sales Portal</a></li>
-            <li><a href="/marketing">Marketing</a></li>
-            <li><a href="/about">Functionaliteit</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="javascript:void(0)" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Search' ?>"><i class="fas fa-search"></i></a></li>
+            <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
+            <li><a href="/sales/register"><?= $translations['become_partner'] ?? 'Become Partner' ?></a></li>
+            <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
+            <li><a href="/marketing"><?= $translations['marketing'] ?? 'Marketing' ?></a></li>
+            <li><a href="/about"><?= $translations['features'] ?? 'Features' ?></a></li>
+            <li><a href="/contact"><?= $translations['contact'] ?? 'Contact' ?></a></li>
 
             <?php if (isset($user)): ?>
                 <li><a href="/dashboard"><?= $translations['dashboard'] ?? 'Dashboard' ?></a></li>
-                <li><a href="/dashboard/bookings"><?= $translations['bookings'] ?? 'Boekingen' ?></a></li>
+                <li><a href="/dashboard/bookings"><?= $translations['my_bookings'] ?? 'My Bookings' ?></a></li>
             <?php endif; ?>
         </ul>
 
         <div class="nav-actions-prestige">
-            <a href="javascript:void(0)" class="nav-search-mobile" title="Zoeken" onclick="openGlobalSearch()">
+            <a href="javascript:void(0)" class="nav-search-mobile" title="<?= $translations['search'] ?? 'Search' ?>" onclick="openGlobalSearch()">
                 <i class="fas fa-search"></i>
             </a>
             <?php if (isset($user)): ?>
@@ -214,17 +214,17 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     </button>
                     <div class="account-dropdown-menu" id="accountDropdownMenu">
                         <a href="/dashboard" class="account-dropdown-item">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                            <i class="fas fa-tachometer-alt"></i> <?= $translations['dashboard'] ?? 'Dashboard' ?>
                         </a>
                         <a href="/dashboard/settings" class="account-dropdown-item">
-                            <i class="fas fa-cog"></i> Instellingen
+                            <i class="fas fa-cog"></i> <?= $translations['settings'] ?? 'Settings' ?>
                         </a>
                         <a href="/dashboard/bookings" class="account-dropdown-item">
-                            <i class="fas fa-calendar-check"></i> Mijn Boekingen
+                            <i class="fas fa-calendar-check"></i> <?= $translations['my_bookings'] ?? 'My Bookings' ?>
                         </a>
                         <div class="account-dropdown-divider"></div>
                         <a href="/logout" class="account-dropdown-item account-dropdown-logout">
-                            <i class="fas fa-sign-out-alt"></i> Uitloggen
+                            <i class="fas fa-sign-out-alt"></i> <?= $translations['logout'] ?? 'Logout' ?>
                         </a>
                     </div>
                 </div>
@@ -251,41 +251,41 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="/" class="footer-logo">Glamourschedule</a>
-                <p><?= $translations['footer_desc'] ?? 'Het premium booking platform van Nederland. Vind en boek de beste salons.' ?></p>
+                <p><?= $translations['footer_desc'] ?? 'The premium booking platform. Find and book the best salons.' ?></p>
             </div>
 
             <div>
                 <h4><?= $translations['platform'] ?? 'Platform' ?></h4>
                 <ul>
-                    <li><a href="/search"><?= $translations['search'] ?? 'Zoeken' ?></a></li>
-                    <li><a href="/register?type=business">Salon Aanmelden</a></li>
-                    <li><a href="/sales/login">Sales Portal</a></li>
+                    <li><a href="/search"><?= $translations['search'] ?? 'Search' ?></a></li>
+                    <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
+                    <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
                 </ul>
             </div>
 
             <div>
-                <h4><?= $translations['company'] ?? 'Bedrijf' ?></h4>
+                <h4><?= $translations['company'] ?? 'Company' ?></h4>
                 <ul>
-                    <li><a href="/about">Functionaliteit</a></li>
-                    <li><a href="/marketing">Marketing</a></li>
+                    <li><a href="/about"><?= $translations['features'] ?? 'Features' ?></a></li>
+                    <li><a href="/marketing"><?= $translations['marketing'] ?? 'Marketing' ?></a></li>
                     <li><a href="/contact"><?= $translations['contact'] ?? 'Contact' ?></a></li>
                     <li><a href="https://www.kvk.nl/bestellen/#/81973667000048233005?origin=search" target="_blank">KVK: 81973667</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4><?= $translations['legal'] ?? 'Juridisch' ?></h4>
+                <h4><?= $translations['legal'] ?? 'Legal' ?></h4>
                 <ul>
-                    <li><a href="/terms"><?= $translations['terms'] ?? 'Voorwaarden' ?></a></li>
+                    <li><a href="/terms"><?= $translations['terms'] ?? 'Terms' ?></a></li>
                     <li><a href="/privacy"><?= $translations['privacy'] ?? 'Privacy' ?></a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> Glamourschedule. <?= $translations['rights'] ?? 'Alle rechten voorbehouden.' ?></p>
+            <p>&copy; <?= date('Y') ?> Glamourschedule. <?= $translations['rights'] ?? 'All rights reserved.' ?></p>
             <a href="https://phantrium.com" target="_blank">
-                <i class="fas fa-code"></i> Ontwikkeld door Phantrium
+                <i class="fas fa-code"></i> <?= $translations['developed_by'] ?? 'Developed by' ?> Phantrium
             </a>
         </div>
     </footer>
@@ -353,7 +353,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Salons
             if (data.salons && data.salons.length > 0) {
-                html += '<div class="search-section-title">Salons</div>';
+                html += '<div class="search-section-title"><?= $translations['salons'] ?? 'Salons' ?></div>';
                 data.salons.forEach(salon => {
                     const photo = salon.photos ? '/uploads/businesses/' + salon.id + '/' + salon.photos.split(',')[0] : '/images/placeholder-salon.jpg';
                     html += `
@@ -361,7 +361,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                             <img src="${photo}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
                             <div class="search-result-info">
                                 <span class="search-result-name">${salon.company_name}</span>
-                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || 'Nederland'}</span>
+                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || '<?= $translations['netherlands'] ?? 'Netherlands' ?>'}</span>
                             </div>
                         </a>
                     `;
@@ -370,12 +370,12 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Services
             if (data.services && data.services.length > 0) {
-                html += '<div class="search-section-title">Diensten</div>';
+                html += '<div class="search-section-title"><?= $translations['services'] ?? 'Services' ?></div>';
                 data.services.forEach(service => {
                     html += `
                         <a href="/business/${service.business_slug}?service=${service.id}" class="search-quick-link" onclick="closeGlobalSearch()">
                             <i class="fas fa-cut"></i>
-                            <span>${service.name} <small style="opacity:0.6">bij ${service.business_name}</small></span>
+                            <span>${service.name} <small style="opacity:0.6"><?= $translations['at'] ?? 'at' ?> ${service.business_name}</small></span>
                         </a>
                     `;
                 });
@@ -383,13 +383,13 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Pages (static matches)
             const pages = [
-                { url: '/search', name: 'Alle Salons', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all'] },
-                { url: '/register?type=business', name: 'Salon Aanmelden', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon'] },
-                { url: '/marketing', name: 'Marketing Services', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
-                { url: '/about', name: 'Platform Functionaliteit', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
-                { url: '/contact', name: 'Contact', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
-                { url: '/terms', name: 'Voorwaarden', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel'] },
-                { url: '/privacy', name: 'Privacy', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
+                { url: '/search', name: '<?= $translations['all_salons'] ?? 'All Salons' ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search'] },
+                { url: '/register?type=business', name: '<?= $translations['register_salon'] ?? 'Register Salon' ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register'] },
+                { url: '/marketing', name: '<?= $translations['marketing_services'] ?? 'Marketing Services' ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
+                { url: '/about', name: '<?= $translations['platform_features'] ?? 'Platform Features' ?>', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
+                { url: '/contact', name: '<?= $translations['contact'] ?? 'Contact' ?>', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
+                { url: '/terms', name: '<?= $translations['terms'] ?? 'Terms' ?>', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel', 'conditions'] },
+                { url: '/privacy', name: '<?= $translations['privacy'] ?? 'Privacy' ?>', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
             ];
 
             const q = query.toLowerCase();
@@ -399,7 +399,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             );
 
             if (matchedPages.length > 0) {
-                html += '<div class="search-section-title">Pagina\'s</div>';
+                html += '<div class="search-section-title"><?= $translations['pages'] ?? 'Pages' ?></div>';
                 matchedPages.forEach(page => {
                     html += `
                         <a href="${page.url}" class="search-quick-link" onclick="closeGlobalSearch()">
@@ -414,9 +414,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 html = `
                     <div class="search-no-results">
                         <i class="fas fa-search"></i>
-                        <p>Geen resultaten voor "${query}"</p>
+                        <p><?= $translations['no_results_for'] ?? 'No results for' ?> "${query}"</p>
                         <a href="/search?q=${encodeURIComponent(query)}" class="btn btn-primary" style="margin-top:1rem" onclick="closeGlobalSearch()">
-                            Zoek in alle salons
+                            <?= $translations['search_all_salons'] ?? 'Search all salons' ?>
                         </a>
                     </div>
                 `;
@@ -469,24 +469,24 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <button class="early-bird-close" onclick="closeEarlyBirdPopup()">&times;</button>
             <div class="early-bird-content">
                 <div class="early-bird-badge">
-                    <i class="fas fa-star"></i> Early Bird Aanbieding
+                    <i class="fas fa-star"></i> <?= $translations['early_bird_offer'] ?? 'Early Bird Offer' ?>
                 </div>
-                <h2>Start je salon voor slechts</h2>
+                <h2><?= $translations['start_salon_for'] ?? 'Start your salon for only' ?></h2>
                 <div class="early-bird-price">
                     <span class="currency">&euro;</span>
                     <span class="amount">0,99</span>
                 </div>
-                <p class="early-bird-subtitle">Eenmalig voor de eerste 100 bedrijven</p>
+                <p class="early-bird-subtitle"><?= $translations['early_bird_subtitle'] ?? 'One-time for the first 100 businesses' ?></p>
                 <ul class="early-bird-features">
-                    <li><i class="fas fa-check"></i> 14 dagen gratis proberen</li>
-                    <li><i class="fas fa-check"></i> Online boekingssysteem</li>
-                    <li><i class="fas fa-check"></i> Eigen bedrijfspagina</li>
-                    <li><i class="fas fa-check"></i> Geen maandelijkse kosten</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_1'] ?? '14 days free trial' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_2'] ?? 'Online booking system' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_3'] ?? 'Your own business page' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_4'] ?? 'No monthly costs' ?></li>
                 </ul>
                 <a href="/register?type=business" class="early-bird-btn">
-                    <i class="fas fa-rocket"></i> Nu Aanmelden
+                    <i class="fas fa-rocket"></i> <?= $translations['register_now'] ?? 'Register Now' ?>
                 </a>
-                <p class="early-bird-note">Daarna &euro;99,99 voor nieuwe bedrijven</p>
+                <p class="early-bird-note"><?= $translations['early_bird_note'] ?? 'After this €99.99 for new businesses' ?></p>
             </div>
         </div>
     </div>
@@ -639,35 +639,34 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <button class="domain-switch-close" onclick="dismissDomainPopup()">&times;</button>
             <div class="domain-switch-content">
                 <?php
-                $countryFlags = ['NL' => '????????', 'BE' => '????????', 'DE' => '????????', 'FR' => '????????', 'GB' => '????????', 'US' => '????????'];
-                $countryNames = [
-                    'NL' => ['nl' => 'Nederland', 'en' => 'Netherlands', 'de' => 'Niederlande', 'fr' => 'Pays-Bas'],
-                    'BE' => ['nl' => 'Belgie', 'en' => 'Belgium', 'de' => 'Belgien', 'fr' => 'Belgique'],
-                    'DE' => ['nl' => 'Duitsland', 'en' => 'Germany', 'de' => 'Deutschland', 'fr' => 'Allemagne'],
-                    'FR' => ['nl' => 'Frankrijk', 'en' => 'France', 'de' => 'Frankreich', 'fr' => 'France'],
-                    'GB' => ['nl' => 'Verenigd Koninkrijk', 'en' => 'United Kingdom', 'de' => 'Vereinigtes Konigreich', 'fr' => 'Royaume-Uni'],
-                    'US' => ['nl' => 'Verenigde Staten', 'en' => 'United States', 'de' => 'Vereinigte Staaten', 'fr' => 'Etats-Unis'],
-                ];
+                // Use country code images instead of emoji for better compatibility
                 $detectedCountry = $domainSwitchPopup['detected_country'];
-                $flag = $countryFlags[$detectedCountry] ?? '';
+                $countryNames = [
+                    'NL' => ['nl' => 'Nederland', 'en' => 'the Netherlands', 'de' => 'den Niederlanden', 'fr' => 'les Pays-Bas'],
+                    'BE' => ['nl' => 'België', 'en' => 'Belgium', 'de' => 'Belgien', 'fr' => 'la Belgique'],
+                    'DE' => ['nl' => 'Duitsland', 'en' => 'Germany', 'de' => 'Deutschland', 'fr' => 'l\'Allemagne'],
+                    'FR' => ['nl' => 'Frankrijk', 'en' => 'France', 'de' => 'Frankreich', 'fr' => 'la France'],
+                    'GB' => ['nl' => 'het Verenigd Koninkrijk', 'en' => 'the United Kingdom', 'de' => 'dem Vereinigten Königreich', 'fr' => 'le Royaume-Uni'],
+                    'US' => ['nl' => 'de Verenigde Staten', 'en' => 'the United States', 'de' => 'den Vereinigten Staaten', 'fr' => 'les États-Unis'],
+                ];
                 $countryName = $countryNames[$detectedCountry][$lang] ?? $detectedCountry;
                 ?>
 
                 <div class="domain-switch-icon">
-                    <span class="domain-switch-flag"><?= $flag ?></span>
+                    <i class="fas fa-globe-europe"></i>
                 </div>
 
                 <?php if ($domainSwitchPopup['current_domain'] === 'com' && $domainSwitchPopup['suggested_domain'] === 'nl'): ?>
                     <!-- User on .com detected in NL/BE - suggest Dutch site -->
-                    <h2 data-i18n="domain_popup_title"><?= $translations['domain_popup_title'] ?? 'We detected you\'re in ' . $countryName ?></h2>
-                    <p data-i18n="domain_popup_desc"><?= $translations['domain_popup_desc'] ?? 'Would you like to switch to our Dutch website for content in your language?' ?></p>
+                    <h2><?= $translations['domain_popup_title'] ?? 'We detected you\'re in ' . $countryName ?></h2>
+                    <p><?= $translations['domain_popup_desc'] ?? 'Would you like to switch to our Dutch website for content in your language?' ?></p>
 
                     <div class="domain-switch-buttons">
                         <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=nl" class="domain-switch-btn domain-switch-btn-primary">
-                            <span>????????</span> <?= $translations['domain_popup_switch_nl'] ?? 'Go to glamourschedule.nl' ?>
+                            <i class="fas fa-flag"></i> <?= $translations['domain_popup_switch_nl'] ?? 'Go to glamourschedule.nl' ?>
                         </a>
                         <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
-                            <span>????????</span> <?= $translations['domain_popup_stay_en'] ?? 'Stay on English site' ?>
+                            <i class="fas fa-globe"></i> <?= $translations['domain_popup_stay_en'] ?? 'Stay on English site' ?>
                         </button>
                     </div>
 
@@ -678,10 +677,10 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
                     <div class="domain-switch-buttons">
                         <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=en" class="domain-switch-btn domain-switch-btn-primary">
-                            <span>????????</span> <?= $translations['domain_popup_switch_en'] ?? 'Go to glamourschedule.com' ?>
+                            <i class="fas fa-globe"></i> <?= $translations['domain_popup_switch_en'] ?? 'Go to glamourschedule.com' ?>
                         </a>
                         <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
-                            <span>????????</span> <?= $translations['domain_popup_stay_nl'] ?? 'Blijf op Nederlandse site' ?>
+                            <i class="fas fa-flag"></i> <?= $translations['domain_popup_stay_nl'] ?? 'Blijf op Nederlandse site' ?>
                         </button>
                     </div>
                 <?php endif; ?>
@@ -700,12 +699,12 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     .domain-switch-close:hover { color: #fff; }
     .domain-switch-content { text-align: center; }
     .domain-switch-icon { margin-bottom: 1.5rem; }
-    .domain-switch-flag { font-size: 4rem; line-height: 1; }
+    .domain-switch-icon i { font-size: 3.5rem; color: #fff; }
     .domain-switch-content h2 { color: #fff; font-size: 1.4rem; margin: 0 0 0.75rem; font-weight: 600; }
     .domain-switch-content > p { color: rgba(255,255,255,0.7); margin: 0 0 1.75rem; font-size: 0.95rem; line-height: 1.5; }
     .domain-switch-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
     .domain-switch-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem 1.25rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
-    .domain-switch-btn span { font-size: 1.25rem; }
+    .domain-switch-btn i { font-size: 1.1rem; }
     .domain-switch-btn-primary { background: #fff; color: #000; }
     .domain-switch-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
     .domain-switch-btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
@@ -713,7 +712,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     .domain-switch-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0; }
     @media (max-width: 480px) {
         .domain-switch-modal { padding: 2rem 1.5rem; }
-        .domain-switch-flag { font-size: 3rem; }
+        .domain-switch-icon i { font-size: 2.5rem; }
         .domain-switch-content h2 { font-size: 1.2rem; }
     }
     </style>
@@ -746,5 +745,252 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     });
     </script>
     <?php endif; ?>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-banner" style="display:none">
+        <div class="cookie-content">
+            <div class="cookie-header">
+                <i class="fas fa-cookie-bite"></i>
+                <h3><?= $translations['cookie_title'] ?? 'Cookie instellingen' ?></h3>
+            </div>
+            <p><?= $translations['cookie_text'] ?? 'Wij gebruiken cookies om je ervaring te verbeteren, gepersonaliseerde content te tonen en ons verkeer te analyseren. Je kunt kiezen welke cookies je accepteert.' ?></p>
+
+            <div class="cookie-options">
+                <label class="cookie-option">
+                    <input type="checkbox" checked disabled>
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_essential'] ?? 'Essentieel' ?></strong>
+                        <small><?= $translations['cookie_essential_desc'] ?? 'Noodzakelijk voor het functioneren van de website' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookieAnalytics">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_analytics'] ?? 'Analytisch' ?></strong>
+                        <small><?= $translations['cookie_analytics_desc'] ?? 'Helpt ons te begrijpen hoe bezoekers onze site gebruiken' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookieMarketing">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_marketing'] ?? 'Marketing' ?></strong>
+                        <small><?= $translations['cookie_marketing_desc'] ?? 'Voor relevante advertenties op basis van je interesses' ?></small>
+                    </span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookiePersonalization">
+                    <span class="cookie-label">
+                        <strong><?= $translations['cookie_personalization'] ?? 'Personalisatie' ?></strong>
+                        <small><?= $translations['cookie_personalization_desc'] ?? 'Voor gepersonaliseerde aanbevelingen van salons' ?></small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="cookie-buttons">
+                <button onclick="acceptAllCookies()" class="cookie-btn cookie-btn-accept">
+                    <i class="fas fa-check"></i> <?= $translations['cookie_accept_all'] ?? 'Alles accepteren' ?>
+                </button>
+                <button onclick="saveSelectedCookies()" class="cookie-btn cookie-btn-save">
+                    <?= $translations['cookie_save'] ?? 'Selectie opslaan' ?>
+                </button>
+                <button onclick="rejectAllCookies()" class="cookie-btn cookie-btn-reject">
+                    <?= $translations['cookie_reject'] ?? 'Alleen essentieel' ?>
+                </button>
+            </div>
+
+            <p class="cookie-footer">
+                <a href="/privacy"><?= $translations['privacy'] ?? 'Privacybeleid' ?></a> |
+                <a href="/terms"><?= $translations['terms'] ?? 'Voorwaarden' ?></a>
+            </p>
+        </div>
+    </div>
+
+    <style>
+    /* Cookie Consent Banner */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10002;
+        padding: 1rem;
+    }
+    .cookie-content {
+        max-width: 500px;
+        margin: 0 auto;
+        background: #000;
+        border: 1px solid #333;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+    }
+    .cookie-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    .cookie-header i {
+        font-size: 1.5rem;
+        color: #fbbf24;
+    }
+    .cookie-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #fff;
+    }
+    .cookie-content > p {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin: 0 0 1rem;
+    }
+    .cookie-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .cookie-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .cookie-option input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-top: 2px;
+        accent-color: #fff;
+    }
+    .cookie-label {
+        flex: 1;
+    }
+    .cookie-label strong {
+        display: block;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+    .cookie-label small {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.75rem;
+    }
+    .cookie-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .cookie-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .cookie-btn-accept {
+        background: #fff;
+        color: #000;
+    }
+    .cookie-btn-accept:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+    }
+    .cookie-btn-save {
+        background: transparent;
+        color: #fff;
+        border: 1px solid #444;
+    }
+    .cookie-btn-save:hover {
+        border-color: #666;
+        background: rgba(255,255,255,0.05);
+    }
+    .cookie-btn-reject {
+        background: transparent;
+        color: rgba(255,255,255,0.6);
+        border: 1px solid #333;
+    }
+    .cookie-btn-reject:hover {
+        color: #fff;
+        border-color: #444;
+    }
+    .cookie-footer {
+        text-align: center;
+        margin: 1rem 0 0;
+        font-size: 0.75rem;
+    }
+    .cookie-footer a {
+        color: rgba(255,255,255,0.5);
+        text-decoration: none;
+    }
+    .cookie-footer a:hover {
+        color: #fff;
+    }
+    @media (max-width: 500px) {
+        .cookie-content { padding: 1.25rem; }
+        .cookie-buttons { flex-direction: column; }
+        .cookie-btn { min-width: 100%; }
+    }
+    </style>
+
+    <script>
+    // Cookie Consent Management
+    const CookieConsent = {
+        init() {
+            if (!this.hasConsent()) {
+                setTimeout(() => {
+                    document.getElementById('cookieConsent').style.display = 'block';
+                }, 1500);
+            }
+        },
+        hasConsent() {
+            return document.cookie.includes('gs_consent=');
+        }
+    };
+
+    function acceptAllCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: true,
+            marketing: true,
+            personalization: true
+        });
+    }
+
+    function rejectAllCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: false,
+            marketing: false,
+            personalization: false
+        });
+    }
+
+    function saveSelectedCookies() {
+        saveCookiePreferences({
+            essential: true,
+            analytics: document.getElementById('cookieAnalytics').checked,
+            marketing: document.getElementById('cookieMarketing').checked,
+            personalization: document.getElementById('cookiePersonalization').checked
+        });
+    }
+
+    function saveCookiePreferences(prefs) {
+        const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `gs_consent=${encodeURIComponent(JSON.stringify(prefs))}; expires=${expires}; path=/; SameSite=Lax`;
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+
+    // Initialize cookie consent on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        CookieConsent.init();
+    });
+    </script>
 </body>
 </html>

@@ -449,9 +449,9 @@
             </div>
             <div class="glamori-info">
                 <h4>Glamori</h4>
-                <span><span class="glamori-status"></span>Online - Altijd beschikbaar</span>
+                <span><span class="glamori-status"></span><?= $translations['online_always_available'] ?? 'Online - Always available' ?></span>
             </div>
-            <button class="glamori-close" onclick="toggleGlamori()" aria-label="Sluiten">
+            <button class="glamori-close" onclick="toggleGlamori()" aria-label="<?= $translations['close'] ?? 'Close' ?>">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -468,7 +468,7 @@
             <input type="text"
                    class="glamori-input"
                    id="glamoriInput"
-                   placeholder="Typ je bericht..."
+                   placeholder="<?= $translations['type_your_message'] ?? 'Type your message...' ?>"
                    onkeypress="if(event.key === 'Enter') sendGlamoriMessage()">
             <button class="glamori-send" onclick="sendGlamoriMessage()" id="glamoriSendBtn">
                 <i class="fas fa-paper-plane"></i>
@@ -508,8 +508,8 @@ function initGlamori() {
         .catch(err => {
             console.error('Glamori init error:', err);
             addGlamoriMessage({
-                message: 'Hallo! Ik ben Glamori. Waarmee kan ik je helpen?',
-                timestamp: new Date().toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'})
+                message: '<?= $translations['glamori_welcome'] ?? "Hello! I'm Glamori. How can I help you?" ?>',
+                timestamp: new Date().toLocaleTimeString('<?= $currentLang ?? "en" ?>-<?= strtoupper($currentLang ?? "en") ?>', {hour: '2-digit', minute: '2-digit'})
             }, 'assistant');
         });
 }
