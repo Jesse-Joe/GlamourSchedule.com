@@ -220,4 +220,83 @@ abstract class Controller
         $token = $_POST['csrf_token'] ?? '';
         return hash_equals($_SESSION['csrf_token'] ?? '', $token);
     }
+
+    /**
+     * Generate business URL (with subdomain support)
+     * If we're on a business subdomain, use relative URLs
+     * Otherwise, generate subdomain URLs
+     */
+    protected function businessUrl(string $slug, string $path = ''): string
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+
+        // Check if we're already on a business subdomain
+        if ($this->isBusinessSubdomain()) {
+            // Use relative URL
+            return '/' . ltrim($path, '/');
+        }
+
+        // Generate subdomain URL
+        // Determine base domain
+        $baseDomain = 'glamourschedule.nl';
+        if (str_contains($host, 'glamourschedule.com')) {
+            $baseDomain = 'glamourschedule.com';
+        }
+
+        $subdomainUrl = "{$protocol}://{$slug}.{$baseDomain}";
+
+        if ($path) {
+            $subdomainUrl .= '/' . ltrim($path, '/');
+        }
+
+        return $subdomainUrl;
+    }
+
+    /**
+     * Check if current request is on a business subdomain
+     */
+    protected function isBusinessSubdomain(): bool
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $host = preg_replace('/:\d+$/', '', $host);
+
+        $mainDomains = ['glamourschedule.nl', 'glamourschedule.com', 'www.glamourschedule.nl', 'www.glamourschedule.com', 'new.glamourschedule.nl', 'localhost'];
+
+        if (in_array($host, $mainDomains)) {
+            return false;
+        }
+
+        // Check if it's a subdomain
+        foreach (['glamourschedule.nl', 'glamourschedule.com'] as $baseDomain) {
+            if (str_ends_with($host, '.' . $baseDomain)) {
+                $subdomain = str_replace('.' . $baseDomain, '', $host);
+                if ($subdomain !== 'www' && $subdomain !== 'new') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the current business subdomain slug, or null if not on a subdomain
+     */
+    protected function getBusinessSubdomain(): ?string
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $host = preg_replace('/:\d+$/', '', $host);
+
+        foreach (['glamourschedule.nl', 'glamourschedule.com'] as $baseDomain) {
+            if (str_ends_with($host, '.' . $baseDomain)) {
+                $subdomain = str_replace('.' . $baseDomain, '', $host);
+                if ($subdomain !== 'www' && $subdomain !== 'new') {
+                    return $subdomain;
+                }
+            }
+        }
+
+        return null;
+    }
 }

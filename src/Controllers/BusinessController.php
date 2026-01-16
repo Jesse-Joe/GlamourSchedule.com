@@ -32,6 +32,13 @@ class BusinessController extends Controller
         $settings = $this->getBusinessSettings($business['id']);
         $reviewStats = $this->getReviewStats($business['id']);
 
+        // Generate business URL helper for subdomain support
+        $businessSlug = $business['slug'];
+        $isSubdomain = $this->isBusinessSubdomain();
+        $businessUrlHelper = function($path = '') use ($businessSlug) {
+            return $this->businessUrl($businessSlug, $path);
+        };
+
         return $this->view('pages/business/show', [
             'pageTitle' => $business['name'],
             'business' => $business,
@@ -40,7 +47,9 @@ class BusinessController extends Controller
             'hours' => $hours,
             'images' => $images,
             'settings' => $settings,
-            'reviewStats' => $reviewStats
+            'reviewStats' => $reviewStats,
+            'businessUrl' => $businessUrlHelper,
+            'isSubdomain' => $isSubdomain
         ]);
     }
 
