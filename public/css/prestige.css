@@ -533,9 +533,23 @@ main:has(.hero-prestige:first-child) {
     display: none;
     background: none;
     border: none;
-    color: var(--white);
-    font-size: 1.25rem;
+    color: #ffffff;
+    font-size: 1.5rem;
     cursor: pointer;
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.nav-toggle:hover,
+.nav-toggle:active {
+    opacity: 0.8;
+}
+
+.nav-toggle i {
+    display: block;
 }
 
 /* ========================================
@@ -1928,6 +1942,12 @@ main:has(.hero-prestige:first-child) {
         justify-content: center;
         width: 44px;
         height: 44px;
+        color: #ffffff !important;
+    }
+
+    .nav-toggle i {
+        font-size: 1.5rem;
+        color: inherit;
     }
 }
 
@@ -1937,10 +1957,22 @@ main:has(.hero-prestige:first-child) {
         width: 100%;
         left: -100%;
         max-width: 100vw;
+        transition: left 0.3s ease;
     }
 
     .sidebar.active {
         left: 0;
+    }
+
+    .sidebar-overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
     }
 
     .sidebar-header {

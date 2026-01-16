@@ -203,6 +203,16 @@
             font-size: 1.5rem;
             color: var(--text);
             cursor: pointer;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .mobile-toggle:hover,
+        .mobile-toggle:active {
+            opacity: 0.7;
         }
 
         /* Components */
