@@ -2,8 +2,8 @@
 
 <style>
     .register-container {
-        max-width: 520px;
-        margin: 2rem auto;
+        max-width: 720px;
+        margin: 1rem auto;
         padding: 0 1rem;
     }
     @media (max-width: 768px) {
@@ -14,7 +14,8 @@
         }
         .register-card {
             border-radius: 0 !important;
-            box-shadow: none !important;
+            border-left: none !important;
+            border-right: none !important;
         }
         .form-group {
             text-align: left;
@@ -33,64 +34,128 @@
         .password-wrapper {
             width: 100%;
         }
+        .benefits-list {
+            grid-template-columns: 1fr !important;
+        }
     }
     .register-card {
-        background: #ffffff;
+        background: #000000;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border: 2px solid #333333;
     }
     .register-header {
-        background: #ffffff;
-        color: #000000;
-        padding: 2rem;
+        background: #000000;
+        color: #ffffff;
+        padding: 3rem 2rem;
         text-align: center;
-        border-bottom: 2px solid #000000;
+        border-bottom: 2px solid #333333;
+        border-radius: 0 0 30px 30px;
     }
     .register-header i {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
         display: block;
-        color: #000000;
+        color: #ffffff;
     }
     .register-header h1 {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: #000000;
+        color: #ffffff;
     }
     .register-header p {
         margin: 0.5rem 0 0 0;
         font-size: 0.95rem;
-        color: #000000;
+        color: rgba(255, 255, 255, 0.8);
     }
-    .register-body {
-        padding: 2rem;
+
+    /* Account Type Tabs */
+    .account-tabs {
+        display: flex;
+        background: #000000;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     }
-    .account-type-banner {
-        background: #ffffff;
-        border: 2px solid #000000;
-        border-radius: 12px;
-        padding: 1rem 1.25rem;
-        margin-bottom: 1.5rem;
+    .account-tab {
+        flex: 1;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        background: transparent;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.6);
         display: flex;
         align-items: center;
-        gap: 1rem;
+        justify-content: center;
+        gap: 0.75rem;
     }
-    .account-type-banner i {
-        font-size: 1.5rem;
+    .account-tab:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .account-tab.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border-bottom: 3px solid #ffffff;
+        margin-bottom: -2px;
+    }
+    .account-tab i {
+        font-size: 1.25rem;
+    }
+    .account-tab-label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .account-tab-label small {
+        font-size: 0.7rem;
+        font-weight: 400;
+        opacity: 0.8;
+    }
+
+    .register-body {
+        padding: 2rem;
+        background: #000000;
+    }
+
+    /* Grid Layout */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    /* Section Header */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 0;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 1.5rem;
+    }
+    .section-header i {
+        width: 40px;
+        height: 40px;
+        background: #ffffff;
         color: #000000;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .account-type-banner h4 {
+    .section-header h4 {
         margin: 0;
-        color: #000000;
-        font-size: 0.95rem;
+        color: #ffffff;
+        font-size: 1.1rem;
     }
-    .account-type-banner p {
-        margin: 0.25rem 0 0 0;
-        font-size: 0.8rem;
-        color: #737373;
-    }
+
+    /* Form Group */
     .form-group {
         margin-bottom: 1.25rem;
     }
@@ -100,35 +165,56 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: #374151;
+        color: rgba(255, 255, 255, 0.9);
     }
     .form-group label i {
-        color: #000000;
+        color: #ffffff;
+        font-size: 0.9rem;
     }
     .form-control {
         width: 100%;
-        padding: 0.85rem 0;
+        padding: 0.9rem 0;
         background: transparent;
         border: none;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
         border-radius: 0;
         font-size: 1rem;
-        color: #000000;
+        color: #ffffff;
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-bottom-color: #000000;
+        border-bottom-color: #ffffff;
         box-shadow: none;
     }
-    .form-control::placeholder {
-        color: rgba(0, 0, 0, 0.4);
+    .form-control:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
     }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    select.form-control {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0 center;
+        background-size: 1rem;
+        padding-right: 1.5rem;
+        cursor: pointer;
+    }
+    select.form-control option {
+        background: #000000;
+        color: #ffffff;
+    }
+    textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
     .btn-register {
         width: 100%;
-        padding: 1rem;
-        background: #000000;
-        color: white;
+        padding: 1.1rem;
+        background: #ffffff;
+        color: #000000;
         border: none;
         border-radius: 50px;
         font-size: 1.05rem;
@@ -143,136 +229,52 @@
     }
     .btn-register:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
     }
+
     .register-footer {
         text-align: center;
         padding-top: 1.5rem;
-        border-top: 1px solid #f5f5f5;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
         margin-top: 1.5rem;
     }
     .register-footer p {
         margin: 0.5rem 0;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.7);
     }
     .register-footer a {
-        color: #000000;
+        color: #ffffff;
         text-decoration: none;
         font-weight: 500;
     }
     .register-footer a:hover {
         text-decoration: underline;
     }
-    .business-cta {
-        background: #f5f5f5;
-        border: 2px solid #000000;
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-top: 1.5rem;
-        text-align: center;
-    }
-    .business-cta i {
-        font-size: 1.5rem;
-        color: #000000;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-    .business-cta h4 {
-        margin: 0;
-        color: #000000;
-        font-size: 0.95rem;
-    }
-    .business-cta p {
-        margin: 0.25rem 0 0.75rem 0;
-        font-size: 0.85rem;
-        color: #262626;
-    }
-    .business-cta a {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.6rem 1.25rem;
-        background: linear-gradient(135deg, #000000, #262626);
-        color: white;
-        border-radius: 25px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.3s;
-    }
-    .business-cta a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
-    .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    @media (max-width: 500px) {
-        .grid-2 {
-            grid-template-columns: 1fr;
-        }
-    }
+
     .alert-danger {
-        background: #f5f5f5;
-        border: 1px solid #e5e5e5;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
         padding: 1rem;
-        border-radius: 10px;
+        border-radius: 12px;
         margin-bottom: 1.25rem;
     }
 
-    /* Dark Mode */
-    [data-theme="dark"] .register-card {
-        background: var(--bg-card);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .account-type-banner {
+    .account-info {
         background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.9);
     }
-    [data-theme="dark"] .account-type-banner h4 {
+    .account-info i {
+        font-size: 1.25rem;
         color: #ffffff;
-    }
-    [data-theme="dark"] .account-type-banner p {
-        color: #d4d4d4;
-    }
-    [data-theme="dark"] .form-group label {
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control {
-        background: transparent;
-        border-bottom-color: rgba(255, 255, 255, 0.3);
-        color: var(--white);
-    }
-    [data-theme="dark"] .form-control:focus {
-        border-bottom-color: var(--white);
-        box-shadow: none;
-    }
-    [data-theme="dark"] .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.4);
-    }
-    [data-theme="dark"] .register-footer {
-        border-top-color: var(--border);
-    }
-    [data-theme="dark"] .register-footer p {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .business-cta {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-    [data-theme="dark"] .business-cta h4 {
-        color: #ffffff;
-    }
-    [data-theme="dark"] .business-cta p {
-        color: #d4d4d4;
-    }
-    [data-theme="dark"] .alert-danger {
-        background: rgba(0, 0, 0, 0.1);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #d4d4d4;
     }
 
     /* Password Toggle */
@@ -286,7 +288,7 @@
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
         padding: 4px;
         display: flex;
@@ -294,16 +296,155 @@
         justify-content: center;
     }
     .password-toggle:hover {
-        color: #000000;
+        color: #ffffff;
     }
     .password-wrapper .form-control {
         padding-right: 2rem;
     }
-    [data-theme="dark"] .password-toggle {
-        color: rgba(255, 255, 255, 0.5);
+
+    /* Terms checkbox */
+    .terms-box {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-top: 1.5rem;
     }
-    [data-theme="dark"] .password-toggle:hover {
-        color: var(--white);
+    .terms-box label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        cursor: pointer;
+        margin: 0;
+    }
+    .terms-box span {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+    }
+    .terms-box a {
+        color: #ffffff;
+        font-weight: 500;
+    }
+    .terms-box input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        accent-color: #ffffff;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    /* Pricing Card */
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .pricing-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #ffffff;
+    }
+    .price-display {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .price-amount {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #ffffff;
+    }
+    .price-period {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+    .price-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+    .price-note i {
+        color: #ffffff;
+    }
+    .benefits-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .benefit-item i {
+        color: #ffffff;
+    }
+
+    /* QR Warning */
+    .qr-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #ffffff;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+    }
+    .qr-warning-icon {
+        width: 50px;
+        height: 50px;
+        background: #ffffff;
+        color: #000000;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    .qr-warning-content h4 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .qr-warning-content h4 i {
+        color: #fbbf24;
+    }
+    .qr-warning-content p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.5;
+    }
+    .qr-warning-content strong {
+        color: #ffffff;
+    }
+
+    /* Tab content visibility */
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
     }
 </style>
 
@@ -312,133 +453,295 @@
         <div class="register-header">
             <i class="fas fa-user-plus"></i>
             <h1>Account Aanmaken</h1>
-            <p>Registreer je gratis en boek afspraken</p>
+            <p>Registreer je gratis als klant of bedrijf</p>
+        </div>
+
+        <!-- Account Type Tabs -->
+        <div class="account-tabs">
+            <button type="button" class="account-tab active" onclick="switchTab('personal')" id="tabPersonal">
+                <i class="fas fa-user"></i>
+                <span class="account-tab-label">
+                    Klant
+                    <small>Boek afspraken</small>
+                </span>
+            </button>
+            <button type="button" class="account-tab" onclick="switchTab('business')" id="tabBusiness">
+                <i class="fas fa-store"></i>
+                <span class="account-tab-label">
+                    Bedrijf
+                    <small>Ontvang boekingen</small>
+                </span>
+            </button>
         </div>
 
         <div class="register-body">
-            <div class="account-type-banner">
-                <i class="fas fa-user-circle"></i>
-                <div>
-                    <h4>Persoonlijk Account</h4>
-                    <p>Voor het boeken van afspraken bij salons</p>
-                </div>
-            </div>
-
             <?php if (isset($error)): ?>
                 <div class="alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <form method="POST" action="/register">
-                <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+            <!-- Personal Registration -->
+            <div class="tab-content active" id="contentPersonal">
+                <div class="account-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Maak een persoonlijk account aan om afspraken te boeken bij salons.</span>
+                </div>
 
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="first_name"><i class="fas fa-user"></i> Voornaam</label>
-                        <input type="text" id="first_name" name="first_name" class="form-control"
-                               placeholder="Je voornaam"
-                               value="<?= htmlspecialchars($data['first_name'] ?? '') ?>" required>
-                        <?php if (isset($errors['first_name'])): ?>
-                            <small style="color:#333333;font-size:0.8rem"><?= $errors['first_name'] ?></small>
-                        <?php endif; ?>
+                <form method="POST" action="/register" id="formPersonal">
+                    <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+                    <input type="hidden" name="account_type" value="personal">
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Voornaam *</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="Je voornaam" value="<?= htmlspecialchars($data['first_name'] ?? '') ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Achternaam *</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Je achternaam" value="<?= htmlspecialchars($data['last_name'] ?? '') ?>" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="last_name"><i class="fas fa-user"></i> Achternaam</label>
-                        <input type="text" id="last_name" name="last_name" class="form-control"
-                               placeholder="Je achternaam"
-                               value="<?= htmlspecialchars($data['last_name'] ?? '') ?>" required>
-                        <?php if (isset($errors['last_name'])): ?>
-                            <small style="color:#333333;font-size:0.8rem"><?= $errors['last_name'] ?></small>
-                        <?php endif; ?>
+                        <label><i class="fas fa-envelope"></i> E-mailadres *</label>
+                        <input type="email" name="email" class="form-control" placeholder="jouw@email.nl" value="<?= htmlspecialchars($data['email'] ?? '') ?>" required>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="email"><i class="fas fa-envelope"></i> E-mailadres</label>
-                    <input type="email" id="email" name="email" class="form-control"
-                           placeholder="jouw@email.nl"
-                           value="<?= htmlspecialchars($data['email'] ?? '') ?>" required>
-                    <?php if (isset($errors['email'])): ?>
-                        <small style="color:#333333;font-size:0.8rem"><?= $errors['email'] ?></small>
-                    <?php endif; ?>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone"><i class="fas fa-phone"></i> Telefoon (optioneel)</label>
-                    <input type="tel" id="phone" name="phone" class="form-control"
-                           placeholder="06-12345678"
-                           value="<?= htmlspecialchars($data['phone'] ?? '') ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="password"><i class="fas fa-lock"></i> Wachtwoord</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" name="password" class="form-control"
-                               placeholder="Minimaal 8 tekens" minlength="8" required>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Telefoon <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
+                        <input type="tel" name="phone" class="form-control" placeholder="06-12345678" value="<?= htmlspecialchars($data['phone'] ?? '') ?>">
                     </div>
-                    <?php if (isset($errors['password'])): ?>
-                        <small style="color:#333333;font-size:0.8rem"><?= $errors['password'] ?></small>
-                    <?php endif; ?>
-                </div>
 
-                <div class="form-group">
-                    <label for="password_confirm"><i class="fas fa-lock"></i> Bevestig wachtwoord</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password_confirm" name="password_confirm" class="form-control"
-                               placeholder="Herhaal je wachtwoord" required>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="Wachtwoord tonen">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Wachtwoord *</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password" id="passwordPersonal" class="form-control" placeholder="Minimaal 8 tekens" minlength="8" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('passwordPersonal', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Bevestig wachtwoord *</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password_confirm" id="passwordConfirmPersonal" class="form-control" placeholder="Herhaal wachtwoord" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('passwordConfirmPersonal', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <?php if (isset($errors['password_confirm'])): ?>
-                        <small style="color:#333333;font-size:0.8rem"><?= $errors['password_confirm'] ?></small>
-                    <?php endif; ?>
+
+                    <div class="terms-box">
+                        <label>
+                            <input type="checkbox" name="accept_terms" required>
+                            <span>Ik ga akkoord met de <a href="/terms" target="_blank">Algemene Voorwaarden</a> en het <a href="/privacy" target="_blank">Privacybeleid</a> *</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="fas fa-user-plus"></i> Account Aanmaken
+                    </button>
+                </form>
+
+                <div class="register-footer">
+                    <p>Al een account? <a href="/login">Inloggen</a></p>
                 </div>
-
-                <div class="form-group">
-                    <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;font-weight:400">
-                        <input type="checkbox" name="accept_terms" id="accept_terms" required
-                               style="margin-top:0.2rem;width:20px;height:20px;accent-color:#000000"
-                               <?= isset($data['accept_terms']) ? 'checked' : '' ?>>
-                        <span style="font-size:0.9rem;color:#6b7280">
-                            Ik ga akkoord met de
-                            <a href="/terms" target="_blank" style="color:#000000">Algemene Voorwaarden</a>
-                            en het
-                            <a href="/privacy" target="_blank" style="color:#000000">Privacybeleid</a>
-                        </span>
-                    </label>
-                    <?php if (isset($errors['accept_terms'])): ?>
-                        <small style="color:#333333;font-size:0.8rem"><?= $errors['accept_terms'] ?></small>
-                    <?php endif; ?>
-                </div>
-
-                <button type="submit" class="btn-register">
-                    <i class="fas fa-user-plus"></i> Account Aanmaken
-                </button>
-            </form>
-
-            <div class="register-footer">
-                <p>
-                    Al een account? <a href="/login">Inloggen</a>
-                </p>
             </div>
 
-            <div class="business-cta">
-                <i class="fas fa-store"></i>
-                <h4>Heb je een salon of bedrijf?</h4>
-                <p>Registreer je bedrijf en ontvang boekingen van klanten</p>
-                <a href="/business/register">
-                    <i class="fas fa-arrow-right"></i> Bedrijf Registreren
-                </a>
+            <!-- Business Registration -->
+            <div class="tab-content" id="contentBusiness">
+                <div class="account-info">
+                    <i class="fas fa-store"></i>
+                    <span>Registreer je salon of bedrijf en ontvang boekingen van klanten.</span>
+                </div>
+
+                <form method="POST" action="/business/register" id="formBusiness">
+                    <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+
+                    <!-- Bedrijfsgegevens -->
+                    <div class="section-header">
+                        <i class="fas fa-building"></i>
+                        <h4>Bedrijfsgegevens</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-store"></i> Bedrijfsnaam *</label>
+                        <input type="text" name="name" class="form-control" placeholder="Naam van je salon" required>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> E-mailadres *</label>
+                            <input type="email" name="email" class="form-control" placeholder="info@jouwsalon.nl" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> Telefoon</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="06 12345678">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Wachtwoord * <span style="font-weight:400;color:rgba(255,255,255,0.5)">(min. 8 tekens)</span></label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password" id="passwordBusiness" class="form-control" placeholder="Kies een sterk wachtwoord" minlength="8" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('passwordBusiness', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Bevestig wachtwoord *</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password_confirm" id="passwordConfirmBusiness" class="form-control" placeholder="Herhaal wachtwoord" minlength="8" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('passwordConfirmBusiness', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-tags"></i> Categorie</label>
+                        <select name="category_id" class="form-control">
+                            <option value="">Selecteer een categorie</option>
+                            <?php if (isset($categories)): ?>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+
+                    <!-- Locatie -->
+                    <div class="section-header" style="margin-top:2rem">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Locatie</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-road"></i> Adres *</label>
+                        <input type="text" name="address" class="form-control" placeholder="Straatnaam 123" required>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fas fa-mail-bulk"></i> Postcode *</label>
+                            <input type="text" name="postal_code" class="form-control" placeholder="1234 AB" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-city"></i> Plaats *</label>
+                            <input type="text" name="city" class="form-control" placeholder="Amsterdam" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-file-contract"></i> KVK-nummer <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
+                        <input type="text" name="kvk_number" class="form-control" placeholder="12345678">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-align-left"></i> Beschrijving <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Vertel iets over je salon..."></textarea>
+                    </div>
+
+                    <!-- Pricing -->
+                    <div class="pricing-card">
+                        <div class="early-bird-badge" style="background:#fbbf24;color:#000;padding:0.5rem 1rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:600;margin-bottom:1rem">
+                            <i class="fas fa-star"></i> Early Bird - Eerste 100 bedrijven
+                        </div>
+                        <div class="price-display">
+                            <span class="price-amount">&euro;0,99</span>
+                            <span class="price-period">eenmalig</span>
+                        </div>
+                        <div class="price-note" style="margin-bottom:0.5rem">
+                            <i class="fas fa-clock"></i>
+                            <span>Na 14 dagen gratis proeftijd</span>
+                        </div>
+                        <div class="price-note" style="margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.05);border-radius:8px">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Daarna &euro;99,99 eenmalig voor nieuwe bedrijven</span>
+                        </div>
+                        <div class="price-note">
+                            <i class="fas fa-receipt"></i>
+                            <span>&euro;1,75 per succesvolle boeking</span>
+                        </div>
+
+                        <div class="benefits-list">
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> 14 dagen gratis proeftijd</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Onbeperkt boekingen</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Eigen profielpagina</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> E-mail notificaties</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Dashboard & statistieken</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Klantenbeheer</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Online betalingen</div>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="terms-box">
+                        <label>
+                            <input type="checkbox" name="terms" required>
+                            <span>Ik ga akkoord met de <a href="/terms" target="_blank">Algemene Voorwaarden</a> en het <a href="/privacy" target="_blank">Privacybeleid</a> *</span>
+                        </label>
+                    </div>
+
+                    <!-- QR Code Warning -->
+                    <div class="qr-warning">
+                        <div class="qr-warning-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="qr-warning-content">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Belangrijk: QR-Code Scannen</h4>
+                            <p>Bij elke boeking moet de klant de QR-code scannen bij aankomst. Zonder gescande QR-code wordt de boeking <strong>niet goedgekeurd</strong> en vindt er <strong>geen uitbetaling</strong> plaats.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="fas fa-rocket"></i> Mijn Salon Registreren
+                    </button>
+                </form>
+
+                <div class="register-footer">
+                    <p>Al een account? <a href="/login">Inloggen</a></p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+function switchTab(type) {
+    // Update tabs
+    document.getElementById('tabPersonal').classList.remove('active');
+    document.getElementById('tabBusiness').classList.remove('active');
+    document.getElementById('tab' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+
+    // Update content
+    document.getElementById('contentPersonal').classList.remove('active');
+    document.getElementById('contentBusiness').classList.remove('active');
+    document.getElementById('content' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+
+    // Store preference
+    sessionStorage.setItem('registerTab', type);
+}
+
+// Restore tab preference or check URL parameter
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('type');
+
+    if (tabParam === 'business') {
+        switchTab('business');
+    } else {
+        const savedTab = sessionStorage.getItem('registerTab');
+        if (savedTab) {
+            switchTab(savedTab);
+        }
+    }
+});
+
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     const icon = btn.querySelector('i');

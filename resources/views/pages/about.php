@@ -1,537 +1,611 @@
 <?php ob_start(); ?>
 
 <style>
-    .about-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-    }
-    .about-card {
-        background: var(--white);
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-        overflow: hidden;
-    }
-    .about-header {
-        background: #ffffff;
-        color: #000000;
-        padding: 3rem 2rem;
-        text-align: center;
-        border-bottom: 2px solid #000000;
-    }
-    .about-header h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin: 0;
-        color: #000000;
-    }
-    .about-header p {
-        margin-top: 0.75rem;
-        font-size: 1.1rem;
-        color: #000000;
-    }
-    .about-body {
-        padding: 2.5rem;
-        line-height: 1.8;
-        color: var(--text);
-    }
-    .about-section {
-        margin-bottom: 3rem;
-    }
-    .about-section:last-child {
-        margin-bottom: 0;
-    }
-    .about-section h2 {
-        color: #000000;
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-    .about-section h2 i {
-        color: #000000;
-    }
-    .about-section p {
-        color: #4b5563;
-        margin-bottom: 1rem;
-    }
+/* Functionality Page */
+.func-page {
+    padding-top: 6rem;
+}
 
-    /* How it works steps */
-    .steps-container {
-        display: grid;
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-    }
-    .step-card {
-        display: flex;
-        gap: 1.25rem;
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
-        border-radius: 16px;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .step-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(218, 165, 32, 0.15);
-    }
-    .step-number {
-        width: 48px;
-        height: 48px;
-        background: #000000;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
-    .step-content h3 {
-        color: #374151;
-        font-size: 1.1rem;
-        margin: 0 0 0.5rem 0;
-    }
-    .step-content p {
-        color: #6b7280;
-        margin: 0;
-        font-size: 0.95rem;
-    }
+/* Hero Section */
+.func-hero {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    padding: 4rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.func-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+.func-hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+.func-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 1rem;
+    line-height: 1.2;
+}
+.func-hero p {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.8);
+    margin: 0;
+    line-height: 1.6;
+}
 
-    /* Features grid */
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.25rem;
-        margin-top: 1.5rem;
+@media (min-width: 768px) {
+    .func-hero {
+        padding: 5rem 2rem;
     }
-    .feature-card {
-        background: #fafafa;
-        border-radius: 14px;
-        padding: 1.5rem;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s;
+    .func-hero h1 {
+        font-size: 3rem;
     }
-    .feature-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    .feature-card i {
-        font-size: 2rem;
-        color: #000000;
-        margin-bottom: 1rem;
-    }
-    .feature-card h3 {
-        color: #374151;
-        font-size: 1rem;
-        margin: 0 0 0.5rem 0;
-    }
-    .feature-card p {
-        color: #6b7280;
-        font-size: 0.9rem;
-        margin: 0;
-    }
+}
 
-    /* Stats */
-    .stats-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin: 2rem 0;
-        text-align: center;
-    }
-    .stat-item {
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #000000 0%, #000000 30%, #000000 70%, #333333 100%);
-        border-radius: 14px;
-        color: white;
-    }
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        display: block;
-    }
-    .stat-label {
-        font-size: 0.85rem;
-        opacity: 0.9;
-    }
+/* Section */
+.func-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+    background: #000000;
+}
+.func-section-alt {
+    background: #0a0a0a;
+}
+.func-section-alt .func-stat {
+    background: #ffffff;
+}
+.func-section-alt .func-stat-number {
+    color: #000000;
+}
+.func-section-alt .func-stat-label {
+    color: #666666;
+}
+.func-section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.func-section-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.75rem;
+}
+.func-section-header p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto;
+}
 
-    /* Mission box */
-    .mission-box {
-        background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
-        border-radius: 16px;
-        padding: 2rem;
-        text-align: center;
-        border-left: 4px solid #000000;
-    }
-    .mission-box p {
-        color: #262626;
-        font-size: 1.1rem;
-        font-style: italic;
-        margin: 0;
-    }
+/* Feature Cards */
+.func-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.func-card {
+    background: #111111;
+    border: 2px solid #333333;
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+.func-card:hover {
+    border-color: #ffffff;
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(255,255,255,0.05);
+}
+.func-card-icon {
+    width: 56px;
+    height: 56px;
+    background: #ffffff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+.func-card-icon i {
+    font-size: 1.4rem;
+    color: #000000;
+}
+.func-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.75rem;
+}
+.func-card p {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+}
+.func-card-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.func-card-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    padding: 0.35rem 0;
+}
+.func-card-features li i {
+    color: #22c55e;
+    font-size: 0.8rem;
+}
 
-    /* CTA Section */
-    .cta-section {
-        background: linear-gradient(135deg, #000000 0%, #000000 30%, #000000 70%, #333333 100%);
-        border-radius: 16px;
-        padding: 2rem;
-        text-align: center;
-        margin-top: 2rem;
+/* Highlight Feature */
+.func-highlight {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+@media (min-width: 768px) {
+    .func-highlight {
+        grid-template-columns: 1fr 1fr;
     }
-    .cta-section h3 {
-        color: white;
-        font-size: 1.3rem;
-        margin: 0 0 1rem 0;
+    .func-highlight.reverse {
+        direction: rtl;
     }
-    .cta-section p {
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 1.5rem;
+    .func-highlight.reverse > * {
+        direction: ltr;
     }
-    .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .cta-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.875rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cta-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .cta-btn-white {
-        background: #ffffff;
-        color: #000000;
-    }
-    .cta-btn-outline {
-        background: transparent;
-        color: white;
-        border: 2px solid white;
-    }
+}
+.func-highlight-content h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem;
+}
+.func-highlight-content p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+}
+.func-highlight-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.func-highlight-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.8);
+}
+.func-highlight-list li i {
+    color: #22c55e;
+    margin-top: 0.2rem;
+}
+.func-highlight-visual {
+    background: linear-gradient(135deg, #000000 0%, #333333 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+}
+.func-highlight-visual i {
+    font-size: 5rem;
+    color: rgba(255,255,255,0.9);
+}
 
-    @media (max-width: 768px) {
-        .about-header h1 {
-            font-size: 1.6rem;
-        }
-        .about-body {
-            padding: 1.5rem;
-        }
-        .stats-row {
-            grid-template-columns: 1fr;
-        }
-        .step-card {
-            flex-direction: column;
-            text-align: center;
-        }
-        .step-number {
-            margin: 0 auto;
-        }
+/* Stats */
+.func-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 3rem 0;
+}
+@media (min-width: 768px) {
+    .func-stats {
+        grid-template-columns: repeat(4, 1fr);
     }
+}
+.func-stat {
+    background: #000000;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+}
+.func-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    display: block;
+}
+.func-stat-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 0.25rem;
+}
 
-    /* Dark Mode */
-    [data-theme="dark"] .about-card {
-        background: var(--bg-card);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .about-section p {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .step-card {
-        background: var(--bg-secondary);
-    }
-    [data-theme="dark"] .step-content h3 {
-        color: var(--text);
-    }
-    [data-theme="dark"] .step-content p {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .feature-card {
-        background: var(--bg-secondary);
-    }
-    [data-theme="dark"] .feature-card h3 {
-        color: var(--text);
-    }
-    [data-theme="dark"] .feature-card p {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .mission-box {
-        background: var(--bg-secondary);
-    }
+/* For Business Section */
+.business-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.25rem;
+}
+.business-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #111111;
+    border-radius: 14px;
+    border: 1px solid #333333;
+    transition: all 0.3s ease;
+}
+.business-feature:hover {
+    border-color: #ffffff;
+    box-shadow: 0 5px 20px rgba(255,255,255,0.05);
+}
+.business-feature i {
+    font-size: 1.25rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+.business-feature h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 0.25rem;
+}
+.business-feature p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* CTA */
+.func-cta {
+    background: #000000;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+.func-cta h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem;
+}
+.func-cta p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    margin: 0 0 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.func-cta-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.func-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.func-cta-btn:hover {
+    transform: translateY(-2px);
+}
+.func-cta-btn-white {
+    background: #ffffff;
+    color: #000000;
+}
+.func-cta-btn-outline {
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+.func-cta-btn-outline:hover {
+    border-color: #ffffff;
+}
 </style>
 
-<div class="about-container">
-    <div class="about-card">
-        <div class="about-header">
-            <h1><i class="fas fa-heart"></i> <?= $lang === 'nl' ? 'Over GlamourSchedule' : 'About GlamourSchedule' ?></h1>
-            <p><?= $lang === 'nl' ? 'Het online boekingsplatform voor beauty & wellness' : 'The online booking platform for beauty & wellness' ?></p>
+<div class="func-page">
+    <!-- Hero -->
+    <section class="func-hero">
+        <div class="func-hero-content">
+            <h1>Platform Functionaliteit</h1>
+            <p>Ontdek alle features die GlamourSchedule te bieden heeft voor klanten en salons</p>
+        </div>
+    </section>
+
+    <!-- For Customers -->
+    <section class="func-section">
+        <div class="func-section-header">
+            <h2>Voor Klanten</h2>
+            <p>Eenvoudig zoeken, boeken en betalen - allemaal online</p>
         </div>
 
-        <div class="about-body">
-            <?php if ($lang === 'nl'): ?>
-            <!-- DUTCH VERSION -->
-
-            <div class="about-section">
-                <h2><i class="fas fa-sparkles"></i> Wat is GlamourSchedule?</h2>
-                <p>GlamourSchedule is het moderne boekingsplatform dat beauty- en wellnesssalons verbindt met klanten. Wij maken het makkelijk om je favoriete behandelingen te boeken, wanneer het jou uitkomt.</p>
-                <p>Of je nu op zoek bent naar een kapper, nagelstudio, schoonheidssalon of massagepraktijk - bij ons vind je alles op één plek. Geen gedoe met telefoontjes of wachten op een reactie. Direct online boeken, 24/7.</p>
-            </div>
-
-            <div class="about-section">
-                <h2><i class="fas fa-user"></i> Hoe werkt het voor klanten?</h2>
-                <div class="steps-container">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Zoek een salon</h3>
-                            <p>Blader door salons in jouw buurt of zoek op behandeling. Bekijk foto's, reviews en beschikbaarheid.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Kies je behandeling</h3>
-                            <p>Selecteer de gewenste service, bekijk de prijs en duur, en kies een datum en tijd die jou uitkomt.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Boek en betaal</h3>
-                            <p>Rond je boeking af met een veilige online betaling via iDEAL, creditcard of andere methoden.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Geniet van je afspraak</h3>
-                            <p>Ontvang je bevestiging met QR-code per e-mail. Check in bij de salon en geniet van je behandeling!</p>
-                        </div>
-                    </div>
+        <div class="func-grid">
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-search"></i>
                 </div>
+                <h3>Geavanceerd Zoeken</h3>
+                <p>Vind snel de perfecte salon met onze uitgebreide zoekfunctie.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> Zoeken op locatie en postcode</li>
+                    <li><i class="fas fa-check"></i> Filteren op categorie</li>
+                    <li><i class="fas fa-check"></i> Prijsfilters (min/max)</li>
+                    <li><i class="fas fa-check"></i> Sorteren op beoordeling</li>
+                </ul>
             </div>
 
-            <div class="about-section">
-                <h2><i class="fas fa-store"></i> Voor salons en bedrijven</h2>
-                <p>GlamourSchedule biedt salons een compleet pakket om hun business te laten groeien:</p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3>Online Agenda</h3>
-                        <p>Beheer al je afspraken in één overzichtelijk dashboard</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>Veilige Betalingen</h3>
-                        <p>Ontvang betalingen direct via Mollie, zonder gedoe</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-globe"></i>
-                        <h3>Eigen Webpagina</h3>
-                        <p>Krijg je eigen professionele pagina om te delen</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-star"></i>
-                        <h3>Reviews & Ratings</h3>
-                        <p>Bouw vertrouwen op met klantbeoordelingen</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-qrcode"></i>
-                        <h3>QR Check-in</h3>
-                        <p>Snelle check-in van klanten met QR-scanner</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Inzichten</h3>
-                        <p>Bekijk statistieken over je boekingen en omzet</p>
-                    </div>
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-clock"></i>
                 </div>
+                <h3>Beschikbaarheidsfilters</h3>
+                <p>Vind salons die open zijn wanneer jij beschikbaar bent.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> Nu geopend filter</li>
+                    <li><i class="fas fa-check"></i> Open in weekend</li>
+                    <li><i class="fas fa-check"></i> Avondopening</li>
+                    <li><i class="fas fa-check"></i> 4+ sterren filter</li>
+                </ul>
             </div>
 
-            <div class="about-section">
-                <h2><i class="fas fa-shield-alt"></i> Waarom GlamourSchedule?</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-clock"></i>
-                        <h3>24/7 Beschikbaar</h3>
-                        <p>Boek wanneer het jou uitkomt, ook buiten openingstijden</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-lock"></i>
-                        <h3>Veilig & Betrouwbaar</h3>
-                        <p>SSL-beveiliging en veilige betalingen via Mollie</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>Mobielvriendelijk</h3>
-                        <p>Werkt perfect op telefoon, tablet en computer</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-headset"></i>
-                        <h3>Nederlandse Support</h3>
-                        <p>Vragen? Ons team helpt je graag verder</p>
-                    </div>
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-calendar-check"></i>
                 </div>
+                <h3>Online Boeken</h3>
+                <p>Boek direct online zonder te bellen, 24/7 beschikbaar.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> Real-time beschikbaarheid</li>
+                    <li><i class="fas fa-check"></i> Direct bevestiging</li>
+                    <li><i class="fas fa-check"></i> E-mail herinneringen</li>
+                    <li><i class="fas fa-check"></i> Makkelijk wijzigen/annuleren</li>
+                </ul>
             </div>
 
-            <div class="about-section">
-                <h2><i class="fas fa-bullseye"></i> Onze Missie</h2>
-                <div class="mission-box">
-                    <p>"Wij geloven dat iedereen makkelijk toegang moet hebben tot beauty- en wellnessbehandelingen. Door technologie en persoonlijke service te combineren, maken wij het boekingsproces eenvoudig voor zowel klanten als ondernemers."</p>
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-credit-card"></i>
                 </div>
+                <h3>Veilig Betalen</h3>
+                <p>Betaal online met je favoriete betaalmethode via Mollie.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> iDEAL</li>
+                    <li><i class="fas fa-check"></i> Creditcard</li>
+                    <li><i class="fas fa-check"></i> Apple Pay / Google Pay</li>
+                    <li><i class="fas fa-check"></i> Bancontact</li>
+                </ul>
             </div>
 
-            <div class="cta-section">
-                <h3>Klaar om te beginnen?</h3>
-                <p>Ontdek salons bij jou in de buurt of meld je salon aan</p>
-                <div class="cta-buttons">
-                    <a href="/search" class="cta-btn cta-btn-white">
-                        <i class="fas fa-search"></i> Zoek salons
-                    </a>
-                    <a href="/business/register" class="cta-btn cta-btn-outline">
-                        <i class="fas fa-store"></i> Salon aanmelden
-                    </a>
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-qrcode"></i>
                 </div>
+                <h3>QR-Code Check-in</h3>
+                <p>Ontvang een QR-code per e-mail voor snelle check-in bij de salon.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> Automatische e-mail met QR</li>
+                    <li><i class="fas fa-check"></i> Snelle check-in</li>
+                    <li><i class="fas fa-check"></i> Geen wachttijd</li>
+                    <li><i class="fas fa-check"></i> Digitaal bewijs</li>
+                </ul>
             </div>
 
-            <?php else: ?>
-            <!-- ENGLISH VERSION -->
-
-            <div class="about-section">
-                <h2><i class="fas fa-sparkles"></i> What is GlamourSchedule?</h2>
-                <p>GlamourSchedule is the modern booking platform that connects beauty and wellness salons with customers. We make it easy to book your favorite treatments whenever it suits you.</p>
-                <p>Whether you're looking for a hairdresser, nail studio, beauty salon or massage practice - you'll find everything in one place. No hassle with phone calls or waiting for a response. Book directly online, 24/7.</p>
-            </div>
-
-            <div class="about-section">
-                <h2><i class="fas fa-user"></i> How does it work for customers?</h2>
-                <div class="steps-container">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Find a salon</h3>
-                            <p>Browse salons in your area or search by treatment. View photos, reviews and availability.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Choose your treatment</h3>
-                            <p>Select the desired service, view the price and duration, and choose a date and time that suits you.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Book and pay</h3>
-                            <p>Complete your booking with a secure online payment via iDEAL, credit card or other methods.</p>
-                        </div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Enjoy your appointment</h3>
-                            <p>Receive your confirmation with QR code by email. Check in at the salon and enjoy your treatment!</p>
-                        </div>
-                    </div>
+            <div class="func-card">
+                <div class="func-card-icon">
+                    <i class="fas fa-star"></i>
                 </div>
+                <h3>Reviews & Ratings</h3>
+                <p>Lees beoordelingen van andere klanten en deel je eigen ervaring.</p>
+                <ul class="func-card-features">
+                    <li><i class="fas fa-check"></i> Geverifieerde reviews</li>
+                    <li><i class="fas fa-check"></i> Sterrenbeoordelingen</li>
+                    <li><i class="fas fa-check"></i> Foto reviews</li>
+                    <li><i class="fas fa-check"></i> Salon reacties</li>
+                </ul>
             </div>
-
-            <div class="about-section">
-                <h2><i class="fas fa-store"></i> For salons and businesses</h2>
-                <p>GlamourSchedule offers salons a complete package to grow their business:</p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3>Online Calendar</h3>
-                        <p>Manage all your appointments in one clear dashboard</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>Secure Payments</h3>
-                        <p>Receive payments directly via Mollie, hassle-free</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-globe"></i>
-                        <h3>Own Webpage</h3>
-                        <p>Get your own professional page to share</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-star"></i>
-                        <h3>Reviews & Ratings</h3>
-                        <p>Build trust with customer reviews</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-qrcode"></i>
-                        <h3>QR Check-in</h3>
-                        <p>Quick customer check-in with QR scanner</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Insights</h3>
-                        <p>View statistics about your bookings and revenue</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-section">
-                <h2><i class="fas fa-shield-alt"></i> Why GlamourSchedule?</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-clock"></i>
-                        <h3>24/7 Available</h3>
-                        <p>Book whenever it suits you, even outside business hours</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-lock"></i>
-                        <h3>Safe & Reliable</h3>
-                        <p>SSL security and secure payments via Mollie</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>Mobile Friendly</h3>
-                        <p>Works perfectly on phone, tablet and computer</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-headset"></i>
-                        <h3>Dutch Support</h3>
-                        <p>Questions? Our team is happy to help</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-section">
-                <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
-                <div class="mission-box">
-                    <p>"We believe everyone should have easy access to beauty and wellness treatments. By combining technology and personal service, we make the booking process simple for both customers and entrepreneurs."</p>
-                </div>
-            </div>
-
-            <div class="cta-section">
-                <h3>Ready to get started?</h3>
-                <p>Discover salons near you or register your salon</p>
-                <div class="cta-buttons">
-                    <a href="/search" class="cta-btn cta-btn-white">
-                        <i class="fas fa-search"></i> Find salons
-                    </a>
-                    <a href="/business/register" class="cta-btn cta-btn-outline">
-                        <i class="fas fa-store"></i> Register salon
-                    </a>
-                </div>
-            </div>
-
-            <?php endif; ?>
         </div>
-    </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="func-section func-section-alt">
+        <div class="func-stats">
+            <div class="func-stat">
+                <span class="func-stat-number">50+</span>
+                <span class="func-stat-label">Categorien</span>
+            </div>
+            <div class="func-stat">
+                <span class="func-stat-number">24/7</span>
+                <span class="func-stat-label">Online Boeken</span>
+            </div>
+            <div class="func-stat">
+                <span class="func-stat-number">100%</span>
+                <span class="func-stat-label">Veilig Betalen</span>
+            </div>
+            <div class="func-stat">
+                <span class="func-stat-number">NL</span>
+                <span class="func-stat-label">Support</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Business -->
+    <section class="func-section">
+        <div class="func-section-header">
+            <h2>Voor Salons</h2>
+            <p>Alles wat je nodig hebt om je salon professioneel te runnen</p>
+        </div>
+
+        <!-- Highlight 1: Dashboard -->
+        <div class="func-highlight">
+            <div class="func-highlight-content">
+                <h3>Compleet Dashboard</h3>
+                <p>Beheer je hele salon vanuit een overzichtelijk dashboard. Van afspraken tot statistieken - alles op een plek.</p>
+                <ul class="func-highlight-list">
+                    <li><i class="fas fa-check"></i> Overzicht van alle boekingen</li>
+                    <li><i class="fas fa-check"></i> Omzet en statistieken</li>
+                    <li><i class="fas fa-check"></i> Klantenoverzicht</li>
+                    <li><i class="fas fa-check"></i> Agenda integratie</li>
+                </ul>
+            </div>
+            <div class="func-highlight-visual">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+        </div>
+
+        <!-- Highlight 2: Services -->
+        <div class="func-highlight reverse">
+            <div class="func-highlight-content">
+                <h3>Diensten Beheer</h3>
+                <p>Voeg eenvoudig je diensten toe met prijzen, duur en beschrijvingen. Organiseer ze in categorien.</p>
+                <ul class="func-highlight-list">
+                    <li><i class="fas fa-check"></i> Onbeperkt diensten toevoegen</li>
+                    <li><i class="fas fa-check"></i> Prijzen en duur instellen</li>
+                    <li><i class="fas fa-check"></i> Categorieen organiseren</li>
+                    <li><i class="fas fa-check"></i> Actief/inactief zetten</li>
+                </ul>
+            </div>
+            <div class="func-highlight-visual">
+                <i class="fas fa-list-check"></i>
+            </div>
+        </div>
+
+        <!-- Business Features Grid -->
+        <div class="business-features">
+            <div class="business-feature">
+                <i class="fas fa-globe"></i>
+                <div>
+                    <h4>Eigen Salonpagina</h4>
+                    <p>Professionele pagina met foto's, diensten en reviews</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <h4>Openingstijden</h4>
+                    <p>Stel je openingstijden per dag in</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-qrcode"></i>
+                <div>
+                    <h4>QR Scanner</h4>
+                    <p>Scan QR-codes voor snelle check-in</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-euro-sign"></i>
+                <div>
+                    <h4>Automatische Betalingen</h4>
+                    <p>Ontvang betalingen direct via Mollie</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-bell"></i>
+                <div>
+                    <h4>Notificaties</h4>
+                    <p>E-mail alerts voor nieuwe boekingen</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-images"></i>
+                <div>
+                    <h4>Foto Galerij</h4>
+                    <p>Toon je werk met foto's en portfolio</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-users"></i>
+                <div>
+                    <h4>Klantenbeheer</h4>
+                    <p>Houd klantgegevens en historie bij</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <h4>Inzichten & Analytics</h4>
+                    <p>Bekijk statistieken en groei</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-rocket"></i>
+                <div>
+                    <h4>Boost Functie</h4>
+                    <p>Verhoog je zichtbaarheid in zoekresultaten</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-mobile-alt"></i>
+                <div>
+                    <h4>Mobielvriendelijk</h4>
+                    <p>Werkt perfect op alle apparaten</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h4>SSL Beveiliging</h4>
+                    <p>Veilige verbinding en data</p>
+                </div>
+            </div>
+            <div class="business-feature">
+                <i class="fas fa-headset"></i>
+                <div>
+                    <h4>Nederlandse Support</h4>
+                    <p>Hulp wanneer je het nodig hebt</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="func-cta">
+            <h3>Start vandaag nog met je salon</h3>
+            <p>Meld je salon aan voor slechts &euro;0,99 en profiteer van alle functionaliteiten.</p>
+            <div class="func-cta-btns">
+                <a href="/register?type=business" class="func-cta-btn func-cta-btn-white">
+                    <i class="fas fa-store"></i> Salon Aanmelden
+                </a>
+                <a href="/search" class="func-cta-btn func-cta-btn-outline">
+                    <i class="fas fa-search"></i> Bekijk Salons
+                </a>
+            </div>
+        </div>
+    </section>
 </div>
 
 <?php $content = ob_get_clean(); ?>

@@ -6,11 +6,13 @@
     margin: 0 auto;
 }
 .settings-section {
-    background: var(--white);
+    background: #000000;
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    border: 1px solid #333333;
+    color: #ffffff;
 }
 .settings-section-header {
     display: flex;
@@ -18,7 +20,7 @@
     gap: 0.75rem;
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 .settings-section-icon {
     width: 42px;
@@ -37,7 +39,10 @@
 .settings-section-header p {
     margin: 0.25rem 0 0;
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
+}
+.settings-section-header h3 {
+    color: #ffffff;
 }
 .form-row {
     display: grid;
@@ -60,43 +65,80 @@
     font-weight: 600;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
 }
 .form-control {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--border);
-    border-radius: 10px;
+    padding: 0.9rem 0;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0;
     font-size: 1rem;
-    background: var(--white);
-    color: var(--text);
-    transition: all 0.2s;
+    background: transparent;
+    color: #ffffff;
+    transition: all 0.3s ease;
 }
 .form-control:focus {
-    border-color: var(--primary);
+    border-bottom-color: #ffffff;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+    box-shadow: none;
+}
+.form-control:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+}
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 .form-select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 1rem center;
-    padding-right: 2.5rem;
+    background-position: right 0 center;
+    padding-right: 1.5rem;
+    cursor: pointer;
+}
+.form-select option {
+    background: #000000;
+    color: #ffffff;
+}
+[data-theme="dark"] .form-control {
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    color: var(--text);
+}
+[data-theme="dark"] .form-control:focus {
+    border-bottom-color: var(--primary);
+}
+[data-theme="dark"] .form-control:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+[data-theme="dark"] .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 .btn-block {
     width: 100%;
     padding: 0.875rem;
     font-size: 1rem;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255,255,255,0.2);
 }
 .settings-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    background: var(--secondary);
+    background: rgba(255,255,255,0.1);
     border-radius: 12px;
     text-decoration: none;
-    color: var(--text);
+    color: #ffffff;
     transition: all 0.2s;
     margin-bottom: 0.75rem;
 }
@@ -104,7 +146,7 @@
     margin-bottom: 0;
 }
 .settings-link:hover {
-    background: rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.15);
     transform: translateX(4px);
 }
 .settings-link-content {
@@ -125,48 +167,39 @@
 .settings-link h4 {
     margin: 0;
     font-size: 0.95rem;
+    color: #ffffff;
 }
 .settings-link p {
     margin: 0.25rem 0 0;
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
 }
 .settings-link i.fa-chevron-right {
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
 }
 .danger-zone {
-    border: 2px solid #f5f5f5;
-    background: #f5f5f5;
-}
-[data-theme="dark"] .danger-zone {
-    border-color: #450a0a;
+    border: 2px solid #450a0a;
     background: #1c0a0a;
 }
 .danger-zone .settings-section-header {
-    border-bottom-color: #e5e5e5;
-}
-[data-theme="dark"] .danger-zone .settings-section-header {
     border-bottom-color: #450a0a;
 }
 .btn-danger-outline {
     background: transparent;
-    color: #333333;
-    border: 2px solid #333333;
+    color: #ffffff;
+    border: 2px solid #ffffff;
 }
 .btn-danger-outline:hover {
-    background: #333333;
-    color: white;
+    background: #ffffff;
+    color: #000000;
 }
 .delete-confirm-box {
     display: none;
     margin-top: 1rem;
     padding: 1rem;
-    background: #ffffff;
+    background: #000000;
     border-radius: 12px;
-    border: 2px solid #333333;
-}
-[data-theme="dark"] .delete-confirm-box {
-    background: var(--white);
+    border: 2px solid #dc2626;
 }
 .delete-confirm-box.show {
     display: block;
@@ -181,12 +214,12 @@
     font-weight: 600;
 }
 .info-badge-success {
-    background: #f5f5f5;
-    color: #166534;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
 }
 .info-badge-warning {
-    background: #ffffff;
-    color: #000000;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
 }
 
 /* iOS Toggle Switch */
@@ -225,9 +258,10 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 .toggle-switch input:checked + .toggle-slider {
-    background: #000000;
+    background: #ffffff;
 }
 .toggle-switch input:checked + .toggle-slider:before {
+    background-color: #000000;
     transform: translateX(20px);
 }
 .toggle-switch input:disabled + .toggle-slider {
@@ -239,7 +273,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    background: var(--secondary);
+    background: rgba(255,255,255,0.1);
     border-radius: 12px;
     margin-bottom: 0.75rem;
 }
@@ -264,11 +298,12 @@
 .settings-toggle-item h4 {
     margin: 0;
     font-size: 0.95rem;
+    color: #ffffff;
 }
 .settings-toggle-item p {
     margin: 0.25rem 0 0;
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
 }
 [data-theme="dark"] .toggle-slider {
     background-color: #3a3a3c;
@@ -280,12 +315,12 @@
 }
 .password-toggle {
     position: absolute;
-    right: 12px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #9ca3af;
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -293,10 +328,16 @@
     justify-content: center;
 }
 .password-toggle:hover {
-    color: var(--primary);
+    color: #ffffff;
 }
 .password-wrapper .form-control {
-    padding-right: 44px;
+    padding-right: 2rem;
+}
+[data-theme="dark"] .password-toggle {
+    color: rgba(255, 255, 255, 0.5);
+}
+[data-theme="dark"] .password-toggle:hover {
+    color: var(--primary);
 }
 </style>
 

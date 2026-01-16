@@ -3,7 +3,7 @@
 <style>
     .login-container {
         max-width: 480px;
-        margin: 3rem auto;
+        margin: 1rem auto;
         padding: 0 1rem;
     }
     @media (max-width: 768px) {
@@ -14,7 +14,8 @@
         }
         .login-card {
             border-radius: 0 !important;
-            box-shadow: none !important;
+            border-left: none !important;
+            border-right: none !important;
         }
         .form-group {
             text-align: left;
@@ -35,36 +36,38 @@
         }
     }
     .login-card {
-        background: #ffffff;
+        background: #000000;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border: 2px solid #333333;
     }
     .login-header {
-        background: #ffffff;
-        color: #000000;
-        padding: 2rem;
+        background: #000000;
+        color: #ffffff;
+        padding: 3rem 2rem;
         text-align: center;
-        border-bottom: 2px solid #000000;
+        border-bottom: 2px solid #333333;
+        border-radius: 0 0 30px 30px;
     }
     .login-header i {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
         display: block;
-        color: #000000;
+        color: #ffffff;
     }
     .login-header h1 {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: #000000;
+        color: #ffffff;
     }
 
     /* Account Type Tabs */
     .account-tabs {
         display: flex;
-        background: #fafafa;
-        border-bottom: 1px solid #e5e7eb;
+        background: #000000;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     }
     .account-tab {
         flex: 1;
@@ -76,21 +79,21 @@
         background: transparent;
         font-size: 0.95rem;
         font-weight: 500;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.6);
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
     }
     .account-tab:hover {
-        background: #f5f5f5;
-        color: #374151;
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
     }
     .account-tab.active {
-        background: #ffffff;
-        color: #000000;
-        border-bottom: 3px solid #000000;
-        margin-bottom: -1px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border-bottom: 3px solid #ffffff;
+        margin-bottom: -2px;
     }
     .account-tab i {
         font-size: 1.1rem;
@@ -108,9 +111,11 @@
 
     .login-body {
         padding: 2rem;
+        background: #000000;
     }
     .form-group {
         margin-bottom: 1.25rem;
+        padding: 0.9rem 0;
     }
     .form-group label {
         display: flex;
@@ -118,47 +123,51 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: #374151;
+        color: rgba(255, 255, 255, 0.9);
     }
     .form-group label i {
-        color: #000000;
+        color: #ffffff;
+        font-size: 0.9rem;
     }
     .form-control {
         width: 100%;
         padding: 0.9rem 0;
         background: transparent;
         border: none;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
         border-radius: 0;
         font-size: 1rem;
-        color: #000000;
+        color: #ffffff;
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-bottom-color: #000000;
+        border-bottom-color: #ffffff;
         box-shadow: none;
     }
+    .form-control:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
+    }
     .form-control::placeholder {
-        color: rgba(0, 0, 0, 0.4);
+        color: rgba(255, 255, 255, 0.5);
     }
     .forgot-link {
         display: block;
         text-align: right;
         margin-top: 0.5rem;
         font-size: 0.9rem;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
         transition: color 0.3s ease;
     }
     .forgot-link:hover {
-        color: #000000;
+        color: #ffffff;
     }
     .btn-login {
         width: 100%;
-        padding: 1rem;
-        background: #000000;
-        color: white;
+        padding: 1.1rem;
+        background: #ffffff;
+        color: #000000;
         border: none;
         border-radius: 50px;
         font-size: 1.05rem;
@@ -173,26 +182,27 @@
     }
     .btn-login:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
     }
     .btn-login.business {
-        background: linear-gradient(135deg, #000000, #262626);
+        background: #ffffff;
+        color: #000000;
     }
     .btn-login.business:hover {
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
     }
     .login-footer {
         text-align: center;
         padding-top: 1.5rem;
-        border-top: 1px solid #f5f5f5;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
         margin-top: 1.5rem;
     }
     .login-footer p {
         margin: 0.5rem 0;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.7);
     }
     .login-footer a {
-        color: #000000;
+        color: #ffffff;
         text-decoration: none;
         font-weight: 500;
     }
@@ -208,43 +218,43 @@
         gap: 0.75rem;
     }
     .alert-success {
-        background: #ffffff;
-        border: 1px solid #333333;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
     }
     .alert-success i {
-        color: #333333;
+        color: #ffffff;
     }
     .alert-danger {
-        background: #f5f5f5;
-        border: 1px solid #e5e5e5;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
     }
     .alert-danger i {
-        color: #333333;
+        color: #ffffff;
     }
     .account-info {
-        background: #ffffff;
-        border: 1px solid #000000;
-        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
         padding: 0.75rem 1rem;
         margin-bottom: 1.25rem;
         display: flex;
         align-items: center;
         gap: 0.75rem;
         font-size: 0.85rem;
-        color: #000000;
+        color: rgba(255, 255, 255, 0.9);
     }
     .account-info i {
-        color: #000000;
+        color: #ffffff;
     }
     .account-info.business {
-        background: #ffffff;
-        border-color: #e5e5e5;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.9);
     }
     .account-info.business i {
-        color: #000000;
+        color: #ffffff;
     }
 
     /* Password Toggle */
@@ -258,7 +268,7 @@
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
         padding: 4px;
         display: flex;
@@ -266,16 +276,10 @@
         justify-content: center;
     }
     .password-toggle:hover {
-        color: #000000;
+        color: #ffffff;
     }
     .password-wrapper .form-control {
         padding-right: 2rem;
-    }
-    [data-theme="dark"] .password-toggle {
-        color: rgba(255, 255, 255, 0.5);
-    }
-    [data-theme="dark"] .password-toggle:hover {
-        color: var(--white);
     }
 
     /* Tab content visibility */
@@ -286,69 +290,10 @@
         display: block;
     }
 
-    /* Dark Mode */
+    /* Dark Mode - Already dark so minimal changes needed */
     [data-theme="dark"] .login-card {
-        background: var(--bg-card);
+        background: #000000;
         box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .account-tabs {
-        background: var(--bg-secondary);
-        border-bottom-color: var(--border);
-    }
-    [data-theme="dark"] .account-tab {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .account-tab:hover {
-        background: var(--bg-card);
-        color: var(--text);
-    }
-    [data-theme="dark"] .account-tab.active {
-        background: var(--bg-card);
-        color: var(--primary);
-    }
-    [data-theme="dark"] .form-group label {
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control {
-        background: transparent;
-        border-bottom-color: rgba(255, 255, 255, 0.3);
-        color: var(--white);
-    }
-    [data-theme="dark"] .form-control:focus {
-        border-bottom-color: var(--white);
-        box-shadow: none;
-    }
-    [data-theme="dark"] .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.4);
-    }
-    [data-theme="dark"] .forgot-link {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .login-footer {
-        border-top-color: var(--border);
-    }
-    [data-theme="dark"] .login-footer p {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .alert-success {
-        background: rgba(16, 185, 129, 0.15);
-        border-color: rgba(16, 185, 129, 0.3);
-        color: #6ee7b7;
-    }
-    [data-theme="dark"] .alert-danger {
-        background: rgba(0, 0, 0, 0.1);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #d4d4d4;
-    }
-    [data-theme="dark"] .account-info {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: #fde68a;
-    }
-    [data-theme="dark"] .account-info.business {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: #ffffff;
     }
 </style>
 
@@ -409,7 +354,7 @@
                                placeholder="jouw@email.nl"
                                value="<?= htmlspecialchars($email ?? '') ?>" required>
                         <?php if (isset($errors['email'])): ?>
-                            <small style="color:#333333;font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['email'] ?></small>
+                            <small style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['email'] ?></small>
                         <?php endif; ?>
                     </div>
 
@@ -422,7 +367,7 @@
                             </button>
                         </div>
                         <?php if (isset($errors['password'])): ?>
-                            <small style="color:#333333;font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['password'] ?></small>
+                            <small style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['password'] ?></small>
                         <?php endif; ?>
                         <a href="/forgot-password" class="forgot-link">
                             <i class="fas fa-key"></i> Wachtwoord vergeten?
@@ -479,7 +424,7 @@
 
                 <div class="login-footer">
                     <p>
-                        Nog geen bedrijfsaccount? <a href="/business/register" style="color:#000000">Registreer je bedrijf</a>
+                        Nog geen bedrijfsaccount? <a href="/business/register">Registreer je bedrijf</a>
                     </p>
                 </div>
             </div>

@@ -1,12 +1,30 @@
 <?php ob_start(); ?>
 
 <style>
+/* Dark Dashboard Theme */
+.dashboard-page {
+    background: #000000;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+.dashboard-page .container {
+    padding-top: 1rem;
+}
+.dashboard-page h2 {
+    color: #ffffff;
+}
+.dashboard-page .card {
+    background: #111111;
+    border: 1px solid #333333;
+    color: #ffffff;
+}
+
 /* Booking tabs */
 .booking-tabs {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 2px solid #333333;
     padding-bottom: 0.5rem;
 }
 .booking-tab {
@@ -15,30 +33,30 @@
     background: none;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.6);
     cursor: pointer;
     border-radius: 8px 8px 0 0;
     transition: all 0.2s;
 }
 .booking-tab.active {
-    color: var(--primary);
-    background: var(--secondary);
+    color: #ffffff;
+    background: #1a1a1a;
 }
 .booking-tab:hover:not(.active) {
-    color: var(--text);
+    color: rgba(255,255,255,0.8);
 }
 
 /* Booking cards */
 .booking-card {
-    background: var(--secondary);
+    background: #1a1a1a;
     border-radius: 16px;
     padding: 1.25rem;
     margin-bottom: 1rem;
-    border: 2px solid transparent;
+    border: 2px solid #333333;
     transition: all 0.2s;
 }
 .booking-card:hover {
-    border-color: var(--primary);
+    border-color: #ffffff;
 }
 .booking-card-header {
     display: flex;
@@ -50,10 +68,10 @@
 .booking-card-business {
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--text);
+    color: #ffffff;
 }
 .booking-card-service {
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
     font-size: 0.9rem;
     margin-top: 0.25rem;
 }
@@ -63,14 +81,16 @@
     gap: 1.5rem;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    color: #ffffff;
 }
 .booking-card-date, .booking-card-time {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: #ffffff;
 }
 .booking-card-date i, .booking-card-time i {
-    color: var(--primary);
+    color: #ffffff;
     width: 20px;
 }
 .booking-card-price {
@@ -78,7 +98,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-    color: var(--primary);
+    color: #ffffff;
 }
 .booking-card-qr {
     background: linear-gradient(135deg, #ffffff, #f5f5f5);
@@ -110,6 +130,15 @@
     text-align: center;
     padding: 0.75rem;
 }
+.dashboard-page .btn-secondary {
+    background: #333333;
+    border-color: #444444;
+    color: #ffffff;
+}
+.dashboard-page .btn {
+    background: #ffffff;
+    color: #000000;
+}
 
 /* Status badges */
 .status-badge {
@@ -118,12 +147,12 @@
     font-size: 0.8rem;
     font-weight: 500;
 }
-.status-confirmed { background: #f5f5f5; color: #166534; }
-.status-pending { background: #ffffff; color: #000000; }
-.status-checked_in { background: #f5f5f5; color: #000000; }
-.status-completed { background: #e0e7ff; color: #3730a3; }
-.status-cancelled { background: #f5f5f5; color: #000000; }
-.status-no_show { background: #ffffff; color: #000000; }
+.status-confirmed { background: rgba(34,197,94,0.2); color: #22c55e; }
+.status-pending { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+.status-checked_in { background: rgba(59,130,246,0.2); color: #3b82f6; }
+.status-completed { background: rgba(139,92,246,0.2); color: #a78bfa; }
+.status-cancelled { background: rgba(239,68,68,0.2); color: #f87171; }
+.status-no_show { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
 
 /* Empty state */
 .empty-state {
@@ -132,24 +161,12 @@
 }
 .empty-state i {
     font-size: 4rem;
-    color: var(--text-light);
-    opacity: 0.3;
+    color: rgba(255,255,255,0.3);
     margin-bottom: 1rem;
 }
 .empty-state p {
-    color: var(--text-light);
+    color: rgba(255,255,255,0.6);
     margin-bottom: 1.5rem;
-}
-
-/* Dark mode */
-[data-theme="dark"] .booking-card {
-    background: var(--bg-secondary);
-}
-[data-theme="dark"] .booking-card-qr {
-    background: linear-gradient(135deg, #052e16, #064e3b);
-}
-[data-theme="dark"] .booking-card-qr-text {
-    color: #ffffff;
 }
 
 @media (max-width: 480px) {
@@ -176,6 +193,7 @@
 }
 </style>
 
+<div class="dashboard-page">
 <div class="container">
     <h2 style="font-size:1.5rem;margin-bottom:1.5rem">
         <i class="fas fa-calendar-alt"></i> Mijn Boekingen
@@ -399,6 +417,7 @@
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
+</div>
 </div>
 
 <script>

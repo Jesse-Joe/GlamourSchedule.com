@@ -18,11 +18,18 @@ class BookingController extends Controller
         $services = $this->getServices($business['id']);
         $selectedService = $_GET['service'] ?? null;
 
+        // Get employees for BV businesses
+        $employees = [];
+        if (($business['business_type'] ?? 'eenmanszaak') === 'bv') {
+            $employees = $this->getEmployees($business['id']);
+        }
+
         return $this->view('pages/booking/create', [
             'pageTitle' => 'Boeken bij ' . $business['name'],
             'business' => $business,
             'services' => $services,
-            'selectedService' => $selectedService
+            'selectedService' => $selectedService,
+            'employees' => $employees
         ]);
     }
 
@@ -38,6 +45,7 @@ class BookingController extends Controller
         }
 
         $serviceId = (int)($_POST['service_id'] ?? 0);
+        $employeeId = (int)($_POST['employee_id'] ?? 0) ?: null;
         $date = $_POST['date'] ?? '';
         $time = $_POST['time'] ?? '';
         $notes = trim($_POST['notes'] ?? '');
@@ -79,12 +87,13 @@ class BookingController extends Controller
             ]);
         }
 
-        // Check if time slot is available
-        if (!$this->isTimeSlotAvailable($business['id'], $date, $time, $service['duration_minutes'])) {
+        // Check if time slot is available (consider employee if BV business)
+        if (!$this->isTimeSlotAvailable($business['id'], $date, $time, $service['duration_minutes'], $employeeId)) {
             return $this->view('pages/booking/create', [
                 'pageTitle' => 'Boeken bij ' . $business['name'],
                 'business' => $business,
                 'services' => $this->getServices($business['id']),
+                'employees' => ($business['business_type'] ?? 'eenmanszaak') === 'bv' ? $this->getEmployees($business['id']) : [],
                 'error' => 'Dit tijdslot is helaas niet meer beschikbaar. Kies een andere tijd.'
             ]);
         }
@@ -98,13 +107,13 @@ class BookingController extends Controller
         $qrCodeHash = hash('sha256', $uuid . $bookingNumber);
 
         $this->db->query(
-            "INSERT INTO bookings (uuid, booking_number, business_id, user_id, service_id,
+            "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
              duration_minutes, service_price, admin_fee, total_price, qr_code_hash, customer_notes,
              terms_accepted_at, terms_version, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending')",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending')",
             [
-                $uuid, $bookingNumber, $business['id'], $userId, $serviceId,
+                $uuid, $bookingNumber, $business['id'], $employeeId, $userId, $serviceId,
                 $guestName ?: null, $guestEmail ?: null, $guestPhone ?: null,
                 $date, $time, $service['duration_minutes'],
                 $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $notes ?: null
@@ -530,6 +539,7 @@ HTML;
 
         $date = $_GET['date'] ?? '';
         $serviceId = (int)($_GET['service_id'] ?? 0);
+        $employeeId = (int)($_GET['employee_id'] ?? 0) ?: null;
 
         if (!$date || !$serviceId) {
             return json_encode(['error' => 'Missing date or service_id']);
@@ -541,7 +551,7 @@ HTML;
         }
 
         $duration = $service['duration_minutes'];
-        $bookedSlots = $this->getBookedSlots($business['id'], $date);
+        $bookedSlots = $this->getBookedSlots($business['id'], $date, $employeeId);
 
         // Generate all possible time slots (9:00 - 18:00, every 30 min)
         $availableSlots = [];
@@ -572,21 +582,33 @@ HTML;
         return json_encode(['slots' => $availableSlots]);
     }
 
-    private function getBookedSlots(int $businessId, string $date): array
+    private function getBookedSlots(int $businessId, string $date, ?int $employeeId = null): array
     {
-        $stmt = $this->db->query(
-            "SELECT appointment_time as time, duration_minutes as duration
-             FROM bookings
-             WHERE business_id = ? AND appointment_date = ? AND status NOT IN ('cancelled', 'rejected')
-             ORDER BY appointment_time",
-            [$businessId, $date]
-        );
+        if ($employeeId) {
+            // For BV businesses with employee selection, only check that employee's bookings
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration
+                 FROM bookings
+                 WHERE business_id = ? AND appointment_date = ? AND employee_id = ? AND status NOT IN ('cancelled', 'rejected')
+                 ORDER BY appointment_time",
+                [$businessId, $date, $employeeId]
+            );
+        } else {
+            // For eenmanszaak or no employee selected, check all business bookings
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration
+                 FROM bookings
+                 WHERE business_id = ? AND appointment_date = ? AND status NOT IN ('cancelled', 'rejected')
+                 ORDER BY appointment_time",
+                [$businessId, $date]
+            );
+        }
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function isTimeSlotAvailable(int $businessId, string $date, string $time, int $duration): bool
+    private function isTimeSlotAvailable(int $businessId, string $date, string $time, int $duration, ?int $employeeId = null): bool
     {
-        $bookedSlots = $this->getBookedSlots($businessId, $date);
+        $bookedSlots = $this->getBookedSlots($businessId, $date, $employeeId);
 
         foreach ($bookedSlots as $booked) {
             if ($this->timeSlotsOverlap($time, $duration, $booked['time'], $booked['duration'])) {
@@ -594,6 +616,17 @@ HTML;
             }
         }
         return true;
+    }
+
+    private function getEmployees(int $businessId): array
+    {
+        $stmt = $this->db->query(
+            "SELECT id, name, photo, color, bio FROM employees
+             WHERE business_id = ? AND is_active = 1
+             ORDER BY sort_order, name",
+            [$businessId]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function timeSlotsOverlap(string $time1, int $duration1, string $time2, int $duration2): bool

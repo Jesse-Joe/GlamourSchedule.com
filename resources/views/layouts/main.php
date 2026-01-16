@@ -8,10 +8,10 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $pageTitle ?? 'Glamourschedule' ?> - Beauty Booking Platform</title>
+    <title><?= $pageTitle ?? 'Glamourschedule' ?> - Booking Platform</title>
 
+    <link rel="icon" type="image/svg+xml" href="/images/gs-logo-circle.svg">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#000000">
@@ -24,13 +24,70 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Global Search Modal -->
+    <div class="global-search-overlay" id="globalSearchOverlay" onclick="closeGlobalSearch()"></div>
+    <div class="global-search-modal" id="globalSearchModal">
+        <div class="global-search-header">
+            <i class="fas fa-search"></i>
+            <input type="text" id="globalSearchInput" placeholder="Zoek salons, diensten, pagina's..." autocomplete="off" oninput="handleGlobalSearch(this.value)">
+            <button class="global-search-close" onclick="closeGlobalSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="global-search-results" id="globalSearchResults">
+            <div class="search-quick-links">
+                <div class="search-section-title">Snelle links</div>
+                <a href="/search" class="search-quick-link" onclick="closeGlobalSearch()">
+                    <i class="fas fa-store"></i>
+                    <span>Alle Salons Bekijken</span>
+                </a>
+                <a href="/search?category=kapper" class="search-quick-link" onclick="closeGlobalSearch()">
+                    <i class="fas fa-cut"></i>
+                    <span>Kappers</span>
+                </a>
+                <a href="/search?category=schoonheid" class="search-quick-link" onclick="closeGlobalSearch()">
+                    <i class="fas fa-spa"></i>
+                    <span>Schoonheidsspecialisten</span>
+                </a>
+                <a href="/search?category=nagels" class="search-quick-link" onclick="closeGlobalSearch()">
+                    <i class="fas fa-hand-sparkles"></i>
+                    <span>Nagelstudio's</span>
+                </a>
+                <a href="/search?category=massage" class="search-quick-link" onclick="closeGlobalSearch()">
+                    <i class="fas fa-hands"></i>
+                    <span>Massage</span>
+                </a>
+            </div>
+            <div class="search-section-title">Pagina's</div>
+            <a href="/register?type=business" class="search-quick-link" onclick="closeGlobalSearch()">
+                <i class="fas fa-rocket"></i>
+                <span>Salon Aanmelden</span>
+            </a>
+            <a href="/marketing" class="search-quick-link" onclick="closeGlobalSearch()">
+                <i class="fas fa-bullhorn"></i>
+                <span>Marketing Services</span>
+            </a>
+            <a href="/about" class="search-quick-link" onclick="closeGlobalSearch()">
+                <i class="fas fa-cogs"></i>
+                <span>Platform Functionaliteit</span>
+            </a>
+            <a href="/contact" class="search-quick-link" onclick="closeGlobalSearch()">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </a>
+        </div>
+    </div>
+
     <!-- Mobile Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <!-- Mobile Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="/" class="sidebar-logo">Glamourschedule</a>
+            <a href="/" class="sidebar-logo">
+                <img src="/images/gs-logo-white.svg" alt="GS" class="sidebar-logo-icon">
+                <span>Glamourschedule</span>
+            </a>
             <button class="sidebar-close" onclick="closeSidebar()">
                 <i class="fas fa-times"></i>
             </button>
@@ -47,19 +104,6 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <a href="/search" class="sidebar-link <?= $currentPath === '/search' ? 'active' : '' ?>">
                 <i class="fas fa-search"></i> Zoeken
             </a>
-
-            <div class="sidebar-divider"></div>
-
-            <!-- Categories -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">Categorieën</div>
-            </div>
-            <a href="/search?group=haar" class="sidebar-link"><i class="fas fa-cut"></i> Haar</a>
-            <a href="/search?group=nagels" class="sidebar-link"><i class="fas fa-hand-sparkles"></i> Nagels</a>
-            <a href="/search?group=huid" class="sidebar-link"><i class="fas fa-spa"></i> Skincare</a>
-            <a href="/search?group=lichaam" class="sidebar-link"><i class="fas fa-hands"></i> Massage</a>
-            <a href="/search?group=makeup" class="sidebar-link"><i class="fas fa-paint-brush"></i> Make-up</a>
-            <a href="/search?group=wellness" class="sidebar-link"><i class="fas fa-hot-tub"></i> Wellness</a>
 
             <div class="sidebar-divider"></div>
 
@@ -101,7 +145,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Voor Bedrijven</div>
             </div>
-            <a href="/business/register" class="sidebar-link">
+            <a href="/register?type=business" class="sidebar-link">
                 <i class="fas fa-rocket"></i> Salon Aanmelden
             </a>
             <a href="/sales/register" class="sidebar-link">
@@ -111,11 +155,17 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <div class="sidebar-divider"></div>
 
             <!-- Info -->
-            <a href="/about" class="sidebar-link"><i class="fas fa-info-circle"></i> Over Ons</a>
+            <a href="/marketing" class="sidebar-link"><i class="fas fa-bullhorn"></i> Marketing</a>
+            <a href="/about" class="sidebar-link"><i class="fas fa-cogs"></i> Functionaliteit</a>
             <a href="/contact" class="sidebar-link"><i class="fas fa-envelope"></i> Contact</a>
         </nav>
 
         <div class="sidebar-footer">
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-sun theme-icon-light"></i>
+                <i class="fas fa-moon theme-icon-dark"></i>
+                <span class="theme-toggle-text">Light Mode</span>
+            </button>
             <?php if ($isLoggedIn): ?>
                 <a href="/logout" class="sidebar-btn sidebar-btn-outline">
                     <i class="fas fa-sign-out-alt"></i> Uitloggen
@@ -134,21 +184,50 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </button>
 
         <a href="/" class="logo-prestige">
-            <span>Glamourschedule</span>
+            <img src="/images/gs-logo.svg" alt="GS" class="logo-icon">
+            <span class="logo-text">Glamourschedule</span>
         </a>
 
         <ul class="nav-links-prestige" id="navMenu">
-            <li><a href="/search"><?= $translations['search'] ?? 'Zoeken' ?></a></li>
+            <li><a href="javascript:void(0)" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Zoeken' ?>"><i class="fas fa-search"></i></a></li>
+            <li><a href="/register?type=business">Salon Aanmelden</a></li>
+            <li><a href="/sales/register">Word Partner</a></li>
+            <li><a href="/sales/login">Sales Portal</a></li>
+            <li><a href="/marketing">Marketing</a></li>
+            <li><a href="/about">Functionaliteit</a></li>
+            <li><a href="/contact">Contact</a></li>
+
             <?php if (isset($user)): ?>
                 <li><a href="/dashboard"><?= $translations['dashboard'] ?? 'Dashboard' ?></a></li>
                 <li><a href="/dashboard/bookings"><?= $translations['bookings'] ?? 'Boekingen' ?></a></li>
             <?php endif; ?>
-            <li><a href="/business/register"><?= $translations['for_business'] ?? 'Voor Salons' ?></a></li>
         </ul>
 
         <div class="nav-actions-prestige">
+            <a href="javascript:void(0)" class="nav-search-mobile" title="Zoeken" onclick="openGlobalSearch()">
+                <i class="fas fa-search"></i>
+            </a>
             <?php if (isset($user)): ?>
-                <a href="/dashboard" class="btn btn-primary"><?= $translations['my_account'] ?? 'Account' ?></a>
+                <div class="account-dropdown">
+                    <button class="btn btn-primary account-dropdown-toggle" onclick="toggleAccountDropdown()">
+                        <i class="fas fa-user"></i> <?= $translations['my_account'] ?? 'Account' ?> <i class="fas fa-chevron-down" style="font-size:0.7rem;margin-left:0.25rem"></i>
+                    </button>
+                    <div class="account-dropdown-menu" id="accountDropdownMenu">
+                        <a href="/dashboard" class="account-dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="/dashboard/settings" class="account-dropdown-item">
+                            <i class="fas fa-cog"></i> Instellingen
+                        </a>
+                        <a href="/dashboard/bookings" class="account-dropdown-item">
+                            <i class="fas fa-calendar-check"></i> Mijn Boekingen
+                        </a>
+                        <div class="account-dropdown-divider"></div>
+                        <a href="/logout" class="account-dropdown-item account-dropdown-logout">
+                            <i class="fas fa-sign-out-alt"></i> Uitloggen
+                        </a>
+                    </div>
+                </div>
             <?php else: ?>
                 <a href="/login" class="btn btn-secondary"><?= $translations['login'] ?? 'Inloggen' ?></a>
                 <a href="/register" class="btn btn-primary"><?= $translations['register'] ?? 'Registreren' ?></a>
@@ -172,14 +251,14 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="/" class="footer-logo">Glamourschedule</a>
-                <p><?= $translations['footer_desc'] ?? 'Het premium beauty booking platform van Nederland. Vind en boek de beste salons.' ?></p>
+                <p><?= $translations['footer_desc'] ?? 'Het premium booking platform van Nederland. Vind en boek de beste salons.' ?></p>
             </div>
 
             <div>
                 <h4><?= $translations['platform'] ?? 'Platform' ?></h4>
                 <ul>
                     <li><a href="/search"><?= $translations['search'] ?? 'Zoeken' ?></a></li>
-                    <li><a href="/business/register"><?= $translations['for_business'] ?? 'Voor Salons' ?></a></li>
+                    <li><a href="/register?type=business">Salon Aanmelden</a></li>
                     <li><a href="/sales/login">Sales Portal</a></li>
                 </ul>
             </div>
@@ -187,9 +266,10 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <div>
                 <h4><?= $translations['company'] ?? 'Bedrijf' ?></h4>
                 <ul>
-                    <li><a href="/about"><?= $translations['about'] ?? 'Over ons' ?></a></li>
+                    <li><a href="/about">Functionaliteit</a></li>
+                    <li><a href="/marketing">Marketing</a></li>
                     <li><a href="/contact"><?= $translations['contact'] ?? 'Contact' ?></a></li>
-                    <li><a href="https://www.kvk.nl/zoeken/?source=all&q=81973667" target="_blank">KVK: 81973667</a></li>
+                    <li><a href="https://www.kvk.nl/bestellen/#/81973667000048233005?origin=search" target="_blank">KVK: 81973667</a></li>
                 </ul>
             </div>
 
@@ -223,15 +303,334 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             document.body.style.overflow = '';
         }
 
-        // Close sidebar on escape key
+        // Global Search Functions
+        function openGlobalSearch() {
+            document.getElementById('globalSearchOverlay').classList.add('active');
+            document.getElementById('globalSearchModal').classList.add('active');
+            document.getElementById('globalSearchInput').focus();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGlobalSearch() {
+            document.getElementById('globalSearchOverlay').classList.remove('active');
+            document.getElementById('globalSearchModal').classList.remove('active');
+            document.getElementById('globalSearchInput').value = '';
+            document.body.style.overflow = '';
+            // Reset to default results
+            resetSearchResults();
+        }
+
+        let searchTimeout;
+        const defaultResults = document.getElementById('globalSearchResults').innerHTML;
+
+        function resetSearchResults() {
+            document.getElementById('globalSearchResults').innerHTML = defaultResults;
+        }
+
+        function handleGlobalSearch(query) {
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                resetSearchResults();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch('/api/global-search?q=' + encodeURIComponent(query))
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data, query);
+                    })
+                    .catch(err => {
+                        console.error('Search error:', err);
+                    });
+            }, 300);
+        }
+
+        function displaySearchResults(data, query) {
+            const container = document.getElementById('globalSearchResults');
+            let html = '';
+
+            // Salons
+            if (data.salons && data.salons.length > 0) {
+                html += '<div class="search-section-title">Salons</div>';
+                data.salons.forEach(salon => {
+                    const photo = salon.photos ? '/uploads/businesses/' + salon.id + '/' + salon.photos.split(',')[0] : '/images/placeholder-salon.jpg';
+                    html += `
+                        <a href="/business/${salon.slug}" class="search-result-item" onclick="closeGlobalSearch()">
+                            <img src="${photo}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
+                            <div class="search-result-info">
+                                <span class="search-result-name">${salon.company_name}</span>
+                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || 'Nederland'}</span>
+                            </div>
+                        </a>
+                    `;
+                });
+            }
+
+            // Services
+            if (data.services && data.services.length > 0) {
+                html += '<div class="search-section-title">Diensten</div>';
+                data.services.forEach(service => {
+                    html += `
+                        <a href="/business/${service.business_slug}?service=${service.id}" class="search-quick-link" onclick="closeGlobalSearch()">
+                            <i class="fas fa-cut"></i>
+                            <span>${service.name} <small style="opacity:0.6">bij ${service.business_name}</small></span>
+                        </a>
+                    `;
+                });
+            }
+
+            // Pages (static matches)
+            const pages = [
+                { url: '/search', name: 'Alle Salons', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all'] },
+                { url: '/register?type=business', name: 'Salon Aanmelden', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon'] },
+                { url: '/marketing', name: 'Marketing Services', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
+                { url: '/about', name: 'Platform Functionaliteit', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
+                { url: '/contact', name: 'Contact', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
+                { url: '/terms', name: 'Voorwaarden', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel'] },
+                { url: '/privacy', name: 'Privacy', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
+            ];
+
+            const q = query.toLowerCase();
+            const matchedPages = pages.filter(p =>
+                p.name.toLowerCase().includes(q) ||
+                p.keywords.some(k => k.includes(q) || q.includes(k))
+            );
+
+            if (matchedPages.length > 0) {
+                html += '<div class="search-section-title">Pagina\'s</div>';
+                matchedPages.forEach(page => {
+                    html += `
+                        <a href="${page.url}" class="search-quick-link" onclick="closeGlobalSearch()">
+                            <i class="fas ${page.icon}"></i>
+                            <span>${page.name}</span>
+                        </a>
+                    `;
+                });
+            }
+
+            if (html === '') {
+                html = `
+                    <div class="search-no-results">
+                        <i class="fas fa-search"></i>
+                        <p>Geen resultaten voor "${query}"</p>
+                        <a href="/search?q=${encodeURIComponent(query)}" class="btn btn-primary" style="margin-top:1rem" onclick="closeGlobalSearch()">
+                            Zoek in alle salons
+                        </a>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Close on escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeSidebar();
+                closeGlobalSearch();
             }
         });
+
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeToggleText(newTheme);
+        }
+
+        function updateThemeToggleText(theme) {
+            const toggleText = document.querySelector('.theme-toggle-text');
+            if (toggleText) {
+                toggleText.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+
+        // Initialize theme on page load
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeToggleText(savedTheme);
+        })();
     </script>
 
     <!-- Glamori AI Chatbot -->
     <?php include BASE_PATH . '/resources/views/components/glamori-chat.php'; ?>
+
+    <!-- Early Bird Popup -->
+    <div id="earlyBirdPopup" class="early-bird-popup" style="display:none;">
+        <div class="early-bird-overlay" onclick="closeEarlyBirdPopup()"></div>
+        <div class="early-bird-modal">
+            <button class="early-bird-close" onclick="closeEarlyBirdPopup()">&times;</button>
+            <div class="early-bird-content">
+                <div class="early-bird-badge">
+                    <i class="fas fa-star"></i> Early Bird Aanbieding
+                </div>
+                <h2>Start je salon voor slechts</h2>
+                <div class="early-bird-price">
+                    <span class="currency">&euro;</span>
+                    <span class="amount">0,99</span>
+                </div>
+                <p class="early-bird-subtitle">Eenmalig voor de eerste 100 bedrijven</p>
+                <ul class="early-bird-features">
+                    <li><i class="fas fa-check"></i> 14 dagen gratis proberen</li>
+                    <li><i class="fas fa-check"></i> Online boekingssysteem</li>
+                    <li><i class="fas fa-check"></i> Eigen bedrijfspagina</li>
+                    <li><i class="fas fa-check"></i> Geen maandelijkse kosten</li>
+                </ul>
+                <a href="/register?type=business" class="early-bird-btn">
+                    <i class="fas fa-rocket"></i> Nu Aanmelden
+                </a>
+                <p class="early-bird-note">Daarna &euro;99,99 voor nieuwe bedrijven</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .early-bird-popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+    .early-bird-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+    .early-bird-modal { position: relative; background: #000; border: 2px solid #333; border-radius: 24px; padding: 2.5rem; max-width: 420px; width: 90%; animation: earlyBirdSlide 0.4s ease; }
+    @keyframes earlyBirdSlide { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .early-bird-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #666; font-size: 2rem; cursor: pointer; line-height: 1; transition: color 0.2s; }
+    .early-bird-close:hover { color: #fff; }
+    .early-bird-content { text-align: center; }
+    .early-bird-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; padding: 0.5rem 1.25rem; border-radius: 50px; font-size: 0.9rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .early-bird-content h2 { color: #fff; font-size: 1.5rem; margin: 0 0 1rem; font-weight: 600; }
+    .early-bird-price { display: flex; align-items: flex-start; justify-content: center; gap: 0.25rem; margin-bottom: 0.5rem; }
+    .early-bird-price .currency { font-size: 1.5rem; color: #fbbf24; font-weight: 700; margin-top: 0.5rem; }
+    .early-bird-price .amount { font-size: 4rem; color: #fbbf24; font-weight: 800; line-height: 1; }
+    .early-bird-subtitle { color: rgba(255,255,255,0.7); margin: 0 0 1.5rem; font-size: 0.95rem; }
+    .early-bird-features { list-style: none; padding: 0; margin: 0 0 1.5rem; text-align: left; }
+    .early-bird-features li { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; color: rgba(255,255,255,0.9); font-size: 0.95rem; }
+    .early-bird-features li i { color: #22c55e; font-size: 0.85rem; }
+    .early-bird-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem; background: #fff; color: #000; border-radius: 50px; font-size: 1.1rem; font-weight: 700; text-decoration: none; transition: all 0.3s; }
+    .early-bird-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
+    .early-bird-note { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 1rem 0 0; }
+    </style>
+
+    <script>
+    // Early Bird Popup - shows once after 10 seconds
+    (function() {
+        function getCookie(name) {
+            const value = '; ' + document.cookie;
+            const parts = value.split('; ' + name + '=');
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+        }
+
+        // Check if popup was already shown
+        if (!getCookie('earlyBirdShown')) {
+            setTimeout(function() {
+                document.getElementById('earlyBirdPopup').style.display = 'flex';
+                setCookie('earlyBirdShown', '1', 30); // Don't show again for 30 days
+            }, 10000); // 10 seconds
+        }
+    })();
+
+    function closeEarlyBirdPopup() {
+        document.getElementById('earlyBirdPopup').style.display = 'none';
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeEarlyBirdPopup();
+    });
+    </script>
+
+    <style>
+    /* Account Dropdown */
+    .account-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    .account-dropdown-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .account-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background: #000000;
+        border: 1px solid #333333;
+        border-radius: 12px;
+        min-width: 200px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.2s ease;
+        z-index: 1000;
+        overflow: hidden;
+    }
+    .account-dropdown-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .account-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+    .account-dropdown-item:hover {
+        background: #1a1a1a;
+    }
+    .account-dropdown-item i {
+        width: 18px;
+        text-align: center;
+        color: rgba(255,255,255,0.7);
+    }
+    .account-dropdown-divider {
+        height: 1px;
+        background: #333333;
+        margin: 0.25rem 0;
+    }
+    .account-dropdown-logout {
+        color: #f87171;
+    }
+    .account-dropdown-logout i {
+        color: #f87171;
+    }
+    .account-dropdown-logout:hover {
+        background: rgba(220, 38, 38, 0.2);
+    }
+    </style>
+
+    <script>
+    function toggleAccountDropdown() {
+        const menu = document.getElementById('accountDropdownMenu');
+        menu.classList.toggle('active');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const dropdown = document.querySelector('.account-dropdown');
+        const menu = document.getElementById('accountDropdownMenu');
+        if (dropdown && menu && !dropdown.contains(e.target)) {
+            menu.classList.remove('active');
+        }
+    });
+    </script>
 </body>
 </html>

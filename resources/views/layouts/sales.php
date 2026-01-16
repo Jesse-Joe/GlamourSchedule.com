@@ -44,17 +44,17 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            color: #000000;
+            color: #ffffff;
         }
         .sales-sidebar .logo i {
-            color: #000000;
+            color: #ffffff;
         }
         .sales-sidebar nav a {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             padding: 1rem 1.25rem;
-            color: #999999;
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
             border-radius: 10px;
             margin-bottom: 0.5rem;
@@ -63,12 +63,11 @@
         }
         .sales-sidebar nav a:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #000000;
+            color: #ffffff;
         }
         .sales-sidebar nav a.active {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.2));
+            background: #ffffff;
             color: #000000;
-            border: 1px solid rgba(255, 215, 0, 0.4);
         }
         .sales-sidebar nav a i {
             width: 24px;
@@ -82,7 +81,7 @@
             right: 1.5rem;
         }
         .sidebar-footer .user-info {
-            border-top: 1px solid rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(255,255,255,0.2);
             padding-top: 1rem;
             margin-bottom: 1rem;
         }
@@ -98,7 +97,7 @@
             color: #999999;
         }
         .sidebar-footer .logout-btn {
-            color: #999999;
+            color: rgba(255,255,255,0.6);
             text-decoration: none;
             font-size: 0.9rem;
             display: flex;
@@ -108,7 +107,7 @@
             transition: color 0.2s;
         }
         .sidebar-footer .logout-btn:hover {
-            color: #000000;
+            color: #ffffff;
         }
 
         /* Main Content */
@@ -132,7 +131,7 @@
             font-size: 1.5rem;
         }
         .referral-code-box {
-            background: linear-gradient(135deg, #000000, #000000);
+            background: #000000;
             color: white;
             padding: 0.75rem 1.25rem;
             border-radius: 12px;
@@ -143,17 +142,17 @@
         }
         .referral-code-box span {
             font-size: 0.85rem;
-            color: #000000;
+            color: rgba(255,255,255,0.7);
         }
         .referral-code-box code {
             font-size: 1.1rem;
             font-weight: bold;
             letter-spacing: 2px;
-            color: #000000;
+            color: #ffffff;
         }
         .referral-code-box button {
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid #333333;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #444444;
             color: white;
             padding: 0.5rem 0.75rem;
             border-radius: 8px;
@@ -161,7 +160,7 @@
             transition: background 0.2s;
         }
         .referral-code-box button:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Stats Cards */

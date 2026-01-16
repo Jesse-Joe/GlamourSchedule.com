@@ -12,13 +12,28 @@ class SearchController extends Controller
         $location = trim($_GET['location'] ?? '');
         $sort = $_GET['sort'] ?? 'rating';
 
+        // New filter parameters
+        $filters = [
+            'price_min' => !empty($_GET['price_min']) ? (float)$_GET['price_min'] : null,
+            'price_max' => !empty($_GET['price_max']) ? (float)$_GET['price_max'] : null,
+            'high_rated' => isset($_GET['high_rated']) && $_GET['high_rated'] === '1',
+            'open_now' => isset($_GET['open_now']) && $_GET['open_now'] === '1',
+            'open_weekend' => isset($_GET['open_weekend']) && $_GET['open_weekend'] === '1',
+            'open_evening' => isset($_GET['open_evening']) && $_GET['open_evening'] === '1',
+        ];
+
         $businesses = [];
         $categories = $this->getCategories();
 
-        if ($query || $category || $location) {
-            $businesses = $this->searchBusinesses($query, $category, $location, $sort);
+        $hasFilters = $query || $category || $location ||
+                      $filters['price_min'] || $filters['price_max'] ||
+                      $filters['high_rated'] || $filters['open_now'] ||
+                      $filters['open_weekend'] || $filters['open_evening'];
+
+        if ($hasFilters) {
+            $businesses = $this->searchBusinesses($query, $category, $location, $sort, $filters);
         } else {
-            $businesses = $this->getFeaturedBusinesses($sort);
+            $businesses = $this->getFeaturedBusinesses($sort, $filters);
         }
 
         // Enrich businesses with additional data
@@ -31,17 +46,21 @@ class SearchController extends Controller
             'query' => $query,
             'category' => $category,
             'location' => $location,
-            'sort' => $sort
+            'sort' => $sort,
+            'filters' => $filters
         ]);
     }
 
-    private function searchBusinesses(string $query, string $category, string $location, string $sort): array
+    private function searchBusinesses(string $query, string $category, string $location, string $sort, array $filters = []): array
     {
         $sql = "SELECT DISTINCT b.*, b.company_name as name,
                        COALESCE(AVG(r.rating), 0) as avg_rating,
-                       COUNT(DISTINCT r.id) as review_count
+                       COUNT(DISTINCT r.id) as review_count,
+                       MIN(s.price) as min_price,
+                       MAX(s.price) as max_price
                 FROM businesses b
-                LEFT JOIN reviews r ON b.id = r.business_id";
+                LEFT JOIN reviews r ON b.id = r.business_id
+                LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1";
 
         if ($category) {
             $sql .= " INNER JOIN business_categories bc ON b.id = bc.business_id";
@@ -70,7 +89,65 @@ class SearchController extends Controller
             $params[] = $locationTerm;
         }
 
+        // Opening hours filters
+        if (!empty($filters['open_now'])) {
+            $currentDay = (int)date('w'); // 0=Sunday, 6=Saturday
+            $currentTime = date('H:i:s');
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.day_of_week = ?
+                AND bh.is_closed = 0
+                AND bh.open_time <= ?
+                AND bh.close_time >= ?
+            )";
+            $params[] = $currentDay;
+            $params[] = $currentTime;
+            $params[] = $currentTime;
+        }
+
+        if (!empty($filters['open_weekend'])) {
+            // Saturday (6) or Sunday (0)
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.day_of_week IN (0, 6)
+                AND bh.is_closed = 0
+            )";
+        }
+
+        if (!empty($filters['open_evening'])) {
+            // Evening = closes at 18:00 or later
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.is_closed = 0
+                AND bh.close_time >= '18:00:00'
+            )";
+        }
+
         $sql .= " GROUP BY b.id";
+
+        // Price filters (applied after GROUP BY via HAVING)
+        $havingClauses = [];
+        if (!empty($filters['price_min'])) {
+            $havingClauses[] = "min_price >= ?";
+            $params[] = $filters['price_min'];
+        }
+        if (!empty($filters['price_max'])) {
+            $havingClauses[] = "min_price <= ?";
+            $params[] = $filters['price_max'];
+        }
+
+        // High rated filter (4+ stars)
+        if (!empty($filters['high_rated'])) {
+            $havingClauses[] = "avg_rating >= 4";
+        }
+
+        if (!empty($havingClauses)) {
+            $sql .= " HAVING " . implode(" AND ", $havingClauses);
+        }
+
         $sql .= $this->getOrderByClause($sort);
         $sql .= " LIMIT 50";
 
@@ -78,19 +155,79 @@ class SearchController extends Controller
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function getFeaturedBusinesses(string $sort): array
+    private function getFeaturedBusinesses(string $sort, array $filters = []): array
     {
         $sql = "SELECT b.*, b.company_name as name,
                        COALESCE(AVG(r.rating), 0) as avg_rating,
-                       COUNT(DISTINCT r.id) as review_count
+                       COUNT(DISTINCT r.id) as review_count,
+                       MIN(s.price) as min_price,
+                       MAX(s.price) as max_price
                 FROM businesses b
                 LEFT JOIN reviews r ON b.id = r.business_id
-                WHERE b.status = 'active'
-                GROUP BY b.id";
+                LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
+                WHERE b.status = 'active'";
+
+        $params = [];
+
+        // Opening hours filters
+        if (!empty($filters['open_now'])) {
+            $currentDay = (int)date('w');
+            $currentTime = date('H:i:s');
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.day_of_week = ?
+                AND bh.is_closed = 0
+                AND bh.open_time <= ?
+                AND bh.close_time >= ?
+            )";
+            $params[] = $currentDay;
+            $params[] = $currentTime;
+            $params[] = $currentTime;
+        }
+
+        if (!empty($filters['open_weekend'])) {
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.day_of_week IN (0, 6)
+                AND bh.is_closed = 0
+            )";
+        }
+
+        if (!empty($filters['open_evening'])) {
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM business_hours bh
+                WHERE bh.business_id = b.id
+                AND bh.is_closed = 0
+                AND bh.close_time >= '18:00:00'
+            )";
+        }
+
+        $sql .= " GROUP BY b.id";
+
+        // Price and rating filters via HAVING
+        $havingClauses = [];
+        if (!empty($filters['price_min'])) {
+            $havingClauses[] = "min_price >= ?";
+            $params[] = $filters['price_min'];
+        }
+        if (!empty($filters['price_max'])) {
+            $havingClauses[] = "min_price <= ?";
+            $params[] = $filters['price_max'];
+        }
+        if (!empty($filters['high_rated'])) {
+            $havingClauses[] = "avg_rating >= 4";
+        }
+
+        if (!empty($havingClauses)) {
+            $sql .= " HAVING " . implode(" AND ", $havingClauses);
+        }
+
         $sql .= $this->getOrderByClause($sort);
         $sql .= " LIMIT 24";
 
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->query($sql, $params);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -101,6 +238,12 @@ class SearchController extends Controller
                 return " ORDER BY b.company_name ASC";
             case 'reviews':
                 return " ORDER BY review_count DESC, avg_rating DESC";
+            case 'price_asc':
+                return " ORDER BY min_price ASC, avg_rating DESC";
+            case 'price_desc':
+                return " ORDER BY min_price DESC, avg_rating DESC";
+            case 'newest':
+                return " ORDER BY b.created_at DESC, avg_rating DESC";
             case 'rating':
             default:
                 return " ORDER BY avg_rating DESC, review_count DESC";

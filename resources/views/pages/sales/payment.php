@@ -239,12 +239,32 @@
             </div>
         </div>
 
-        <form method="POST" action="/sales/payment">
+        <form method="POST" action="/sales/payment" id="paymentForm">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-            <button type="submit" class="btn-pay">
-                <i class="fas fa-lock"></i> Betaal &euro;0,99 met iDEAL
+            <button type="submit" class="btn-pay" id="payBtn">
+                <i class="fas fa-lock" id="payIcon"></i>
+                <span id="payText">Betaal &euro;0,99 met iDEAL</span>
             </button>
         </form>
+
+        <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            var btn = document.getElementById('payBtn');
+            var icon = document.getElementById('payIcon');
+            var text = document.getElementById('payText');
+
+            // Prevent double submit
+            if (btn.disabled) {
+                e.preventDefault();
+                return false;
+            }
+
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            icon.className = 'fas fa-spinner fa-spin';
+            text.textContent = 'Bezig met doorsturen naar iDEAL...';
+        });
+        </script>
 
         <div class="payment-methods">
             <span class="payment-method"><i class="fas fa-university"></i> iDEAL</span>

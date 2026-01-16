@@ -38,6 +38,10 @@
         color: #ffffff;
     }
 
+    .glamori-toggle .chat-icon {
+        display: block;
+    }
+
     .glamori-toggle .close-icon {
         display: none;
     }
@@ -75,9 +79,10 @@
         max-width: calc(100vw - 48px);
         height: 520px;
         max-height: calc(100vh - 120px);
-        background: #ffffff;
+        background: #000000;
         border-radius: 20px;
-        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
+        border: 2px solid #333333;
         display: none;
         flex-direction: column;
         overflow: hidden;
@@ -106,6 +111,36 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        position: relative;
+    }
+
+    .glamori-close {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.2s ease;
+    }
+
+    .glamori-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 480px) {
+        .glamori-close {
+            display: flex;
+        }
     }
 
     .glamori-avatar {
@@ -146,7 +181,7 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
-        background: #f9fafb;
+        background: #111111;
     }
 
     .glamori-message {
@@ -178,16 +213,17 @@
     }
 
     .glamori-message-content {
-        background: #ffffff;
+        background: #262626;
         padding: 12px 16px;
         border-radius: 16px;
         border-bottom-left-radius: 4px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        color: #ffffff;
     }
 
     .glamori-message.user .glamori-message-content {
-        background: #000000;
-        color: #ffffff;
+        background: #ffffff;
+        color: #000000;
         border-radius: 16px;
         border-bottom-right-radius: 4px;
     }
@@ -199,19 +235,23 @@
     }
 
     .glamori-message-content .glamori-link {
-        color: #000000;
+        color: #ffffff;
         font-weight: 600;
         text-decoration: underline;
     }
 
     .glamori-message.user .glamori-message-content .glamori-link {
-        color: #ffffff;
+        color: #000000;
     }
 
     .glamori-message-time {
         font-size: 11px;
-        color: #9ca3af;
+        color: rgba(255, 255, 255, 0.6);
         margin-top: 4px;
+    }
+
+    .glamori-message.user .glamori-message-time {
+        color: rgba(0, 0, 0, 0.5);
     }
 
     .glamori-suggestions {
@@ -219,56 +259,62 @@
         flex-wrap: wrap;
         gap: 8px;
         padding: 12px 16px;
-        background: #ffffff;
-        border-top: 1px solid #e5e7eb;
+        background: #000000;
+        border-top: 1px solid #333333;
     }
 
     .glamori-suggestion {
         padding: 8px 14px;
-        background: #f3f4f6;
-        border: 1px solid #e5e7eb;
+        background: #262626;
+        border: 1px solid #333333;
         border-radius: 20px;
         font-size: 13px;
-        color: #374151;
+        color: #ffffff;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .glamori-suggestion:hover {
-        background: #000000;
-        color: #ffffff;
-        border-color: #000000;
+        background: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
     }
 
     .glamori-input-area {
         display: flex;
         gap: 8px;
         padding: 16px;
-        background: #ffffff;
-        border-top: 1px solid #e5e7eb;
+        background: #000000;
+        border-top: 1px solid #333333;
     }
 
     .glamori-input {
         flex: 1;
         padding: 12px 16px;
-        border: 2px solid #e5e7eb;
+        background: #262626;
+        border: 2px solid #333333;
         border-radius: 24px;
         font-size: 14px;
+        color: #ffffff;
         outline: none;
         transition: border-color 0.2s ease;
     }
 
+    .glamori-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
     .glamori-input:focus {
-        border-color: #000000;
+        border-color: #ffffff;
     }
 
     .glamori-send {
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: #000000;
+        background: #ffffff;
         border: none;
-        color: #ffffff;
+        color: #000000;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -277,12 +323,13 @@
     }
 
     .glamori-send:hover {
-        background: #333333;
+        background: #e5e5e5;
         transform: scale(1.05);
     }
 
     .glamori-send:disabled {
-        background: #d1d5db;
+        background: #333333;
+        color: #666666;
         cursor: not-allowed;
     }
 
@@ -290,7 +337,7 @@
         display: flex;
         gap: 4px;
         padding: 12px 16px;
-        background: #ffffff;
+        background: #262626;
         border-radius: 16px;
         border-bottom-left-radius: 4px;
         width: fit-content;
@@ -299,7 +346,7 @@
     .glamori-typing span {
         width: 8px;
         height: 8px;
-        background: #9ca3af;
+        background: rgba(255, 255, 255, 0.5);
         border-radius: 50%;
         animation: glamoriTyping 1.4s infinite;
     }
@@ -390,7 +437,7 @@
 
 <div class="glamori-widget" id="glamoriWidget">
     <button class="glamori-toggle" onclick="toggleGlamori()" aria-label="Open chat">
-        <i class="fas fa-comments glamori-icon chat-icon"></i>
+        <img src="/images/gs-logo-white.svg" alt="GS" class="chat-icon" style="width:32px;height:32px;">
         <i class="fas fa-times glamori-icon close-icon"></i>
         <span class="glamori-badge" id="glamoriBadge">1</span>
     </button>
@@ -398,12 +445,15 @@
     <div class="glamori-window">
         <div class="glamori-header">
             <div class="glamori-avatar">
-                <i class="fas fa-robot"></i>
+                <img src="/images/gs-logo.svg" alt="GS" style="width:28px;height:28px;">
             </div>
             <div class="glamori-info">
                 <h4>Glamori</h4>
                 <span><span class="glamori-status"></span>Online - Altijd beschikbaar</span>
             </div>
+            <button class="glamori-close" onclick="toggleGlamori()" aria-label="Sluiten">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
         <div class="glamori-messages" id="glamoriMessages">
@@ -517,7 +567,7 @@ function addGlamoriMessage(data, role) {
     div.className = 'glamori-message ' + role;
 
     const avatar = role === 'assistant'
-        ? '<i class="fas fa-robot"></i>'
+        ? '<img src="/images/gs-logo.svg" alt="GS" style="width:20px;height:20px;">'
         : '<i class="fas fa-user"></i>';
 
     div.innerHTML = `
@@ -554,7 +604,7 @@ function showTyping() {
     typing.id = 'glamoriTypingIndicator';
     typing.className = 'glamori-message';
     typing.innerHTML = `
-        <div class="glamori-message-avatar"><i class="fas fa-robot"></i></div>
+        <div class="glamori-message-avatar"><img src="/images/gs-logo.svg" alt="GS" style="width:20px;height:20px;"></div>
         <div class="glamori-typing">
             <span></span><span></span><span></span>
         </div>

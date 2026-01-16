@@ -54,6 +54,52 @@ class ApiController extends Controller
     }
 
     /**
+     * Global search across platform
+     */
+    public function globalSearch(): string
+    {
+        $query = trim($_GET['q'] ?? '');
+
+        if (strlen($query) < 2) {
+            return $this->json(['salons' => [], 'services' => []]);
+        }
+
+        $searchTerm = '%' . $query . '%';
+
+        // Search salons
+        $stmt = $this->db->query(
+            "SELECT id, company_name, slug, city, photos
+             FROM businesses
+             WHERE status = 'active'
+               AND (company_name LIKE ? OR city LIKE ? OR description LIKE ?)
+             ORDER BY
+                CASE WHEN company_name LIKE ? THEN 1 ELSE 2 END,
+                company_name
+             LIMIT 5",
+            [$searchTerm, $searchTerm, $searchTerm, $searchTerm]
+        );
+        $salons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Search services
+        $stmt = $this->db->query(
+            "SELECT s.id, s.name, b.slug as business_slug, b.company_name as business_name
+             FROM services s
+             JOIN businesses b ON s.business_id = b.id
+             WHERE s.is_active = 1 AND b.status = 'active'
+               AND s.name LIKE ?
+             ORDER BY s.name
+             LIMIT 5",
+            [$searchTerm]
+        );
+        $services = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $this->json([
+            'salons' => $salons,
+            'services' => $services
+        ]);
+    }
+
+    /**
      * Get categories with real-time business counts
      */
     public function categories(): string

@@ -1,9 +1,30 @@
 <?php ob_start(); ?>
 
 <style>
+/* Dark Dashboard Theme */
+.dashboard-page {
+    background: #000000;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+.dashboard-page .container {
+    padding-top: 1rem;
+}
+
 .security-container {
     max-width: 500px;
     margin: 0 auto;
+}
+.dashboard-page .card {
+    background: #111111;
+    border: 1px solid #333333;
+    color: #ffffff;
+}
+.dashboard-page h2, .dashboard-page h4 {
+    color: #ffffff;
+}
+.dashboard-page p {
+    color: rgba(255,255,255,0.7);
 }
 .pin-input-group {
     display: flex;
@@ -17,20 +38,20 @@
     text-align: center;
     font-size: 1.5rem;
     font-weight: 700;
-    border: 2px solid var(--border);
+    border: 2px solid #333333;
     border-radius: 12px;
-    background: var(--white);
-    color: var(--text);
+    background: #1a1a1a;
+    color: #ffffff;
     transition: all 0.2s;
 }
 .pin-digit:focus {
-    border-color: var(--primary);
+    border-color: #ffffff;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
 }
 .pin-digit.filled {
-    border-color: var(--primary);
-    background: rgba(0,0,0,0.03);
+    border-color: #ffffff;
+    background: #333333;
 }
 @media (max-width: 400px) {
     .pin-digit {
@@ -44,7 +65,7 @@
     align-items: flex-start;
     gap: 1rem;
     padding: 1.25rem;
-    background: var(--secondary);
+    background: #1a1a1a;
     border-radius: 16px;
     margin-bottom: 1rem;
 }
@@ -65,10 +86,11 @@
 .security-feature-content h4 {
     margin: 0 0 0.25rem;
     font-size: 1rem;
+    color: #ffffff;
 }
 .security-feature-content p {
     margin: 0;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
     font-size: 0.85rem;
 }
 .status-badge {
@@ -82,12 +104,12 @@
     margin-top: 0.5rem;
 }
 .status-active {
-    background: #f5f5f5;
-    color: #166534;
+    background: rgba(34,197,94,0.2);
+    color: #22c55e;
 }
 .status-inactive {
-    background: #f5f5f5;
-    color: #6b7280;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
 }
 
 /* Password Toggle */
@@ -101,7 +123,7 @@
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #9ca3af;
+    color: rgba(255,255,255,0.5);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -109,13 +131,35 @@
     justify-content: center;
 }
 .password-toggle:hover {
-    color: var(--primary);
+    color: #ffffff;
 }
 .password-wrapper .form-control {
     padding-right: 44px;
 }
+.dashboard-page .form-control {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    border-radius: 0;
+    color: #ffffff;
+}
+.dashboard-page .form-control:focus {
+    border-bottom-color: #ffffff;
+}
+.dashboard-page .form-label {
+    color: rgba(255,255,255,0.9);
+}
+.dashboard-page .btn {
+    background: #ffffff;
+    color: #000000;
+}
+.dashboard-page .btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+}
 </style>
 
+<div class="dashboard-page">
 <div class="container security-container">
     <div class="card">
         <h2 style="margin:0 0 0.5rem;display:flex;align-items:center;gap:0.75rem">
@@ -220,14 +264,15 @@
     </div>
 
     <!-- Security Tips -->
-    <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
-        <h4 style="margin:0 0 0.75rem"><i class="fas fa-lightbulb"></i> Beveiligingstips</h4>
-        <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;opacity:0.95;line-height:1.8">
+    <div class="card" style="background:linear-gradient(135deg,#ffffff,#f5f5f5);color:#000000">
+        <h4 style="margin:0 0 0.75rem;color:#000000"><i class="fas fa-lightbulb"></i> Beveiligingstips</h4>
+        <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;opacity:0.8;line-height:1.8;color:#000000">
             <li>Gebruik geen voor de hand liggende codes zoals 123456</li>
             <li>Deel je PIN nooit met anderen</li>
             <li>Gebruik een unieke PIN die je niet elders gebruikt</li>
         </ul>
     </div>
+</div>
 </div>
 
 <script>

@@ -3,40 +3,59 @@
 <style>
     .auth-container {
         max-width: 480px;
-        margin: 3rem auto;
+        margin: 1rem auto;
         padding: 0 1rem;
     }
+    @media (max-width: 768px) {
+        .auth-container {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .auth-card {
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+    }
     .auth-card {
-        background: #ffffff;
+        background: #000000;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border: 2px solid #333333;
     }
     .auth-header {
-        background: linear-gradient(135deg, #000000 0%, #000000 30%, #000000 70%, #333333 100%);
-        color: white;
+        background: #000000;
+        color: #ffffff;
         padding: 3rem 2rem;
         text-align: center;
+        border-bottom: 2px solid #333333;
+        border-radius: 0 0 30px 30px;
     }
     .auth-header i {
         font-size: 3rem;
         margin-bottom: 1rem;
         display: block;
+        color: #ffffff;
     }
     .auth-header h1 {
         margin: 0;
         font-size: 1.75rem;
         font-weight: 700;
+        color: #ffffff;
     }
     .auth-header p {
         margin: 0.75rem 0 0;
-        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.8);
     }
     .auth-body {
-        padding: 2.5rem 2rem;
+        padding: 2rem;
+        background: #000000;
     }
     .form-group {
         margin-bottom: 1.5rem;
+        padding: 0.9rem 0;
     }
     .form-group label {
         display: flex;
@@ -44,29 +63,39 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: #374151;
+        color: rgba(255, 255, 255, 0.9);
     }
     .form-group label i {
-        color: #000000;
+        color: #ffffff;
+        font-size: 0.9rem;
     }
     .form-control {
         width: 100%;
-        padding: 1rem 1.25rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        padding: 0.9rem 0;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 0;
         font-size: 1rem;
+        color: #ffffff;
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-color: #000000;
-        box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+        border-bottom-color: #ffffff;
+        box-shadow: none;
+    }
+    .form-control:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
+    }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
     .btn-submit {
         width: 100%;
-        padding: 1rem;
-        background: #000000;
-        color: white;
+        padding: 1.1rem;
+        background: #ffffff;
+        color: #000000;
         border: none;
         border-radius: 50px;
         font-size: 1.1rem;
@@ -80,7 +109,7 @@
     }
     .btn-submit:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
     }
     .alert {
         padding: 1rem 1.25rem;
@@ -91,20 +120,20 @@
         gap: 0.75rem;
     }
     .alert-success {
-        background: #ffffff;
-        border: 1px solid #333333;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
     }
     .alert-success i {
-        color: #333333;
+        color: #ffffff;
     }
     .alert-danger {
-        background: #f5f5f5;
-        border: 1px solid #e5e5e5;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
     }
     .alert-danger i {
-        color: #333333;
+        color: #ffffff;
     }
     .back-link {
         display: flex;
@@ -112,47 +141,18 @@
         justify-content: center;
         gap: 0.5rem;
         margin-top: 1.5rem;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
         font-size: 0.95rem;
         transition: color 0.3s ease;
     }
     .back-link:hover {
-        color: #000000;
+        color: #ffffff;
     }
 
-    /* Dark Mode */
+    /* Dark Mode - Already dark */
     [data-theme="dark"] .auth-card {
-        background: var(--bg-card);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .form-group label {
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control {
-        background: var(--bg-secondary);
-        border-color: var(--border);
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(255,255,255,0.15);
-    }
-    [data-theme="dark"] .form-control::placeholder {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .alert-success {
-        background: rgba(16, 185, 129, 0.15);
-        border-color: rgba(16, 185, 129, 0.3);
-        color: #6ee7b7;
-    }
-    [data-theme="dark"] .alert-danger {
-        background: rgba(0, 0, 0, 0.1);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #d4d4d4;
-    }
-    [data-theme="dark"] .back-link {
-        color: var(--text-light);
+        background: #000000;
     }
 </style>
 

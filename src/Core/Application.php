@@ -37,6 +37,7 @@ class Application
         $this->router->get('/terms', 'PagesController@terms');
         $this->router->get('/privacy', 'PagesController@privacy');
         $this->router->get('/about', 'PagesController@about');
+        $this->router->get('/marketing', 'PagesController@marketing');
         $this->router->get('/contact', 'PagesController@contact');
         $this->router->post('/contact', 'PagesController@submitContact');
 
@@ -106,6 +107,8 @@ class Application
             $router->get('/business/bookings', 'BusinessDashboardController@bookings');
             $router->get('/business/services', 'BusinessDashboardController@services');
             $router->post('/business/services', 'BusinessDashboardController@services');
+            $router->get('/business/employees', 'BusinessDashboardController@employees');
+            $router->post('/business/employees', 'BusinessDashboardController@employees');
             $router->get('/business/calendar', 'BusinessDashboardController@calendar');
             $router->get('/business/payouts', 'BusinessDashboardController@payouts');
 
@@ -143,6 +146,12 @@ class Application
             // Reviews Management
             $router->get('/business/reviews', 'BusinessDashboardController@reviews');
             $router->post('/business/reviews/respond', 'BusinessDashboardController@respondToReview');
+
+            // Business Boost / Marketing
+            $router->get('/business/boost', 'BusinessDashboardController@boost');
+            $router->post('/business/boost/activate', 'BusinessDashboardController@activateBoost');
+            $router->post('/business/boost/extend', 'BusinessDashboardController@extendBoost');
+            $router->get('/business/boost/complete', 'BusinessDashboardController@boostComplete');
         });
 
         // Business page (after specific routes)
@@ -179,6 +188,7 @@ class Application
         $this->router->get('/api/services/{businessId}', 'ApiController@services');
         $this->router->get('/api/availability/{businessId}', 'ApiController@availability');
         $this->router->get('/api/available-times/{businessSlug}', 'BookingController@getAvailableTimes');
+        $this->router->get('/api/global-search', 'ApiController@globalSearch');
         $this->router->get('/api/categories', 'ApiController@categories');
         $this->router->get('/api/category-groups', 'ApiController@categoryGroups');
         $this->router->get('/api/stats', 'ApiController@stats');

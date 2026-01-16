@@ -36,15 +36,15 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar - Dark Theme */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
             bottom: 0;
             width: var(--sidebar-width);
-            background: var(--white);
-            border-right: 1px solid var(--border);
+            background: #000000;
+            border-right: 1px solid #333333;
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -52,34 +52,35 @@
         }
         .sidebar-header {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #333333;
         }
         .sidebar-brand {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
-            color: var(--primary);
+            color: #ffffff;
             font-weight: 700;
             font-size: 1.25rem;
         }
         .sidebar-brand i {
             font-size: 1.5rem;
+            color: #ffffff;
         }
         .sidebar-business {
             margin-top: 1rem;
             padding: 0.75rem;
-            background: var(--secondary);
+            background: #1a1a1a;
             border-radius: 10px;
         }
         .sidebar-business-name {
             font-weight: 600;
             font-size: 0.9rem;
-            color: var(--text);
+            color: #ffffff;
         }
         .sidebar-business-status {
             font-size: 0.75rem;
-            color: var(--text-light);
+            color: rgba(255,255,255,0.7);
             display: flex;
             align-items: center;
             gap: 0.25rem;
@@ -89,9 +90,9 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--success);
+            background: #22c55e;
         }
-        .status-dot.pending { background: var(--warning); }
+        .status-dot.pending { background: #f59e0b; }
 
         .sidebar-nav {
             flex: 1;
@@ -104,7 +105,7 @@
         .nav-section-title {
             font-size: 0.7rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: rgba(255,255,255,0.5);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
@@ -115,28 +116,32 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem;
-            color: var(--text);
+            color: #ffffff;
             text-decoration: none;
             border-radius: 10px;
             transition: all 0.2s;
             margin-bottom: 0.25rem;
         }
-        .nav-item:hover {
-            background: var(--secondary);
-            color: var(--primary);
-        }
-        .nav-item.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
         .nav-item i {
             width: 20px;
             text-align: center;
+            color: #ffffff;
+        }
+        .nav-item:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .nav-item.active {
+            background: #ffffff;
+            color: #000000;
+        }
+        .nav-item.active i {
+            color: #000000;
         }
 
         .sidebar-footer {
             padding: 1rem;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid #333333;
         }
         .view-page-btn {
             display: flex;
@@ -145,17 +150,20 @@
             gap: 0.5rem;
             width: 100%;
             padding: 0.75rem;
-            background: var(--secondary);
-            border: 2px solid var(--border);
+            background: #1a1a1a;
+            border: 2px solid #333333;
             border-radius: 10px;
-            color: var(--text);
+            color: #ffffff;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.2s;
         }
+        .view-page-btn i {
+            color: #ffffff;
+        }
         .view-page-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: #ffffff;
+            background: #333333;
         }
 
         /* Main Content */
@@ -422,6 +430,11 @@
                 <a href="/business/services" class="nav-item <?= $currentPath === '/business/services' ? 'active' : '' ?>">
                     <i class="fas fa-cut"></i> Diensten
                 </a>
+                <?php if (($business['business_type'] ?? 'eenmanszaak') === 'bv'): ?>
+                <a href="/business/employees" class="nav-item <?= $currentPath === '/business/employees' ? 'active' : '' ?>">
+                    <i class="fas fa-users"></i> Medewerkers
+                </a>
+                <?php endif; ?>
                 <a href="/business/reviews" class="nav-item <?= $currentPath === '/business/reviews' ? 'active' : '' ?>">
                     <i class="fas fa-star"></i> Reviews
                 </a>
@@ -440,6 +453,13 @@
                 </a>
                 <a href="/business/theme" class="nav-item <?= $currentPath === '/business/theme' ? 'active' : '' ?>">
                     <i class="fas fa-palette"></i> Thema & Kleuren
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Marketing</div>
+                <a href="/business/boost" class="nav-item <?= $currentPath === '/business/boost' ? 'active' : '' ?>" style="<?= $currentPath !== '/business/boost' ? 'background:linear-gradient(135deg,#f59e0b,#d97706);color:white;' : '' ?>">
+                    <i class="fas fa-rocket"></i> Boost je Bedrijf
                 </a>
             </div>
 

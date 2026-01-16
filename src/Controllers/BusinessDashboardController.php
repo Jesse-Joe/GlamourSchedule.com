@@ -481,12 +481,16 @@ class BusinessDashboardController extends Controller
 
     public function updateTheme(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'CSRF token ongeldig. Vernieuw de pagina en probeer opnieuw.'];
+            return $this->redirect('/business/theme');
+        }
 
-        // Validate colors (must be valid hex)
-        $primaryColor = $this->validateHexColor($_POST['primary_color'] ?? '#000000');
-        $secondaryColor = $this->validateHexColor($_POST['secondary_color'] ?? '#333333');
-        $accentColor = $this->validateHexColor($_POST['accent_color'] ?? '#fbbf24');
+        try {
+            // Validate colors (must be valid hex)
+            $primaryColor = $this->validateHexColor($_POST['primary_color'] ?? '#000000');
+            $secondaryColor = $this->validateHexColor($_POST['secondary_color'] ?? '#333333');
+            $accentColor = $this->validateHexColor($_POST['accent_color'] ?? '#fbbf24');
 
         // Validate font family
         $allowedFonts = ['playfair', 'cormorant', 'lora', 'montserrat', 'poppins', 'dancing', 'great-vibes', 'raleway'];
@@ -537,14 +541,18 @@ class BusinessDashboardController extends Controller
 
         // Update theme in businesses table
         $theme = in_array($_POST['theme'] ?? '', ['light', 'dark']) ? $_POST['theme'] : 'light';
-        $genderTheme = in_array($_POST['gender_theme'] ?? '', ['neutral', 'feminine', 'masculine']) ? $_POST['gender_theme'] : 'neutral';
 
         $this->db->query(
-            "UPDATE businesses SET theme = ?, gender_theme = ? WHERE id = ?",
-            [$theme, $genderTheme, $this->business['id']]
+            "UPDATE businesses SET theme = ? WHERE id = ?",
+            [$theme, $this->business['id']]
         );
 
-        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Thema instellingen opgeslagen!'];
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Thema instellingen opgeslagen!'];
+        } catch (\Exception $e) {
+            error_log('Theme update error: ' . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Er ging iets mis bij het opslaan. Probeer het opnieuw.'];
+        }
+
         return $this->redirect('/business/theme');
     }
 
@@ -738,31 +746,48 @@ class BusinessDashboardController extends Controller
             [$this->business['id']]
         );
 
+        // Get existing columns in business_settings table to avoid errors
+        $columnsStmt = $this->db->query("DESCRIBE business_settings");
+        $existingColumns = [];
+        while ($col = $columnsStmt->fetch()) {
+            $existingColumns[] = $col['Field'];
+        }
+
+        // Filter data to only include existing columns
+        $filteredData = [];
+        foreach ($data as $key => $value) {
+            if (in_array($key, $existingColumns)) {
+                $filteredData[$key] = $value;
+            }
+        }
+
         if ($stmt->fetch()) {
             // Update existing record
             $fields = [];
             $values = [];
 
-            foreach ($data as $key => $value) {
+            foreach ($filteredData as $key => $value) {
                 $fields[] = "$key = ?";
                 $values[] = $value;
             }
 
-            $values[] = $this->business['id'];
+            if (!empty($fields)) {
+                $values[] = $this->business['id'];
 
-            $this->db->query(
-                "UPDATE business_settings SET " . implode(', ', $fields) . " WHERE business_id = ?",
-                $values
-            );
+                $this->db->query(
+                    "UPDATE business_settings SET " . implode(', ', $fields) . " WHERE business_id = ?",
+                    $values
+                );
+            }
         } else {
             // Insert new record
-            $data['business_id'] = $this->business['id'];
-            $columns = array_keys($data);
-            $placeholders = array_fill(0, count($data), '?');
+            $filteredData['business_id'] = $this->business['id'];
+            $columns = array_keys($filteredData);
+            $placeholders = array_fill(0, count($filteredData), '?');
 
             $this->db->query(
                 "INSERT INTO business_settings (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")",
-                array_values($data)
+                array_values($filteredData)
             );
         }
     }
@@ -1354,5 +1379,526 @@ HTML;
         } catch (\Exception $e) {
             error_log("Failed to send check-in confirmation: " . $e->getMessage());
         }
+    }
+
+    // ============================================================
+    // BUSINESS BOOST / MARKETING
+    // ============================================================
+
+    /**
+     * Show boost page
+     */
+    public function boost(): string
+    {
+        return $this->view('pages/business/dashboard/boost', [
+            'pageTitle' => 'Boost je Bedrijf',
+            'business' => $this->business,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Activate boost - redirect to payment
+     */
+    public function activateBoost(): string
+    {
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/business/boost');
+        }
+
+        $boostPrice = 299.99;
+
+        // Create Mollie payment for boost
+        $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+        if (empty($mollieApiKey)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betalingssysteem niet geconfigureerd'];
+            return $this->redirect('/business/boost');
+        }
+
+        try {
+            $mollie = new \Mollie\Api\MollieApiClient();
+            $mollie->setApiKey($mollieApiKey);
+
+            $reference = 'BOOST-' . $this->business['id'] . '-' . time();
+
+            $payment = $mollie->payments->create([
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => number_format($boostPrice, 2, '.', '')
+                ],
+                'description' => 'GlamourSchedule Boost 30 dagen - ' . $this->business['company_name'],
+                'redirectUrl' => 'https://glamourschedule.nl/business/boost/complete?ref=' . $reference,
+                'webhookUrl' => 'https://glamourschedule.nl/api/webhooks/mollie',
+                'method' => ['ideal', 'creditcard', 'bancontact', 'paypal'],
+                'metadata' => [
+                    'type' => 'business_boost',
+                    'business_id' => $this->business['id'],
+                    'reference' => $reference,
+                    'duration_days' => 30
+                ]
+            ]);
+
+            // Store boost payment reference
+            $this->db->query(
+                "INSERT INTO boost_payments (business_id, reference, mollie_payment_id, amount, status, created_at)
+                 VALUES (?, ?, ?, ?, 'pending', NOW())",
+                [$this->business['id'], $reference, $payment->id, $boostPrice]
+            );
+
+            return $this->redirect($payment->getCheckoutUrl());
+
+        } catch (\Exception $e) {
+            error_log("Boost payment error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling kon niet worden gestart. Probeer later opnieuw.'];
+            return $this->redirect('/business/boost');
+        }
+    }
+
+    /**
+     * Extend existing boost
+     */
+    public function extendBoost(): string
+    {
+        // Same as activate, but will add to existing expiry
+        return $this->activateBoost();
+    }
+
+    /**
+     * Handle boost payment completion
+     */
+    public function boostComplete(): string
+    {
+        $reference = $_GET['ref'] ?? '';
+
+        if (empty($reference)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige verificatie'];
+            return $this->redirect('/business/boost');
+        }
+
+        // Get payment record
+        $stmt = $this->db->query(
+            "SELECT * FROM boost_payments WHERE business_id = ? AND reference = ? ORDER BY id DESC LIMIT 1",
+            [$this->business['id'], $reference]
+        );
+        $boostPayment = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$boostPayment) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling niet gevonden'];
+            return $this->redirect('/business/boost');
+        }
+
+        // Check Mollie payment status
+        $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+        if (!empty($mollieApiKey) && !empty($boostPayment['mollie_payment_id'])) {
+            try {
+                $mollie = new \Mollie\Api\MollieApiClient();
+                $mollie->setApiKey($mollieApiKey);
+                $payment = $mollie->payments->get($boostPayment['mollie_payment_id']);
+
+                if ($payment->isPaid()) {
+                    // Update payment status
+                    $this->db->query(
+                        "UPDATE boost_payments SET status = 'paid', paid_at = NOW() WHERE id = ?",
+                        [$boostPayment['id']]
+                    );
+
+                    // Calculate new expiry date
+                    $currentExpiry = strtotime($this->business['boost_expires_at'] ?? 'now');
+                    $baseTime = ($currentExpiry > time()) ? $currentExpiry : time();
+                    $newExpiry = date('Y-m-d H:i:s', strtotime('+30 days', $baseTime));
+
+                    // Activate boost
+                    $this->db->query(
+                        "UPDATE businesses SET is_boosted = 1, boost_expires_at = ? WHERE id = ?",
+                        [$newExpiry, $this->business['id']]
+                    );
+
+                    $_SESSION['flash'] = ['type' => 'success', 'message' => 'Boost geactiveerd! Je bedrijf wordt nu uitgelicht op de homepage tot ' . date('d-m-Y', strtotime($newExpiry)) . '.'];
+
+                } elseif ($payment->isFailed() || $payment->isCanceled() || $payment->isExpired()) {
+                    $this->db->query("UPDATE boost_payments SET status = 'failed' WHERE id = ?", [$boostPayment['id']]);
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling niet gelukt. Probeer opnieuw.'];
+                } else {
+                    $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Betaling wordt verwerkt. Ververs de pagina over enkele momenten.'];
+                }
+            } catch (\Exception $e) {
+                error_log("Boost payment check error: " . $e->getMessage());
+                $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Status wordt gecontroleerd...'];
+            }
+        }
+
+        return $this->redirect('/business/boost');
+    }
+
+    // ============================================================
+    // EMPLOYEES MANAGEMENT
+    // ============================================================
+
+    /**
+     * Employees management page
+     */
+    public function employees(): string
+    {
+        // Only allow BV businesses
+        if (($this->business['business_type'] ?? 'eenmanszaak') !== 'bv') {
+            $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Werknemersbeheer is alleen beschikbaar voor BV bedrijven.'];
+            return $this->redirect('/business/dashboard');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handleEmployeeAction();
+            return $this->redirect('/business/employees');
+        }
+
+        $employees = $this->getEmployees();
+        $allServices = $this->getServices();
+        $employeeServices = $this->getEmployeeServicesMap();
+        $employeeHours = $this->getEmployeeHoursMap();
+
+        return $this->view('pages/business/dashboard/employees', [
+            'pageTitle' => 'Medewerkers',
+            'business' => $this->business,
+            'employees' => $employees,
+            'allServices' => $allServices,
+            'employeeServices' => $employeeServices,
+            'employeeHours' => $employeeHours,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    private function getEmployees(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT e.*,
+                    (SELECT GROUP_CONCAT(s.name SEPARATOR ', ')
+                     FROM employee_services es
+                     JOIN services s ON es.service_id = s.id
+                     WHERE es.employee_id = e.id) as service_names
+             FROM employees e
+             WHERE e.business_id = ?
+             ORDER BY e.sort_order, e.name",
+            [$this->business['id']]
+        );
+        $employees = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Get services for each employee
+        foreach ($employees as &$emp) {
+            $servStmt = $this->db->query(
+                "SELECT s.id, s.name FROM employee_services es
+                 JOIN services s ON es.service_id = s.id
+                 WHERE es.employee_id = ?",
+                [$emp['id']]
+            );
+            $emp['services'] = $servStmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return $employees;
+    }
+
+    private function getEmployeeServicesMap(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT es.employee_id, es.service_id
+             FROM employee_services es
+             JOIN employees e ON es.employee_id = e.id
+             WHERE e.business_id = ?",
+            [$this->business['id']]
+        );
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $map = [];
+        foreach ($rows as $row) {
+            if (!isset($map[$row['employee_id']])) {
+                $map[$row['employee_id']] = [];
+            }
+            $map[$row['employee_id']][] = $row['service_id'];
+        }
+        return $map;
+    }
+
+    private function getEmployeeHoursMap(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT eh.*
+             FROM employee_hours eh
+             JOIN employees e ON eh.employee_id = e.id
+             WHERE e.business_id = ?",
+            [$this->business['id']]
+        );
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $map = [];
+        foreach ($rows as $row) {
+            if (!isset($map[$row['employee_id']])) {
+                $map[$row['employee_id']] = [];
+            }
+            $map[$row['employee_id']][] = $row;
+        }
+        return $map;
+    }
+
+    private function handleEmployeeAction(): void
+    {
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return;
+        }
+
+        $action = $_POST['action'] ?? '';
+
+        switch ($action) {
+            case 'add':
+                $this->addEmployee();
+                break;
+            case 'update':
+                $this->updateEmployee();
+                break;
+            case 'delete':
+                $this->deleteEmployee();
+                break;
+            case 'update_services':
+                $this->updateEmployeeServices();
+                break;
+            case 'update_hours':
+                $this->updateEmployeeHours();
+                break;
+        }
+    }
+
+    private function addEmployee(): void
+    {
+        $name = trim($_POST['name'] ?? '');
+        if (empty($name)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Naam is verplicht'];
+            return;
+        }
+
+        $email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: null;
+        $phone = trim($_POST['phone'] ?? '') ?: null;
+        $bio = trim($_POST['bio'] ?? '') ?: null;
+        $color = preg_match('/^#[0-9A-Fa-f]{6}$/', $_POST['color'] ?? '') ? $_POST['color'] : '#000000';
+
+        // Handle photo upload
+        $photoPath = null;
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $photoPath = $this->uploadEmployeePhoto($_FILES['photo']);
+        }
+
+        // Get next sort order
+        $stmt = $this->db->query(
+            "SELECT COALESCE(MAX(sort_order), 0) + 1 as next_order FROM employees WHERE business_id = ?",
+            [$this->business['id']]
+        );
+        $nextOrder = $stmt->fetch(\PDO::FETCH_ASSOC)['next_order'];
+
+        $this->db->query(
+            "INSERT INTO employees (business_id, name, email, phone, bio, color, photo, sort_order)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [$this->business['id'], $name, $email, $phone, $bio, $color, $photoPath, $nextOrder]
+        );
+
+        // Update employee count
+        $this->updateEmployeeCount();
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Medewerker toegevoegd!'];
+    }
+
+    private function updateEmployee(): void
+    {
+        $employeeId = (int)($_POST['employee_id'] ?? 0);
+        if (!$employeeId) return;
+
+        // Verify employee belongs to this business
+        $stmt = $this->db->query(
+            "SELECT id FROM employees WHERE id = ? AND business_id = ?",
+            [$employeeId, $this->business['id']]
+        );
+        if (!$stmt->fetch()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Medewerker niet gevonden'];
+            return;
+        }
+
+        $name = trim($_POST['name'] ?? '');
+        if (empty($name)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Naam is verplicht'];
+            return;
+        }
+
+        $email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: null;
+        $phone = trim($_POST['phone'] ?? '') ?: null;
+        $bio = trim($_POST['bio'] ?? '') ?: null;
+        $color = preg_match('/^#[0-9A-Fa-f]{6}$/', $_POST['color'] ?? '') ? $_POST['color'] : '#000000';
+        $isActive = isset($_POST['is_active']) && $_POST['is_active'] === '1' ? 1 : 0;
+
+        // Handle photo upload
+        $photoSql = '';
+        $params = [$name, $email, $phone, $bio, $color, $isActive];
+
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $photoPath = $this->uploadEmployeePhoto($_FILES['photo']);
+            if ($photoPath) {
+                $photoSql = ', photo = ?';
+                $params[] = $photoPath;
+            }
+        }
+
+        $params[] = $employeeId;
+
+        $this->db->query(
+            "UPDATE employees SET name = ?, email = ?, phone = ?, bio = ?, color = ?, is_active = ? {$photoSql} WHERE id = ?",
+            $params
+        );
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Medewerker bijgewerkt!'];
+    }
+
+    private function deleteEmployee(): void
+    {
+        $employeeId = (int)($_POST['employee_id'] ?? 0);
+        if (!$employeeId) return;
+
+        // Verify employee belongs to this business
+        $stmt = $this->db->query(
+            "SELECT id, photo FROM employees WHERE id = ? AND business_id = ?",
+            [$employeeId, $this->business['id']]
+        );
+        $employee = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$employee) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Medewerker niet gevonden'];
+            return;
+        }
+
+        // Delete photo if exists
+        if (!empty($employee['photo'])) {
+            $photoPath = BASE_PATH . '/public' . $employee['photo'];
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        // Delete employee (cascade will handle related records)
+        $this->db->query("DELETE FROM employees WHERE id = ?", [$employeeId]);
+
+        // Update employee count
+        $this->updateEmployeeCount();
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Medewerker verwijderd!'];
+    }
+
+    private function updateEmployeeServices(): void
+    {
+        $employeeId = (int)($_POST['employee_id'] ?? 0);
+        if (!$employeeId) return;
+
+        // Verify employee belongs to this business
+        $stmt = $this->db->query(
+            "SELECT id FROM employees WHERE id = ? AND business_id = ?",
+            [$employeeId, $this->business['id']]
+        );
+        if (!$stmt->fetch()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Medewerker niet gevonden'];
+            return;
+        }
+
+        // Remove all current services
+        $this->db->query("DELETE FROM employee_services WHERE employee_id = ?", [$employeeId]);
+
+        // Add selected services
+        $services = $_POST['services'] ?? [];
+        if (is_array($services)) {
+            foreach ($services as $serviceId) {
+                $serviceId = (int)$serviceId;
+                // Verify service belongs to this business
+                $stmt = $this->db->query(
+                    "SELECT id FROM services WHERE id = ? AND business_id = ?",
+                    [$serviceId, $this->business['id']]
+                );
+                if ($stmt->fetch()) {
+                    $this->db->query(
+                        "INSERT INTO employee_services (employee_id, service_id) VALUES (?, ?)",
+                        [$employeeId, $serviceId]
+                    );
+                }
+            }
+        }
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Diensten bijgewerkt!'];
+    }
+
+    private function updateEmployeeHours(): void
+    {
+        $employeeId = (int)($_POST['employee_id'] ?? 0);
+        if (!$employeeId) return;
+
+        // Verify employee belongs to this business
+        $stmt = $this->db->query(
+            "SELECT id FROM employees WHERE id = ? AND business_id = ?",
+            [$employeeId, $this->business['id']]
+        );
+        if (!$stmt->fetch()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Medewerker niet gevonden'];
+            return;
+        }
+
+        $hours = $_POST['hours'] ?? [];
+        if (is_array($hours)) {
+            foreach ($hours as $dayOfWeek => $times) {
+                $dayOfWeek = (int)$dayOfWeek;
+                $isClosed = isset($times['closed']) ? 1 : 0;
+                $openTime = $times['open'] ?? '09:00';
+                $closeTime = $times['close'] ?? '18:00';
+
+                $this->db->query(
+                    "INSERT INTO employee_hours (employee_id, day_of_week, open_time, close_time, is_closed)
+                     VALUES (?, ?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE open_time = ?, close_time = ?, is_closed = ?",
+                    [$employeeId, $dayOfWeek, $openTime, $closeTime, $isClosed, $openTime, $closeTime, $isClosed]
+                );
+            }
+        }
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Werktijden bijgewerkt!'];
+    }
+
+    private function uploadEmployeePhoto(array $file): ?string
+    {
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!in_array($file['type'], $allowedTypes)) {
+            return null;
+        }
+
+        if ($file['size'] > 5 * 1024 * 1024) {
+            return null;
+        }
+
+        $uploadDir = BASE_PATH . '/public/uploads/employees/' . $this->business['id'];
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = uniqid() . '_' . time() . '.' . $ext;
+        $filepath = $uploadDir . '/' . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+            return '/uploads/employees/' . $this->business['id'] . '/' . $filename;
+        }
+
+        return null;
+    }
+
+    private function updateEmployeeCount(): void
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as count FROM employees WHERE business_id = ? AND is_active = 1",
+            [$this->business['id']]
+        );
+        $count = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+
+        $this->db->query(
+            "UPDATE businesses SET employee_count = ? WHERE id = ?",
+            [$count, $this->business['id']]
+        );
     }
 }

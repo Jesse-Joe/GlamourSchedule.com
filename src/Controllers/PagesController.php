@@ -23,7 +23,14 @@ class PagesController extends Controller
     public function about(): string
     {
         return $this->view('pages/about', [
-            'pageTitle' => $this->getTranslations()['about'] ?? 'Over ons'
+            'pageTitle' => 'Functionaliteit'
+        ]);
+    }
+
+    public function marketing(): string
+    {
+        return $this->view('pages/marketing', [
+            'pageTitle' => 'Marketing'
         ]);
     }
 

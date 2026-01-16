@@ -2,7 +2,7 @@
 
 <style>
     .register-container {
-        max-width: 720px;
+        max-width: 900px;
         margin: 1rem auto;
         padding: 0 1rem;
     }
@@ -80,6 +80,15 @@
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.02); }
     }
+    /* Grid Layout - single column for all fields */
+    .grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+    .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
     .section-header {
         display: flex;
         align-items: center;
@@ -243,6 +252,72 @@
         transform: translateY(-3px);
         box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
     }
+
+    /* Business Type Selector */
+    .business-type-selector {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    @media (max-width: 600px) {
+        .business-type-selector {
+            grid-template-columns: 1fr;
+        }
+    }
+    .business-type-option {
+        cursor: pointer;
+    }
+    .business-type-option input {
+        display: none;
+    }
+    .business-type-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+    .business-type-card i {
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+    }
+    .business-type-card .type-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+    .business-type-card .type-desc {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .business-type-option input:checked + .business-type-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #ffffff;
+    }
+    .business-type-option input:checked + .business-type-card i {
+        color: #ffffff;
+    }
+    .business-type-card:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+    .field-hint {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .field-hint i {
+        color: #fbbf24;
+    }
+
     .benefits-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -424,7 +499,7 @@
             <?php if ($isEarlyAdopter): ?>
                 <div class="early-adopter-badge">
                     <i class="fas fa-star"></i>
-                    <span>Early Adopter: <?= $__('early_adopter_badge', ['count' => 20 - $earlyAdopterCount]) ?> &euro;0,99!</span>
+                    <span>Early Adopter: <?= $__('early_adopter_badge', ['count' => 100 - $earlyAdopterCount]) ?> &euro;0,99!</span>
                 </div>
             <?php endif; ?>
         </div>
@@ -456,6 +531,35 @@
                 <div class="form-group">
                     <label><i class="fas fa-store"></i> <?= $__('business_name') ?> *</label>
                     <input type="text" name="name" class="form-control" placeholder="<?= $__('business_name_placeholder') ?>" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-briefcase"></i> Bedrijfsvorm *</label>
+                    <div class="business-type-selector">
+                        <label class="business-type-option" id="type-eenmanszaak">
+                            <input type="radio" name="business_type" value="eenmanszaak" checked onchange="updateBusinessType()">
+                            <div class="business-type-card">
+                                <i class="fas fa-user"></i>
+                                <span class="type-title">Eenmanszaak</span>
+                                <span class="type-desc">Ik werk alleen</span>
+                            </div>
+                        </label>
+                        <label class="business-type-option" id="type-bv">
+                            <input type="radio" name="business_type" value="bv" onchange="updateBusinessType()">
+                            <div class="business-type-card">
+                                <i class="fas fa-users"></i>
+                                <span class="type-title">BV / Meerdere medewerkers</span>
+                                <span class="type-desc">Ik heb personeel</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Employee count (only shown for BV) -->
+                <div class="form-group" id="employee-count-group" style="display: none;">
+                    <label><i class="fas fa-user-plus"></i> Aantal medewerkers (excl. uzelf)</label>
+                    <input type="number" name="employee_count" id="employee_count" class="form-control" placeholder="0" min="0" max="50" value="0" onchange="updatePricing()">
+                    <p class="field-hint"><i class="fas fa-info-circle"></i> Per medewerker: +&euro;4,99 eenmalig. U kunt later medewerkers toevoegen in het dashboard.</p>
                 </div>
 
                 <div class="grid grid-2">
@@ -536,11 +640,19 @@
                 <div class="pricing-card">
                     <div class="price-display">
                         <span class="price-amount">&euro;<?= number_format($regFee, 2, ',', '.') ?></span>
-                        <span class="price-period"><?= $__('one_time') ?></span>
+                        <span class="price-period">eenmalig (na 14 dagen proeftijd)</span>
+                    </div>
+                    <div class="price-note" id="employee-price-note" style="display:none; color: #fbbf24;">
+                        <i class="fas fa-users"></i>
+                        <span>0 medewerker(s): +&euro;0,00</span>
                     </div>
                     <div class="price-note">
                         <i class="fas fa-info-circle"></i>
-                        <span><?= $__('per_booking_fee', ['amount' => '&euro;1,75']) ?></span>
+                        <span>Geen maandelijkse kosten, alleen &euro;1,75 per boeking</span>
+                    </div>
+                    <div class="price-note" style="font-size: 0.8rem; opacity: 0.7;">
+                        <i class="fas fa-tag"></i>
+                        <span>Normale prijs na promotie: &euro;99,99</span>
                     </div>
 
                     <div class="benefits-list">
@@ -561,6 +673,17 @@
                     </label>
                 </div>
 
+                <!-- Trial Period Notice -->
+                <div class="qr-warning" style="border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.1);">
+                    <div class="qr-warning-icon" style="background: rgba(34, 197, 94, 0.2);">
+                        <i class="fas fa-gift" style="color: #22c55e;"></i>
+                    </div>
+                    <div class="qr-warning-content">
+                        <h4 style="color: #22c55e;"><i class="fas fa-clock"></i> 14 Dagen Gratis Proefperiode</h4>
+                        <p>De eerste 14 dagen zijn volledig gratis. Na de proefperiode wordt het afgesproken bedrag in rekening gebracht.</p>
+                    </div>
+                </div>
+
                 <!-- QR Code Warning -->
                 <div class="qr-warning">
                     <div class="qr-warning-icon">
@@ -568,7 +691,7 @@
                     </div>
                     <div class="qr-warning-content">
                         <h4><i class="fas fa-exclamation-triangle"></i> Belangrijk: QR-Code Scannen Verplicht</h4>
-                        <p>Bij elke boeking moet de klant de QR-code scannen bij aankomst. Zonder gescande QR-code wordt de boeking <strong>niet goedgekeurd</strong> en vindt er <strong>geen uitbetaling</strong> plaats.</p>
+                        <p>Let op: bij elke boeking moet de QR-code bij aankomst worden gescand om de afspraak te bevestigen. Zonder gescande QR-code kunnen we de boeking niet goedkeuren en vindt er geen uitbetaling plaats.</p>
                     </div>
                 </div>
 
@@ -585,6 +708,9 @@
 </div>
 
 <script>
+const BASE_PRICE = <?= $regFee ?? 0.99 ?>;
+const EMPLOYEE_PRICE = 4.99;
+
 function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     const icon = btn.querySelector('i');
@@ -598,6 +724,48 @@ function togglePassword(inputId, btn) {
         icon.classList.add('fa-eye');
     }
 }
+
+function updateBusinessType() {
+    const businessType = document.querySelector('input[name="business_type"]:checked').value;
+    const employeeGroup = document.getElementById('employee-count-group');
+
+    if (businessType === 'bv') {
+        employeeGroup.style.display = 'block';
+    } else {
+        employeeGroup.style.display = 'none';
+        document.getElementById('employee_count').value = 0;
+    }
+    updatePricing();
+}
+
+function updatePricing() {
+    const businessType = document.querySelector('input[name="business_type"]:checked').value;
+    const employeeCount = parseInt(document.getElementById('employee_count').value) || 0;
+
+    let totalPrice = BASE_PRICE;
+    if (businessType === 'bv' && employeeCount > 0) {
+        totalPrice += (employeeCount * EMPLOYEE_PRICE);
+    }
+
+    const priceDisplay = document.querySelector('.price-amount');
+    if (priceDisplay) {
+        priceDisplay.textContent = '€' + totalPrice.toFixed(2).replace('.', ',');
+    }
+
+    // Update employee price note
+    const employeePriceNote = document.getElementById('employee-price-note');
+    if (employeePriceNote && employeeCount > 0) {
+        employeePriceNote.style.display = 'block';
+        employeePriceNote.innerHTML = '<i class="fas fa-users"></i> ' + employeeCount + ' medewerker(s): +€' + (employeeCount * EMPLOYEE_PRICE).toFixed(2).replace('.', ',');
+    } else if (employeePriceNote) {
+        employeePriceNote.style.display = 'none';
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateBusinessType();
+});
 </script>
 
 <?php $content = ob_get_clean(); ?>

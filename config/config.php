@@ -61,7 +61,7 @@ return [
         // Bedrijven
         'business_registration_fee' => 99.99,
         'business_early_adopter_fee' => 0.99,
-        'early_adopter_limit' => 20,
+        'early_adopter_limit' => 100,
         
         // Per boeking
         'admin_fee_per_booking' => 1.75,

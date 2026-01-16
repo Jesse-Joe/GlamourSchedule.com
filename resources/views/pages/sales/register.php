@@ -1,41 +1,24 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Sales Partner - GlamourSchedule</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #ffffff;
-            padding: 1rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+<?php ob_start(); ?>
+<style>
         .register-card {
-            background: #f5f5f5;
-            border-radius: 20px;
+            background: #000000;
+            border-radius: 24px;
             padding: 2.5rem;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            border: 1px solid rgba(0,0,0,0.1);
+            max-width: 520px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 2px solid #333333;
         }
         .register-header {
             text-align: center;
             margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
         .register-header .icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #333333, #000000);
+            background: #ffffff;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -44,185 +27,348 @@
         }
         .register-header .icon i {
             font-size: 2.5rem;
-            color: #ffffff;
+            color: #000000;
         }
         .register-header h1 {
             margin: 0;
             font-size: 1.75rem;
-            color: #333333;
+            color: #ffffff;
+            font-weight: 700;
         }
         .register-header p {
             margin: 0.5rem 0 0 0;
-            color: #999999;
+            color: rgba(255, 255, 255, 0.7);
         }
         .register-header strong {
-            color: #000000;
+            color: #ffffff;
         }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 1.5rem;
+        }
+        .section-header i {
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-header h4 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
         .benefits {
-            background: rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
         }
         .benefits h4 {
-            margin: 0 0 0.75rem 0;
-            color: #333333;
+            margin: 0 0 1rem 0;
+            color: #ffffff;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1rem;
         }
-        .benefits ul {
-            margin: 0;
-            padding-left: 1.5rem;
-            color: #333333;
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
         }
-        .benefits li {
-            margin-bottom: 0.5rem;
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
         }
+        .benefit-item i {
+            color: #ffffff;
+        }
+
         .form-group {
             margin-bottom: 1.25rem;
         }
         .form-label {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: #333333;
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.95rem;
+        }
+        .form-label i {
+            color: #ffffff;
+            font-size: 0.9rem;
         }
         .form-control {
             width: 100%;
-            padding: 0.875rem 1rem;
-            background: #ffffff;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-radius: 10px;
+            padding: 0.9rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0;
             font-size: 1rem;
-            color: #333333;
-            transition: border-color 0.2s;
+            color: #ffffff;
+            transition: all 0.3s ease;
         }
         .form-control::placeholder {
-            color: #666666;
+            color: rgba(255, 255, 255, 0.5);
         }
         .form-control:focus {
             outline: none;
-            border-color: #333333;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+            border-bottom-color: #ffffff;
+            box-shadow: none;
+        }
+        .form-control:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.7);
         }
         .form-control.error {
-            border-color: #333333;
+            border-bottom-color: #ef4444;
         }
         .error-text {
-            color: #d4d4d4;
+            color: #ef4444;
             font-size: 0.85rem;
-            margin-top: 0.25rem;
+            margin-top: 0.5rem;
         }
         .alert-error {
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid #333333;
-            color: #d4d4d4;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
         }
         @media (max-width: 480px) {
             .grid-2 {
                 grid-template-columns: 1fr;
             }
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        .price-box {
-            background: #000000;
-            border: 2px solid #333333;
-            border-radius: 12px;
+
+        /* Pricing Card */
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
             padding: 1.5rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
         }
-        .price-box .label {
-            color: #cccccc;
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #ffffff;
+        }
+        .early-bird-badge {
+            background: #fbbf24;
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .price-display {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .price-period {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .price-note {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
-        .price-box .price {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .price-note i {
             color: #ffffff;
         }
-        .price-box .note {
-            color: #cccccc;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
+        .price-info-box {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
         }
+
+        /* Commission Info */
+        .commission-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .commission-box .amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 0.25rem;
+        }
+        .commission-box .label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
         .btn-primary {
             width: 100%;
             padding: 1.1rem;
-            background: linear-gradient(135deg, #333333, #000000);
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
         }
+
+        /* Terms checkbox */
+        .terms-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+        }
+        .terms-box label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+            margin: 0;
+        }
+        .terms-box span {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+        .terms-box a {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        .terms-box input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: #ffffff;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
         .login-link {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1.5rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            color: #999999;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .login-link p {
+            margin: 0 0 0.5rem 0;
+            color: rgba(255, 255, 255, 0.7);
         }
         .login-link a {
-            color: #333333;
+            color: #ffffff;
             text-decoration: none;
             font-weight: 600;
         }
         .login-link a:hover {
-            color: #000000;
+            text-decoration: underline;
         }
+
         .payment-methods {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            align-items: center;
+            gap: 0.75rem;
             margin-top: 1rem;
-            opacity: 0.7;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
         }
-        .payment-methods img {
-            height: 24px;
+        .payment-methods i {
+            color: rgba(255, 255, 255, 0.8);
         }
-    </style>
-</head>
-<body>
+    .sales-register-wrapper {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6rem 1rem 3rem;
+    }
+</style>
+
+<div class="sales-register-wrapper">
     <div class="register-card">
         <div class="register-header">
             <div class="icon">
                 <i class="fas fa-handshake"></i>
             </div>
             <h1>Word Sales Partner</h1>
-            <p>Verdien <strong>49,99</strong> per aanmelding</p>
+            <p>Verdien commissie per aangemeld bedrijf</p>
+        </div>
+
+        <!-- Commission Info -->
+        <div class="commission-box">
+            <div class="amount">&euro;49,99</div>
+            <div class="label">commissie per geregistreerd bedrijf</div>
         </div>
 
         <div class="benefits">
             <h4><i class="fas fa-gift"></i> Wat krijg je?</h4>
-            <ul>
-                <li><strong>49,99</strong> commissie per geregistreerd bedrijf</li>
-                <li>Geef bedrijven 25,- welkomstkorting</li>
-                <li>Unieke referral code</li>
-                <li>Realtime dashboard met statistieken</li>
-                <li>Maandelijkse uitbetalingen</li>
-            </ul>
+            <div class="benefits-grid">
+                <div class="benefit-item"><i class="fas fa-check-circle"></i> Unieke referral code</div>
+                <div class="benefit-item"><i class="fas fa-check-circle"></i> Welkomstkorting voor bedrijven</div>
+                <div class="benefit-item"><i class="fas fa-check-circle"></i> Realtime dashboard</div>
+                <div class="benefit-item"><i class="fas fa-check-circle"></i> Maandelijkse uitbetalingen</div>
+            </div>
         </div>
 
         <?php if (!empty($error)): ?>
@@ -233,6 +379,11 @@
 
         <form method="POST" action="/sales/register">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+
+            <div class="section-header">
+                <i class="fas fa-user"></i>
+                <h4>Jouw Gegevens</h4>
+            </div>
 
             <div class="grid-2">
                 <div class="form-group">
@@ -266,22 +417,27 @@
                 <?php endif; ?>
             </div>
 
-            <div class="price-box">
-                <div class="label">Eenmalige registratiekosten</div>
-                <div class="price">0,99</div>
-                <div class="note">Betaal veilig via iDEAL</div>
+            <!-- Pricing Card -->
+            <div class="pricing-card">
+                <div class="price-display">
+                    <span class="price-amount">&euro;0,99</span>
+                    <span class="price-period">eenmalig</span>
+                </div>
+                <div class="price-note">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Eenmalige registratiekosten, geen abonnement</span>
+                </div>
             </div>
 
-            <div class="form-group" style="margin-bottom:1.5rem">
-                <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;color:#999999;font-weight:400">
+            <div class="terms-box">
+                <label>
                     <input type="checkbox" name="terms" id="terms" required
-                           style="margin-top:0.2rem;width:20px;height:20px;accent-color:#333333;flex-shrink:0"
                            <?= isset($data['terms']) && $data['terms'] ? 'checked' : '' ?>>
-                    <span style="font-size:0.9rem;line-height:1.5">
+                    <span>
                         Ik ga akkoord met de
-                        <a href="/terms" target="_blank" style="color:#333333">Algemene Voorwaarden</a>
+                        <a href="/terms" target="_blank">Algemene Voorwaarden</a>
                         en het
-                        <a href="/privacy" target="_blank" style="color:#333333">Privacybeleid</a> *
+                        <a href="/privacy" target="_blank">Privacybeleid</a> *
                     </span>
                 </label>
                 <?php if (isset($errors['terms'])): ?>
@@ -290,20 +446,21 @@
             </div>
 
             <button type="submit" class="btn-primary">
-                <i class="fas fa-lock"></i> Betalen en Registreren
+                <i class="fas fa-rocket"></i> Partner Worden
             </button>
 
             <div class="payment-methods">
-                <span style="color:#666666;font-size:0.8rem">Betaal veilig met</span>
-                <i class="fas fa-credit-card" style="color:#333333"></i>
-                <span style="color:#666666;font-size:0.8rem">iDEAL</span>
+                <i class="fas fa-shield-alt"></i>
+                <span>Veilig betalen via iDEAL</span>
             </div>
         </form>
 
         <div class="login-link">
-            <p style="margin:0 0 0.5rem 0">Al een account?</p>
-            <a href="/sales/login">Log in</a>
+            <p>Al een account?</p>
+            <a href="/sales/login">Inloggen</a>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<?php $content = ob_get_clean(); ?>
+<?php include BASE_PATH . '/resources/views/layouts/main.php'; ?>

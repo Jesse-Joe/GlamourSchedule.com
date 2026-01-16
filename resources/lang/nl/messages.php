@@ -8,7 +8,7 @@ return [
     // ALGEMEEN
     // ═══════════════════════════════════════════════════════════════════════
     'site_name' => 'GlamourSchedule',
-    'tagline' => 'Boek jouw beauty afspraak',
+    'tagline' => 'Boek jouw afspraak',
     'welcome' => 'Welkom',
     'home' => 'Home',
     'search' => 'Zoeken',
@@ -42,7 +42,7 @@ return [
     // ═══════════════════════════════════════════════════════════════════════
     // HOMEPAGE
     // ═══════════════════════════════════════════════════════════════════════
-    'hero_title' => 'Boek jouw perfecte beauty afspraak',
+    'hero_title' => 'Boek jouw perfecte afspraak',
     'hero_subtitle' => 'Ontdek de beste salons bij jou in de buurt en boek direct online - snel, eenvoudig en 24/7',
     'search_what' => 'Wat zoek je? (kapper, nagels, massage...)',
     'search_where' => 'Stad of postcode',
@@ -97,7 +97,7 @@ return [
     'business_register_btn' => 'Registreren als bedrijf',
     'business_details' => 'Bedrijfsgegevens',
     'business_name' => 'Bedrijfsnaam',
-    'business_name_placeholder' => 'Bijv. Beauty Salon Amsterdam',
+    'business_name_placeholder' => 'Bijv. Salon Amsterdam',
     'phone' => 'Telefoon',
     'location' => 'Locatie',
     'address' => 'Adres',
@@ -290,7 +290,7 @@ return [
     // PWA INSTALL
     // ═══════════════════════════════════════════════════════════════════════
     'pwa_title' => 'Installeer GlamourSchedule',
-    'pwa_text' => 'Voeg onze app toe aan je startscherm voor snelle toegang tot beauty boekingen!',
+    'pwa_text' => 'Voeg onze app toe aan je startscherm voor snelle toegang tot boekingen!',
     'pwa_fast' => 'Sneller laden',
     'pwa_notifications' => 'Meldingen',
     'pwa_offline' => 'Offline werken',

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Modern GS monogram - Bold style -->
+
+  <!-- Circular background (optional) -->
+  <!-- <circle cx="50" cy="50" r="48" fill="#000000"/> -->
+
+  <!-- G base shape -->
+  <path d="M52 12
+           C24 12, 8 30, 8 50
+           C8 70, 24 88, 52 88
+           C72 88, 85 76, 90 58
+           L90 50
+           L52 50"
+        stroke="#000000"
+        stroke-width="12"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- S overlay with cutout effect -->
+  <path d="M65 20
+           C82 20, 92 30, 92 42
+           C92 54, 78 60, 58 64
+           C38 68, 22 76, 22 88"
+        stroke="#ffffff"
+        stroke-width="18"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- S visible stroke -->
+  <path d="M65 20
+           C82 20, 92 30, 92 42
+           C92 54, 78 60, 58 64
+           C38 68, 22 76, 22 88"
+        stroke="#000000"
+        stroke-width="10"
+        fill="none"
+        stroke-linecap="round"/>
+</svg>

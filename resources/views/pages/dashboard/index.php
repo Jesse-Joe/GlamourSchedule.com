@@ -1,6 +1,35 @@
 <?php ob_start(); ?>
 
 <style>
+/* Dark Dashboard Theme */
+.dashboard-page {
+    background: #000000;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+.dashboard-page .container {
+    padding-top: 1rem;
+}
+.dashboard-page h2,
+.dashboard-page h3 {
+    color: #ffffff;
+}
+.dashboard-page .card {
+    background: #111111;
+    border: 1px solid #333333;
+    color: #ffffff;
+}
+.dashboard-page .text-light,
+.dashboard-page [style*="text-light"] {
+    color: rgba(255,255,255,0.7) !important;
+}
+.dashboard-page p {
+    color: rgba(255,255,255,0.7);
+}
+.dashboard-page .card h3 {
+    color: #ffffff;
+}
+
 /* Mobile-friendly dashboard styles */
 .quick-links {
     display: grid;
@@ -22,20 +51,20 @@
 }
 .quick-link-card:hover .card {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(255,255,255,0.1);
 }
 
 /* Booking cards for mobile */
 .booking-card {
-    background: var(--secondary);
+    background: #1a1a1a;
     border-radius: 16px;
     padding: 1.25rem;
     margin-bottom: 1rem;
-    border: 2px solid transparent;
+    border: 2px solid #333333;
     transition: all 0.2s;
 }
 .booking-card:hover {
-    border-color: var(--primary);
+    border-color: #ffffff;
 }
 .booking-card-header {
     display: flex;
@@ -47,10 +76,10 @@
 .booking-card-business {
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--text);
+    color: #ffffff;
 }
 .booking-card-service {
-    color: var(--text-light);
+    color: rgba(255,255,255,0.7);
     font-size: 0.9rem;
     margin-top: 0.25rem;
 }
@@ -60,14 +89,16 @@
     gap: 1.5rem;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    color: #ffffff;
 }
 .booking-card-date, .booking-card-time {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: #ffffff;
 }
 .booking-card-date i, .booking-card-time i {
-    color: var(--primary);
+    color: #ffffff;
     width: 20px;
 }
 .booking-card-qr {
@@ -98,6 +129,15 @@
     text-align: center;
     padding: 0.75rem;
 }
+.dashboard-page .btn-secondary {
+    background: #333333;
+    border-color: #444444;
+    color: #ffffff;
+}
+.dashboard-page .btn-primary {
+    background: #ffffff;
+    color: #000000;
+}
 @media (max-width: 480px) {
     .booking-card-datetime {
         flex-direction: column;
@@ -107,6 +147,7 @@
 }
 </style>
 
+<div class="dashboard-page">
 <div class="container">
     <h2 style="font-size:1.5rem"><i class="fas fa-tachometer-alt"></i> <?= $__('welcome_user') ?>, <?= htmlspecialchars($user['first_name']) ?>!</h2>
 
@@ -235,6 +276,7 @@
             </div>
         </div>
     <?php endif; ?>
+</div>
 </div>
 
 <?php $content = ob_get_clean(); ?>

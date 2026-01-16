@@ -652,12 +652,18 @@ class SalesController extends Controller
 
     public function processPayment(): string
     {
+        error_log("SalesController::processPayment() called");
+
         if (!$this->verifyCsrf()) {
+            error_log("CSRF verification failed");
             return $this->redirect('/sales/payment?error=csrf');
         }
 
         $userId = $_SESSION['sales_verify_user_id'] ?? null;
+        error_log("User ID from session: " . ($userId ?? 'null'));
+
         if (!$userId) {
+            error_log("No user ID in session, redirecting to register");
             return $this->redirect('/sales/register');
         }
 
@@ -665,13 +671,17 @@ class SalesController extends Controller
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$user || !$user['email_verified']) {
+            error_log("User not found or email not verified");
             return $this->redirect('/sales/register');
         }
 
         // Create Mollie payment
         try {
+            $apiKey = $_ENV['MOLLIE_API_KEY'] ?? getenv('MOLLIE_API_KEY');
+            error_log("Mollie API key: " . substr($apiKey, 0, 10) . "...");
+
             $mollie = new \Mollie\Api\MollieApiClient();
-            $mollie->setApiKey(getenv('MOLLIE_API_KEY'));
+            $mollie->setApiKey($apiKey);
 
             $payment = $mollie->payments->create([
                 'amount' => [
@@ -716,7 +726,7 @@ class SalesController extends Controller
 
         try {
             $mollie = new \Mollie\Api\MollieApiClient();
-            $mollie->setApiKey(getenv('MOLLIE_API_KEY'));
+            $mollie->setApiKey($_ENV['MOLLIE_API_KEY'] ?? getenv('MOLLIE_API_KEY'));
 
             $payment = $mollie->payments->get($paymentId);
 

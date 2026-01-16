@@ -1,19 +1,25 @@
 <?php ob_start(); ?>
 
 <style>
+    .verify-page {
+        background: #000000;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
     .verify-container {
         max-width: 450px;
-        margin: 3rem auto;
+        margin: 0 auto;
         padding: 0 1.5rem;
     }
     .verify-card {
-        background: var(--white);
+        background: #111111;
         border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         overflow: hidden;
+        border: 1px solid #333333;
     }
     .verify-header {
-        background: linear-gradient(135deg, #000000 0%, #000000 30%, #000000 70%, #333333 100%);
+        background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
         color: white;
         padding: 2rem;
         text-align: center;
@@ -26,6 +32,7 @@
     .verify-header h2 {
         margin: 0;
         font-size: 1.5rem;
+        color: #ffffff;
     }
     .verify-body {
         padding: 2rem;
@@ -35,12 +42,12 @@
         margin-bottom: 2rem;
     }
     .verify-info p {
-        color: var(--text-muted);
+        color: rgba(255,255,255,0.7);
         margin: 0;
     }
     .verify-info .email {
         font-weight: 600;
-        color: var(--primary);
+        color: #ffffff;
         display: block;
         margin-top: 0.5rem;
     }
@@ -56,50 +63,50 @@
         text-align: center;
         font-size: 1.5rem;
         font-weight: 700;
-        border: 2px solid #e5e7eb;
+        border: 2px solid #333333;
         border-radius: 12px;
         transition: all 0.3s ease;
-        color: #000000;
-        background: #ffffff;
+        color: #ffffff;
+        background: #1a1a1a;
     }
     .code-input:focus {
         outline: none;
-        border-color: var(--primary);
+        border-color: #ffffff;
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
     }
     .code-input.filled {
-        border-color: var(--primary);
-        background: linear-gradient(135deg, #ffffff, #ffffff);
+        border-color: #ffffff;
+        background: #333333;
     }
     .timer {
         text-align: center;
-        color: var(--text-muted);
+        color: rgba(255,255,255,0.7);
         font-size: 0.9rem;
         margin-bottom: 1.5rem;
     }
     .timer span {
         font-weight: 600;
-        color: var(--primary);
+        color: #ffffff;
     }
     .resend-btn {
         background: none;
         border: none;
-        color: var(--primary);
+        color: #ffffff;
         cursor: pointer;
         font-weight: 600;
         text-decoration: underline;
         padding: 0;
     }
     .resend-btn:disabled {
-        color: var(--text-muted);
+        color: rgba(255,255,255,0.5);
         cursor: not-allowed;
         text-decoration: none;
     }
     .btn-verify {
         width: 100%;
         padding: 1rem;
-        background: #000000;
-        color: white;
+        background: #ffffff;
+        color: #000000;
         border: none;
         border-radius: 50px;
         font-weight: 600;
@@ -109,7 +116,7 @@
     }
     .btn-verify:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
     }
     .btn-verify:disabled {
         opacity: 0.6;
@@ -121,38 +128,19 @@
         display: block;
         text-align: center;
         margin-top: 1.5rem;
-        color: var(--text-muted);
+        color: rgba(255,255,255,0.7);
     }
     .back-link a {
-        color: var(--primary);
+        color: #ffffff;
     }
-
-    /* Dark Mode */
-    [data-theme="dark"] .verify-card {
-        background: var(--bg-card);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .code-input {
-        background: #ffffff;
-        border-color: var(--border);
-        color: #000000;
-    }
-    [data-theme="dark"] .code-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
-    }
-    [data-theme="dark"] .code-input.filled {
-        background: #ffffff;
-        border-color: var(--primary);
-        color: #000000;
-    }
-    [data-theme="dark"] .alert-danger {
-        background: rgba(0, 0, 0, 0.1);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #d4d4d4;
+    .verify-page .alert-danger {
+        background: rgba(239,68,68,0.2);
+        border: 1px solid rgba(239,68,68,0.3);
+        color: #f87171;
     }
 </style>
 
+<div class="verify-page">
 <div class="verify-container">
     <div class="verify-card">
         <div class="verify-header">
@@ -207,6 +195,7 @@
             </p>
         </div>
     </div>
+</div>
 </div>
 
 <script>

@@ -332,7 +332,7 @@ class BusinessRegisterController extends Controller
             error_log("Business registration error: " . $e->getMessage());
 
             $earlyAdopterCount = $this->getEarlyAdopterCount();
-            $isEarlyAdopter = $earlyAdopterCount < 20;
+            $isEarlyAdopter = $earlyAdopterCount < 100;
             $referralCode = trim($_POST['referral_code'] ?? '');
             $hasValidReferral = false;
 
@@ -350,7 +350,7 @@ class BusinessRegisterController extends Controller
                 'errors' => ['general' => 'Er is een fout opgetreden bij de registratie. Probeer het opnieuw.'],
                 'data' => $data,
                 'isEarlyAdopter' => $isEarlyAdopter,
-                'earlyAdopterSpots' => 20 - $earlyAdopterCount,
+                'earlyAdopterSpots' => 100 - $earlyAdopterCount,
                 'regFee' => $isEarlyAdopter ? 0.99 : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE),
                 'standardFee' => self::REGISTRATION_FEE,
                 'discountedFee' => self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT,
@@ -642,9 +642,9 @@ GlamourSchedule
             $salesPartner = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 
-        // Check sales early adopter status (first 20 via sales get €0.99)
+        // Check sales early adopter status (first 100 via sales get €0.99)
         $salesEarlyAdopterCount = $this->getSalesEarlyAdopterCount();
-        $isSalesEarlyAdopter = $salesEarlyAdopterCount < 20;
+        $isSalesEarlyAdopter = $salesEarlyAdopterCount < 100;
         $regFee = $isSalesEarlyAdopter ? 0.99 : 74.99;
 
         return $this->view('pages/business/register-sales', [
@@ -654,7 +654,7 @@ GlamourSchedule
             'salesPartner' => $salesPartner,
             'isSalesEarlyAdopter' => $isSalesEarlyAdopter,
             'salesEarlyAdopterCount' => $salesEarlyAdopterCount,
-            'salesEarlyAdopterSpots' => 20 - $salesEarlyAdopterCount,
+            'salesEarlyAdopterSpots' => 100 - $salesEarlyAdopterCount,
             'regFee' => $regFee,
             'csrfToken' => $this->csrf()
         ]);
@@ -719,7 +719,7 @@ GlamourSchedule
 
         // Check sales early adopter status
         $salesEarlyAdopterCount = $this->getSalesEarlyAdopterCount();
-        $isSalesEarlyAdopter = $salesEarlyAdopterCount < 20;
+        $isSalesEarlyAdopter = $salesEarlyAdopterCount < 100;
 
         if (!empty($errors)) {
             return $this->view('pages/business/register-sales', [
@@ -730,7 +730,7 @@ GlamourSchedule
                 'salesPartner' => $salesPartner,
                 'isSalesEarlyAdopter' => $isSalesEarlyAdopter,
                 'salesEarlyAdopterCount' => $salesEarlyAdopterCount,
-                'salesEarlyAdopterSpots' => 20 - $salesEarlyAdopterCount,
+                'salesEarlyAdopterSpots' => 100 - $salesEarlyAdopterCount,
                 'regFee' => $isSalesEarlyAdopter ? 0.99 : 74.99,
                 'csrfToken' => $this->csrf()
             ]);
@@ -758,7 +758,7 @@ GlamourSchedule
             // Get sales partner ID
             $referredBy = $salesPartner ? $salesPartner['id'] : null;
 
-            // Determine pricing - First 20 via sales get €0.99, rest get €74.99
+            // Determine pricing - First 100 via sales get €0.99, rest get €74.99
             $regFee = $isSalesEarlyAdopter ? 0.99 : 74.99;
             $welcomeDiscount = $isSalesEarlyAdopter ? 99.00 : 25.00; // €99 korting for early adopters
 

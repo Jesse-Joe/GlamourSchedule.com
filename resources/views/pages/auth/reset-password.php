@@ -3,43 +3,62 @@
 <style>
     .auth-container {
         max-width: 480px;
-        margin: 3rem auto;
+        margin: 1rem auto;
         padding: 0 1rem;
     }
+    @media (max-width: 768px) {
+        .auth-container {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .auth-card {
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+    }
     .auth-card {
-        background: #ffffff;
+        background: #000000;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border: 2px solid #333333;
     }
     .auth-header {
-        background: linear-gradient(135deg, #000000 0%, #000000 30%, #000000 70%, #333333 100%);
-        color: white;
+        background: #000000;
+        color: #ffffff;
         padding: 3rem 2rem;
         text-align: center;
+        border-bottom: 2px solid #333333;
+        border-radius: 0 0 30px 30px;
     }
     .auth-header.expired {
-        background: linear-gradient(135deg, #000000 0%, #404040 100%);
+        background: #000000;
     }
     .auth-header i {
         font-size: 3rem;
         margin-bottom: 1rem;
         display: block;
+        color: #ffffff;
     }
     .auth-header h1 {
         margin: 0;
         font-size: 1.75rem;
         font-weight: 700;
+        color: #ffffff;
     }
     .auth-header p {
         margin: 0.75rem 0 0;
-        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.8);
     }
     .auth-body {
-        padding: 2.5rem 2rem;
+        padding: 2rem;
+        background: #000000;
     }
     .form-group {
         margin-bottom: 1.5rem;
+        padding: 0.9rem 0;
     }
     .form-group label {
         display: flex;
@@ -47,34 +66,48 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: #374151;
+        color: rgba(255, 255, 255, 0.9);
     }
     .form-group label i {
-        color: #000000;
+        color: #ffffff;
+        font-size: 0.9rem;
     }
     .form-control {
         width: 100%;
-        padding: 1rem 1.25rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        padding: 0.9rem 0;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 0;
         font-size: 1rem;
+        color: #ffffff;
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-color: #000000;
-        box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+        border-bottom-color: #ffffff;
+        box-shadow: none;
+    }
+    .form-control:hover {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
+    }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .form-control:disabled {
+        color: rgba(255, 255, 255, 0.5);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
     }
     .form-hint {
         font-size: 0.85rem;
-        color: #9ca3af;
+        color: rgba(255, 255, 255, 0.6);
         margin-top: 0.35rem;
     }
     .btn-submit {
         width: 100%;
-        padding: 1rem;
-        background: #000000;
-        color: white;
+        padding: 1.1rem;
+        background: #ffffff;
+        color: #000000;
         border: none;
         border-radius: 50px;
         font-size: 1.1rem;
@@ -88,14 +121,14 @@
     }
     .btn-submit:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
     }
     .btn-secondary {
         width: 100%;
         padding: 1rem;
         background: transparent;
-        color: #000000;
-        border: 2px solid #000000;
+        color: #ffffff;
+        border: 2px solid rgba(255, 255, 255, 0.5);
         border-radius: 50px;
         font-size: 1rem;
         font-weight: 600;
@@ -109,8 +142,8 @@
         margin-top: 1rem;
     }
     .btn-secondary:hover {
-        background: #000000;
-        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #ffffff;
     }
     .alert {
         padding: 1rem 1.25rem;
@@ -121,64 +154,20 @@
         gap: 0.75rem;
     }
     .alert-danger {
-        background: #f5f5f5;
-        border: 1px solid #e5e5e5;
-        color: #000000;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
     }
     .alert-danger i {
-        color: #333333;
+        color: #ffffff;
     }
     .expired-content {
         text-align: center;
     }
     .expired-content p {
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.7);
         margin-bottom: 1.5rem;
         line-height: 1.6;
-    }
-
-    /* Dark Mode */
-    [data-theme="dark"] .auth-card {
-        background: var(--bg-card);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    [data-theme="dark"] .form-group label {
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control {
-        background: var(--bg-secondary);
-        border-color: var(--border);
-        color: var(--text);
-    }
-    [data-theme="dark"] .form-control:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(255,255,255,0.15);
-    }
-    [data-theme="dark"] .form-control::placeholder {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .form-control:disabled {
-        background: var(--bg-secondary);
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .form-hint {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .alert-danger {
-        background: rgba(0, 0, 0, 0.1);
-        border-color: rgba(0, 0, 0, 0.1);
-        color: #d4d4d4;
-    }
-    [data-theme="dark"] .btn-secondary {
-        color: var(--primary);
-        border-color: var(--primary);
-    }
-    [data-theme="dark"] .btn-secondary:hover {
-        background: var(--primary);
-        color: white;
-    }
-    [data-theme="dark"] .expired-content p {
-        color: var(--text-light);
     }
 
     /* Password Toggle */
@@ -187,12 +176,12 @@
     }
     .password-toggle {
         position: absolute;
-        right: 12px;
+        right: 0;
         top: 50%;
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: #9ca3af;
+        color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
         padding: 4px;
         display: flex;
@@ -200,16 +189,15 @@
         justify-content: center;
     }
     .password-toggle:hover {
-        color: #000000;
+        color: #ffffff;
     }
     .password-wrapper .form-control {
-        padding-right: 44px;
+        padding-right: 2rem;
     }
-    [data-theme="dark"] .password-toggle {
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .password-toggle:hover {
-        color: var(--primary);
+
+    /* Dark Mode - Already dark */
+    [data-theme="dark"] .auth-card {
+        background: #000000;
     }
 </style>
 
