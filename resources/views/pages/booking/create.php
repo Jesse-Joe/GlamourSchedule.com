@@ -1,6 +1,46 @@
 <?php ob_start(); ?>
 
 <style>
+/* ============================================
+   THEME VARIABLES - Dark Mode (Default)
+   ============================================ */
+:root {
+    --page-bg: #0a0a0a;
+    --card-bg: #111111;
+    --card-border: #222222;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --input-bg: #1a1a1a;
+    --input-border: #333333;
+    --service-bg: #1a1a1a;
+    --service-hover: #222222;
+    --service-border: #333333;
+    --divider: #333333;
+    --btn-primary-bg: #ffffff;
+    --btn-primary-text: #000000;
+}
+
+/* ============================================
+   LIGHT MODE VARIABLES
+   ============================================ */
+[data-theme="light"] {
+    --page-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --input-bg: #ffffff;
+    --input-border: #d1d5db;
+    --service-bg: #f9fafb;
+    --service-hover: #f3f4f6;
+    --service-border: #e5e7eb;
+    --divider: #e5e7eb;
+    --btn-primary-bg: #000000;
+    --btn-primary-text: #ffffff;
+}
+
 /* Mobile-first booking page */
 .booking-container {
     max-width: 800px;
@@ -61,10 +101,13 @@
     }
 }
 .booking-card {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 1.25rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .booking-title {
     font-size: 1.25rem;
@@ -72,9 +115,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--text-primary);
 }
 .booking-title i {
-    color: var(--primary);
+    color: var(--text-secondary);
 }
 
 /* Service Selection */
@@ -87,18 +131,19 @@
     display: flex;
     align-items: flex-start;
     padding: 1rem;
-    border: 2px solid var(--border);
+    border: 2px solid var(--service-border);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
-    background: var(--white);
+    background: var(--service-bg);
+    color: var(--text-primary);
 }
 .service-option:active {
     transform: scale(0.98);
 }
 .service-option:hover {
-    border-color: var(--primary);
-    background: rgba(0,0,0,0.02);
+    border-color: var(--text-primary);
+    background: var(--service-hover);
 }
 .service-option:has(input:checked) {
     border-color: var(--primary) !important;
@@ -137,6 +182,72 @@
     margin-left: 0.5rem;
 }
 
+/* Employee Selection */
+.employee-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.employee-option {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--white);
+    gap: 1rem;
+}
+.employee-option:hover {
+    border-color: var(--primary);
+    background: rgba(0,0,0,0.02);
+}
+.employee-option:has(input:checked) {
+    border-color: var(--primary) !important;
+    background: rgba(0,0,0,0.05) !important;
+}
+.employee-radio {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+}
+.employee-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark, #737373));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.employee-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.employee-details {
+    flex: 1;
+    min-width: 0;
+}
+.employee-name {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+}
+.employee-bio {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
 /* Date & Time - Stack on mobile */
 .datetime-grid {
     display: flex;
@@ -151,22 +262,60 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--text-primary);
 }
 .form-label i {
-    color: var(--primary);
+    color: var(--text-secondary);
 }
+/* Form Input - Dark Mode Default */
 .form-input {
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 2px solid var(--border);
-    border-radius: 12px;
+    padding: 0.9rem 0;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
     font-size: 1rem;
-    background: var(--white);
-    transition: border-color 0.2s;
+    background: transparent;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
 }
 .form-input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-bottom-color: #ffffff;
+    box-shadow: none;
+}
+.form-input:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+/* Form Input - Light Mode */
+[data-theme="light"] .form-input {
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+}
+[data-theme="light"] .form-input:focus {
+    border-bottom-color: #000000;
+}
+[data-theme="light"] .form-input:hover {
+    border-bottom-color: rgba(0, 0, 0, 0.4);
+}
+[data-theme="light"] .form-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+/* Select Input - Dark Mode Default */
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+    background-size: 1rem;
+    padding-right: 1.5rem;
+    cursor: pointer;
+}
+[data-theme="light"] select.form-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 .time-loading {
     display: none;
@@ -175,12 +324,13 @@
     font-size: 0.85rem;
 }
 
-/* Guest Info Box */
+/* Guest Info Box - Dark Mode Default */
 .guest-info-box {
-    background: var(--secondary);
+    background: var(--service-bg);
     padding: 1.25rem;
     border-radius: 12px;
     margin: 1.25rem 0;
+    border: 1px solid var(--service-border);
 }
 .guest-info-box h4 {
     margin: 0 0 0.75rem;
@@ -188,17 +338,18 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--text-primary);
 }
 .guest-info-box h4 i {
-    color: var(--primary);
+    color: var(--text-secondary);
 }
 .guest-login-hint {
-    color: var(--text-light);
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
 }
 .guest-login-hint a {
-    color: var(--primary);
+    color: var(--text-primary);
     font-weight: 600;
 }
 .guest-fields {
@@ -210,29 +361,55 @@
     margin: 0;
 }
 
-/* Notes */
+/* Notes - Dark Mode Default */
 .notes-textarea {
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 2px solid var(--border);
-    border-radius: 12px;
+    padding: 0.9rem 0;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
     font-size: 1rem;
     resize: vertical;
     min-height: 80px;
     font-family: inherit;
+    background: transparent;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
 }
 .notes-textarea:focus {
     outline: none;
-    border-color: var(--primary);
+    border-bottom-color: #ffffff;
+    box-shadow: none;
+}
+.notes-textarea:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+.notes-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+/* Notes - Light Mode */
+[data-theme="light"] .notes-textarea {
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+}
+[data-theme="light"] .notes-textarea:focus {
+    border-bottom-color: #000000;
+}
+[data-theme="light"] .notes-textarea:hover {
+    border-bottom-color: rgba(0, 0, 0, 0.4);
+}
+[data-theme="light"] .notes-textarea::placeholder {
+    color: rgba(0, 0, 0, 0.4);
 }
 
-/* Terms */
+/* Terms - Dark Mode Default */
 .terms-box {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     padding: 1rem;
-    background: var(--secondary);
+    background: var(--service-bg);
+    border: 1px solid var(--service-border);
     border-radius: 12px;
     margin-top: 1.25rem;
     cursor: pointer;
@@ -241,26 +418,27 @@
     margin-top: 0.15rem;
     width: 20px;
     height: 20px;
-    accent-color: var(--primary);
+    accent-color: var(--btn-primary-bg);
     flex-shrink: 0;
 }
 .terms-text {
     font-size: 0.9rem;
-    color: var(--text);
+    color: var(--text-primary);
     line-height: 1.5;
 }
 .terms-text a {
-    color: var(--primary);
+    color: var(--text-primary);
     font-weight: 600;
+    text-decoration: underline;
 }
 
-/* Submit Button */
+/* Submit Button - Dark Mode Default */
 .submit-btn {
     width: 100%;
     padding: 1rem;
     margin-top: 1.25rem;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark, #737373));
-    color: white;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
     border: none;
     border-radius: 12px;
     font-size: 1rem;
@@ -275,39 +453,40 @@
 .submit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0.9;
 }
 .submit-btn:active {
     transform: scale(0.98);
 }
 
-/* Alert */
+/* Alert - Works in both modes */
 .alert-error {
-    background: #f5f5f5;
+    background: #fef2f2;
     color: #dc2626;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #fecaca;
     padding: 1rem;
     border-radius: 12px;
     margin-bottom: 1rem;
     font-size: 0.9rem;
 }
 
-/* QR Code Notice */
+/* QR Code Notice - Dark Mode Default */
 .qr-notice {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
-    background: #000000;
-    border: 2px solid #000000;
+    background: var(--btn-primary-bg);
+    border: 2px solid var(--btn-primary-bg);
     border-radius: 12px;
     padding: 1.25rem;
     margin: 1.25rem 0;
-    color: #ffffff;
+    color: var(--btn-primary-text);
 }
 .qr-notice-icon {
     width: 50px;
     height: 50px;
-    background: #ffffff;
-    color: #000000;
+    background: var(--btn-primary-text);
+    color: var(--btn-primary-bg);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -318,7 +497,7 @@
 .qr-notice-content h4 {
     margin: 0 0 0.5rem;
     font-size: 1rem;
-    color: #ffffff;
+    color: var(--btn-primary-text);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -329,7 +508,8 @@
 .qr-notice-content p {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--btn-primary-text);
+    opacity: 0.9;
     line-height: 1.5;
 }
 @media (max-width: 768px) {
@@ -405,6 +585,33 @@
                     <?php endforeach; ?>
                 </div>
             </div>
+
+            <?php if (!empty($employees)): ?>
+            <!-- Employee Selection (BV businesses only) -->
+            <div class="form-group" style="margin-top:1.25rem">
+                <label class="form-label"><i class="fas fa-user"></i> Kies een medewerker</label>
+                <div class="employee-list">
+                    <?php foreach ($employees as $employee): ?>
+                        <label class="employee-option">
+                            <input type="radio" name="employee_id" value="<?= $employee['id'] ?>" class="employee-radio" required>
+                            <div class="employee-avatar" style="<?= !empty($employee['color']) ? 'background:' . htmlspecialchars($employee['color']) : '' ?>">
+                                <?php if (!empty($employee['photo'])): ?>
+                                    <img src="<?= htmlspecialchars($employee['photo']) ?>" alt="">
+                                <?php else: ?>
+                                    <?= strtoupper(substr($employee['name'], 0, 1)) ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="employee-details">
+                                <span class="employee-name"><?= htmlspecialchars($employee['name']) ?></span>
+                                <?php if (!empty($employee['bio'])): ?>
+                                    <span class="employee-bio"><?= htmlspecialchars(substr($employee['bio'], 0, 60)) ?><?= strlen($employee['bio']) > 60 ? '...' : '' ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Date & Time -->
             <div class="datetime-grid">
@@ -488,7 +695,9 @@ const businessSlug = '<?= htmlspecialchars($business['slug']) ?>';
 const dateInput = document.getElementById('bookingDate');
 const timeSelect = document.getElementById('bookingTime');
 const serviceInputs = document.querySelectorAll('input[name="service_id"]');
+const employeeInputs = document.querySelectorAll('input[name="employee_id"]');
 const timeLoading = document.getElementById('timeLoading');
+const hasEmployees = <?= !empty($employees) ? 'true' : 'false' ?>;
 
 // Translation strings for JavaScript
 const translations = {
@@ -497,12 +706,21 @@ const translations = {
     errorLoading: '<?= addslashes($__('error_loading')) ?>',
     selectTimeSlot: '<?= addslashes($__('select_time_slot')) ?>',
     timeBooked: '<?= addslashes($__('time_booked')) ?>',
-    noTimesThisDay: '<?= addslashes($__('no_times_this_day')) ?>'
+    noTimesThisDay: '<?= addslashes($__('no_times_this_day')) ?>',
+    selectEmployeeFirst: 'Selecteer eerst een medewerker'
 };
 
 function loadAvailableTimes() {
     const date = dateInput.value;
     const serviceInput = document.querySelector('input[name="service_id"]:checked');
+    const employeeInput = document.querySelector('input[name="employee_id"]:checked');
+
+    // For BV businesses, require employee selection
+    if (hasEmployees && !employeeInput) {
+        timeSelect.innerHTML = `<option value="">${translations.selectEmployeeFirst}</option>`;
+        timeSelect.disabled = true;
+        return;
+    }
 
     if (!date || !serviceInput) {
         timeSelect.innerHTML = `<option value="">${translations.selectDateServiceFirst}</option>`;
@@ -511,10 +729,16 @@ function loadAvailableTimes() {
     }
 
     const serviceId = serviceInput.value;
+    const employeeId = employeeInput ? employeeInput.value : '';
     timeSelect.disabled = true;
     timeLoading.style.display = 'block';
 
-    fetch(`/api/available-times/${businessSlug}?date=${date}&service_id=${serviceId}`)
+    let url = `/api/available-times/${businessSlug}?date=${date}&service_id=${serviceId}`;
+    if (employeeId) {
+        url += `&employee_id=${employeeId}`;
+    }
+
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             timeLoading.style.display = 'none';
@@ -552,10 +776,13 @@ function loadAvailableTimes() {
 
 dateInput.addEventListener('change', loadAvailableTimes);
 serviceInputs.forEach(input => input.addEventListener('change', loadAvailableTimes));
+employeeInputs.forEach(input => input.addEventListener('change', loadAvailableTimes));
 
 // Load times if date and service are already selected
 if (dateInput.value && document.querySelector('input[name="service_id"]:checked')) {
-    loadAvailableTimes();
+    if (!hasEmployees || document.querySelector('input[name="employee_id"]:checked')) {
+        loadAvailableTimes();
+    }
 }
 </script>
 
