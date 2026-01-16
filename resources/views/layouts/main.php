@@ -631,8 +631,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     });
     </script>
 
-    <!-- Domain/Language Switch Popup -->
-    <?php if (isset($domainSwitchPopup) && $domainSwitchPopup && $domainSwitchPopup['show']): ?>
+    <!-- Domain/Language Switch Popup - Disabled for now to fix mobile nav -->
+    <?php if (false && isset($domainSwitchPopup) && $domainSwitchPopup && $domainSwitchPopup['show']): ?>
     <div id="domainSwitchPopup" class="domain-switch-popup">
         <div class="domain-switch-overlay" onclick="dismissDomainPopup()"></div>
         <div class="domain-switch-modal">
