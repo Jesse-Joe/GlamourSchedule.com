@@ -423,6 +423,9 @@
                 <a href="/business/scanner" class="nav-item <?= $currentPath === '/business/scanner' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#333333,#000000);color:white;border-radius:10px;margin-top:0.5rem">
                     <i class="fas fa-qrcode"></i> QR Scanner
                 </a>
+                <a href="/business/pos" class="nav-item <?= $currentPath === '/business/pos' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#1e40af,#1d4ed8);color:white;border-radius:10px;margin-top:0.5rem">
+                    <i class="fas fa-cash-register"></i> POS Systeem
+                </a>
             </div>
 
             <div class="nav-section">

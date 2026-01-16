@@ -15,6 +15,14 @@ class BookingController extends Controller
             return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
         }
 
+        // Check if business needs verification (no KVK and not admin verified)
+        if (empty($business['kvk_number']) && empty($business['is_verified'])) {
+            return $this->view('pages/booking/pending-verification', [
+                'pageTitle' => 'Nog niet beschikbaar',
+                'business' => $business
+            ]);
+        }
+
         $services = $this->getServices($business['id']);
         $selectedService = $_GET['service'] ?? null;
 
@@ -38,6 +46,11 @@ class BookingController extends Controller
         $business = $this->getBusinessBySlug($businessSlug);
         if (!$business) {
             return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+        }
+
+        // Check if business needs verification (no KVK and not admin verified)
+        if (empty($business['kvk_number']) && empty($business['is_verified'])) {
+            return $this->json(['error' => 'Dit bedrijf is nog niet geverifieerd'], 403);
         }
 
         if (!$this->verifyCsrf()) {

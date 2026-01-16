@@ -337,6 +337,32 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     </div>
 <?php endif; ?>
 
+<?php
+// Check if business needs verification (no KVK and not yet verified)
+$needsVerification = empty($business['kvk_number']) && empty($business['is_verified']);
+?>
+<?php if ($needsVerification): ?>
+    <div class="dash-banner dash-banner-pending" style="background:linear-gradient(135deg,#f59e0b,#d97706);margin-bottom:1rem">
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+            <div style="width:50px;height:50px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-lock" style="font-size:1.5rem"></i>
+            </div>
+            <div style="flex:1">
+                <h3 style="margin:0;display:flex;align-items:center;gap:0.5rem;font-size:1.1rem">
+                    <i class="fas fa-clock"></i> Verificatie in behandeling
+                </h3>
+                <p style="margin:0.5rem 0 0 0;opacity:0.95;font-size:0.9rem;line-height:1.5">
+                    Je bedrijf wordt binnen <strong>24 uur</strong> geverifieerd door ons team.
+                    Tot die tijd kun je geen boekingen ontvangen.
+                </p>
+                <p style="margin:0.75rem 0 0 0;opacity:0.85;font-size:0.85rem">
+                    <i class="fas fa-info-circle"></i> Tip: Voeg je KVK-nummer toe voor directe verificatie
+                </p>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <!-- Stats -->
 <div class="stats-grid">
     <div class="stat-card">
@@ -449,6 +475,254 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
         <?php endif; ?>
     </div>
 </div>
+
+<!-- New Registration Welcome Popup -->
+<?php if (!empty($isNewRegistration)): ?>
+<div class="welcome-popup-overlay" id="welcomePopup">
+    <div class="welcome-popup">
+        <div class="welcome-popup-header">
+            <div class="welcome-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Welkom bij GlamourSchedule!</h2>
+            <p>Je bedrijf is succesvol geregistreerd</p>
+        </div>
+
+        <div class="welcome-popup-body">
+            <h3>Voltooi je profiel</h3>
+            <p class="subtitle">Zorg dat klanten je kunnen vinden door je profiel compleet te maken</p>
+
+            <div class="completion-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: <?= $profileCompletion['percentage'] ?>%"></div>
+                </div>
+                <span class="progress-text"><?= $profileCompletion['completed'] ?>/<?= $profileCompletion['total'] ?> voltooid</span>
+            </div>
+
+            <div class="completion-checklist">
+                <?php foreach ($profileCompletion['items'] as $key => $item): ?>
+                    <a href="<?= $item['url'] ?>" class="checklist-item <?= $item['done'] ? 'done' : '' ?>">
+                        <div class="checklist-icon">
+                            <i class="fas <?= $item['done'] ? 'fa-check-circle' : 'fa-circle' ?>"></i>
+                        </div>
+                        <span><?= htmlspecialchars($item['label']) ?></span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <div class="welcome-popup-footer">
+            <button type="button" class="btn-start" onclick="closeWelcomePopup()">
+                <i class="fas fa-rocket"></i> Aan de slag!
+            </button>
+            <p class="skip-text">
+                <a href="#" onclick="closeWelcomePopup(); return false;">Later voltooien</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.welcome-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.welcome-popup {
+    background: var(--white);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.4s ease;
+}
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.welcome-popup-header {
+    background: linear-gradient(135deg, #000000, #333333);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 24px 24px 0 0;
+}
+.welcome-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+.welcome-icon i {
+    font-size: 2.5rem;
+    color: #4ade80;
+}
+.welcome-popup-header h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+.welcome-popup-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+.welcome-popup-body {
+    padding: 1.5rem;
+}
+.welcome-popup-body h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.2rem;
+    color: var(--text);
+}
+.welcome-popup-body .subtitle {
+    margin: 0 0 1.25rem 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+.completion-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--secondary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #000000, #333333);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+.progress-text {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+.completion-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--secondary);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+}
+.checklist-item:hover {
+    background: #e5e5e5;
+    transform: translateX(4px);
+}
+.checklist-item.done {
+    background: #f0fdf4;
+}
+.checklist-item.done .checklist-icon i {
+    color: #22c55e;
+}
+.checklist-item .checklist-icon {
+    width: 24px;
+    text-align: center;
+}
+.checklist-item .checklist-icon i {
+    font-size: 1.1rem;
+    color: #d1d5db;
+}
+.checklist-item span {
+    flex: 1;
+    font-size: 0.95rem;
+}
+.checklist-item .fa-chevron-right {
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+.welcome-popup-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+.btn-start {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #000000, #333333);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: transform 0.2s;
+}
+.btn-start:hover {
+    transform: translateY(-2px);
+}
+.skip-text {
+    margin: 1rem 0 0 0;
+    font-size: 0.9rem;
+}
+.skip-text a {
+    color: var(--text-light);
+    text-decoration: none;
+}
+.skip-text a:hover {
+    color: var(--text);
+}
+</style>
+
+<script>
+function closeWelcomePopup() {
+    const popup = document.getElementById('welcomePopup');
+    popup.style.animation = 'fadeOut 0.3s ease forwards';
+    setTimeout(() => popup.remove(), 300);
+}
+
+// Add fadeOut animation
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }';
+document.head.appendChild(style);
+
+// Close on overlay click
+document.getElementById('welcomePopup')?.addEventListener('click', function(e) {
+    if (e.target === this) closeWelcomePopup();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeWelcomePopup();
+});
+</script>
+<?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>
 <?php include BASE_PATH . '/resources/views/layouts/business.php'; ?>

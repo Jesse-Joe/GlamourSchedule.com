@@ -288,6 +288,196 @@ class SalesController extends Controller
         return $this->redirect('/sales/login');
     }
 
+    // ============================================================
+    // PASSWORD RESET
+    // ============================================================
+
+    public function showForgotPassword(): string
+    {
+        return $this->view('pages/sales/forgot-password', [
+            'pageTitle' => 'Wachtwoord Vergeten',
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function sendResetCode(): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/sales/forgot-password?error=csrf');
+        }
+
+        $email = trim($_POST['email'] ?? '');
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->view('pages/sales/forgot-password', [
+                'pageTitle' => 'Wachtwoord Vergeten',
+                'error' => 'Voer een geldig e-mailadres in',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Check if email exists
+        $stmt = $this->db->query("SELECT id, name, email FROM sales_users WHERE email = ?", [$email]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($user) {
+            // Generate 6-digit reset code
+            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+
+            // Store reset code
+            $this->db->query(
+                "UPDATE sales_users SET reset_code = ?, reset_code_expires = ? WHERE id = ?",
+                [$code, $expires, $user['id']]
+            );
+
+            // Send reset email
+            $this->sendResetEmail($user['email'], $user['name'], $code);
+        }
+
+        // Always show success message (security: don't reveal if email exists)
+        $_SESSION['reset_email'] = $email;
+        return $this->view('pages/sales/forgot-password', [
+            'pageTitle' => 'Wachtwoord Vergeten',
+            'success' => 'Als dit e-mailadres bekend is, ontvang je binnen enkele minuten een reset code.',
+            'email' => $email,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function showResetPassword(): string
+    {
+        $email = $_SESSION['reset_email'] ?? $_GET['email'] ?? '';
+
+        if (empty($email)) {
+            return $this->redirect('/sales/forgot-password');
+        }
+
+        return $this->view('pages/sales/reset-password', [
+            'pageTitle' => 'Nieuw Wachtwoord',
+            'email' => $email,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function resetPassword(): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/sales/forgot-password?error=csrf');
+        }
+
+        $email = trim($_POST['email'] ?? '');
+        $code = trim($_POST['code'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $passwordConfirm = $_POST['password_confirm'] ?? '';
+
+        // Validate inputs
+        if (empty($email) || empty($code) || strlen($code) !== 6) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Nieuw Wachtwoord',
+                'error' => 'Ongeldige reset code',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        if (strlen($password) < 8) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Nieuw Wachtwoord',
+                'error' => 'Wachtwoord moet minimaal 8 karakters zijn',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        if ($password !== $passwordConfirm) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Nieuw Wachtwoord',
+                'error' => 'Wachtwoorden komen niet overeen',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Verify code
+        $stmt = $this->db->query(
+            "SELECT id, reset_code, reset_code_expires FROM sales_users WHERE email = ?",
+            [$email]
+        );
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$user || $user['reset_code'] !== $code) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Nieuw Wachtwoord',
+                'error' => 'Ongeldige reset code',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        if (strtotime($user['reset_code_expires']) < time()) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Nieuw Wachtwoord',
+                'error' => 'Reset code is verlopen. Vraag een nieuwe aan.',
+                'email' => $email,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Update password and clear reset code
+        $this->db->query(
+            "UPDATE sales_users SET password = ?, reset_code = NULL, reset_code_expires = NULL WHERE id = ?",
+            [password_hash($password, PASSWORD_BCRYPT), $user['id']]
+        );
+
+        // Clear session
+        unset($_SESSION['reset_email']);
+
+        // Set flash message and redirect to login
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Wachtwoord succesvol gewijzigd! Je kunt nu inloggen.'];
+        return $this->redirect('/sales/login');
+    }
+
+    private function sendResetEmail(string $email, string $name, string $code): void
+    {
+        $subject = "Je wachtwoord reset code: $code";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr><td align="center">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:30px;text-align:center;">
+                    <h1 style="margin:0;font-size:22px;">Wachtwoord Reset</h1>
+                </td></tr>
+                <tr><td style="padding:35px;text-align:center;">
+                    <p style="font-size:16px;color:#333;margin:0 0 20px 0;">Hallo {$name},</p>
+                    <p style="font-size:14px;color:#666;margin:0 0 25px 0;">Je hebt een wachtwoord reset aangevraagd. Gebruik deze code:</p>
+                    <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
+                        <span style="font-size:36px;font-weight:bold;color:#333333;letter-spacing:8px;font-family:monospace;">{$code}</span>
+                    </div>
+                    <p style="font-size:13px;color:#999;margin:0 0 15px 0;">Deze code is 30 minuten geldig.</p>
+                    <p style="font-size:13px;color:#999;margin:0;">Heb je geen reset aangevraagd? Negeer deze e-mail.</p>
+                </td></tr>
+                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule Sales</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($email, $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send password reset email: " . $e->getMessage());
+        }
+    }
+
     public function showRegister(): string
     {
         return $this->view('pages/sales/register', [

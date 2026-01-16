@@ -86,16 +86,31 @@ class VerifyEmailController extends Controller
             [$verification['user_id']]
         );
 
-        // Update business status to active
+        // Get business details for verification check
+        $stmt = $this->db->query("SELECT kvk_number, name, email FROM businesses WHERE id = ?", [$verification['business_id']]);
+        $businessData = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // Auto-verify if business has KVK number
+        $isAutoVerified = !empty($businessData['kvk_number']);
+
+        // Update business status to active and set verification status
         $this->db->query(
-            "UPDATE businesses SET status = 'active' WHERE id = ?",
-            [$verification['business_id']]
+            "UPDATE businesses SET status = 'active', is_verified = ?, admin_verified_at = ? WHERE id = ?",
+            [
+                $isAutoVerified ? 1 : 0,
+                $isAutoVerified ? date('Y-m-d H:i:s') : null,
+                $verification['business_id']
+            ]
         );
+
+        // Notify admins of new business registration
+        $this->notifyAdminsOfNewBusiness($verification['business_id'], $businessData, $isAutoVerified);
 
         // Log the user in
         $_SESSION['user_id'] = $verification['user_id'];
         $_SESSION['business_id'] = $verification['business_id'];
         $_SESSION['user_type'] = 'business';
+        $_SESSION['new_business_registration'] = true;
 
         // Get business slug
         $stmt = $this->db->query("SELECT slug FROM businesses WHERE id = ?", [$verification['business_id']]);
@@ -108,6 +123,11 @@ class VerifyEmailController extends Controller
 
         // Send welcome email
         $this->sendWelcomeEmail($verification['user_id'], $verification['business_id']);
+
+        // Send KVK warning email if no KVK number
+        if (!$isAutoVerified) {
+            $this->sendKvkWarningEmail($verification['business_id'], $businessData);
+        }
 
         // Notify all personal accounts about new business
         $this->notifyUsersOfNewBusiness($verification['business_id']);
@@ -518,5 +538,184 @@ class VerifyEmailController extends Controller
 </body>
 </html>
 HTML;
+    }
+
+    private function sendKvkWarningEmail(int $businessId, array $businessData): void
+    {
+        $profileUrl = "https://glamourschedule.nl/business/profile";
+
+        $subject = "Belangrijk: Voeg je KVK-nummer toe om boekingen te ontvangen";
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
+                    <div style="font-size:50px;margin-bottom:15px;">&#9888;</div>
+                    <h1 style="margin:0;font-size:24px;">Actie Vereist</h1>
+                    <p style="margin:10px 0 0;opacity:0.95;">Je account is nog niet volledig actief</p>
+                </td></tr>
+                <tr><td style="padding:35px;">
+                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$businessData['name']},</p>
+
+                    <div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:20px;margin-bottom:25px;">
+                        <h3 style="margin:0 0 10px;color:#92400e;display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:24px;">&#128274;</span> Je account wacht op verificatie
+                        </h3>
+                        <p style="margin:0;color:#92400e;line-height:1.6;">
+                            Zonder KVK-nummer wordt je account handmatig geverifieerd door ons team.
+                            Dit kan tot <strong>24 uur</strong> duren. Tot die tijd kun je <strong>geen boekingen ontvangen</strong>.
+                        </p>
+                    </div>
+
+                    <h3 style="color:#333;margin:0 0 15px;">Waarom is een KVK-nummer belangrijk?</h3>
+                    <ul style="color:#555;line-height:1.8;padding-left:20px;margin:0 0 25px;">
+                        <li><strong>Directe activatie</strong> - Met KVK wordt je account direct actief</li>
+                        <li><strong>Vertrouwen</strong> - Klanten zien dat je een geregistreerd bedrijf bent</li>
+                        <li><strong>Uitbetalingen</strong> - Nodig voor correcte facturatie en uitbetalingen</li>
+                        <li><strong>Geen wachttijd</strong> - Begin direct met het ontvangen van boekingen</li>
+                    </ul>
+
+                    <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin-bottom:25px;">
+                        <h3 style="margin:0 0 10px;color:#166534;">
+                            <span style="font-size:20px;">&#10003;</span> Oplossing
+                        </h3>
+                        <p style="margin:0;color:#166534;line-height:1.6;">
+                            Voeg je KVK-nummer toe in je profiel en je account wordt <strong>direct geverifieerd</strong>.
+                        </p>
+                    </div>
+
+                    <div style="text-align:center;margin:30px 0;">
+                        <a href="{$profileUrl}" style="display:inline-block;background:linear-gradient(135deg,#000,#333);color:#fff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;">
+                            KVK-nummer Toevoegen
+                        </a>
+                    </div>
+
+                    <p style="font-size:14px;color:#666;text-align:center;margin:0;">
+                        Geen KVK-nummer? Geen zorgen - ons team verifieert je account binnen 24 uur.
+                    </p>
+                </td></tr>
+                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($businessData['email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send KVK warning email: " . $e->getMessage());
+        }
+    }
+
+    private function notifyAdminsOfNewBusiness(int $businessId, array $businessData, bool $isAutoVerified): void
+    {
+        // Get admin email(s)
+        $adminEmails = ['admin@glamourschedule.nl', 'chenayra6@gmail.com'];
+
+        // For businesses without KVK, generate verification token
+        $verificationToken = '';
+        if (!$isAutoVerified) {
+            $verificationToken = bin2hex(random_bytes(32));
+            $this->db->query(
+                "UPDATE businesses SET admin_verification_token = ? WHERE id = ?",
+                [$verificationToken, $businessId]
+            );
+        }
+
+        $verificationStatus = $isAutoVerified ? 'Automatisch geverifieerd (KVK aanwezig)' : 'Wacht op handmatige verificatie';
+        $statusColor = $isAutoVerified ? '#22c55e' : '#f59e0b';
+
+        $subject = $isAutoVerified
+            ? "Nieuw bedrijf geregistreerd: {$businessData['name']}"
+            : "ACTIE VEREIST: Nieuw bedrijf wacht op verificatie - {$businessData['name']}";
+
+        $kvkDisplay = !empty($businessData['kvk_number']) ? $businessData['kvk_number'] : '<span style="color:#dc2626;">Niet ingevuld</span>';
+
+        // Build action buttons for non-verified businesses
+        $actionButtons = '';
+        if (!$isAutoVerified) {
+            $verifyUrl = "https://glamourschedule.nl/admin/verify-business/{$verificationToken}";
+            $actionButtons = <<<HTML
+                    <div style="margin-top:30px;text-align:center;">
+                        <p style="margin:0 0 20px;color:#666;font-size:14px;">Klik op een knop om het bedrijf te verifiëren of af te wijzen:</p>
+                        <a href="{$verifyUrl}?action=approve" style="display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;margin:5px;">
+                            ✓ Accepteren
+                        </a>
+                        <a href="{$verifyUrl}?action=reject" style="display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;border:2px solid #000000;margin:5px;">
+                            ✗ Weigeren
+                        </a>
+                    </div>
+HTML;
+        } else {
+            $actionButtons = <<<HTML
+                    <div style="margin-top:30px;text-align:center;">
+                        <a href="https://glamourschedule.nl/admin/businesses" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 30px;border-radius:8px;text-decoration:none;font-weight:600;">
+                            Bekijk in Admin Panel
+                        </a>
+                    </div>
+HTML;
+        }
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+                <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
+                    <div style="font-size:40px;margin-bottom:15px;">🏢</div>
+                    <h1 style="margin:0;font-size:24px;font-weight:700;">Nieuw Bedrijf Geregistreerd</h1>
+                    <p style="margin:10px 0 0;opacity:0.8;font-size:14px;">GlamourSchedule Admin Notificatie</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <div style="background:{$statusColor};color:#fff;padding:12px 24px;border-radius:50px;margin-bottom:30px;display:inline-block;font-weight:600;">
+                        {$verificationStatus}
+                    </div>
+
+                    <h2 style="margin:0 0 25px 0;color:#000000;font-size:28px;">{$businessData['name']}</h2>
+
+                    <table style="width:100%;border-collapse:collapse;background:#f9fafb;border-radius:12px;overflow:hidden;">
+                        <tr>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;width:140px;font-weight:500;">E-mail</td>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#111827;font-weight:600;">{$businessData['email']}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-weight:500;">KVK-nummer</td>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#111827;font-weight:600;">{$kvkDisplay}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:15px 20px;color:#6b7280;font-weight:500;">Status</td>
+                            <td style="padding:15px 20px;color:#111827;font-weight:600;">{$verificationStatus}</td>
+                        </tr>
+                    </table>
+
+                    {$actionButtons}
+                </td></tr>
+                <tr><td style="background:#000000;padding:25px;text-align:center;">
+                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Admin Portal</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            foreach ($adminEmails as $adminEmail) {
+                $mailer->send($adminEmail, $subject, $htmlBody);
+            }
+        } catch (\Exception $e) {
+            error_log("Failed to send admin notification email: " . $e->getMessage());
+        }
     }
 }

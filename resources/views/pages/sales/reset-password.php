@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Login - GlamourSchedule</title>
+    <title>Nieuw Wachtwoord - Sales Portal</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,7 +15,7 @@
             background: #000000;
             padding: 2rem;
         }
-        .login-card {
+        .card {
             background: #ffffff;
             border-radius: 20px;
             padding: 3rem;
@@ -23,21 +23,21 @@
             max-width: 420px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.25);
         }
-        .login-header {
+        .card-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        .login-header i {
+        .card-header i {
             font-size: 3rem;
             color: #333333;
             margin-bottom: 1rem;
         }
-        .login-header h1 {
+        .card-header h1 {
             margin: 0;
             font-size: 1.75rem;
             color: #1f2937;
         }
-        .login-header p {
+        .card-header p {
             margin: 0.5rem 0 0 0;
             color: #6b7280;
         }
@@ -79,24 +79,29 @@
             transform: translateY(-2px);
         }
         .alert-error {
-            background: #f5f5f5;
-            color: #000000;
+            background: #fef2f2;
+            color: #991b1b;
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1.5rem;
         }
-        .register-link {
+        .back-link {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e5e7eb;
         }
-        .register-link a {
+        .back-link a {
             color: #333333;
             text-decoration: none;
             font-weight: 500;
         }
-        /* Password Toggle */
+        .code-input {
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 0.5rem;
+            font-family: monospace;
+        }
         .password-wrapper {
             position: relative;
         }
@@ -120,28 +125,14 @@
         .password-wrapper .form-control {
             padding-right: 44px;
         }
-        .forgot-password-link {
-            text-align: center;
-            margin-top: 1.25rem;
-        }
-        .forgot-password-link a {
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .forgot-password-link a:hover {
-            color: #333333;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="login-header">
-            <i class="fas fa-chart-line"></i>
-            <h1>Sales Portal</h1>
-            <p>Log in op je sales dashboard</p>
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-lock"></i>
+            <h1>Nieuw Wachtwoord</h1>
+            <p>Voer de code in en kies een nieuw wachtwoord</p>
         </div>
 
         <?php if (isset($error)): ?>
@@ -150,43 +141,42 @@
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($_SESSION['flash'])): ?>
-            <div style="background:#ffffff;color:#000000;padding:1rem;border-radius:10px;margin-bottom:1.5rem">
-                <i class="fas fa-check-circle"></i> <?= htmlspecialchars($_SESSION['flash']['message']) ?>
-            </div>
-            <?php unset($_SESSION['flash']); ?>
-        <?php endif; ?>
-
-        <form method="POST" action="/sales/login">
+        <form method="POST" action="/sales/reset-password">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
+            <input type="hidden" name="email" value="<?= htmlspecialchars($email ?? '') ?>">
 
             <div class="form-group">
-                <label class="form-label">E-mailadres</label>
-                <input type="email" name="email" class="form-control" placeholder="jouw@email.nl" required autofocus>
+                <label class="form-label">Reset Code</label>
+                <input type="text" name="code" class="form-control code-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autofocus>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Wachtwoord</label>
+                <label class="form-label">Nieuw Wachtwoord</label>
                 <div class="password-wrapper">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Je wachtwoord" required>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Minimaal 8 karakters" minlength="8" required>
                     <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">Bevestig Wachtwoord</label>
+                <div class="password-wrapper">
+                    <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Herhaal wachtwoord" minlength="8" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="Wachtwoord tonen">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
             <button type="submit" class="btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Inloggen
+                <i class="fas fa-save"></i> Wachtwoord Opslaan
             </button>
         </form>
 
-        <div class="forgot-password-link">
-            <a href="/sales/forgot-password"><i class="fas fa-key"></i> Wachtwoord vergeten?</a>
-        </div>
-
-        <div class="register-link">
-            <p style="margin:0;color:#6b7280">Nog geen account?</p>
-            <a href="/sales/register">Word Sales Partner</a>
+        <div class="back-link">
+            <a href="/sales/login"><i class="fas fa-arrow-left"></i> Terug naar inloggen</a>
         </div>
     </div>
 

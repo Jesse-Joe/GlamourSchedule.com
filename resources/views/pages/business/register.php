@@ -595,13 +595,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-tags"></i> <?= $__('category') ?></label>
-                    <select name="category_id" class="form-control">
+                    <label><i class="fas fa-tags"></i> <?= $__('category') ?> *</label>
+                    <select name="category_id" class="form-control" required>
                         <option value=""><?= $__('select_category') ?></option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <?php if (isset($errors['category_id'])): ?>
+                        <span class="error-text"><?= htmlspecialchars($errors['category_id']) ?></span>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Locatie -->

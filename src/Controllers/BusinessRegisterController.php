@@ -559,6 +559,10 @@ GlamourSchedule
             $errors['terms'] = 'Je moet akkoord gaan met de algemene voorwaarden';
         }
 
+        if (empty($data['category_id']) || $data['category_id'] < 1) {
+            $errors['category_id'] = 'Selecteer een categorie';
+        }
+
         return $errors;
     }
 

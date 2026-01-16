@@ -496,4 +496,252 @@ class AdminController extends Controller
 
         return $this->redirect('/admin/sales-partners?success=deleted');
     }
+
+    // ============================================================
+    // BUSINESS VERIFICATION (from email link)
+    // ============================================================
+
+    public function showVerifyBusiness(string $token): string
+    {
+        // Find business by token
+        $stmt = $this->db->query(
+            "SELECT b.*, u.email as user_email FROM businesses b
+             LEFT JOIN users u ON b.user_id = u.id
+             WHERE b.admin_verification_token = ?",
+            [$token]
+        );
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business) {
+            return $this->view('pages/admin/verify-business-invalid', [
+                'pageTitle' => 'Ongeldige Link'
+            ]);
+        }
+
+        // Check if already verified or rejected
+        if (!empty($business['is_verified'])) {
+            return $this->view('pages/admin/verify-business-done', [
+                'pageTitle' => 'Al Geverifieerd',
+                'business' => $business,
+                'status' => 'approved'
+            ]);
+        }
+
+        if (!empty($business['rejected_at'])) {
+            return $this->view('pages/admin/verify-business-done', [
+                'pageTitle' => 'Al Afgewezen',
+                'business' => $business,
+                'status' => 'rejected'
+            ]);
+        }
+
+        $action = $_GET['action'] ?? 'view';
+
+        return $this->view('pages/admin/verify-business', [
+            'pageTitle' => 'Bedrijf Verifiëren',
+            'business' => $business,
+            'token' => $token,
+            'action' => $action,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function processVerifyBusiness(string $token): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->redirect("/admin/verify-business/{$token}?error=csrf");
+        }
+
+        // Find business by token
+        $stmt = $this->db->query(
+            "SELECT b.*, u.email as user_email FROM businesses b
+             LEFT JOIN users u ON b.user_id = u.id
+             WHERE b.admin_verification_token = ?",
+            [$token]
+        );
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business) {
+            return $this->view('pages/admin/verify-business-invalid', [
+                'pageTitle' => 'Ongeldige Link'
+            ]);
+        }
+
+        $action = $_POST['action'] ?? '';
+        $reason = trim($_POST['reason'] ?? '');
+
+        if ($action === 'approve') {
+            // Approve the business
+            $this->db->query(
+                "UPDATE businesses SET is_verified = 1, admin_verified_at = NOW(), admin_verification_token = NULL WHERE id = ?",
+                [$business['id']]
+            );
+
+            // Send approval email
+            $this->sendBusinessApprovalEmail($business);
+
+            return $this->view('pages/admin/verify-business-done', [
+                'pageTitle' => 'Bedrijf Geaccepteerd',
+                'business' => $business,
+                'status' => 'approved'
+            ]);
+
+        } elseif ($action === 'reject') {
+            if (empty($reason)) {
+                return $this->redirect("/admin/verify-business/{$token}?action=reject&error=reason_required");
+            }
+
+            // Reject the business
+            $this->db->query(
+                "UPDATE businesses SET rejected_at = NOW(), rejection_reason = ?, admin_verification_token = NULL WHERE id = ?",
+                [$reason, $business['id']]
+            );
+
+            // Send rejection email
+            $this->sendBusinessRejectionEmail($business, $reason);
+
+            return $this->view('pages/admin/verify-business-done', [
+                'pageTitle' => 'Bedrijf Afgewezen',
+                'business' => $business,
+                'status' => 'rejected',
+                'reason' => $reason
+            ]);
+        }
+
+        return $this->redirect("/admin/verify-business/{$token}");
+    }
+
+    private function sendBusinessApprovalEmail(array $business): void
+    {
+        $dashboardUrl = "https://glamourschedule.nl/business/dashboard";
+        $businessUrl = "https://glamourschedule.nl/business/{$business['slug']}";
+
+        $subject = "Goed nieuws! Je bedrijf is geverifieerd - {$business['name']}";
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+                <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
+                    <div style="width:80px;height:80px;background:#22c55e;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:40px;line-height:80px;">✓</span>
+                    </div>
+                    <h1 style="margin:0;font-size:28px;font-weight:700;">Account Geactiveerd!</h1>
+                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je bedrijf is succesvol geverifieerd</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$business['name']},</p>
+
+                    <p style="font-size:16px;color:#333;line-height:1.7;margin:0 0 25px;">
+                        Geweldig nieuws! Ons team heeft je bedrijfsregistratie beoordeeld en goedgekeurd.
+                        Je account is nu <strong>volledig actief</strong> en je kunt direct boekingen ontvangen van klanten.
+                    </p>
+
+                    <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:16px;padding:25px;margin-bottom:30px;">
+                        <h3 style="margin:0 0 15px;color:#166534;font-size:18px;">Wat kun je nu doen?</h3>
+                        <ul style="margin:0;padding-left:20px;color:#166534;line-height:1.8;">
+                            <li>Klanten kunnen nu bij je boeken</li>
+                            <li>Je bedrijfspagina is zichtbaar op GlamourSchedule</li>
+                            <li>Je ontvangt meldingen bij nieuwe boekingen</li>
+                        </ul>
+                    </div>
+
+                    <div style="text-align:center;margin:30px 0;">
+                        <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 50px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;margin:5px;">
+                            Naar Dashboard
+                        </a>
+                    </div>
+
+                    <p style="font-size:14px;color:#666;text-align:center;margin:20px 0 0;">
+                        Je bedrijfspagina: <a href="{$businessUrl}" style="color:#000000;font-weight:600;">{$businessUrl}</a>
+                    </p>
+                </td></tr>
+                <tr><td style="background:#000000;padding:25px;text-align:center;">
+                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($business['email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send business approval email: " . $e->getMessage());
+        }
+    }
+
+    private function sendBusinessRejectionEmail(array $business, string $reason): void
+    {
+        $contactUrl = "https://glamourschedule.nl/contact";
+        $registerUrl = "https://glamourschedule.nl/business/register";
+
+        $subject = "Je bedrijfsregistratie is helaas afgewezen - {$business['name']}";
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+                <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
+                    <div style="width:80px;height:80px;background:#ef4444;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:40px;line-height:80px;">✗</span>
+                    </div>
+                    <h1 style="margin:0;font-size:28px;font-weight:700;">Registratie Afgewezen</h1>
+                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je aanvraag kon helaas niet worden goedgekeurd</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$business['name']},</p>
+
+                    <p style="font-size:16px;color:#333;line-height:1.7;margin:0 0 25px;">
+                        Helaas moeten we je meedelen dat je bedrijfsregistratie is afgewezen na beoordeling door ons team.
+                    </p>
+
+                    <div style="background:#fef2f2;border:2px solid #ef4444;border-radius:16px;padding:25px;margin-bottom:30px;">
+                        <h3 style="margin:0 0 15px;color:#991b1b;font-size:16px;">Reden van afwijzing:</h3>
+                        <p style="margin:0;color:#991b1b;line-height:1.7;font-size:15px;">{$reason}</p>
+                    </div>
+
+                    <div style="background:#f9fafb;border-radius:16px;padding:25px;margin-bottom:30px;">
+                        <h3 style="margin:0 0 15px;color:#333;font-size:16px;">Wat kun je doen?</h3>
+                        <ul style="margin:0;padding-left:20px;color:#555;line-height:1.8;">
+                            <li>Controleer of je gegevens correct zijn</li>
+                            <li>Voeg een geldig KVK-nummer toe</li>
+                            <li>Registreer opnieuw met de juiste informatie</li>
+                            <li>Neem contact met ons op als je vragen hebt</li>
+                        </ul>
+                    </div>
+
+                    <div style="text-align:center;margin:30px 0;">
+                        <a href="{$registerUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;margin:5px;">
+                            Opnieuw Registreren
+                        </a>
+                        <a href="{$contactUrl}" style="display:inline-block;background:#ffffff;color:#000000;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;border:2px solid #000000;margin:5px;">
+                            Contact Opnemen
+                        </a>
+                    </div>
+                </td></tr>
+                <tr><td style="background:#000000;padding:25px;text-align:center;">
+                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($business['email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send business rejection email: " . $e->getMessage());
+        }
+    }
 }

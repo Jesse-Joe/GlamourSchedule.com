@@ -214,7 +214,27 @@ class AuthController extends Controller
         if (isset($_SESSION['user_id'])) {
             return $this->redirect('/dashboard');
         }
-        return $this->view('pages/auth/register', ['pageTitle' => 'Registreren']);
+
+        // Get categories for business registration tab
+        $categories = $this->getCategories();
+
+        return $this->view('pages/auth/register', [
+            'pageTitle' => 'Registreren',
+            'categories' => $categories
+        ]);
+    }
+
+    private function getCategories(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT c.*, ct.name as translated_name
+             FROM categories c
+             LEFT JOIN category_translations ct ON c.id = ct.category_id AND ct.language = ?
+             WHERE c.is_active = 1
+             ORDER BY c.sort_order",
+            [$this->lang]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function register(): string
