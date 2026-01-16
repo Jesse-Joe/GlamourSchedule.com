@@ -163,6 +163,15 @@ class Application
             $router->get('/business/pos/booking/status', 'BusinessDashboardController@posGetBookingStatus');
             $router->post('/business/pos/booking/status', 'BusinessDashboardController@posUpdateBookingStatus');
             $router->post('/business/pos/booking/cancel', 'BusinessDashboardController@posCancelBooking');
+
+            // Mollie Terminal / PIN Payments
+            $router->get('/business/terminals', 'MollieTerminalController@index');
+            $router->post('/business/terminals/link', 'MollieTerminalController@linkTerminal');
+            $router->post('/business/terminals/unlink', 'MollieTerminalController@unlinkTerminal');
+            $router->post('/business/terminals/payment', 'MollieTerminalController@createPayment');
+            $router->get('/business/terminals/payment/status', 'MollieTerminalController@checkPaymentStatus');
+            $router->post('/business/terminals/payment/cancel', 'MollieTerminalController@cancelPayment');
+            $router->get('/business/terminals/transactions', 'MollieTerminalController@getTransactions');
         });
 
         // Business page (after specific routes)
@@ -199,6 +208,7 @@ class Application
 
         // Payment webhooks
         $this->router->post('/api/webhooks/mollie', 'WebhookController@mollie');
+        $this->router->post('/api/webhooks/mollie-terminal', 'MollieTerminalController@webhook');
         
         // API endpoints
         $this->router->get('/api/translations/{lang}', 'ApiController@translations');

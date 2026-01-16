@@ -426,6 +426,9 @@
                 <a href="/business/pos" class="nav-item <?= $currentPath === '/business/pos' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#1e40af,#1d4ed8);color:white;border-radius:10px;margin-top:0.5rem">
                     <i class="fas fa-cash-register"></i> POS Systeem
                 </a>
+                <a href="/business/terminals" class="nav-item <?= $currentPath === '/business/terminals' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#059669,#047857);color:white;border-radius:10px;margin-top:0.5rem">
+                    <i class="fas fa-credit-card"></i> PIN Terminals
+                </a>
             </div>
 
             <div class="nav-section">
