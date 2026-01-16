@@ -22,6 +22,32 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
     <link rel="stylesheet" href="/css/prestige.css?v=<?= time() ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Critical Mobile Navigation CSS (inline to avoid caching issues) -->
+    <style>
+    @media (max-width: 768px) {
+        .nav-toggle {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+        }
+        .sidebar-overlay {
+            pointer-events: none;
+        }
+        .sidebar-overlay.active {
+            pointer-events: auto;
+        }
+    }
+    </style>
 </head>
 <body>
     <!-- Global Search Modal -->
