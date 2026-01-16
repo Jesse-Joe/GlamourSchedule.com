@@ -1,8 +1,8 @@
 /**
  * GlamourSchedule - Language Manager
- * 
+ *
  * Handles:
- * - Language detection from IP
+ * - Domain-aware language detection (.com = English, .nl = IP-based)
  * - Language selection and persistence
  * - Dynamic content translation
  */
@@ -10,43 +10,88 @@
 class LanguageManager {
     constructor() {
         this.STORAGE_KEY = 'glamour_language';
+        this.STORAGE_KEY_USER_CHOSEN = 'glamour_language_user_chosen';
         this.SUPPORTED_LANGUAGES = ['nl', 'en', 'de', 'fr'];
-        this.DEFAULT_LANGUAGE = 'nl';
-        
+
+        // Domain-based default: .com = English (international), .nl = Dutch
+        this.currentDomain = this.detectDomain();
+        this.DEFAULT_LANGUAGE = this.currentDomain === 'com' ? 'en' : 'nl';
+
         this.translations = {};
         this.currentLanguage = null;
-        
+        this.detectedCountry = null;
+
         this.init();
     }
-    
+
+    /**
+     * Detect current domain (.nl, .com, or localhost)
+     */
+    detectDomain() {
+        const host = window.location.hostname;
+        if (host.includes('glamourschedule.com')) return 'com';
+        if (host.includes('glamourschedule.nl')) return 'nl';
+        return 'localhost';
+    }
+
+    /**
+     * Check if we're on the international .com domain
+     */
+    isComDomain() {
+        return this.currentDomain === 'com';
+    }
+
+    /**
+     * Check if we're on the Dutch .nl domain
+     */
+    isNlDomain() {
+        return this.currentDomain === 'nl';
+    }
+
     async init() {
-        // Check for saved preference
+        // Check for explicit user choice first
         let language = localStorage.getItem(this.STORAGE_KEY);
-        
-        if (!language) {
-            // Try to detect from IP
-            language = await this.detectLanguageFromIP();
+        const userChosen = localStorage.getItem(this.STORAGE_KEY_USER_CHOSEN) === 'true';
+
+        if (language && userChosen) {
+            // User made an explicit choice - respect it
+            await this.setLanguage(language, false);
+            this.setupEventListeners();
+            return;
         }
-        
+
+        // For .com domain, always default to English unless user chose otherwise
+        if (this.isComDomain() && !userChosen) {
+            language = 'en';
+        } else if (!language) {
+            // For .nl or if no preference, use IP detection
+            const ipData = await this.detectCountryFromIP();
+            this.detectedCountry = ipData.country;
+            language = ipData.lang;
+        }
+
         if (!language) {
             // Try to detect from browser
             language = this.detectLanguageFromBrowser();
         }
-        
-        // Fallback to default
+
+        // Fallback to domain-based default
         if (!language || !this.SUPPORTED_LANGUAGES.includes(language)) {
             language = this.DEFAULT_LANGUAGE;
         }
-        
+
         await this.setLanguage(language, false);
         this.setupEventListeners();
     }
-    
-    async detectLanguageFromIP() {
+
+    /**
+     * Detect country and suggested language from IP
+     */
+    async detectCountryFromIP() {
         try {
-            const response = await fetch('http://ip-api.com/json/?fields=countryCode');
+            const response = await fetch('http://ip-api.com/json/?fields=countryCode,country');
             const data = await response.json();
-            
+
             const countryToLanguage = {
                 'NL': 'nl',
                 'BE': 'nl',
@@ -54,17 +99,31 @@ class LanguageManager {
                 'AT': 'de',
                 'CH': 'de',
                 'FR': 'fr',
+                'LU': 'fr',
                 'GB': 'en',
                 'US': 'en',
                 'CA': 'en',
-                'AU': 'en'
+                'AU': 'en',
+                'IE': 'en'
             };
-            
-            return countryToLanguage[data.countryCode] || null;
+
+            return {
+                country: data.countryCode || null,
+                countryName: data.country || null,
+                lang: countryToLanguage[data.countryCode] || 'en'
+            };
         } catch (error) {
-            console.warn('Could not detect language from IP:', error);
-            return null;
+            console.warn('Could not detect country from IP:', error);
+            return { country: null, countryName: null, lang: null };
         }
+    }
+
+    /**
+     * Legacy method for backwards compatibility
+     */
+    async detectLanguageFromIP() {
+        const data = await this.detectCountryFromIP();
+        return data.lang;
     }
     
     detectLanguageFromBrowser() {
@@ -89,31 +148,35 @@ class LanguageManager {
         }
     }
     
-    async setLanguage(language, save = true) {
+    async setLanguage(language, save = true, userChosen = false) {
         if (!this.SUPPORTED_LANGUAGES.includes(language)) {
             console.warn(`Language ${language} not supported`);
             return;
         }
-        
+
         this.currentLanguage = language;
         document.documentElement.setAttribute('lang', language);
-        
+
         if (save) {
             localStorage.setItem(this.STORAGE_KEY, language);
+            if (userChosen) {
+                // Mark that user explicitly chose this language
+                localStorage.setItem(this.STORAGE_KEY_USER_CHOSEN, 'true');
+            }
         }
-        
+
         // Load translations
         await this.loadTranslations(language);
-        
+
         // Update UI
         this.updateLanguageUI();
-        
+
         // Translate page
         this.translatePage();
-        
+
         // Dispatch event
-        window.dispatchEvent(new CustomEvent('languageChanged', { 
-            detail: { language } 
+        window.dispatchEvent(new CustomEvent('languageChanged', {
+            detail: { language, domain: this.currentDomain, userChosen }
         }));
     }
     
@@ -201,12 +264,36 @@ class LanguageManager {
     }
     
     setupEventListeners() {
-        // Language selector options
+        // Language selector options - mark as explicit user choice
         document.querySelectorAll('.language-selector__option').forEach(option => {
             option.addEventListener('click', () => {
-                this.setLanguage(option.dataset.lang);
+                this.setLanguage(option.dataset.lang, true, true);
             });
         });
+    }
+
+    /**
+     * Get URL to switch to a different domain
+     */
+    getSwitchDomainUrl(targetDomain) {
+        const protocol = window.location.protocol;
+        const path = window.location.pathname + window.location.search;
+        const baseDomain = targetDomain === 'nl' ? 'glamourschedule.nl' : 'glamourschedule.com';
+        return `${protocol}//${baseDomain}${path}`;
+    }
+
+    /**
+     * Get detected country code
+     */
+    getDetectedCountry() {
+        return this.detectedCountry;
+    }
+
+    /**
+     * Get current domain
+     */
+    getCurrentDomain() {
+        return this.currentDomain;
     }
 }
 

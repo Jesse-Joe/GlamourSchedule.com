@@ -152,6 +152,17 @@ class Application
             $router->post('/business/boost/activate', 'BusinessDashboardController@activateBoost');
             $router->post('/business/boost/extend', 'BusinessDashboardController@extendBoost');
             $router->get('/business/boost/complete', 'BusinessDashboardController@boostComplete');
+
+            // POS System (Digital POS)
+            $router->get('/business/pos', 'BusinessDashboardController@pos');
+            $router->post('/business/pos/customer', 'BusinessDashboardController@posAddCustomer');
+            $router->post('/business/pos/booking', 'BusinessDashboardController@posCreateBooking');
+            $router->post('/business/pos/send-payment-link', 'BusinessDashboardController@posSendPaymentLink');
+            $router->get('/business/pos/customers', 'BusinessDashboardController@posSearchCustomers');
+            $router->get('/business/pos/bookings', 'BusinessDashboardController@posGetBookings');
+            $router->get('/business/pos/booking/status', 'BusinessDashboardController@posGetBookingStatus');
+            $router->post('/business/pos/booking/status', 'BusinessDashboardController@posUpdateBookingStatus');
+            $router->post('/business/pos/booking/cancel', 'BusinessDashboardController@posCancelBooking');
         });
 
         // Business page (after specific routes)
@@ -170,6 +181,12 @@ class Application
         // Customer Reviews
         $this->router->get('/review/{uuid}', 'BookingController@showReview');
         $this->router->post('/review/{uuid}', 'BookingController@submitReview');
+
+        // POS Payment Links (public for customers)
+        $this->router->get('/pay/{uuid}', 'PosPaymentController@show');
+        $this->router->post('/pay/{uuid}', 'PosPaymentController@process');
+        $this->router->get('/pay/{uuid}/return', 'PosPaymentController@returnUrl');
+        $this->router->get('/pay/{uuid}/success', 'PosPaymentController@success');
 
         // Waitlist
         $this->router->post('/waitlist/{businessSlug}', 'BookingController@addToWaitlist');
@@ -239,6 +256,12 @@ class Application
         $this->router->post('/sales/send-referral-email', 'SalesController@sendReferralEmail');
         $this->router->get('/sales/guide', 'SalesController@guide');
 
+        // Sales password reset
+        $this->router->get('/sales/forgot-password', 'SalesController@showForgotPassword');
+        $this->router->post('/sales/forgot-password', 'SalesController@sendResetCode');
+        $this->router->get('/sales/reset-password', 'SalesController@showResetPassword');
+        $this->router->post('/sales/reset-password', 'SalesController@resetPassword');
+
         // Sales registration verification & payment
         $this->router->get('/sales/payment-complete', 'SalesController@paymentComplete');
         $this->router->get('/sales/verify-email', 'SalesController@showVerifyEmail');
@@ -252,6 +275,10 @@ class Application
         // Cron routes (protected by secret key)
         $this->router->get('/cron/trial-expiry', 'CronController@trialExpiry');
         $this->router->get('/cron/deactivate-expired', 'CronController@deactivateExpired');
+
+        // Admin business verification (public link from email)
+        $this->router->get('/admin/verify-business/{token}', 'AdminController@showVerifyBusiness');
+        $this->router->post('/admin/verify-business/{token}', 'AdminController@processVerifyBusiness');
 
         // Admin routes
         $this->router->get('/admin', 'AdminController@showLogin');

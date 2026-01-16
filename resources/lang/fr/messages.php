@@ -383,4 +383,17 @@ return [
     'make_appointment' => 'Prendre rendez-vous',
     'recent_appointments' => 'Rendez-vous récents',
     'view' => 'Voir',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // POPUP CHANGEMENT DE DOMAINE/LANGUE
+    // ═══════════════════════════════════════════════════════════════════════
+    'domain_popup_title' => 'Nous avons detecte que vous etes aux Pays-Bas',
+    'domain_popup_desc' => 'Souhaitez-vous acceder a notre site neerlandais pour du contenu et un support local ?',
+    'domain_popup_switch_nl' => 'Aller sur glamourschedule.nl',
+    'domain_popup_stay_en' => 'Rester sur le site anglais',
+    'domain_popup_title_int' => 'Vous cherchez le site anglais ?',
+    'domain_popup_desc_int' => 'Nous avons detecte que vous preferez peut-etre la version anglaise internationale de notre site.',
+    'domain_popup_switch_en' => 'Aller sur glamourschedule.com',
+    'domain_popup_stay_nl' => 'Rester sur le site neerlandais',
+    'domain_popup_note' => 'Vous pouvez toujours modifier votre preference linguistique dans le menu.',
 ];

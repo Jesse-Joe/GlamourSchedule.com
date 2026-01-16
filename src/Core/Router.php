@@ -8,6 +8,52 @@ class Router
     private ?string $subdomain = null;
     private array $mainDomains = ['glamourschedule.nl', 'glamourschedule.com', 'new.glamourschedule.nl', 'localhost'];
 
+    /**
+     * Get the current base domain (.nl, .com, or localhost)
+     */
+    public static function getCurrentDomain(): string
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = preg_replace('/:\d+$/', '', $host);
+
+        if (str_contains($host, 'glamourschedule.com')) {
+            return 'com';
+        }
+        if (str_contains($host, 'glamourschedule.nl')) {
+            return 'nl';
+        }
+        return 'localhost';
+    }
+
+    /**
+     * Check if current domain is .com (international/English)
+     */
+    public static function isComDomain(): bool
+    {
+        return self::getCurrentDomain() === 'com';
+    }
+
+    /**
+     * Check if current domain is .nl (Dutch)
+     */
+    public static function isNlDomain(): bool
+    {
+        return self::getCurrentDomain() === 'nl';
+    }
+
+    /**
+     * Get the URL to switch domains (keeping current path)
+     */
+    public static function getSwitchDomainUrl(string $targetDomain): string
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+
+        $baseDomain = $targetDomain === 'nl' ? 'glamourschedule.nl' : 'glamourschedule.com';
+
+        return "{$protocol}://{$baseDomain}{$uri}";
+    }
+
     public function get(string $path, string $action): void
     {
         $this->addRoute('GET', $path, $action);

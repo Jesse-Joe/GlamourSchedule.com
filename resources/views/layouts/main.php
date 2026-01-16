@@ -4,7 +4,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
 $isBusiness = isset($_SESSION['business_id']);
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 ?>
-<html lang="<?= $lang ?? 'nl' ?>">
+<html lang="<?= $lang ?? 'nl' ?>" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -454,9 +454,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         // Initialize theme on page load
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+            document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeToggleText(savedTheme);
         })();
     </script>
@@ -632,5 +630,121 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         }
     });
     </script>
+
+    <!-- Domain/Language Switch Popup -->
+    <?php if (isset($domainSwitchPopup) && $domainSwitchPopup && $domainSwitchPopup['show']): ?>
+    <div id="domainSwitchPopup" class="domain-switch-popup">
+        <div class="domain-switch-overlay" onclick="dismissDomainPopup()"></div>
+        <div class="domain-switch-modal">
+            <button class="domain-switch-close" onclick="dismissDomainPopup()">&times;</button>
+            <div class="domain-switch-content">
+                <?php
+                $countryFlags = ['NL' => '????????', 'BE' => '????????', 'DE' => '????????', 'FR' => '????????', 'GB' => '????????', 'US' => '????????'];
+                $countryNames = [
+                    'NL' => ['nl' => 'Nederland', 'en' => 'Netherlands', 'de' => 'Niederlande', 'fr' => 'Pays-Bas'],
+                    'BE' => ['nl' => 'Belgie', 'en' => 'Belgium', 'de' => 'Belgien', 'fr' => 'Belgique'],
+                    'DE' => ['nl' => 'Duitsland', 'en' => 'Germany', 'de' => 'Deutschland', 'fr' => 'Allemagne'],
+                    'FR' => ['nl' => 'Frankrijk', 'en' => 'France', 'de' => 'Frankreich', 'fr' => 'France'],
+                    'GB' => ['nl' => 'Verenigd Koninkrijk', 'en' => 'United Kingdom', 'de' => 'Vereinigtes Konigreich', 'fr' => 'Royaume-Uni'],
+                    'US' => ['nl' => 'Verenigde Staten', 'en' => 'United States', 'de' => 'Vereinigte Staaten', 'fr' => 'Etats-Unis'],
+                ];
+                $detectedCountry = $domainSwitchPopup['detected_country'];
+                $flag = $countryFlags[$detectedCountry] ?? '';
+                $countryName = $countryNames[$detectedCountry][$lang] ?? $detectedCountry;
+                ?>
+
+                <div class="domain-switch-icon">
+                    <span class="domain-switch-flag"><?= $flag ?></span>
+                </div>
+
+                <?php if ($domainSwitchPopup['current_domain'] === 'com' && $domainSwitchPopup['suggested_domain'] === 'nl'): ?>
+                    <!-- User on .com detected in NL/BE - suggest Dutch site -->
+                    <h2 data-i18n="domain_popup_title"><?= $translations['domain_popup_title'] ?? 'We detected you\'re in ' . $countryName ?></h2>
+                    <p data-i18n="domain_popup_desc"><?= $translations['domain_popup_desc'] ?? 'Would you like to switch to our Dutch website for content in your language?' ?></p>
+
+                    <div class="domain-switch-buttons">
+                        <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=nl" class="domain-switch-btn domain-switch-btn-primary">
+                            <span>????????</span> <?= $translations['domain_popup_switch_nl'] ?? 'Go to glamourschedule.nl' ?>
+                        </a>
+                        <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
+                            <span>????????</span> <?= $translations['domain_popup_stay_en'] ?? 'Stay on English site' ?>
+                        </button>
+                    </div>
+
+                <?php elseif ($domainSwitchPopup['current_domain'] === 'nl' && $domainSwitchPopup['suggested_domain'] === 'com'): ?>
+                    <!-- User on .nl detected outside NL/BE - suggest international site -->
+                    <h2><?= $translations['domain_popup_title_int'] ?? 'Looking for the English site?' ?></h2>
+                    <p><?= $translations['domain_popup_desc_int'] ?? 'We detected you might prefer the international English version of our website.' ?></p>
+
+                    <div class="domain-switch-buttons">
+                        <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=en" class="domain-switch-btn domain-switch-btn-primary">
+                            <span>????????</span> <?= $translations['domain_popup_switch_en'] ?? 'Go to glamourschedule.com' ?>
+                        </a>
+                        <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
+                            <span>????????</span> <?= $translations['domain_popup_stay_nl'] ?? 'Blijf op Nederlandse site' ?>
+                        </button>
+                    </div>
+                <?php endif; ?>
+
+                <p class="domain-switch-note"><?= $translations['domain_popup_note'] ?? 'You can always change your language preference in the menu.' ?></p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .domain-switch-popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; }
+    .domain-switch-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+    .domain-switch-modal { position: relative; background: linear-gradient(180deg, #111 0%, #000 100%); border: 1px solid #333; border-radius: 24px; padding: 2.5rem; max-width: 440px; width: 90%; animation: domainSlide 0.4s ease; }
+    @keyframes domainSlide { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .domain-switch-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #666; font-size: 1.75rem; cursor: pointer; line-height: 1; transition: color 0.2s; padding: 0.5rem; }
+    .domain-switch-close:hover { color: #fff; }
+    .domain-switch-content { text-align: center; }
+    .domain-switch-icon { margin-bottom: 1.5rem; }
+    .domain-switch-flag { font-size: 4rem; line-height: 1; }
+    .domain-switch-content h2 { color: #fff; font-size: 1.4rem; margin: 0 0 0.75rem; font-weight: 600; }
+    .domain-switch-content > p { color: rgba(255,255,255,0.7); margin: 0 0 1.75rem; font-size: 0.95rem; line-height: 1.5; }
+    .domain-switch-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .domain-switch-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem 1.25rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
+    .domain-switch-btn span { font-size: 1.25rem; }
+    .domain-switch-btn-primary { background: #fff; color: #000; }
+    .domain-switch-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
+    .domain-switch-btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
+    .domain-switch-btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: #666; }
+    .domain-switch-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0; }
+    @media (max-width: 480px) {
+        .domain-switch-modal { padding: 2rem 1.5rem; }
+        .domain-switch-flag { font-size: 3rem; }
+        .domain-switch-content h2 { font-size: 1.2rem; }
+    }
+    </style>
+
+    <script>
+    function dismissDomainPopup() {
+        document.getElementById('domainSwitchPopup').style.display = 'none';
+        // Set cookie to not show again for 30 days
+        document.cookie = 'domain_popup_dismissed=1;max-age=' + (30 * 24 * 60 * 60) + ';path=/';
+    }
+
+    function stayOnCurrentDomain() {
+        // Mark user's explicit choice to stay
+        document.cookie = 'lang_user_chosen=1;max-age=' + (365 * 24 * 60 * 60) + ';path=/';
+        dismissDomainPopup();
+    }
+
+    // Show popup after a short delay
+    setTimeout(function() {
+        const popup = document.getElementById('domainSwitchPopup');
+        if (popup) popup.style.display = 'flex';
+    }, 2000);
+
+    // Close on escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const popup = document.getElementById('domainSwitchPopup');
+            if (popup && popup.style.display !== 'none') dismissDomainPopup();
+        }
+    });
+    </script>
+    <?php endif; ?>
 </body>
 </html>

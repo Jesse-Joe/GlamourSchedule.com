@@ -28,13 +28,68 @@ class BusinessDashboardController extends Controller
         $todayBookings = $this->getTodayBookings();
         $recentBookings = $this->getRecentBookings();
 
+        // Check if this is a new registration
+        $isNewRegistration = isset($_SESSION['new_business_registration']) && $_SESSION['new_business_registration'] === true;
+
+        // Clear the flag after reading (only show popup once)
+        if ($isNewRegistration) {
+            unset($_SESSION['new_business_registration']);
+        }
+
+        // Check profile completion
+        $profileCompletion = $this->getProfileCompletion();
+
         return $this->view('pages/business/dashboard/index', [
             'pageTitle' => 'Bedrijf Dashboard',
             'business' => $this->business,
             'stats' => $stats,
             'todayBookings' => $todayBookings,
-            'recentBookings' => $recentBookings
+            'recentBookings' => $recentBookings,
+            'isNewRegistration' => $isNewRegistration,
+            'profileCompletion' => $profileCompletion
         ]);
+    }
+
+    private function getProfileCompletion(): array
+    {
+        $items = [];
+        $completed = 0;
+        $total = 5;
+
+        // Check services
+        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM services WHERE business_id = ?", [$this->business['id']]);
+        $hasServices = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'] > 0;
+        $items['services'] = ['label' => 'Diensten toevoegen', 'done' => $hasServices, 'url' => '/business/services'];
+        if ($hasServices) $completed++;
+
+        // Check business hours
+        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM business_hours WHERE business_id = ? AND is_closed = 0", [$this->business['id']]);
+        $hasHours = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'] > 0;
+        $items['hours'] = ['label' => 'Openingstijden instellen', 'done' => $hasHours, 'url' => '/business/profile'];
+        if ($hasHours) $completed++;
+
+        // Check photos
+        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM business_photos WHERE business_id = ?", [$this->business['id']]);
+        $hasPhotos = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'] > 0;
+        $items['photos'] = ['label' => "Foto's uploaden", 'done' => $hasPhotos, 'url' => '/business/photos'];
+        if ($hasPhotos) $completed++;
+
+        // Check description
+        $hasDescription = !empty($this->business['description']) && strlen($this->business['description']) > 20;
+        $items['description'] = ['label' => 'Beschrijving toevoegen', 'done' => $hasDescription, 'url' => '/business/profile'];
+        if ($hasDescription) $completed++;
+
+        // Check IBAN for payouts
+        $hasIban = !empty($this->business['iban']) || !empty($this->business['iban_verified']);
+        $items['iban'] = ['label' => 'Bankrekening koppelen', 'done' => $hasIban, 'url' => '/business/payouts'];
+        if ($hasIban) $completed++;
+
+        return [
+            'items' => $items,
+            'completed' => $completed,
+            'total' => $total,
+            'percentage' => round(($completed / $total) * 100)
+        ];
     }
 
     public function bookings(): string
@@ -1900,5 +1955,686 @@ HTML;
             "UPDATE businesses SET employee_count = ? WHERE id = ?",
             [$count, $this->business['id']]
         );
+    }
+
+    // ============================================================
+    // POS SYSTEM
+    // ============================================================
+
+    /**
+     * POS hoofdpagina
+     */
+    public function pos(): string
+    {
+        $services = $this->getServices();
+        $employees = [];
+
+        // Get employees if BV
+        if (($this->business['business_type'] ?? 'eenmanszaak') === 'bv') {
+            $stmt = $this->db->query(
+                "SELECT * FROM employees WHERE business_id = ? AND is_active = 1 ORDER BY name",
+                [$this->business['id']]
+            );
+            $employees = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        // Get today's POS bookings
+        $stmt = $this->db->query(
+            "SELECT pb.*, s.name as service_name, e.name as employee_name
+             FROM pos_bookings pb
+             LEFT JOIN services s ON pb.service_id = s.id
+             LEFT JOIN employees e ON pb.employee_id = e.id
+             WHERE pb.business_id = ? AND pb.appointment_date = CURDATE()
+             ORDER BY pb.appointment_time",
+            [$this->business['id']]
+        );
+        $todayBookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Get recent customers
+        $stmt = $this->db->query(
+            "SELECT * FROM pos_customers WHERE business_id = ? ORDER BY last_appointment_at DESC LIMIT 10",
+            [$this->business['id']]
+        );
+        $recentCustomers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Get business hours for today
+        $dayOfWeek = date('w');
+        $stmt = $this->db->query(
+            "SELECT * FROM business_hours WHERE business_id = ? AND day_of_week = ?",
+            [$this->business['id'], $dayOfWeek]
+        );
+        $todayHours = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $this->view('pages/business/dashboard/pos', [
+            'pageTitle' => 'POS Systeem',
+            'business' => $this->business,
+            'services' => $services,
+            'employees' => $employees,
+            'todayBookings' => $todayBookings,
+            'recentCustomers' => $recentCustomers,
+            'todayHours' => $todayHours,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Voeg een klant toe
+     */
+    public function posAddCustomer(): string
+    {
+        header('Content-Type: application/json');
+
+        if (!$this->verifyCsrf()) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige sessie']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $name = trim($input['name'] ?? '');
+        $email = filter_var($input['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: null;
+        $phone = trim($input['phone'] ?? '') ?: null;
+        $notes = trim($input['notes'] ?? '') ?: null;
+
+        if (empty($name)) {
+            return json_encode(['success' => false, 'error' => 'Naam is verplicht']);
+        }
+
+        // Check if customer already exists (by email or phone)
+        if ($email) {
+            $stmt = $this->db->query(
+                "SELECT id FROM pos_customers WHERE business_id = ? AND email = ?",
+                [$this->business['id'], $email]
+            );
+            if ($stmt->fetch()) {
+                return json_encode(['success' => false, 'error' => 'Klant met dit e-mailadres bestaat al']);
+            }
+        }
+
+        $this->db->query(
+            "INSERT INTO pos_customers (business_id, name, email, phone, notes) VALUES (?, ?, ?, ?, ?)",
+            [$this->business['id'], $name, $email, $phone, $notes]
+        );
+
+        $customerId = $this->db->lastInsertId();
+
+        return json_encode([
+            'success' => true,
+            'customer' => [
+                'id' => $customerId,
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone
+            ]
+        ]);
+    }
+
+    /**
+     * Zoek klanten
+     */
+    public function posSearchCustomers(): string
+    {
+        header('Content-Type: application/json');
+
+        $query = trim($_GET['q'] ?? '');
+
+        if (strlen($query) < 2) {
+            return json_encode(['customers' => []]);
+        }
+
+        $stmt = $this->db->query(
+            "SELECT * FROM pos_customers
+             WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)
+             ORDER BY name LIMIT 10",
+            [$this->business['id'], "%$query%", "%$query%", "%$query%"]
+        );
+        $customers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return json_encode(['customers' => $customers]);
+    }
+
+    /**
+     * Maak een POS boeking aan
+     */
+    public function posCreateBooking(): string
+    {
+        header('Content-Type: application/json');
+
+        if (!$this->verifyCsrf()) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige sessie']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        // Validate required fields
+        $serviceId = (int)($input['service_id'] ?? 0);
+        $customerName = trim($input['customer_name'] ?? '');
+        $appointmentDate = $input['appointment_date'] ?? '';
+        $appointmentTime = $input['appointment_time'] ?? '';
+        $paymentMethod = $input['payment_method'] ?? 'online';
+
+        if (!$serviceId || !$customerName || !$appointmentDate || !$appointmentTime) {
+            return json_encode(['success' => false, 'error' => 'Vul alle verplichte velden in']);
+        }
+
+        // Get service details
+        $stmt = $this->db->query(
+            "SELECT * FROM services WHERE id = ? AND business_id = ?",
+            [$serviceId, $this->business['id']]
+        );
+        $service = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$service) {
+            return json_encode(['success' => false, 'error' => 'Dienst niet gevonden']);
+        }
+
+        // Calculate prices
+        $servicePrice = (float)$service['price'];
+        $serviceFee = 1.75; // Platform fee that customer pays online
+
+        // For cash: customer pays €1.75 online, rest at appointment
+        // For online: customer pays full amount online
+        $totalPrice = $servicePrice;
+
+        // Generate UUID
+        $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+
+        // Customer details
+        $customerId = !empty($input['customer_id']) ? (int)$input['customer_id'] : null;
+        $customerEmail = filter_var($input['customer_email'] ?? '', FILTER_VALIDATE_EMAIL) ?: null;
+        $customerPhone = trim($input['customer_phone'] ?? '') ?: null;
+        $employeeId = !empty($input['employee_id']) ? (int)$input['employee_id'] : null;
+        $notes = trim($input['notes'] ?? '') ?: null;
+
+        // Create booking
+        $this->db->query(
+            "INSERT INTO pos_bookings (uuid, business_id, customer_id, service_id, employee_id,
+             customer_name, customer_email, customer_phone, appointment_date, appointment_time,
+             duration_minutes, total_price, service_fee, payment_method, notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                $uuid, $this->business['id'], $customerId, $serviceId, $employeeId,
+                $customerName, $customerEmail, $customerPhone, $appointmentDate, $appointmentTime,
+                $service['duration_minutes'], $totalPrice, $serviceFee, $paymentMethod, $notes
+            ]
+        );
+
+        $bookingId = $this->db->lastInsertId();
+
+        // Update customer if exists
+        if ($customerId) {
+            $this->db->query(
+                "UPDATE pos_customers SET total_appointments = total_appointments + 1, last_appointment_at = NOW() WHERE id = ?",
+                [$customerId]
+            );
+        }
+
+        // Generate payment link
+        $paymentLink = 'https://glamourschedule.nl/pay/' . $uuid;
+
+        $this->db->query(
+            "UPDATE pos_bookings SET payment_link = ? WHERE id = ?",
+            [$paymentLink, $bookingId]
+        );
+
+        return json_encode([
+            'success' => true,
+            'booking' => [
+                'id' => $bookingId,
+                'uuid' => $uuid,
+                'payment_link' => $paymentLink,
+                'service_name' => $service['name'],
+                'customer_name' => $customerName,
+                'date' => date('d-m-Y', strtotime($appointmentDate)),
+                'time' => $appointmentTime,
+                'total_price' => number_format($totalPrice, 2, ',', '.'),
+                'payment_method' => $paymentMethod,
+                'online_amount' => $paymentMethod === 'cash' ? number_format($serviceFee, 2, ',', '.') : number_format($totalPrice, 2, ',', '.')
+            ]
+        ]);
+    }
+
+    /**
+     * Verstuur betalingslink naar klant
+     */
+    public function posSendPaymentLink(): string
+    {
+        header('Content-Type: application/json');
+
+        if (!$this->verifyCsrf()) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige sessie']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $bookingUuid = $input['uuid'] ?? '';
+
+        if (empty($bookingUuid)) {
+            return json_encode(['success' => false, 'error' => 'Boeking niet gevonden']);
+        }
+
+        // Get booking
+        $stmt = $this->db->query(
+            "SELECT pb.*, s.name as service_name, b.company_name, b.email as business_email
+             FROM pos_bookings pb
+             JOIN services s ON pb.service_id = s.id
+             JOIN businesses b ON pb.business_id = b.id
+             WHERE pb.uuid = ? AND pb.business_id = ?",
+            [$bookingUuid, $this->business['id']]
+        );
+        $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$booking) {
+            return json_encode(['success' => false, 'error' => 'Boeking niet gevonden']);
+        }
+
+        if (empty($booking['customer_email'])) {
+            return json_encode(['success' => false, 'error' => 'Geen e-mailadres ingevuld voor deze klant']);
+        }
+
+        // Send payment link email
+        $this->sendPosPaymentLinkEmail($booking);
+
+        // Update sent timestamp
+        $this->db->query(
+            "UPDATE pos_bookings SET payment_link_sent_at = NOW() WHERE uuid = ?",
+            [$bookingUuid]
+        );
+
+        return json_encode([
+            'success' => true,
+            'message' => 'Betalingslink verzonden naar ' . $booking['customer_email']
+        ]);
+    }
+
+    /**
+     * Verstuur betalingslink email
+     */
+    private function sendPosPaymentLinkEmail(array $booking): void
+    {
+        $paymentAmount = $booking['payment_method'] === 'cash'
+            ? number_format($booking['service_fee'], 2, ',', '.')
+            : number_format($booking['total_price'], 2, ',', '.');
+
+        $totalAmount = number_format($booking['total_price'], 2, ',', '.');
+        $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
+        $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+
+        $cashNote = $booking['payment_method'] === 'cash'
+            ? "<p style='color:#666;font-size:14px;margin-top:15px;'><strong>Let op:</strong> Je betaalt €{$paymentAmount} online (reserveringskosten). Het resterende bedrag van €" . number_format($booking['total_price'] - $booking['service_fee'], 2, ',', '.') . " betaal je contant bij je afspraak.</p>"
+            : "";
+
+        $subject = "Bevestig je afspraak bij {$booking['company_name']}";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#000000,#333333);padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">📅</div>
+                            <h1 style="margin:0;font-size:24px;">Afspraak Bevestigen</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="color:#555;line-height:1.6;">
+                                {$booking['company_name']} heeft een afspraak voor je ingepland. Bevestig je afspraak door te betalen.
+                            </p>
+
+                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
+                                <p style="margin:0 0 10px;color:#333;"><strong>Dienst:</strong> {$booking['service_name']}</p>
+                                <p style="margin:0 0 10px;color:#333;"><strong>Datum:</strong> {$appointmentDate}</p>
+                                <p style="margin:0 0 10px;color:#333;"><strong>Tijd:</strong> {$appointmentTime}</p>
+                                <p style="margin:0;color:#333;"><strong>Totaal:</strong> €{$totalAmount}</p>
+                            </div>
+
+                            {$cashNote}
+
+                            <div style="text-align:center;margin:30px 0;">
+                                <a href="{$booking['payment_link']}" style="display:inline-block;background:#000000;color:#fff;padding:16px 40px;border-radius:30px;text-decoration:none;font-weight:600;font-size:16px;">
+                                    Betaal €{$paymentAmount}
+                                </a>
+                            </div>
+
+                            <p style="color:#999;font-size:13px;text-align:center;">
+                                Deze link is 48 uur geldig.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($booking['customer_email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send POS payment link email: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Haal POS boekingen op
+     */
+    public function posGetBookings(): string
+    {
+        header('Content-Type: application/json');
+
+        $date = $_GET['date'] ?? date('Y-m-d');
+
+        $stmt = $this->db->query(
+            "SELECT pb.*, s.name as service_name, e.name as employee_name
+             FROM pos_bookings pb
+             LEFT JOIN services s ON pb.service_id = s.id
+             LEFT JOIN employees e ON pb.employee_id = e.id
+             WHERE pb.business_id = ? AND pb.appointment_date = ?
+             ORDER BY pb.appointment_time",
+            [$this->business['id'], $date]
+        );
+        $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return json_encode(['bookings' => $bookings]);
+    }
+
+    /**
+     * Update booking status
+     */
+    /**
+     * Get POS booking status (for real-time polling)
+     */
+    public function posGetBookingStatus(): string
+    {
+        header('Content-Type: application/json');
+
+        $uuid = $_GET['uuid'] ?? '';
+
+        if (empty($uuid)) {
+            return json_encode(['success' => false, 'error' => 'UUID required']);
+        }
+
+        $stmt = $this->db->query(
+            "SELECT uuid, payment_status, booking_status, paid_at FROM pos_bookings WHERE uuid = ? AND business_id = ?",
+            [$uuid, $this->business['id']]
+        );
+        $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$booking) {
+            return json_encode(['success' => false, 'error' => 'Boeking niet gevonden']);
+        }
+
+        return json_encode([
+            'success' => true,
+            'uuid' => $booking['uuid'],
+            'payment_status' => $booking['payment_status'],
+            'booking_status' => $booking['booking_status'],
+            'paid_at' => $booking['paid_at']
+        ]);
+    }
+
+    public function posUpdateBookingStatus(): string
+    {
+        header('Content-Type: application/json');
+
+        if (!$this->verifyCsrf()) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige sessie']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $uuid = $input['uuid'] ?? '';
+        $status = $input['status'] ?? '';
+
+        $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled', 'no_show'];
+        if (!in_array($status, $validStatuses)) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige status']);
+        }
+
+        $this->db->query(
+            "UPDATE pos_bookings SET booking_status = ? WHERE uuid = ? AND business_id = ?",
+            [$status, $uuid, $this->business['id']]
+        );
+
+        return json_encode(['success' => true]);
+    }
+
+    /**
+     * Annuleer POS boeking en refund betaling
+     */
+    public function posCancelBooking(): string
+    {
+        header('Content-Type: application/json');
+
+        if (!$this->verifyCsrf()) {
+            return json_encode(['success' => false, 'error' => 'Ongeldige sessie']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $uuid = $input['uuid'] ?? '';
+
+        // Get booking details
+        $stmt = $this->db->query(
+            "SELECT * FROM pos_bookings WHERE uuid = ? AND business_id = ?",
+            [$uuid, $this->business['id']]
+        );
+        $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$booking) {
+            return json_encode(['success' => false, 'error' => 'Boeking niet gevonden']);
+        }
+
+        // Process refund if payment was made
+        $refundSuccess = false;
+        $refundError = null;
+
+        if ($booking['payment_status'] === 'paid' && !empty($booking['mollie_payment_id'])) {
+            $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+
+            if (!empty($mollieApiKey)) {
+                try {
+                    $mollie = new \Mollie\Api\MollieApiClient();
+                    $mollie->setApiKey($mollieApiKey);
+
+                    // Get the payment
+                    $payment = $mollie->payments->get($booking['mollie_payment_id']);
+
+                    // Check if payment can be refunded
+                    if ($payment->canBeRefunded() && $payment->amountRemaining->value > 0) {
+                        // Create refund for the full amount
+                        $refund = $payment->refund([
+                            'amount' => [
+                                'currency' => 'EUR',
+                                'value' => $payment->amountRemaining->value
+                            ],
+                            'description' => 'Afspraak geannuleerd - GlamourSchedule'
+                        ]);
+
+                        $refundSuccess = true;
+
+                        // Update payment status
+                        $this->db->query(
+                            "UPDATE pos_bookings SET payment_status = 'refunded' WHERE uuid = ?",
+                            [$uuid]
+                        );
+
+                        // Send refund notification email
+                        $this->sendPosRefundEmail($booking);
+
+                    } elseif ($payment->canBePartiallyRefunded()) {
+                        // Try partial refund
+                        $refund = $payment->refund([
+                            'description' => 'Afspraak geannuleerd - GlamourSchedule'
+                        ]);
+                        $refundSuccess = true;
+
+                        $this->db->query(
+                            "UPDATE pos_bookings SET payment_status = 'refunded' WHERE uuid = ?",
+                            [$uuid]
+                        );
+
+                        $this->sendPosRefundEmail($booking);
+                    } else {
+                        $refundError = 'Betaling kan niet worden teruggestort. Neem contact op met de klant.';
+                    }
+
+                } catch (\Exception $e) {
+                    error_log("POS Refund error: " . $e->getMessage());
+                    $refundError = 'Refund mislukt: ' . $e->getMessage();
+                }
+            }
+        }
+
+        // Update booking status
+        $this->db->query(
+            "UPDATE pos_bookings SET booking_status = 'cancelled' WHERE uuid = ?",
+            [$uuid]
+        );
+
+        // Send cancellation email to customer
+        $this->sendPosCancellationEmail($booking);
+
+        $response = ['success' => true];
+        if ($refundSuccess) {
+            $response['message'] = 'Afspraak geannuleerd en betaling wordt teruggestort.';
+        } elseif ($refundError) {
+            $response['warning'] = $refundError;
+        }
+
+        return json_encode($response);
+    }
+
+    /**
+     * Send refund notification email
+     */
+    private function sendPosRefundEmail(array $booking): void
+    {
+        if (empty($booking['customer_email'])) return;
+
+        $subject = "Terugbetaling - Je afspraak is geannuleerd";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                    <tr>
+                        <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">💸</div>
+                            <h1 style="margin:0;font-size:24px;">Terugbetaling Onderweg</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="color:#555;line-height:1.6;">
+                                Je afspraak is geannuleerd en je betaling wordt teruggestort naar je rekening.
+                            </p>
+
+                            <div style="background:#f0fdf4;border-radius:12px;padding:20px;margin:25px 0;border:1px solid #86efac;">
+                                <p style="margin:0;color:#166534;">
+                                    <strong>Let op:</strong> Het terugstorten kan 3-5 werkdagen duren, afhankelijk van je bank.
+                                </p>
+                            </div>
+
+                            <p style="color:#555;">
+                                Excuses voor het ongemak. We hopen je snel weer te zien!
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($booking['customer_email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send POS refund email: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send cancellation email to customer
+     */
+    private function sendPosCancellationEmail(array $booking): void
+    {
+        if (empty($booking['customer_email'])) return;
+
+        $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
+        $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+
+        $subject = "Afspraak Geannuleerd";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                    <tr>
+                        <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">❌</div>
+                            <h1 style="margin:0;font-size:24px;">Afspraak Geannuleerd</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="color:#555;line-height:1.6;">
+                                Je afspraak op <strong>{$appointmentDate}</strong> om <strong>{$appointmentTime}</strong> is geannuleerd.
+                            </p>
+
+                            <p style="color:#555;line-height:1.6;margin-top:20px;">
+                                Excuses voor het ongemak. Neem gerust contact op als je vragen hebt of een nieuwe afspraak wilt maken.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($booking['customer_email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send POS cancellation email: " . $e->getMessage());
+        }
     }
 }
