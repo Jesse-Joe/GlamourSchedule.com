@@ -2,8 +2,8 @@
 
 <!-- Hero Section with Integrated Search -->
 <section class="hero-prestige">
-    <div class="hero-tag"><?= $translations['hero_badge'] ?? 'Premium Beauty Platform' ?></div>
-    <h1><?= $translations['hero_title'] ?? 'Beauty' ?> <span><?= $translations['hero_highlight'] ?? 'Elevated' ?></span></h1>
+    <div class="hero-tag"><?= $translations['hero_badge'] ?? 'Premium Booking Platform' ?></div>
+    <h1><?= $translations['hero_title'] ?? 'Boek jouw perfecte afspraak' ?></h1>
     <div class="hero-divider"></div>
     <p><?= $translations['hero_subtitle'] ?? 'Ontdek de beste salons en boek direct online. Premium service, altijd de beste prijs.' ?></p>
 
@@ -36,6 +36,322 @@
         <div class="stat-label"><?= $translations['stats_customers'] ?? 'Tevreden Klanten' ?></div>
     </div>
 </div>
+
+<!-- Boosted Businesses (Paid Promotion) - Now above categories -->
+<section class="section section-boosted">
+    <style>
+        .section-boosted {
+            background: var(--black, #000000);
+            position: relative;
+            overflow: hidden;
+        }
+        .section-boosted::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        [data-theme="light"] .section-boosted::before {
+            opacity: 0.1;
+        }
+        .section-boosted .section-header {
+            position: relative;
+            z-index: 1;
+        }
+        .section-boosted .section-tag {
+            background: var(--white, #ffffff);
+            color: var(--black, #000000);
+        }
+        .section-boosted .section-title {
+            color: var(--white, #ffffff);
+        }
+        .section-boosted .section-subtitle {
+            color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+        }
+        .boosted-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        @media (max-width: 992px) {
+            .boosted-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .boosted-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .boosted-card {
+            background: var(--card-bg, #111111);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--border, #333333);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        .boosted-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary, #ffffff);
+        }
+        .boosted-card-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--charcoal, #1a1a1a), var(--graphite, #333333));
+            position: relative;
+            overflow: hidden;
+        }
+        .boosted-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .boosted-card-image .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .boosted-card-image .placeholder i {
+            font-size: 3rem;
+            color: var(--text-muted, #ffffff);
+            opacity: 0.3;
+        }
+        .boosted-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--white, #ffffff);
+            color: var(--black, #000000);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .boosted-badge i {
+            font-size: 0.8rem;
+        }
+        .boosted-card-body {
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .boosted-card-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            color: var(--text-primary, #ffffff);
+        }
+        .boosted-card-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        .boosted-card-location i {
+            color: var(--text-primary, #ffffff);
+        }
+        .boosted-card-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.75rem;
+        }
+        .boosted-card-rating .stars {
+            display: flex;
+            gap: 2px;
+        }
+        .boosted-card-rating .stars i {
+            font-size: 0.85rem;
+            color: var(--text-primary, #ffffff);
+        }
+        .boosted-card-rating .count {
+            font-size: 0.85rem;
+            color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+        }
+        .boosted-card-price {
+            font-size: 0.9rem;
+            color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+            margin-bottom: 1rem;
+        }
+        .boosted-card-price strong {
+            color: var(--text-primary, #ffffff);
+            font-size: 1rem;
+        }
+        .boosted-card-btn {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.75rem 1.25rem;
+            background: var(--white, #ffffff);
+            color: var(--black, #000000);
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .boosted-card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+        /* Empty slot banner styling */
+        .boosted-slot-available {
+            background: var(--black, #000000);
+            border: 2px dashed var(--border, #444444);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+            text-decoration: none;
+            color: var(--text-primary, #ffffff);
+            transition: all 0.3s ease;
+            padding: 2rem;
+            text-align: center;
+        }
+        .boosted-slot-available:hover {
+            border-color: var(--text-primary, #ffffff);
+            background: var(--card-bg, #111111);
+            transform: translateY(-4px);
+        }
+        .boosted-slot-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--charcoal, #1a1a1a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--border, #333333);
+        }
+        .boosted-slot-icon i {
+            font-size: 2rem;
+            color: var(--text-primary, #ffffff);
+        }
+        .boosted-slot-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary, #ffffff);
+        }
+        .boosted-slot-desc {
+            color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .boosted-slot-price {
+            background: var(--white, #ffffff);
+            color: var(--black, #000000);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .boosted-slot-duration {
+            color: var(--text-muted, rgba(255, 255, 255, 0.6));
+            font-size: 0.85rem;
+        }
+    </style>
+
+    <div class="section-header">
+        <div class="section-tag"><i class="fas fa-star"></i> Uitgelicht</div>
+        <h2 class="section-title">Uitgelichte Bedrijven</h2>
+        <p class="section-subtitle">Premium salons die extra onder de aandacht staan</p>
+    </div>
+
+    <div class="boosted-grid">
+        <?php
+        $boostedCount = count($boostedBusinesses ?? []);
+        $totalSlots = 9;
+
+        // Show boosted businesses
+        foreach ($boostedBusinesses ?? [] as $biz):
+            $logoUrl = $biz['logo'] ?? '';
+            if ($logoUrl && !str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
+                $logoUrl = '/uploads/businesses/' . $logoUrl;
+            }
+        ?>
+        <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="boosted-card">
+            <div class="boosted-card-image">
+                <?php if ($logoUrl): ?>
+                    <img src="<?= htmlspecialchars($logoUrl) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
+                <?php else: ?>
+                    <div class="placeholder"><i class="fas fa-spa"></i></div>
+                <?php endif; ?>
+                <span class="boosted-badge"><i class="fas fa-rocket"></i> Uitgelicht</span>
+            </div>
+            <div class="boosted-card-body">
+                <h3 class="boosted-card-name"><?= htmlspecialchars($biz['name']) ?></h3>
+                <div class="boosted-card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span><?= htmlspecialchars($biz['city'] ?? 'Nederland') ?></span>
+                </div>
+                <div class="boosted-card-rating">
+                    <div class="stars">
+                        <?php $rating = round($biz['avg_rating'] ?? 0); ?>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="fas fa-star<?= $i <= $rating ? '' : ' empty' ?>" style="<?= $i > $rating ? 'opacity:0.3' : '' ?>"></i>
+                        <?php endfor; ?>
+                    </div>
+                    <span class="count"><?= number_format($biz['avg_rating'] ?? 0, 1) ?> (<?= $biz['review_count'] ?? 0 ?> reviews)</span>
+                </div>
+                <?php if (!empty($biz['min_price'])): ?>
+                <div class="boosted-card-price">
+                    Vanaf <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
+                </div>
+                <?php endif; ?>
+                <span class="boosted-card-btn">
+                    Bekijk & Boek <i class="fas fa-arrow-right"></i>
+                </span>
+            </div>
+        </a>
+        <?php endforeach; ?>
+
+        <?php
+        // Show empty slots as purchasable banners
+        $emptySlots = $totalSlots - $boostedCount;
+        for ($slot = 1; $slot <= $emptySlots; $slot++):
+        ?>
+        <a href="/business/boost" class="boosted-slot-available">
+            <div class="boosted-slot-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="boosted-slot-title">Plek Beschikbaar</div>
+            <div class="boosted-slot-desc">Zet jouw salon in de spotlight en bereik meer klanten</div>
+            <div class="boosted-slot-price">&euro;299,99</div>
+            <div class="boosted-slot-duration">30 dagen uitgelicht</div>
+        </a>
+        <?php endfor; ?>
+    </div>
+</section>
 
 <!-- Categories - 10 Groups with Photos -->
 <section class="section section-light">
@@ -78,17 +394,22 @@
 <?php if (!empty($featuredBusinesses)): ?>
 <section class="section section-gray">
     <div class="section-header">
-        <div class="section-tag"><?= $translations['featured_label'] ?? 'Uitgelicht' ?></div>
+        <div class="section-tag"><?= $translations['featured_label'] ?? 'Populair' ?></div>
         <h2 class="section-title"><?= $translations['featured_title'] ?? 'Populaire Salons' ?></h2>
         <p class="section-subtitle"><?= $translations['featured_subtitle'] ?? 'De best beoordeelde salons bij jou in de buurt' ?></p>
     </div>
 
     <div class="business-grid" style="max-width: 1100px; margin: 0 auto;">
-        <?php foreach (array_slice($featuredBusinesses, 0, 4) as $biz): ?>
+        <?php foreach (array_slice($featuredBusinesses, 0, 4) as $biz):
+            $logoUrl = $biz['logo'] ?? '';
+            if ($logoUrl && !str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
+                $logoUrl = '/uploads/businesses/' . $logoUrl;
+            }
+        ?>
         <div class="business-card">
             <div class="business-image">
-                <?php if (!empty($biz['logo_url'])): ?>
-                    <img src="<?= htmlspecialchars($biz['logo_url']) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
+                <?php if ($logoUrl): ?>
+                    <img src="<?= htmlspecialchars($logoUrl) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
                 <?php else: ?>
                     <i class="fas fa-spa"></i>
                 <?php endif; ?>
@@ -128,7 +449,7 @@
                     <i class="fas fa-rocket"></i> <?= $translations['start_free'] ?? 'Start Gratis' ?>
                 </a>
                 <span class="badge">
-                    <i class="fas fa-tag"></i> <?= str_replace(':count', '20', $translations['first_salons_offer'] ?? 'Eerste 20 salons: slechts') ?> &euro;0,99
+                    <i class="fas fa-tag"></i> <?= str_replace(':count', '100', $translations['first_salons_offer'] ?? 'Eerste 100 salons: slechts') ?> &euro;0,99
                 </span>
             </div>
         </div>
@@ -177,9 +498,9 @@
 <div class="cta-prestige">
     <div>
         <h2><?= $translations['cta_title'] ?? 'Laat Je Salon Groeien' ?></h2>
-        <p><?= $translations['cta_subtitle'] ?? 'Sluit je aan bij het premium beauty platform.' ?></p>
+        <p><?= $translations['cta_subtitle'] ?? 'Sluit je aan bij het premium booking platform.' ?></p>
     </div>
-    <a href="/business/register" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Nu' ?></a>
+    <a href="/register?type=business" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Nu' ?></a>
 </div>
 
 <script>
@@ -275,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     border-radius: 16px;
     overflow: hidden;
     text-decoration: none;
-    color: #ffffff;
+    color: var(--white, #ffffff);
     transition: all 0.3s ease;
 }
 .category-card:hover {
