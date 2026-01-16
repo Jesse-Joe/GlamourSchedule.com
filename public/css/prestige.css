@@ -545,11 +545,13 @@ main:has(.hero-prestige:first-child) {
 
 .nav-toggle:hover,
 .nav-toggle:active {
-    opacity: 0.8;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
 }
 
 .nav-toggle i {
     display: block;
+    pointer-events: none;
 }
 
 /* ========================================
@@ -1950,6 +1952,12 @@ main:has(.hero-prestige:first-child) {
     .nav-toggle i {
         font-size: 1.5rem;
         color: inherit;
+    }
+
+    /* Ensure hamburger is clickable */
+    .nav-toggle {
+        position: relative;
+        z-index: 10;
     }
 }
 
