@@ -205,7 +205,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
     <!-- Navigation -->
     <nav class="nav-prestige">
-        <button class="nav-toggle" onclick="openSidebar()">
+        <button class="nav-toggle" id="mobileMenuBtn" type="button" aria-label="Menu">
             <i class="fas fa-bars"></i>
         </button>
 
@@ -328,6 +328,23 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             document.getElementById('sidebarOverlay').classList.remove('active');
             document.body.style.overflow = '';
         }
+
+        // Mobile menu button - with touch support
+        document.addEventListener('DOMContentLoaded', function() {
+            var menuBtn = document.getElementById('mobileMenuBtn');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSidebar();
+                });
+                menuBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSidebar();
+                });
+            }
+        });
 
         // Global Search Functions
         function openGlobalSearch() {
