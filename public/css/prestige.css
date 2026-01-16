@@ -1765,12 +1765,14 @@ main:has(.hero-prestige:first-child) {
     z-index: 1998;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: all 0.3s ease;
 }
 
 .sidebar-overlay.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .sidebar {
