@@ -1021,14 +1021,23 @@ GlamourSchedule
 
         $html = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto'>
-            <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
-                <h1 style='color:#000000;margin:0;font-size:1.5rem'>Bedankt voor je betaling!</h1>
+            <div style='background:linear-gradient(135deg,#000000,#1a1a1a);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
+                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
             <div style='background:#fafafa;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$firstName},</p>
                 <p style='color:#374151;line-height:1.6'>
-                    Bedankt voor je betaling! Je registratie voor <strong>{$companyName}</strong> is bijna compleet.
+                    Welkom! Je registratie voor <strong>{$companyName}</strong> is bijna compleet.
                 </p>
+
+                <div style='background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
+                    <p style='margin:0;color:#92400e;font-weight:600;font-size:1rem'>
+                        Je proefperiode van 14 dagen start nu!
+                    </p>
+                    <p style='margin:0.75rem 0 0 0;color:#92400e;font-size:0.9rem'>
+                        Probeer GlamourSchedule 14 dagen gratis. Je hoeft pas te betalen na de proefperiode.
+                    </p>
+                </div>
 
                 <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
                     <p style='margin:0 0 1rem 0;color:#000000;font-weight:600'>Voltooi nu je registratie:</p>
@@ -1073,12 +1082,12 @@ GlamourSchedule
      */
     public function showCompleteRegistration(string $token): string
     {
-        // Find business by token
+        // Find business by token (allow early adopters or paid registrations)
         $stmt = $this->db->query(
             "SELECT b.*, u.first_name, u.last_name, u.email as user_email
              FROM businesses b
              JOIN users u ON b.user_id = u.id
-             WHERE b.verification_token = ? AND b.registration_fee_paid > 0",
+             WHERE b.verification_token = ? AND (b.registration_fee_paid > 0 OR b.is_early_adopter = 1)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -1111,12 +1120,12 @@ GlamourSchedule
             return $this->redirect("/partner/complete/{$token}?error=csrf");
         }
 
-        // Find business by token
+        // Find business by token (allow early adopters or paid registrations)
         $stmt = $this->db->query(
             "SELECT b.*, u.id as user_id
              FROM businesses b
              JOIN users u ON b.user_id = u.id
-             WHERE b.verification_token = ? AND b.registration_fee_paid > 0",
+             WHERE b.verification_token = ? AND (b.registration_fee_paid > 0 OR b.is_early_adopter = 1)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
