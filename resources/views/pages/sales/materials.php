@@ -51,21 +51,21 @@
 <!-- Quick Email Send -->
 <div class="card" style="margin-top:1.5rem;border:2px solid #333333">
     <h3><i class="fas fa-paper-plane"></i> Stuur een uitnodiging per email</h3>
-    <p style="color:#555555;margin-bottom:1.5rem">
+    <p style="color:#ffffff;margin-bottom:1.5rem">
         Stuur direct een professionele uitnodiging naar een salon. De email bevat informatie over de 14 dagen gratis proefperiode en jouw partnerkorting. Verstuurd vanuit sales@glamourschedule.com.
     </p>
 
     <form id="quickEmailForm" onsubmit="sendQuickEmail(event)">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
             <div>
-                <label style="display:block;color:#333333;margin-bottom:0.5rem;font-size:0.9rem">
+                <label style="display:block;color:#ffffff;margin-bottom:0.5rem;font-size:0.9rem">
                     <i class="fas fa-store"></i> Salonnaam
                 </label>
                 <input type="text" name="salon_name" required placeholder="Bijv. Beauty Salon Amsterdam"
                        style="width:100%;padding:0.875rem;background:#ffffff;border:1px solid rgba(0,0,0,0.1);border-radius:10px;color:#333333;font-size:1rem">
             </div>
             <div>
-                <label style="display:block;color:#333333;margin-bottom:0.5rem;font-size:0.9rem">
+                <label style="display:block;color:#ffffff;margin-bottom:0.5rem;font-size:0.9rem">
                     <i class="fas fa-envelope"></i> E-mailadres salon
                 </label>
                 <input type="email" name="salon_email" required placeholder="info@salon.nl"
@@ -74,7 +74,7 @@
         </div>
 
         <div style="margin-bottom:1rem">
-            <label style="display:block;color:#333333;margin-bottom:0.5rem;font-size:0.9rem">
+            <label style="display:block;color:#ffffff;margin-bottom:0.5rem;font-size:0.9rem">
                 <i class="fas fa-comment"></i> Persoonlijke boodschap (optioneel)
             </label>
             <textarea name="personal_message" rows="2" placeholder="Bijv. We ontmoetten elkaar op de beautybeurs..."
