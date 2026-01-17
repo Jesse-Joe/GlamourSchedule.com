@@ -10,7 +10,7 @@ class BusinessRegisterController extends Controller
 {
     // Pricing constants
     private const REGISTRATION_FEE = 99.99;
-    private const SALES_PARTNER_DISCOUNT = 24.99;
+    private const SALES_PARTNER_DISCOUNT = 25.00;
     private const SALES_PARTNER_COMMISSION = 99.99;      // Commission for normal sales (€74.99 payment)
     private const EARLY_BIRD_COMMISSION = 9.99;          // Commission for early bird sales (€0.99 payment)
     private const COMMISSION_PAYOUT_DAYS = 14;           // Bedenktijd
