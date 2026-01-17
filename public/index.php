@@ -27,6 +27,17 @@ $dotenv->safeLoad();
 // Load configuration
 $config = require BASE_PATH . '/config/config.php';
 
+// Configure session for 30 days
+ini_set('session.gc_maxlifetime', 2592000); // 30 dagen
+ini_set('session.cookie_lifetime', 2592000); // 30 dagen
+session_set_cookie_params([
+    'lifetime' => 2592000, // 30 dagen
+    'path' => '/',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
+
 // Start session
 session_start();
 

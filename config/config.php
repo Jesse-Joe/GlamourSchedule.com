@@ -3,7 +3,7 @@
  * GlamourSchedule - Hoofdconfiguratie
  * 
  * @package GlamourSchedule
- * @version 1.0.0
+ * @version 2.1.0
  */
 
 // Voorkom directe toegang
@@ -30,7 +30,7 @@ return [
     // ═══════════════════════════════════════════════════════════════════════
     'app' => [
         'name' => 'GlamourSchedule',
-        'version' => '2.0.0',
+        'version' => '2.1.0',
         'url' => 'https://glamourschedule.com',
         'debug' => false,
         'timezone' => 'Europe/Amsterdam',
@@ -214,7 +214,7 @@ return [
     // SECURITY SETTINGS
     // ═══════════════════════════════════════════════════════════════════════
     'security' => [
-        'session_lifetime' => 7200, // 2 uur
+        'session_lifetime' => 2592000, // 30 dagen
         'remember_me_lifetime' => 2592000, // 30 dagen
         'password_min_length' => 8,
         'rate_limit' => [

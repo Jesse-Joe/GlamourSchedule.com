@@ -8,6 +8,7 @@
         <div class="pwa-install-text">
             <h3>Installeer GlamourSchedule</h3>
             <p>Voeg toe aan je startscherm voor snelle toegang</p>
+            <p class="pwa-appstore-note">Binnenkort ook in de App Store verkrijgbaar!</p>
         </div>
         <button class="pwa-install-btn" id="pwaInstallBtn">
             <i class="fas fa-download"></i> Installeren
@@ -25,6 +26,7 @@
         <div class="pwa-install-text">
             <h3>Installeer GlamourSchedule</h3>
             <p>Tik op <span class="ios-share-icon"><i class="fas fa-share-square"></i></span> en dan <strong>"Zet op beginscherm"</strong></p>
+            <p class="pwa-appstore-note">Binnenkort ook in de App Store verkrijgbaar!</p>
         </div>
         <div class="ios-steps">
             <div class="ios-step">
@@ -105,6 +107,12 @@
     margin: 0;
     font-size: 0.85rem;
     color: rgba(255,255,255,0.6);
+}
+.pwa-appstore-note {
+    margin-top: 0.5rem !important;
+    font-size: 0.75rem !important;
+    color: #f59e0b !important;
+    font-weight: 500;
 }
 .pwa-install-btn {
     background: #ffffff;

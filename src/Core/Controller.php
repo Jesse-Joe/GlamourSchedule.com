@@ -32,7 +32,13 @@ abstract class Controller
         if (isset($_GET['lang']) && in_array($_GET['lang'], $availableLangs)) {
             $_SESSION['lang'] = $_GET['lang'];
             $_SESSION['lang_user_chosen'] = true;
-            setcookie('lang', $_GET['lang'], time() + (365 * 24 * 60 * 60), '/');
+            setcookie('lang', $_GET['lang'], [
+                'expires' => time() + (365 * 24 * 60 * 60),
+                'path' => '/',
+                'secure' => true,
+                'httponly' => false,
+                'samesite' => 'Lax'
+            ]);
             return $_GET['lang'];
         }
 

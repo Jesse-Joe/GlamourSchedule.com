@@ -1220,6 +1220,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     });
     </script>
 
+    <!-- Security PIN Setup Popup -->
+    <?php include BASE_PATH . '/resources/views/components/security-pin-popup.php'; ?>
+
     <!-- PWA Install Prompt -->
     <?php include BASE_PATH . '/resources/views/components/pwa-install-prompt.php'; ?>
 </body>

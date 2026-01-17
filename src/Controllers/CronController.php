@@ -1316,7 +1316,7 @@ class CronController extends Controller
     }
 
     // Minimum payout amount for sales partners
-    private const SALES_MINIMUM_PAYOUT = 49.99;
+    private const SALES_MINIMUM_PAYOUT = 99.99;
 
     /**
      * Process weekly payouts for sales partners
@@ -1325,7 +1325,7 @@ class CronController extends Controller
      * Sales partners earn commission per converted salon (after trial, when they pay registration fee).
      * Commission amount is stored in sales_referrals.commission column.
      * NO commission for Early Bird registrations.
-     * Minimum payout: €49.99 (1 converted salon)
+     * Minimum payout: €99.99 (1 converted salon)
      */
     public function salesPayouts(): string
     {
@@ -1745,7 +1745,7 @@ class CronController extends Controller
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
                     <p style='margin:0;font-size:13px;color:#666;'>
                         <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
-                        <strong>Commissie per salon:</strong> €49,99 (na betaling registratiefee)<br>
+                        <strong>Commissie per salon:</strong> €99,99 (na betaling registratiefee)<br>
                         <strong>Minimum uitbetaling:</strong> €" . number_format(self::SALES_MINIMUM_PAYOUT, 2, ',', '.') . "
                     </p>
                 </div>

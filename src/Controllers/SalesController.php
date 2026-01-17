@@ -255,7 +255,7 @@ class SalesController extends Controller
                     <div style="background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
                         <p style="margin:0 0 10px;color:#f59e0b;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
                         <p style="margin:0;font-size:48px;font-weight:bold;color:#fff;">€0,99</p>
-                        <p style="margin:10px 0 0;color:#666;font-size:14px;text-decoration:line-through;">Normaal €49,99</p>
+                        <p style="margin:10px 0 0;color:#666;font-size:14px;text-decoration:line-through;">Normaal €99,99</p>
                     </div>
 
                     <div style="margin:0 0 25px;">
@@ -378,7 +378,7 @@ HTML;
                 <div style='background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
                     <p style='margin:0 0 0.5rem 0;color:#f59e0b;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>Exclusieve Early Bird Prijs</p>
                     <p style='margin:0;font-size:3rem;font-weight:700;color:#ffffff'>€0,99</p>
-                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €49,99</span> - <strong style='color:#22c55e'>Je bespaart €49!</strong></p>
+                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#22c55e'>Je bespaart €49!</strong></p>
                 </div>
 
                 <div style='background:#0a0a0a;border-left:4px solid #333;border-radius:0 8px 8px 0;padding:1.5rem;margin:1.5rem 0'>

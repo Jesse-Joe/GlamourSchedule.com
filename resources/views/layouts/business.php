@@ -741,6 +741,7 @@
             <div class="install-text">
                 <strong>Installeer GS Business</strong>
                 <span>Snelle toegang tot je dashboard</span>
+                <span style="display:block;margin-top:0.25rem;color:#f59e0b;font-size:0.7rem">Binnenkort ook in de App Store!</span>
             </div>
             <button class="install-btn" id="businessInstallBtn">Installeren</button>
         </div>
@@ -827,5 +828,8 @@
         });
     })();
     </script>
+
+    <!-- Security PIN Setup Popup -->
+    <?php include BASE_PATH . '/resources/views/components/security-pin-popup.php'; ?>
 </body>
 </html>

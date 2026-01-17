@@ -3,7 +3,7 @@
  * Handles push notifications, offline caching, and background sync
  */
 
-const CACHE_NAME = 'glamourschedule-v4';
+const CACHE_NAME = 'glamourschedule-v5';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [

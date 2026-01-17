@@ -1,6 +1,6 @@
 /**
  * GlamourSchedule - Modern JavaScript Application
- * Version: 2.0
+ * Version: 2.1
  * Features: Smooth animations, Glassmorphism effects, Interactive UI
  */
 

@@ -36,7 +36,7 @@
             <div style="color:#666666;font-size:0.9rem">Korting voor klant</div>
         </div>
         <div>
-            <div style="font-size:2rem;font-weight:700;color:#000000">49,99</div>
+            <div style="font-size:2rem;font-weight:700;color:#000000">99,99</div>
             <div style="color:#666666;font-size:0.9rem">Jouw commissie</div>
         </div>
         <div>

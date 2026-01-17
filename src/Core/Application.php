@@ -250,6 +250,9 @@ class Application
         $this->router->get('/api/theme', 'ApiController@getTheme');
         $this->router->post('/api/theme', 'ApiController@saveTheme');
 
+        // Security PIN
+        $this->router->post('/api/save-security-pin', 'ApiController@saveSecurityPin');
+
         // Glamori AI Chatbot
         $this->router->post('/api/glamori/chat', 'ApiController@glamoriChat');
         $this->router->get('/api/glamori/welcome', 'ApiController@glamoriWelcome');

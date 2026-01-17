@@ -357,7 +357,7 @@
 
         <!-- Commission Info -->
         <div class="commission-box">
-            <div class="amount">&euro;49,99</div>
+            <div class="amount">&euro;99,99</div>
             <div class="label">commissie per geregistreerd bedrijf</div>
         </div>
 

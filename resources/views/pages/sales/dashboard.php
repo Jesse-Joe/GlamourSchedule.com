@@ -70,9 +70,9 @@
     </div>
 
     <div class="card" style="background:#1a1a1a;border:2px solid #333">
-        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> Verdien &euro;49,99</h3>
+        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> Verdien &euro;99,99</h3>
         <p style="margin:0;color:#a1a1a1;line-height:1.6">
-            Voor elke salon die via jouw code registreert en na de proeftijd betaalt, ontvang je &euro;49,99 commissie!
+            Voor elke salon die via jouw code registreert en na de proeftijd betaalt, ontvang je &euro;99,99 commissie!
         </p>
         <a href="/sales/materials" style="display:inline-block;margin-top:1rem;color:#fff;text-decoration:none;font-weight:600">
             <i class="fas fa-arrow-right"></i> Bekijk promotiemateriaal

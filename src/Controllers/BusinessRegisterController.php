@@ -11,7 +11,7 @@ class BusinessRegisterController extends Controller
     // Pricing constants
     private const REGISTRATION_FEE = 99.99;
     private const SALES_PARTNER_DISCOUNT = 24.99;
-    private const SALES_PARTNER_COMMISSION = 49.99;      // Commission for normal sales (€74.99 payment)
+    private const SALES_PARTNER_COMMISSION = 99.99;      // Commission for normal sales (€74.99 payment)
     private const EARLY_BIRD_COMMISSION = 9.99;          // Commission for early bird sales (€0.99 payment)
     private const COMMISSION_PAYOUT_DAYS = 14;           // Bedenktijd
 
@@ -251,7 +251,7 @@ class BusinessRegisterController extends Controller
             // If referred by sales partner, create referral record with 14-day payout delay
             if ($referredBy) {
                 // Commission eligible after 14 days from payment
-                // Early bird sales get €9.99 commission, normal sales get €49.99
+                // Early bird sales get €9.99 commission, normal sales get €99.99
                 $commission = $isPromo ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
@@ -790,7 +790,7 @@ GlamourSchedule
 
             // Create referral record
             if ($referredBy) {
-                // Early bird sales get €9.99 commission, normal sales get €49.99
+                // Early bird sales get €9.99 commission, normal sales get €99.99
                 $commission = $isSalesEarlyAdopter ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
@@ -1356,7 +1356,7 @@ GlamourSchedule
                 </div>
 
                 <p style='color:#6b7280;font-size:13px;margin-top:20px;'>
-                    Blijf salons aanbrengen en verdien EUR 49,99 per betalende salon!
+                    Blijf salons aanbrengen en verdien EUR 99,99 per betalende salon!
                 </p>
             </div>
             <div style='background:#fafafa;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>

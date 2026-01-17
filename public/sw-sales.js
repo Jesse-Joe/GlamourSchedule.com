@@ -3,7 +3,7 @@
  * Handles offline caching for the sales dashboard
  */
 
-const CACHE_NAME = 'gs-sales-v2';
+const CACHE_NAME = 'gs-sales-v3';
 const OFFLINE_URL = '/sales/offline';
 
 const STATIC_ASSETS = [

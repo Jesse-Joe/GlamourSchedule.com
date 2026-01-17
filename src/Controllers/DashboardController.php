@@ -157,7 +157,13 @@ class DashboardController extends Controller
 
         // Update session language
         $_SESSION['lang'] = $language;
-        setcookie('lang', $language, time() + (365 * 24 * 60 * 60), '/');
+        setcookie('lang', $language, [
+            'expires' => time() + (365 * 24 * 60 * 60),
+            'path' => '/',
+            'secure' => true,
+            'httponly' => false,
+            'samesite' => 'Lax'
+        ]);
 
         return ['message' => 'Je profiel is bijgewerkt!', 'type' => 'success'];
     }

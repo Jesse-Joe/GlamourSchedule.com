@@ -580,4 +580,60 @@ class ApiController extends Controller
 
         return $this->json(['messages' => $history]);
     }
+
+    /**
+     * Save security PIN for user account
+     */
+    public function saveSecurityPin(): string
+    {
+        $userId = $_SESSION['user_id'] ?? null;
+        $businessId = $_SESSION['business_id'] ?? null;
+        $salesUserId = $_SESSION['sales_user_id'] ?? null;
+
+        if (!$userId && !$businessId && !$salesUserId) {
+            return $this->json(['success' => false, 'message' => 'Niet ingelogd']);
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $pin = $input['pin'] ?? '';
+
+        // Validate PIN format (6 digits)
+        if (!preg_match('/^\d{6}$/', $pin)) {
+            return $this->json(['success' => false, 'message' => 'PIN moet 6 cijfers zijn']);
+        }
+
+        // Hash the PIN for security
+        $pinHash = password_hash($pin, PASSWORD_BCRYPT);
+
+        try {
+            if ($userId) {
+                $this->db->query(
+                    "UPDATE users SET security_pin = ? WHERE id = ?",
+                    [$pinHash, $userId]
+                );
+            }
+
+            if ($businessId) {
+                $this->db->query(
+                    "UPDATE businesses SET security_pin = ? WHERE id = ?",
+                    [$pinHash, $businessId]
+                );
+            }
+
+            if ($salesUserId) {
+                $this->db->query(
+                    "UPDATE sales_users SET security_pin = ? WHERE id = ?",
+                    [$pinHash, $salesUserId]
+                );
+            }
+
+            // Mark PIN as set in session
+            $_SESSION['security_pin_set'] = true;
+
+            return $this->json(['success' => true, 'message' => 'PIN opgeslagen']);
+        } catch (\Exception $e) {
+            error_log('Error saving security PIN: ' . $e->getMessage());
+            return $this->json(['success' => false, 'message' => 'Er ging iets mis']);
+        }
+    }
 }

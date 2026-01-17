@@ -3,7 +3,7 @@
  * Handles offline caching for the business dashboard
  */
 
-const CACHE_NAME = 'gs-business-v1';
+const CACHE_NAME = 'gs-business-v2';
 
 const STATIC_ASSETS = [
     '/business/dashboard',
