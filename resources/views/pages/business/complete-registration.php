@@ -149,7 +149,7 @@
             width: 100%;
             padding: 1.1rem;
             background: linear-gradient(135deg, #333333, #000000);
-            color: #ffffff;
+            color: #ffffff !important;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
@@ -161,6 +161,9 @@
             justify-content: center;
             gap: 0.75rem;
             margin-top: 2rem;
+        }
+        .btn-primary i {
+            color: #ffffff !important;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
