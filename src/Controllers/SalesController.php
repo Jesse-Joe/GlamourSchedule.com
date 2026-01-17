@@ -6,7 +6,36 @@ use GlamourSchedule\Core\Mailer;
 
 class SalesController extends Controller
 {
+    // Pricing constants (must match BusinessRegisterController)
+    private const REGISTRATION_FEE = 99.99;
+    private const SALES_PARTNER_DISCOUNT = 25.00;
+    private const EARLY_BIRD_PRICE = 0.99;
+
     private ?array $salesUser = null;
+
+    /**
+     * Check if early bird is still available (first 100 via sales partners)
+     */
+    private function isEarlyBirdAvailable(): bool
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as cnt FROM businesses WHERE referred_by_sales_partner IS NOT NULL AND is_early_adopter = 1"
+        );
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (int)$result['cnt'] < 100;
+    }
+
+    /**
+     * Get early bird spots remaining
+     */
+    private function getEarlyBirdSpotsLeft(): int
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as cnt FROM businesses WHERE referred_by_sales_partner IS NOT NULL AND is_early_adopter = 1"
+        );
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return max(0, 100 - (int)$result['cnt']);
+    }
 
     private function requireAuth(): bool
     {
@@ -255,7 +284,12 @@ class SalesController extends Controller
                     <div style="background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
                         <p style="margin:0 0 10px;color:#f59e0b;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
                         <p style="margin:0;font-size:48px;font-weight:bold;color:#fff;">€0,99</p>
-                        <p style="margin:10px 0 0;color:#666;font-size:14px;text-decoration:line-through;">Normaal €99,99</p>
+                        <p style="margin:10px 0 0;color:#666;font-size:14px;"><span style="text-decoration:line-through;">Normaal €99,99</span> - <strong style="color:#22c55e;">Je bespaart €99!</strong></p>
+                    </div>
+
+                    <div style="background:#0a0a0a;border:2px solid #22c55e;border-radius:12px;padding:20px;text-align:center;margin:0 0 25px;">
+                        <p style="margin:0;color:#22c55e;font-size:18px;font-weight:bold;">Eerste 14 dagen GRATIS proberen!</p>
+                        <p style="margin:8px 0 0;color:#a1a1a1;font-size:14px;">Daarna betaal je eenmalig de aanmeldkosten van €0,99</p>
                     </div>
 
                     <div style="margin:0 0 25px;">
@@ -353,15 +387,35 @@ HTML;
         $salesName = $this->salesUser['name'];
         $referralLink = "https://glamourschedule.nl/partner/register?ref={$referralCode}";
 
-        // Build email content
-        $subject = "Early Bird Aanbieding - Start voor slechts €0,99!";
+        // Determine pricing based on early bird availability
+        $isEarlyBird = $this->isEarlyBirdAvailable();
+        $spotsLeft = $this->getEarlyBirdSpotsLeft();
+
+        if ($isEarlyBird) {
+            $price = number_format(self::EARLY_BIRD_PRICE, 2, ',', '.');
+            $savings = number_format(self::REGISTRATION_FEE - self::EARLY_BIRD_PRICE, 0, ',', '.');
+            $subject = "Early Bird Aanbieding - Start voor slechts €{$price}!";
+            $offerType = 'Early Bird';
+            $offerLabel = 'Exclusieve Early Bird Prijs';
+            $inviteText = "een exclusieve <strong style='color:#f59e0b'>Early Bird uitnodiging</strong>";
+            $urgencyText = "<p style='margin:1rem 0 0 0;color:#f59e0b;font-size:0.85rem;font-weight:600'>Nog maar {$spotsLeft} plekken beschikbaar!</p>";
+        } else {
+            $partnerPrice = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT;
+            $price = number_format($partnerPrice, 2, ',', '.');
+            $savings = number_format(self::SALES_PARTNER_DISCOUNT, 0, ',', '.');
+            $subject = "Exclusieve €" . number_format(self::SALES_PARTNER_DISCOUNT, 0) . " korting op GlamourSchedule!";
+            $offerType = 'Partner Korting';
+            $offerLabel = 'Exclusieve Partner Prijs';
+            $inviteText = "een exclusieve <strong style='color:#f59e0b'>partner korting</strong>";
+            $urgencyText = "";
+        }
 
         $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#a1a1a1;border-left:3px solid #f59e0b;padding-left:1rem;margin-bottom:1.5rem;background:#1a1a1a;padding:1rem;border-radius:0 8px 8px 0'>\"{$personalMessage}\"</p>" : "";
 
         $htmlBody = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a'>
             <div style='background:linear-gradient(135deg,#f59e0b,#d97706);padding:2.5rem;text-align:center;border-radius:12px 12px 0 0'>
-                <p style='color:#000;margin:0 0 0.5rem 0;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>Early Bird Aanbieding</p>
+                <p style='color:#000;margin:0 0 0.5rem 0;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>{$offerType}</p>
                 <h1 style='color:#000;margin:0;font-size:1.75rem;font-weight:700'>GlamourSchedule</h1>
                 <p style='color:#000;margin:0.5rem 0 0 0;opacity:0.8'>Het slimste boekingssysteem voor salons</p>
             </div>
@@ -372,13 +426,19 @@ HTML;
                 {$personalLine}
 
                 <p style='color:#a1a1a1;line-height:1.7'>
-                    Via <strong style='color:#fff'>{$salesName}</strong> heb je een exclusieve <strong style='color:#f59e0b'>Early Bird uitnodiging</strong> ontvangen!
+                    Via <strong style='color:#fff'>{$salesName}</strong> heb je {$inviteText} ontvangen!
                 </p>
 
                 <div style='background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
-                    <p style='margin:0 0 0.5rem 0;color:#f59e0b;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>Exclusieve Early Bird Prijs</p>
-                    <p style='margin:0;font-size:3rem;font-weight:700;color:#ffffff'>€0,99</p>
-                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#22c55e'>Je bespaart €49!</strong></p>
+                    <p style='margin:0 0 0.5rem 0;color:#f59e0b;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>{$offerLabel}</p>
+                    <p style='margin:0;font-size:3rem;font-weight:700;color:#ffffff'>€{$price}</p>
+                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#22c55e'>Je bespaart €{$savings}!</strong></p>
+                    {$urgencyText}
+                </div>
+
+                <div style='background:#0a0a0a;border:2px solid #22c55e;border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center'>
+                    <p style='margin:0;color:#22c55e;font-size:1.1rem;font-weight:700'>Eerste 14 dagen GRATIS proberen!</p>
+                    <p style='margin:0.5rem 0 0 0;color:#a1a1a1;font-size:0.9rem'>Daarna betaal je eenmalig de aanmeldkosten van €{$price}</p>
                 </div>
 
                 <div style='background:#0a0a0a;border-left:4px solid #333;border-radius:0 8px 8px 0;padding:1.5rem;margin:1.5rem 0'>
@@ -408,7 +468,7 @@ HTML;
 
                 <div style='text-align:center;margin:2rem 0'>
                     <a href='{$referralLink}' style='display:inline-block;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;text-decoration:none;padding:1.25rem 2.5rem;border-radius:10px;font-weight:700;font-size:1.1rem'>
-                        Start Nu - Slechts €0,99
+                        Start Nu - Slechts €{$price}
                     </a>
                 </div>
 
