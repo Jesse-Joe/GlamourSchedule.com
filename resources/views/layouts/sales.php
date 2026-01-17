@@ -18,8 +18,8 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #ffffff;
-            color: #000000;
+            background: #0a0a0a;
+            color: #ffffff;
             min-height: 100vh;
         }
 
@@ -115,7 +115,7 @@
             margin-left: 280px;
             padding: 1.5rem;
             min-height: 100vh;
-            background: #ffffff;
+            background: #0a0a0a;
         }
         .sales-header {
             display: flex;
@@ -127,7 +127,7 @@
         }
         .sales-header h1 {
             margin: 0;
-            color: #000000;
+            color: #ffffff;
             font-size: 1.5rem;
         }
         .referral-code-box {
@@ -165,13 +165,13 @@
 
         /* Stats Cards */
         .stat-card {
-            background: #f5f5f5;
+            background: #1a1a1a;
             border-radius: 16px;
             padding: 1.5rem;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid #333333;
         }
         .stat-card h4 {
-            color: #666666;
+            color: #a1a1a1;
             font-size: 0.85rem;
             margin: 0 0 0.75rem 0;
             text-transform: uppercase;
@@ -180,18 +180,18 @@
         .stat-card .value {
             font-size: 2rem;
             font-weight: bold;
-            color: #000000;
+            color: #ffffff;
         }
 
         /* Cards */
         .card {
-            background: #f5f5f5;
+            background: #1a1a1a;
             border-radius: 16px;
             padding: 1.5rem;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid #333333;
         }
         .card h3 {
-            color: #000000;
+            color: #ffffff;
             margin: 0 0 1rem 0;
         }
 
@@ -202,33 +202,37 @@
             border-radius: 12px;
         }
         .alert-success {
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid #333333;
-            color: #000000;
+            background: #1a1a1a;
+            border: 1px solid #22c55e;
+            color: #22c55e;
         }
         .alert-error {
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid #333333;
-            color: #d4d4d4;
+            background: #1a1a1a;
+            border: 1px solid #ef4444;
+            color: #ef4444;
         }
 
         /* Mobile Menu Button */
         .mobile-menu-btn {
             display: none;
             position: fixed;
-            top: 1rem;
-            left: 1rem;
+            top: 0.75rem;
+            left: 0.75rem;
             z-index: 1001;
-            background: #f5f5f5;
-            border: 1px solid rgba(0,0,0,0.1);
-            color: #000000;
-            width: 48px;
-            height: 48px;
+            background: #000;
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .mobile-menu-btn:active {
+            transform: scale(0.95);
         }
 
         /* Mobile Overlay */
@@ -250,32 +254,50 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #f5f5f5;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding: 0.5rem;
+            background: #0a0a0a;
+            border-top: 1px solid #333333;
+            padding: 0.5rem 0.25rem;
             z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
         }
         .mobile-bottom-nav nav {
             display: flex;
             justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
         }
         .mobile-bottom-nav a {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0.5rem;
-            color: #666666;
+            padding: 0.5rem 0.75rem;
+            color: #666;
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             flex: 1;
             text-align: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            min-height: 50px;
+            justify-content: center;
         }
         .mobile-bottom-nav a i {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
         }
         .mobile-bottom-nav a.active {
-            color: #000000;
+            color: #fff;
+            background: #1a1a1a;
+        }
+        .mobile-bottom-nav a:active {
+            transform: scale(0.95);
+            background: #222;
+        }
+        .mobile-bottom-nav a.nav-logout {
+            color: #ef4444;
+        }
+        .mobile-bottom-nav a.nav-logout:active {
+            background: rgba(239, 68, 68, 0.2);
         }
 
         /* Mobile Styles */
@@ -294,28 +316,127 @@
             }
             .sales-main {
                 margin-left: 0;
-                padding: 1rem;
-                padding-top: 70px;
-                padding-bottom: 80px;
+                padding: 0.75rem;
+                padding-top: 65px;
+                padding-bottom: 85px;
             }
             .sales-header {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
             }
             .sales-header h1 {
-                font-size: 1.25rem;
+                font-size: 1.1rem;
                 text-align: center;
+                margin: 0;
             }
             .referral-code-box {
-                justify-content: center;
-                flex-wrap: wrap;
+                justify-content: space-between;
+                padding: 0.6rem 1rem;
+                border-radius: 10px;
+            }
+            .referral-code-box span {
+                font-size: 0.75rem;
+            }
+            .referral-code-box code {
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+            .referral-code-box button {
+                padding: 0.4rem 0.6rem;
             }
             .mobile-bottom-nav {
                 display: block;
             }
-            .stat-card .value {
-                font-size: 1.5rem;
+            /* Stats grid 2x2 on mobile */
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem;
             }
+            .stat-card {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+            .stat-card h4 {
+                font-size: 0.7rem;
+                margin-bottom: 0.5rem;
+            }
+            .stat-card h4 i {
+                display: none;
+            }
+            .stat-card .value {
+                font-size: 1.4rem;
+            }
+            /* Cards on mobile */
+            .card {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+            .card h3 {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            /* Buttons */
+            .btn {
+                padding: 0.65rem 1.25rem;
+                font-size: 0.9rem;
+                width: 100%;
+                justify-content: center;
+            }
+            /* Tables on mobile */
+            .referral-table-desktop {
+                display: none !important;
+            }
+            .referral-cards-mobile {
+                display: block !important;
+            }
+            table th, table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+            /* Alert */
+            .alert {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Hide mobile cards by default, show table */
+        .referral-cards-mobile {
+            display: none;
+        }
+        .referral-card {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .referral-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .referral-card-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        .referral-card-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .referral-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .referral-card-commission {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.1rem;
         }
 
         /* Safe area for notch devices */
@@ -339,17 +460,17 @@
         th, td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid #333333;
         }
         th {
-            color: #666666;
+            color: #a1a1a1;
             font-weight: 500;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.5px;
         }
         td {
-            color: #000000;
+            color: #ffffff;
         }
 
         /* Buttons */
@@ -375,10 +496,10 @@
 
         /* Links */
         a {
-            color: #000000;
+            color: #ffffff;
         }
         a:hover {
-            color: #000000;
+            color: #ffffff;
         }
 
         /* Grid layouts */
@@ -398,8 +519,13 @@
             gap: 1rem;
         }
         @media (max-width: 768px) {
-            .grid-2, .grid-3, .grid-4 {
+            .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
             }
         }
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -429,6 +555,9 @@
             <a href="/sales/dashboard" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/dashboard') !== false ? 'active' : '' ?>">
                 <i class="fas fa-home"></i> Dashboard
             </a>
+            <a href="/sales/early-birds" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? 'active' : '' ?>" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000">
+                <i class="fas fa-seedling"></i> Early Birds
+            </a>
             <a href="/sales/referrals" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/referrals') !== false ? 'active' : '' ?>">
                 <i class="fas fa-users"></i> Referrals
             </a>
@@ -440,6 +569,9 @@
             </a>
             <a href="/sales/guide" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/guide') !== false ? 'active' : '' ?>">
                 <i class="fas fa-clipboard-list"></i> Stappenplan
+            </a>
+            <a href="/sales/account" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/account') !== false ? 'active' : '' ?>">
+                <i class="fas fa-cog"></i> Account
             </a>
         </nav>
 
@@ -485,6 +617,10 @@
                 <i class="fas fa-home"></i>
                 Home
             </a>
+            <a href="/sales/early-birds" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? 'active' : '' ?>" style="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? '' : 'color:#f59e0b' ?>">
+                <i class="fas fa-seedling"></i>
+                Early Birds
+            </a>
             <a href="/sales/referrals" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/referrals') !== false ? 'active' : '' ?>">
                 <i class="fas fa-users"></i>
                 Referrals
@@ -493,9 +629,9 @@
                 <i class="fas fa-euro-sign"></i>
                 Geld
             </a>
-            <a href="/sales/materials" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/materials') !== false ? 'active' : '' ?>">
-                <i class="fas fa-bullhorn"></i>
-                Materiaal
+            <a href="/sales/logout" class="nav-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Uitloggen
             </a>
         </nav>
     </div>
@@ -547,6 +683,145 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw-sales.js').catch(() => {});
         }
+    </script>
+
+    <!-- PWA Install Prompt for Sales -->
+    <div id="salesInstallPrompt" class="sales-install-prompt" style="display:none">
+        <div class="install-content">
+            <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">&times;</button>
+            <img src="/images/sales-icon-192.png" alt="GS Sales" width="48" height="48" style="border-radius:10px">
+            <div class="install-text">
+                <strong>Installeer GS Sales</strong>
+                <span>Snelle toegang tot je sales dashboard</span>
+            </div>
+            <button class="install-btn" id="salesInstallBtn">Installeren</button>
+        </div>
+    </div>
+
+    <!-- iOS Install Instructions for Sales -->
+    <div id="salesIosPrompt" class="sales-install-prompt ios-prompt" style="display:none">
+        <div class="install-content ios-content">
+            <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">&times;</button>
+            <img src="/images/sales-icon-192.png" alt="GS Sales" width="48" height="48" style="border-radius:10px">
+            <div class="install-text" style="text-align:center;width:100%">
+                <strong style="display:block;margin-bottom:0.5rem">Installeer GS Sales</strong>
+                <span>Tik op <i class="fas fa-share-square" style="color:#007aff"></i> en dan <strong>"Zet op beginscherm"</strong></span>
+            </div>
+            <button class="install-btn" style="width:100%;margin-top:1rem;justify-content:center" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">Begrepen</button>
+        </div>
+    </div>
+
+    <style>
+    .sales-install-prompt {
+        position: fixed;
+        bottom: 80px;
+        left: 1rem;
+        right: 1rem;
+        z-index: 10000;
+        animation: slideUpPrompt 0.3s ease;
+    }
+    @keyframes slideUpPrompt {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .sales-install-prompt .install-content {
+        max-width: 400px;
+        margin: 0 auto;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 16px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .sales-install-prompt .install-close {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.5rem;
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 1.25rem;
+        cursor: pointer;
+    }
+    .sales-install-prompt .install-text {
+        flex: 1;
+    }
+    .sales-install-prompt .install-text strong {
+        display: block;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+    .sales-install-prompt .install-text span {
+        font-size: 0.8rem;
+        color: #888;
+    }
+    .sales-install-prompt .install-btn {
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .ios-prompt .install-content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    @media (min-width: 769px) {
+        .sales-install-prompt { bottom: 1rem; }
+    }
+    </style>
+
+    <script>
+    (function() {
+        let deferredPrompt = null;
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const dismissed = localStorage.getItem('salesInstallDismissed');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        if (isPWA || dismissed) return;
+
+        // iOS - show custom instructions
+        if (isIOS) {
+            setTimeout(() => {
+                document.getElementById('salesIosPrompt').style.display = 'block';
+            }, 8000);
+            return;
+        }
+
+        // Android/Chrome - use beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                document.getElementById('salesInstallPrompt').style.display = 'block';
+            }, 5000);
+        });
+
+        document.getElementById('salesInstallBtn')?.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            document.getElementById('salesInstallPrompt').style.display = 'none';
+            if (outcome === 'accepted') {
+                localStorage.setItem('salesInstallDismissed', '1');
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('salesInstallPrompt').style.display = 'none';
+            localStorage.setItem('salesInstallDismissed', '1');
+        });
+    })();
     </script>
 </body>
 </html>

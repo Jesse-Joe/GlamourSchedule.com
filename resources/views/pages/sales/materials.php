@@ -28,20 +28,20 @@
 </div>
 
 <!-- Partner Info -->
-<div class="card" style="background:linear-gradient(135deg,#000000,#000000);margin-top:1.5rem;border:1px solid #333333">
+<div class="card" style="background:#ffffff;margin-top:1.5rem;border:1px solid #333333">
     <h3 style="color:#000000"><i class="fas fa-info-circle"></i> Jouw Partner Voordelen</h3>
     <div class="grid-3" style="text-align:center">
         <div>
             <div style="font-size:2rem;font-weight:700;color:#000000">25,-</div>
-            <div style="color:#333333;font-size:0.9rem">Korting voor klant</div>
+            <div style="color:#666666;font-size:0.9rem">Korting voor klant</div>
         </div>
         <div>
             <div style="font-size:2rem;font-weight:700;color:#000000">49,99</div>
-            <div style="color:#333333;font-size:0.9rem">Jouw commissie</div>
+            <div style="color:#666666;font-size:0.9rem">Jouw commissie</div>
         </div>
         <div>
             <div style="font-size:2rem;font-weight:700;color:#000000"><?= htmlspecialchars($salesUser['referral_code']) ?></div>
-            <div style="color:#333333;font-size:0.9rem">Jouw code</div>
+            <div style="color:#666666;font-size:0.9rem">Jouw code</div>
         </div>
     </div>
 </div>

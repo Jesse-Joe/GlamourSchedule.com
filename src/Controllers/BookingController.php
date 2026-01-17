@@ -7,6 +7,34 @@ use GlamourSchedule\Core\PushNotification;
 
 class BookingController extends Controller
 {
+    /**
+     * Create booking form by business UUID
+     */
+    public function createByUuid(string $uuid): string
+    {
+        $business = $this->getBusinessByUuid($uuid);
+        if (!$business) {
+            http_response_code(404);
+            return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
+        }
+        return $this->renderCreateForm($business);
+    }
+
+    /**
+     * Store booking by business UUID
+     */
+    public function storeByUuid(string $uuid): string
+    {
+        $business = $this->getBusinessByUuid($uuid);
+        if (!$business) {
+            return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+        }
+        return $this->processBooking($business);
+    }
+
+    /**
+     * Create booking form by slug (legacy)
+     */
     public function create(string $businessSlug): string
     {
         $business = $this->getBusinessBySlug($businessSlug);
@@ -14,7 +42,14 @@ class BookingController extends Controller
             http_response_code(404);
             return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
         }
+        return $this->renderCreateForm($business);
+    }
 
+    /**
+     * Render the booking create form
+     */
+    private function renderCreateForm(array $business): string
+    {
         // Check if business needs verification (no KVK and not admin verified)
         if (empty($business['kvk_number']) && empty($business['is_verified'])) {
             return $this->view('pages/booking/pending-verification', [
@@ -47,7 +82,14 @@ class BookingController extends Controller
         if (!$business) {
             return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
         }
+        return $this->processBooking($business);
+    }
 
+    /**
+     * Process a booking for a business - stores in session and redirects to checkout
+     */
+    private function processBooking(array $business): string
+    {
         // Check if business needs verification (no KVK and not admin verified)
         if (empty($business['kvk_number']) && empty($business['is_verified'])) {
             return $this->json(['error' => 'Dit bedrijf is nog niet geverifieerd'], 403);
@@ -111,71 +153,236 @@ class BookingController extends Controller
             ]);
         }
 
+        // Get customer info
+        $customerEmail = $guestEmail ?: $this->getUserEmail($userId);
+        $customerName = $guestName ?: $this->getUserName($userId);
+        $customerPhone = $guestPhone ?: $this->getUserPhone($userId);
+
+        // Calculate prices
+        $servicePrice = $service['sale_price'] ?? $service['price'];
+        $totalPrice = $servicePrice;
+
+        // Get employee info if selected
+        $employee = null;
+        if ($employeeId) {
+            $stmt = $this->db->query("SELECT id, name, color FROM employees WHERE id = ?", [$employeeId]);
+            $employee = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+
+        // Store booking data in session for checkout page
+        $_SESSION['pending_booking'] = [
+            'business_id' => $business['id'],
+            'business_slug' => $business['slug'],
+            'service_id' => $serviceId,
+            'employee_id' => $employeeId,
+            'user_id' => $userId,
+            'date' => $date,
+            'time' => $time,
+            'notes' => $notes,
+            'guest_name' => $guestName,
+            'guest_email' => $guestEmail,
+            'guest_phone' => $guestPhone,
+            'customer_name' => $customerName ?: 'Klant',
+            'customer_email' => $customerEmail,
+            'customer_phone' => $customerPhone ?: '',
+            'service_price' => $servicePrice,
+            'total_price' => $totalPrice,
+            'duration_minutes' => $service['duration_minutes'],
+            'created_at' => time()
+        ];
+
+        return $this->redirect('/booking/checkout');
+    }
+
+    /**
+     * Show checkout/review page
+     */
+    public function showCheckout(): string
+    {
+        // Check if there's pending booking data
+        if (!isset($_SESSION['pending_booking'])) {
+            return $this->redirect('/');
+        }
+
+        $bookingData = $_SESSION['pending_booking'];
+
+        // Check if session is not too old (30 minutes max)
+        if (time() - $bookingData['created_at'] > 1800) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Get business info
+        $stmt = $this->db->query(
+            "SELECT * FROM businesses WHERE id = ?",
+            [$bookingData['business_id']]
+        );
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Get service info
+        $service = $this->getServiceById($bookingData['service_id']);
+        if (!$service) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Get employee info if applicable
+        $employee = null;
+        if ($bookingData['employee_id']) {
+            $stmt = $this->db->query("SELECT id, name, color FROM employees WHERE id = ?", [$bookingData['employee_id']]);
+            $employee = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+
+        return $this->view('pages/booking/checkout', [
+            'pageTitle' => 'Bevestig je boeking',
+            'business' => $business,
+            'service' => $service,
+            'employee' => $employee,
+            'bookingData' => $bookingData,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Confirm booking and create it in database
+     */
+    public function confirmBooking(): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/booking/checkout?error=csrf');
+        }
+
+        // Check if there's pending booking data
+        if (!isset($_SESSION['pending_booking'])) {
+            return $this->redirect('/');
+        }
+
+        $bookingData = $_SESSION['pending_booking'];
+
+        // Check if session is not too old (30 minutes max)
+        if (time() - $bookingData['created_at'] > 1800) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Get business info
+        $stmt = $this->db->query("SELECT * FROM businesses WHERE id = ?", [$bookingData['business_id']]);
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Get service info
+        $service = $this->getServiceById($bookingData['service_id']);
+        if (!$service) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/');
+        }
+
+        // Re-check if time slot is still available
+        if (!$this->isTimeSlotAvailable($business['id'], $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'], $bookingData['employee_id'])) {
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/book/' . $business['slug'] . '?error=slot_taken');
+        }
+
+        // Create the booking
         $uuid = $this->generateUuid();
         $bookingNumber = 'GS' . strtoupper(substr(md5($uuid), 0, 8));
-        $servicePrice = $service['sale_price'] ?? $service['price'];
-        // Admin fee wordt van bedrijf ingehouden, niet bij klant opgeteld
         $adminFee = 1.75;
-        $totalPrice = $servicePrice; // Klant betaalt alleen de dienst prijs
         $qrCodeHash = hash('sha256', $uuid . $bookingNumber);
+
+        // Get current platform language for email personalization
+        $bookingLanguage = $_SESSION['lang'] ?? 'nl';
+        if (!in_array($bookingLanguage, ['nl', 'en', 'de', 'fr'])) {
+            $bookingLanguage = 'nl';
+        }
 
         $this->db->query(
             "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
              duration_minutes, service_price, admin_fee, total_price, qr_code_hash, customer_notes,
-             terms_accepted_at, terms_version, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending')",
+             language, terms_accepted_at, terms_version, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending')",
             [
-                $uuid, $bookingNumber, $business['id'], $employeeId, $userId, $serviceId,
-                $guestName ?: null, $guestEmail ?: null, $guestPhone ?: null,
-                $date, $time, $service['duration_minutes'],
-                $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $notes ?: null
+                $uuid, $bookingNumber, $business['id'], $bookingData['employee_id'], $bookingData['user_id'], $bookingData['service_id'],
+                $bookingData['guest_name'] ?: null, $bookingData['guest_email'] ?: null, $bookingData['guest_phone'] ?: null,
+                $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'],
+                $bookingData['service_price'], $adminFee, $bookingData['total_price'], $qrCodeHash, $bookingData['notes'] ?: null,
+                $bookingLanguage
             ]
         );
 
-        // Send confirmation emails
-        $customerEmail = $guestEmail ?: $this->getUserEmail($userId);
-        $customerName = $guestName ?: $this->getUserName($userId);
-        $customerPhone = $guestPhone ?: $this->getUserPhone($userId);
-
-        $mailer = new Mailer();
-        $bookingData = [
-            'uuid' => $uuid,
-            'booking_number' => $bookingNumber,
-            'customer_name' => $customerName ?: 'Klant',
-            'customer_email' => $customerEmail,
-            'customer_phone' => $customerPhone ?: '-',
-            'business_name' => $business['name'],
-            'business_email' => $business['email'],
-            'service_name' => $service['name'],
-            'date' => $date,
-            'time' => $time,
-            'duration' => $service['duration_minutes'],
-            'price' => $totalPrice,
-            'notes' => $notes
-        ];
-
-        // Email wordt pas verstuurd na betaling (via Mollie webhook)
-
-        // Schedule 24-hour reminder
-        $this->scheduleReminder($date, $time, $uuid);
+        // Schedule reminders (24 hours and 1 hour before)
+        $this->scheduleReminders($bookingData['date'], $bookingData['time'], $uuid);
 
         // Send push notification to business owner
         try {
             $push = new PushNotification();
             $push->notifyNewBooking([
                 'business_id' => $business['id'],
-                'guest_name' => $guestName,
-                'customer_name' => $customerName,
+                'guest_name' => $bookingData['guest_name'],
+                'customer_name' => $bookingData['customer_name'],
                 'service_name' => $service['name'],
-                'appointment_date' => $date,
-                'appointment_time' => $time
+                'appointment_date' => $bookingData['date'],
+                'appointment_time' => $bookingData['time']
             ]);
         } catch (\Exception $e) {
             error_log('Push notification failed: ' . $e->getMessage());
         }
 
-        return $this->redirect("/booking/$uuid");
+        // Clear pending booking from session
+        unset($_SESSION['pending_booking']);
+
+        // Redirect to payment
+        return $this->redirect("/payment/create/$uuid");
+    }
+
+    /**
+     * Schedule both 24h and 1h reminders
+     */
+    private function scheduleReminders(string $date, string $time, string $uuid): void
+    {
+        try {
+            // Get booking ID
+            $stmt = $this->db->query("SELECT id FROM bookings WHERE uuid = ?", [$uuid]);
+            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$booking) return;
+
+            $appointmentDateTime = new \DateTime("{$date} {$time}");
+            $now = new \DateTime();
+
+            // Schedule 24-hour reminder
+            $reminder24h = clone $appointmentDateTime;
+            $reminder24h->modify('-24 hours');
+            if ($reminder24h > $now) {
+                $this->db->query(
+                    "INSERT INTO booking_reminders (booking_id, reminder_type, scheduled_for, status)
+                     VALUES (?, '24h', ?, 'pending')",
+                    [$booking['id'], $reminder24h->format('Y-m-d H:i:s')]
+                );
+            }
+
+            // Schedule 1-hour reminder
+            $reminder1h = clone $appointmentDateTime;
+            $reminder1h->modify('-1 hour');
+            if ($reminder1h > $now) {
+                $this->db->query(
+                    "INSERT INTO booking_reminders (booking_id, reminder_type, scheduled_for, status)
+                     VALUES (?, '1h', ?, 'pending')",
+                    [$booking['id'], $reminder1h->format('Y-m-d H:i:s')]
+                );
+            }
+        } catch (\Exception $e) {
+            error_log("Failed to schedule reminders: " . $e->getMessage());
+        }
     }
 
     public function show(string $uuid): string
@@ -245,14 +452,25 @@ class BookingController extends Controller
         $hoursUntilAppointment = ($appointmentDateTime->getTimestamp() - $now->getTimestamp()) / 3600;
         $isLateCancel = $hoursUntilAppointment <= 24 && $hoursUntilAppointment > 0;
 
-        // Calculate refund amounts
-        $refundAmount = $booking['total_price'];
-        $businessFee = 0;
+        // Platform administration fee (always charged on cancellation)
+        $platformFee = 1.75;
 
-        if ($isLateCancel && $booking['payment_status'] === 'paid') {
-            // 50% goes to business on late cancellation
-            $businessFee = round($booking['total_price'] / 2, 2);
-            $refundAmount = $booking['total_price'] - $businessFee;
+        // Calculate refund amounts
+        $totalPrice = $booking['total_price'];
+        $businessFee = 0;
+        $refundAmount = 0;
+
+        if ($booking['payment_status'] === 'paid') {
+            if ($isLateCancel) {
+                // Within 24 hours: 50% to business, 50% to customer (minus platform fee)
+                $businessFee = round($totalPrice / 2, 2);
+                $customerShare = $totalPrice - $businessFee;
+                $refundAmount = max(0, $customerShare - $platformFee);
+            } else {
+                // More than 24 hours: 100% to customer (minus platform fee)
+                $businessFee = 0;
+                $refundAmount = max(0, $totalPrice - $platformFee);
+            }
         }
 
         // Update booking status
@@ -261,15 +479,16 @@ class BookingController extends Controller
                 status = 'cancelled',
                 cancelled_at = NOW(),
                 cancellation_fee = ?,
-                refund_amount = ?
+                refund_amount = ?,
+                platform_cancellation_fee = ?
              WHERE uuid = ?",
-            [$businessFee, $refundAmount, $uuid]
+            [$businessFee, $refundAmount, $platformFee, $uuid]
         );
 
         // Send cancellation email to customer
         $customerEmail = $booking['guest_email'] ?? $this->getUserEmail($booking['user_id']);
         if ($customerEmail) {
-            $this->sendCancellationEmail($booking, $customerEmail, $refundAmount, $businessFee, $isLateCancel);
+            $this->sendCancellationEmail($booking, $customerEmail, $refundAmount, $businessFee, $platformFee, $isLateCancel);
         }
 
         // Notify business of cancellation
@@ -286,24 +505,28 @@ class BookingController extends Controller
     /**
      * Send cancellation confirmation email to customer
      */
-    private function sendCancellationEmail(array $booking, string $email, float $refundAmount, float $businessFee, bool $isLateCancel): void
+    private function sendCancellationEmail(array $booking, string $email, float $refundAmount, float $businessFee, float $platformFee, bool $isLateCancel): void
     {
+        $totalPrice = $booking['total_price'];
         $refundFormatted = number_format($refundAmount, 2, ',', '.');
-        $feeFormatted = number_format($businessFee, 2, ',', '.');
+        $businessFeeFormatted = number_format($businessFee, 2, ',', '.');
+        $platformFeeFormatted = number_format($platformFee, 2, ',', '.');
+        $totalFormatted = number_format($totalPrice, 2, ',', '.');
 
-        $feeNotice = '';
+        // Build cost breakdown
+        $breakdownRows = '';
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#666;'>Origineel bedrag:</td><td style='padding:8px 0;text-align:right;'>EUR {$totalFormatted}</td></tr>";
+
         if ($isLateCancel && $businessFee > 0) {
-            $feeNotice = <<<HTML
-<div style="background:#f5f5f5;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
-    <p style="margin:0;color:#000000;font-weight:600;">
-        <i>⚠️</i> Annulering binnen 24 uur
-    </p>
-    <p style="margin:10px 0 0;color:#dc2626;">
-        €{$feeFormatted} gaat naar {$booking['business_name']}
-    </p>
-</div>
-HTML;
+            $breakdownRows .= "<tr><td style='padding:8px 0;color:#dc2626;'>Naar salon (annulering binnen 24u):</td><td style='padding:8px 0;text-align:right;color:#dc2626;'>- EUR {$businessFeeFormatted}</td></tr>";
         }
+
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#666;'>Administratiekosten:</td><td style='padding:8px 0;text-align:right;color:#666;'>- EUR {$platformFeeFormatted}</td></tr>";
+        $breakdownRows .= "<tr style='border-top:2px solid #e5e7eb;'><td style='padding:12px 0 0;font-weight:600;color:#22c55e;'>Terugbetaling:</td><td style='padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:1.1rem;'>EUR {$refundFormatted}</td></tr>";
+
+        $cancelTypeNotice = $isLateCancel
+            ? "<div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#991b1b;font-weight:600;'>Annulering binnen 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#991b1b;font-size:0.9rem;'>50% van het bedrag gaat naar de salon als compensatie.</p></div>"
+            : "<div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#166534;font-weight:600;'>Annulering meer dan 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#166534;font-size:0.9rem;'>Je ontvangt het volledige bedrag terug, minus administratiekosten.</p></div>";
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -315,40 +538,48 @@ HTML;
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
                     <tr>
-                        <td style="background:linear-gradient(135deg,#333333,#dc2626);padding:40px;text-align:center;color:#fff;">
-                            <div style="font-size:48px;margin-bottom:10px;">✕</div>
-                            <h1 style="margin:0;font-size:24px;">Boeking geannuleerd</h1>
+                        <td style="background:#000;padding:30px;text-align:center;color:#fff;">
+                            <h1 style="margin:0;font-size:22px;">Boeking geannuleerd</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Je boeking is geannuleerd</p>
-                            <div style="background:#fafafa;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0;color:#666;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
-                                <p style="margin:10px 0 0;color:#666;"><strong>Salon:</strong> {$booking['business_name']}</p>
-                                <p style="margin:10px 0 0;color:#666;"><strong>Datum:</strong> {$booking['appointment_date']}</p>
+                        <td style="padding:30px;">
+                            <div style="background:#fafafa;border-radius:12px;padding:20px;margin-bottom:20px;">
+                                <p style="margin:0;color:#666;font-size:0.9rem;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
+                                <p style="margin:8px 0 0;color:#666;font-size:0.9rem;"><strong>Salon:</strong> {$booking['business_name']}</p>
+                                <p style="margin:8px 0 0;color:#666;font-size:0.9rem;"><strong>Datum:</strong> {$booking['appointment_date']}</p>
                             </div>
 
-                            {$feeNotice}
+                            {$cancelTypeNotice}
 
-                            <div style="background:#f0fdf4;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#000000;font-weight:600;">Terugbetaling</p>
-                                <p style="margin:10px 0 0;color:#000000;font-size:1.5rem;font-weight:700;">€{$refundFormatted}</p>
-                                <p style="margin:10px 0 0;color:#000000;font-size:0.9rem;">
-                                    Wordt binnen 5-10 werkdagen teruggestort
+                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:20px 0;">
+                                <p style="margin:0 0 15px;font-weight:600;color:#333;">Overzicht terugbetaling</p>
+                                <table style="width:100%;font-size:0.9rem;">
+                                    {$breakdownRows}
+                                </table>
+                            </div>
+
+                            <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:15px;margin:20px 0;">
+                                <p style="margin:0;color:#92400e;font-size:0.85rem;">
+                                    <strong>Waarom administratiekosten?</strong><br>
+                                    De administratiekosten van EUR {$platformFeeFormatted} dekken de verwerking van je annulering en terugbetaling. We raden aan om goed na te denken voordat je boekt, zodat je deze kosten in de toekomst kunt vermijden.
                                 </p>
                             </div>
 
-                            <p style="text-align:center;margin-top:30px;">
-                                <a href="https://glamourschedule.nl/search" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#fff;padding:14px 35px;border-radius:30px;text-decoration:none;font-weight:600;">
+                            <p style="color:#666;font-size:0.9rem;margin:20px 0;">
+                                Je terugbetaling van <strong>EUR {$refundFormatted}</strong> wordt binnen 5-10 werkdagen op je rekening gestort.
+                            </p>
+
+                            <p style="text-align:center;margin-top:25px;">
+                                <a href="https://glamourschedule.nl/search" style="display:inline-block;background:#000;color:#fff;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:600;">
                                     Nieuwe afspraak maken
                                 </a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule</p>
+                        <td style="background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#999;font-size:12px;">GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -497,6 +728,15 @@ HTML;
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
 
+    private function getBusinessByUuid(string $uuid): ?array
+    {
+        $stmt = $this->db->query(
+            "SELECT *, company_name as name FROM businesses WHERE uuid = ? AND status = 'active'",
+            [$uuid]
+        );
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
+
     private function getServices(int $businessId): array
     {
         $stmt = $this->db->query(
@@ -592,7 +832,32 @@ HTML;
             }
         }
 
-        return json_encode(['slots' => $availableSlots]);
+        // Check if any slots are available
+        $hasAvailableSlots = false;
+        foreach ($availableSlots as $slot) {
+            if ($slot['available']) {
+                $hasAvailableSlots = true;
+                break;
+            }
+        }
+
+        $response = ['slots' => $availableSlots];
+
+        // If no available slots, find the next available date/time
+        if (!$hasAvailableSlots) {
+            $nextAvailable = $this->findNextAvailableDateTime(
+                $business['id'],
+                $serviceId,
+                $duration,
+                $employeeId,
+                date('Y-m-d', strtotime($date . ' +1 day')) // Start from next day
+            );
+            if ($nextAvailable) {
+                $response['nextAvailable'] = $nextAvailable;
+            }
+        }
+
+        return json_encode($response);
     }
 
     private function getBookedSlots(int $businessId, string $date, ?int $employeeId = null): array
@@ -650,6 +915,52 @@ HTML;
         $end2 = $start2 + ($duration2 * 60);
 
         return ($start1 < $end2) && ($start2 < $end1);
+    }
+
+    /**
+     * Find the next available date and time slot for a service
+     */
+    private function findNextAvailableDateTime(int $businessId, int $serviceId, int $duration, ?int $employeeId = null, string $startDate = null): ?array
+    {
+        $startDate = $startDate ?? date('Y-m-d');
+        $maxDaysToSearch = 60; // Search up to 60 days ahead
+
+        for ($i = 0; $i < $maxDaysToSearch; $i++) {
+            $checkDate = date('Y-m-d', strtotime($startDate . ' +' . $i . ' days'));
+            $bookedSlots = $this->getBookedSlots($businessId, $checkDate, $employeeId);
+
+            // Generate all possible time slots (9:00 - 18:00, every 30 min)
+            for ($h = 9; $h <= 18; $h++) {
+                for ($m = 0; $m < 60; $m += 30) {
+                    $time = sprintf('%02d:%02d', $h, $m);
+                    $endTime = date('H:i', strtotime($time) + ($duration * 60));
+
+                    // Skip if slot ends after closing time
+                    if ($endTime > '19:00') continue;
+
+                    // Skip past times for today
+                    if ($checkDate === date('Y-m-d') && $time <= date('H:i')) continue;
+
+                    // Check if slot overlaps with any booked slot
+                    $isAvailable = true;
+                    foreach ($bookedSlots as $booked) {
+                        if ($this->timeSlotsOverlap($time, $duration, $booked['time'], $booked['duration'])) {
+                            $isAvailable = false;
+                            break;
+                        }
+                    }
+
+                    if ($isAvailable) {
+                        return [
+                            'date' => $checkDate,
+                            'time' => $time
+                        ];
+                    }
+                }
+            }
+        }
+
+        return null; // No available slot found within search range
     }
 
     private function getUserEmail(?int $userId): ?string
@@ -1081,8 +1392,8 @@ HTML;
             $waitlistEntry = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($waitlistEntry) {
-                // Update waitlist status
-                $expiresAt = date('Y-m-d H:i:s', strtotime('+24 hours'));
+                // Update waitlist status - 60 minutes to respond
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+60 minutes'));
                 $this->db->query(
                     "UPDATE booking_waitlist SET status = 'notified', notified_at = NOW(), expires_at = ? WHERE id = ?",
                     [$expiresAt, $waitlistEntry['id']]
@@ -1159,7 +1470,7 @@ HTML;
                                 <p style="margin:0;color:#333;font-size:14px;">
                                     <strong>Wat gebeurt er nu?</strong><br><br>
                                     Zodra er een plek vrijkomt op jouw gewenste datum, sturen we je direct een e-mail.
-                                    Je hebt dan 24 uur om te boeken voordat de plek naar de volgende persoon gaat.
+                                    Je hebt dan 60 minuten om te boeken voordat de plek naar de volgende persoon gaat.
                                 </p>
                             </div>
 
@@ -1227,10 +1538,10 @@ HTML;
                                 <p style="margin:10px 0 0;color:#666;">{$data['service_name']}</p>
                             </div>
 
-                            <div style="background:#fafafa;border-left:4px solid #000000;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
-                                <p style="margin:0;color:#333;font-size:14px;">
-                                    <strong>Let op!</strong><br>
-                                    Je hebt <strong>24 uur</strong> om te boeken, daarna gaat de plek naar de volgende persoon op de wachtlijst.
+                            <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
+                                <p style="margin:0;color:#991b1b;font-size:14px;">
+                                    <strong>Let op - Beperkte tijd!</strong><br>
+                                    Je hebt <strong>60 minuten</strong> om te boeken, daarna gaat de plek automatisch naar de volgende persoon op de wachtlijst.
                                 </p>
                             </div>
 

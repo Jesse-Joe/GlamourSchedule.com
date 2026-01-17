@@ -458,7 +458,7 @@ class AuthController extends Controller
         ";
 
         try {
-            $mailer = new Mailer($this->config['mail']);
+            $mailer = new Mailer();
             $mailer->send($email, $subject, $body);
         } catch (\Exception $e) {
             error_log("Failed to send verification email: " . $e->getMessage());

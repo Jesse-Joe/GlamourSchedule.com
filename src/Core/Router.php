@@ -5,8 +5,6 @@ class Router
 {
     private array $routes = [];
     private array $groupStack = [];
-    private ?string $subdomain = null;
-    private array $mainDomains = ['glamourschedule.nl', 'glamourschedule.com', 'new.glamourschedule.nl', 'localhost'];
 
     /**
      * Get the current base domain (.nl, .com, or localhost)
@@ -88,58 +86,10 @@ class Router
         ];
     }
 
-    /**
-     * Extract subdomain from the host
-     * Returns null if it's a main domain, or the subdomain slug
-     */
-    private function extractSubdomain(): ?string
-    {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-
-        // Remove port if present
-        $host = preg_replace('/:\d+$/', '', $host);
-
-        // Check if it's a main domain (no subdomain routing)
-        foreach ($this->mainDomains as $mainDomain) {
-            if ($host === $mainDomain || $host === 'www.' . $mainDomain) {
-                return null;
-            }
-        }
-
-        // Extract subdomain from host like "salon-elegance.glamourschedule.nl"
-        foreach (['glamourschedule.nl', 'glamourschedule.com'] as $baseDomain) {
-            if (str_ends_with($host, '.' . $baseDomain)) {
-                $subdomain = str_replace('.' . $baseDomain, '', $host);
-                // Skip www subdomain
-                if ($subdomain !== 'www' && $subdomain !== 'new') {
-                    return $subdomain;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the current subdomain (business slug) if any
-     */
-    public function getSubdomain(): ?string
-    {
-        return $this->subdomain;
-    }
-
     public function dispatch(string $method, string $uri): string
     {
         $uri = parse_url($uri, PHP_URL_PATH);
         $uri = rtrim($uri, '/') ?: '/';
-
-        // Check for subdomain-based business routing
-        $this->subdomain = $this->extractSubdomain();
-
-        if ($this->subdomain !== null) {
-            // Route to business page via subdomain
-            return $this->handleSubdomainRequest($method, $uri, $this->subdomain);
-        }
 
         // Treat HEAD requests as GET
         $routeMethod = ($method === 'HEAD') ? 'GET' : $method;
@@ -229,53 +179,6 @@ class Router
             default:
                 return true;
         }
-    }
-
-    /**
-     * Handle requests coming through a business subdomain
-     * Routes to the business page or booking page based on the URI
-     */
-    private function handleSubdomainRequest(string $method, string $uri, string $slug): string
-    {
-        $routeMethod = ($method === 'HEAD') ? 'GET' : $method;
-
-        // Map subdomain routes to regular routes with the business slug
-        // / -> BusinessController@show (show business page)
-        // /book -> BookingController@create
-        // /book (POST) -> BookingController@store
-        // Other paths fall through to regular routing
-
-        if ($uri === '/' && $routeMethod === 'GET') {
-            // Show business page
-            return $this->callAction('BusinessController@show', [$slug], []);
-        }
-
-        if ($uri === '/book') {
-            if ($routeMethod === 'GET') {
-                return $this->callAction('BookingController@create', [$slug], []);
-            }
-            if ($routeMethod === 'POST') {
-                return $this->callAction('BookingController@store', [$slug], []);
-            }
-        }
-
-        // For API routes and other paths, try regular routing
-        foreach ($this->routes as $route) {
-            if ($route['method'] !== $routeMethod) {
-                continue;
-            }
-
-            $pattern = $this->convertToRegex($route['path']);
-
-            if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches);
-                return $this->callAction($route['action'], $matches, $route['middleware']);
-            }
-        }
-
-        // If no route matches, show 404
-        http_response_code(404);
-        return $this->render404();
     }
 
     private function render404(): string

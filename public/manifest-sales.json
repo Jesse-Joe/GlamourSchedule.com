@@ -1,26 +1,76 @@
 {
-    "name": "GlamourSchedule Sales",
-    "short_name": "GS Sales",
-    "description": "Sales Partner Portal voor GlamourSchedule",
-    "start_url": "/sales/dashboard",
-    "display": "standalone",
-    "background_color": "#0f172a",
-    "theme_color": "#0f172a",
-    "orientation": "portrait",
-    "icons": [
-        {
-            "src": "/images/sales-icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/images/sales-icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
-        }
-    ],
-    "categories": ["business", "productivity"],
-    "lang": "nl"
+  "name": "GlamourSchedule Sales Portal",
+  "short_name": "GS Sales",
+  "description": "Sales Partner Portal voor GlamourSchedule. Beheer je referrals en commissies.",
+  "start_url": "/sales/dashboard?source=pwa",
+  "scope": "/sales/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "nl",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "sales"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/images/sales-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/sales-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/sales-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/sales-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/sales-dashboard.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Sales Dashboard"
+    },
+    {
+      "src": "/screenshots/sales-referrals.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Referrals overzicht"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Bekijk je sales statistieken",
+      "url": "/sales/dashboard?source=pwa",
+      "icons": [{"src": "/images/sales-icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Materiaal",
+      "short_name": "Materiaal",
+      "description": "Download marketing materiaal",
+      "url": "/sales/materials?source=pwa",
+      "icons": [{"src": "/images/sales-icon-192.png", "sizes": "192x192"}]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

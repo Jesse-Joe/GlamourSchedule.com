@@ -170,6 +170,24 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                         </div>
                     </div>
                 </div>
+
+                <!-- Cash Betaling Disclaimer -->
+                <div style="padding:1rem;background:#fef2f2;border-radius:12px;border:1px solid #ef4444;margin-top:1rem">
+                    <div style="display:flex;align-items:flex-start;gap:0.75rem">
+                        <i class="fas fa-exclamation-triangle" style="color:#dc2626;font-size:1.25rem;margin-top:0.125rem"></i>
+                        <div>
+                            <p style="margin:0;font-weight:600;color:#dc2626">Belangrijke informatie bij cash betalingen</p>
+                            <ul style="margin:0.75rem 0 0 0;padding-left:1.25rem;font-size:0.9rem;color:#991b1b;line-height:1.6">
+                                <li><strong>No-shows & weigeringen:</strong> GlamourSchedule neemt geen verantwoordelijkheid voor klanten die weigeren te betalen of niet komen opdagen bij cash boekingen.</li>
+                                <li><strong>Uw kosten:</strong> U betaalt alleen de €1,75 platform fee per boeking, ongeacht of de klant komt opdagen.</li>
+                                <li><strong>Annuleringsbeleid:</strong> Het standaard annuleringsbeleid van 50% bij annulering binnen 24 uur blijft van toepassing. Bij no-shows ontvangt u dit bedrag niet automatisch.</li>
+                            </ul>
+                            <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#991b1b">
+                                <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Overweeg om alleen online betalingen te accepteren voor maximale zekerheid.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card">
@@ -277,6 +295,17 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     </div>
                 </div>
             </div>
+
+            <!-- Bedrijf Opzeggen -->
+            <div class="card" style="border-color:#dc2626;background:rgba(220,38,38,0.1)">
+                <h4 style="color:#ef4444;margin-bottom:0.75rem"><i class="fas fa-exclamation-triangle"></i> Bedrijf Opzeggen</h4>
+                <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem">
+                    Wil je je bedrijfsaccount opzeggen? Dit verwijdert je bedrijf permanent van het platform.
+                </p>
+                <button type="button" onclick="showBusinessDeleteModal()" class="btn" style="width:100%;background:#dc2626;color:white;border:none;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer">
+                    <i class="fas fa-trash-alt"></i> Bedrijf Verwijderen
+                </button>
+            </div>
         </div>
     </div>
 
@@ -287,6 +316,39 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
     </div>
 </form>
 
+<!-- Delete Business Modal -->
+<div id="businessDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:450px;width:100%">
+        <div style="text-align:center;margin-bottom:1.5rem">
+            <i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:2.5rem"></i>
+            <h3 style="color:var(--text);margin:1rem 0 0 0">Bedrijf Permanent Verwijderen?</h3>
+        </div>
+        <p style="color:var(--text-light);line-height:1.6;margin-bottom:1rem">
+            Weet je zeker dat je <strong style="color:var(--text)"><?= htmlspecialchars($business['company_name'] ?? '') ?></strong> wilt verwijderen?
+        </p>
+        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem">
+            <p style="color:#ef4444;font-size:0.9rem;margin:0"><strong>Let op:</strong> Dit verwijdert permanent:</p>
+            <ul style="color:#ef4444;font-size:0.85rem;margin:0.5rem 0 0 1.25rem;padding:0">
+                <li>Alle boekingen en agenda</li>
+                <li>Alle services en prijzen</li>
+                <li>Alle reviews en foto's</li>
+                <li>Je publieke bedrijfspagina</li>
+            </ul>
+        </div>
+        <p style="color:var(--text);margin-bottom:0.75rem"><strong>Typ "VERWIJDER" om te bevestigen:</strong></p>
+        <form method="POST" action="/business/delete" id="businessDeleteForm">
+            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
+            <input type="text" name="confirm_text" id="businessConfirmText" placeholder="Typ VERWIJDER" autocomplete="off" style="width:100%;padding:0.875rem 1rem;border:2px solid var(--border);border-radius:10px;font-size:1rem;background:var(--secondary);color:var(--text);box-sizing:border-box">
+            <div style="display:flex;gap:1rem;margin-top:1.5rem">
+                <button type="button" onclick="hideBusinessDeleteModal()" style="flex:1;padding:0.875rem;background:var(--secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer">Annuleren</button>
+                <button type="submit" id="businessDeleteBtn" disabled style="flex:1;padding:0.875rem;background:#dc2626;color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer;opacity:0.5">
+                    <i class="fas fa-trash-alt"></i> Verwijderen
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function copyLink() {
         const link = 'https://glamourschedule.nl/business/<?= htmlspecialchars($business['slug'] ?? '') ?>';
@@ -294,6 +356,28 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
             alert('Link gekopieerd!');
         });
     }
+
+    function showBusinessDeleteModal() {
+        document.getElementById('businessDeleteModal').style.display = 'flex';
+        document.getElementById('businessConfirmText').focus();
+    }
+
+    function hideBusinessDeleteModal() {
+        document.getElementById('businessDeleteModal').style.display = 'none';
+        document.getElementById('businessConfirmText').value = '';
+        document.getElementById('businessDeleteBtn').disabled = true;
+        document.getElementById('businessDeleteBtn').style.opacity = '0.5';
+    }
+
+    document.getElementById('businessConfirmText').addEventListener('input', function() {
+        const isValid = this.value === 'VERWIJDER';
+        document.getElementById('businessDeleteBtn').disabled = !isValid;
+        document.getElementById('businessDeleteBtn').style.opacity = isValid ? '1' : '0.5';
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') hideBusinessDeleteModal();
+    });
 </script>
 
 <?php $content = ob_get_clean(); ?>

@@ -176,6 +176,10 @@ return [
     'select_time_slot' => 'Sélectionnez une heure',
     'time_booked' => 'réservé',
     'no_times_this_day' => 'Aucun horaire disponible ce jour',
+    'next_available_date' => 'Prochaine date disponible',
+    'or_join_waitlist' => 'ou inscrivez-vous sur la liste d\'attente',
+    'join_waitlist' => 'Liste d\'attente',
+    'waitlist_for_date' => 'Liste d\'attente pour le',
     'terms_cancel_notice' => 'Je comprends qu\'une annulation dans les 24 heures précédant le rendez-vous entraînera des frais de 50%.',
     'payment_required' => 'Paiement requis',
     'complete_payment_to_confirm' => 'Finalisez le paiement pour confirmer votre réservation',
@@ -196,6 +200,13 @@ return [
     'no_results' => 'Aucun résultat trouvé',
     'try_different' => 'Essayez d\'autres termes de recherche',
     'reviews' => 'avis',
+    'nearest' => 'Plus proche',
+    'best_rated' => 'Mieux noté',
+    'most_reviews' => 'Plus d\'avis',
+    'price_low_high' => 'Prix croissant',
+    'price_high_low' => 'Prix décroissant',
+    'name_az' => 'Nom A-Z',
+    'newest_first' => 'Plus récent',
 
     // ═══════════════════════════════════════════════════════════════════════
     // PAIEMENT
@@ -423,4 +434,105 @@ return [
     'pages' => 'Pages',
     'no_results_for' => 'Aucun résultat pour',
     'search_all_salons' => 'Rechercher tous les salons',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // NAVIGATION & LAYOUT
+    // ═══════════════════════════════════════════════════════════════════════
+    'navigation' => 'Navigation',
+    'my_account' => 'Mon Compte',
+    'my_salon' => 'Mon Salon',
+    'salon_dashboard' => 'Tableau de bord Salon',
+    'appointments' => 'Rendez-vous',
+    'for_business' => 'Pour Professionnels',
+    'register_salon' => 'Inscrire un Salon',
+    'become_partner' => 'Devenir Partenaire',
+    'sales_portal' => 'Portail Commercial',
+    'features' => 'Fonctionnalités',
+    'footer_desc' => 'La plateforme de réservation premium. Trouvez et réservez les meilleurs salons.',
+    'company' => 'Entreprise',
+    'legal' => 'Mentions légales',
+    'rights' => 'Tous droits réservés.',
+    'developed_by' => 'Développé par',
+    'marketing' => 'Marketing',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CATÉGORIES
+    // ═══════════════════════════════════════════════════════════════════════
+    'categories_title' => 'Découvrez les Services',
+    'categories_subtitle' => 'Des cheveux au bien-être - trouvez exactement ce que vous cherchez',
+    'cat_hair' => 'Cheveux',
+    'cat_hair_desc' => 'Coiffeur, Barbier, Styliste',
+    'cat_nails' => 'Ongles',
+    'cat_nails_desc' => 'Manucure, Pédicure, Gel',
+    'cat_skin' => 'Soins de la peau',
+    'cat_skin_desc' => 'Soin du visage, Skincare',
+    'cat_body' => 'Corps',
+    'cat_body_desc' => 'Massage, Corps',
+    'cat_hairremoval' => 'Épilation',
+    'cat_hairremoval_desc' => 'Cire, Laser',
+    'cat_makeup' => 'Maquillage',
+    'cat_makeup_desc' => 'Maquillage, Cils',
+    'cat_wellness' => 'Bien-être',
+    'cat_wellness_desc' => 'Spa, Sauna',
+    'cat_tanning' => 'Bronzage',
+    'cat_tanning_desc' => 'Solarium, Spray tan',
+    'cat_medical' => 'Médical',
+    'cat_medical_desc' => 'Botox, Fillers',
+    'cat_alternative' => 'Alternatif',
+    'cat_alternative_desc' => 'Yoga, Reiki',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SECTIONS PAGE D'ACCUEIL
+    // ═══════════════════════════════════════════════════════════════════════
+    'featured' => 'À la une',
+    'featured_businesses' => 'Entreprises à la une',
+    'featured_businesses_desc' => 'Salons premium qui se démarquent',
+    'slot_available' => 'Place disponible',
+    'slot_available_desc' => 'Mettez votre salon en avant et touchez plus de clients',
+    'slot_duration' => '30 jours en vedette',
+    'become_sales_partner' => 'Devenir partenaire commercial',
+    'sales_partner_desc' => 'Gagnez des commissions en recommandant des entreprises à GlamourSchedule',
+    'start_now' => 'Commencer maintenant',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLAMORI CHATBOT
+    // ═══════════════════════════════════════════════════════════════════════
+    'online_always_available' => 'En ligne - Toujours disponible',
+    'type_your_message' => 'Écrivez votre message...',
+    'glamori_welcome' => 'Bonjour ! Je suis Glamori. Comment puis-je vous aider ?',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TERMINAUX MOLLIE
+    // ═══════════════════════════════════════════════════════════════════════
+    'terminals' => 'Terminaux de paiement',
+    'terminals_desc' => 'Gérez vos terminaux de paiement Mollie',
+    'linked_terminals' => 'Terminaux liés',
+    'available_terminals' => 'Terminaux disponibles',
+    'no_terminals_linked' => 'Aucun terminal lié',
+    'link_terminal_hint' => 'Liez un terminal de la liste ci-dessous pour accepter les paiements par carte',
+    'terminal_linked' => 'Terminal lié avec succès',
+    'terminal_link_failed' => 'Échec de la liaison du terminal',
+    'terminal_unlinked' => 'Terminal supprimé',
+    'terminal_unlink_failed' => 'Échec de la suppression du terminal',
+    'new_payment' => 'Nouveau paiement',
+    'new_terminal_payment' => 'Nouveau paiement par terminal',
+    'start_payment' => 'Démarrer le paiement',
+    'waiting_for_payment' => 'En attente du paiement...',
+    'customer_should_tap' => 'Le client peut maintenant présenter ou insérer sa carte',
+    'payment_started' => 'Paiement démarré sur le terminal',
+    'payment_successful' => 'Paiement réussi !',
+    'payment_received' => 'Paiement reçu',
+    'payment_canceled' => 'Paiement annulé',
+    'payment_not_completed' => 'Le paiement n\'a pas pu être effectué',
+    'cancel_payment' => 'Annuler le paiement',
+    'try_again' => 'Réessayer',
+    'confirm_unlink' => 'Êtes-vous sûr de vouloir supprimer ce terminal ?',
+    'transactions_today' => 'Transactions aujourd\'hui',
+    'total_received' => 'Total reçu',
+    'successful' => 'Réussi',
+    'failed_canceled' => 'Échoué/Annulé',
+    'recent_transactions' => 'Transactions récentes',
+    'no_transactions' => 'Aucune transaction',
+    'active' => 'Actif',
+    'link' => 'Lier',
 ];

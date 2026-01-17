@@ -702,7 +702,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                     <input type="text"
                            class="form-control"
                            id="customerSearch"
-                           placeholder="Zoek klant op naam, email of telefoon..."
+                           placeholder="Zoek klant op ID, naam, email of telefoon..."
                            autocomplete="off">
                     <div class="customer-search-results" id="customerResults">
                         <!-- Results will be populated via JS -->
@@ -908,7 +908,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
                 <div style="padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer"
                      onclick="quickSelectCustomer(<?= $customer['id'] ?>, '<?= htmlspecialchars(addslashes($customer['name'])) ?>', '<?= htmlspecialchars($customer['email'] ?? '') ?>', '<?= htmlspecialchars($customer['phone'] ?? '') ?>')">
-                    <strong><?= htmlspecialchars($customer['name']) ?></strong>
+                    <strong><?= htmlspecialchars($customer['name']) ?></strong> <span style="color:var(--text-light);font-size:0.75rem">#<?= $customer['id'] ?></span>
                     <?php if (!empty($customer['email'])): ?>
                         <br><small class="text-muted"><?= htmlspecialchars($customer['email']) ?></small>
                     <?php endif; ?>
@@ -1091,7 +1091,7 @@ function searchCustomers(query) {
                 div.className = 'customer-result-item';
                 div.innerHTML = `
                     <div>
-                        <div class="name">${escapeHtml(c.name)}</div>
+                        <div class="name">${escapeHtml(c.name)} <span style="color:var(--text-light);font-size:0.75rem;font-weight:normal">#${c.id}</span></div>
                         <div class="details">${c.email || ''} ${c.phone ? '• ' + c.phone : ''}</div>
                     </div>
                     ${c.total_appointments > 0 ? '<span class="badge">' + c.total_appointments + ' bezoeken</span>' : ''}
@@ -1115,7 +1115,7 @@ function selectCustomer(customer) {
     selectedCustomer = customer;
     document.getElementById('selectedCustomerId').value = customer.id;
     document.getElementById('customerAvatar').textContent = customer.name.charAt(0).toUpperCase();
-    document.getElementById('customerName').textContent = customer.name;
+    document.getElementById('customerName').innerHTML = customer.name + ' <span style="color:var(--text-light);font-size:0.8rem;font-weight:normal">#' + customer.id + '</span>';
     document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || 'Geen contactgegevens';
 
     document.getElementById('selectedCustomerBadge').style.display = 'flex';

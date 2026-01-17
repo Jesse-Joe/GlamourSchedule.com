@@ -31,7 +31,7 @@ return [
     'app' => [
         'name' => 'GlamourSchedule',
         'version' => '2.0.0',
-        'url' => 'https://new.glamourschedule.nl',
+        'url' => 'https://glamourschedule.com',
         'debug' => false,
         'timezone' => 'Europe/Amsterdam',
         'locale' => 'nl',
@@ -146,10 +146,10 @@ return [
     'mollie' => [
         'api_key' => getenv('MOLLIE_API_KEY') ?: '',
         'test_mode' => false,
-        'webhook_url' => 'https://new.glamourschedule.nl/api/webhooks/mollie',
-        'redirect_url' => 'https://new.glamourschedule.nl/payment/complete',
+        'webhook_url' => 'https://glamourschedule.com/api/webhooks/mollie',
+        'redirect_url' => 'https://glamourschedule.com/payment/complete',
     ],
-    
+
     // ═══════════════════════════════════════════════════════════════════════
     // EMAIL SETTINGS
     // ═══════════════════════════════════════════════════════════════════════
@@ -160,7 +160,7 @@ return [
         'username' => getenv('MAIL_USERNAME') ?: '',
         'password' => getenv('MAIL_PASSWORD') ?: '',
         'encryption' => 'tls',
-        'from_address' => 'noreply@glamourschedule.nl',
+        'from_address' => 'noreply@glamourschedule.com',
         'from_name' => 'GlamourSchedule',
     ],
     

@@ -1,13 +1,27 @@
 /**
  * GlamourSchedule Service Worker
- * Handles push notifications and offline caching
+ * Handles push notifications, offline caching, and background sync
  */
 
-const CACHE_NAME = 'glamourschedule-v3';
+const CACHE_NAME = 'glamourschedule-v4';
+const OFFLINE_URL = '/offline.html';
+
 const STATIC_ASSETS = [
     '/',
-    '/manifest.json'
+    '/manifest.json',
+    '/css/prestige.css',
+    '/icon-192.png',
+    '/icon-512.png',
+    '/apple-touch-icon.png',
+    '/images/gs-logo-circle.svg',
+    OFFLINE_URL
 ];
+
+const CACHE_STRATEGIES = {
+    cacheFirst: ['image', 'font', 'style'],
+    networkFirst: ['document', 'script'],
+    staleWhileRevalidate: []
+};
 
 // Install event - cache static assets
 self.addEventListener('install', event => {
@@ -24,32 +38,71 @@ self.addEventListener('activate', event => {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames
-                    .filter(name => name !== CACHE_NAME)
+                    .filter(name => name.startsWith('glamourschedule-') && name !== CACHE_NAME)
                     .map(name => caches.delete(name))
             );
         }).then(() => self.clients.claim())
     );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - serve from cache with network fallback
 self.addEventListener('fetch', event => {
+    const { request } = event;
+    const url = new URL(request.url);
+
     // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
+    if (request.method !== 'GET') return;
 
-    // Skip API requests
-    if (event.request.url.includes('/api/')) return;
+    // Skip API requests (always network)
+    if (url.pathname.startsWith('/api/')) return;
 
+    // Skip external requests
+    if (url.origin !== self.location.origin) return;
+
+    // Handle navigation requests
+    if (request.mode === 'navigate') {
+        event.respondWith(
+            fetch(request)
+                .catch(() => caches.match(OFFLINE_URL))
+        );
+        return;
+    }
+
+    // Cache-first for static assets
+    if (isStaticAsset(url.pathname)) {
+        event.respondWith(
+            caches.match(request)
+                .then(cached => {
+                    if (cached) return cached;
+                    return fetch(request).then(response => {
+                        if (response.ok) {
+                            const clone = response.clone();
+                            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+                        }
+                        return response;
+                    });
+                })
+        );
+        return;
+    }
+
+    // Network-first for everything else
     event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-            .catch(() => {
-                // Return offline page if available
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/');
+        fetch(request)
+            .then(response => {
+                if (response.ok && request.url.includes(self.location.origin)) {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
                 }
+                return response;
             })
+            .catch(() => caches.match(request))
     );
 });
+
+function isStaticAsset(pathname) {
+    return /\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/.test(pathname);
+}
 
 // Push notification event
 self.addEventListener('push', event => {
@@ -58,8 +111,8 @@ self.addEventListener('push', event => {
     let data = {
         title: 'GlamourSchedule',
         body: 'Je hebt een nieuw bericht',
-        icon: '/images/icon-192.png',
-        badge: '/images/badge-72.png',
+        icon: '/icon-192.png',
+        badge: '/favicon-32.png',
         tag: 'glamourschedule-notification',
         requireInteraction: false,
         data: {
@@ -78,8 +131,8 @@ self.addEventListener('push', event => {
 
     const options = {
         body: data.body,
-        icon: data.icon || '/images/icon-192.png',
-        badge: data.badge || '/images/badge-72.png',
+        icon: data.icon || '/icon-192.png',
+        badge: data.badge || '/favicon-32.png',
         tag: data.tag || 'glamourschedule-notification',
         requireInteraction: data.requireInteraction || false,
         vibrate: [200, 100, 200],
@@ -94,34 +147,21 @@ self.addEventListener('push', event => {
 
 // Notification click event
 self.addEventListener('notificationclick', event => {
-    console.log('Notification clicked', event);
-
     event.notification.close();
 
     const urlToOpen = event.notification.data?.url || '/';
 
-    // Handle action buttons
-    if (event.action) {
-        switch (event.action) {
-            case 'view':
-                // Open the URL
-                break;
-            case 'dismiss':
-                return;
-        }
-    }
+    if (event.action === 'dismiss') return;
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(clientList => {
-                // Check if there's already a window open
                 for (const client of clientList) {
                     if (client.url.includes(self.location.origin) && 'focus' in client) {
                         client.navigate(urlToOpen);
                         return client.focus();
                     }
                 }
-                // Open a new window
                 return clients.openWindow(urlToOpen);
             })
     );
@@ -135,6 +175,19 @@ self.addEventListener('sync', event => {
 });
 
 async function syncBookings() {
-    // Sync any pending bookings when back online
     console.log('Syncing bookings...');
+    // Sync any pending bookings when back online
+}
+
+// Periodic background sync
+self.addEventListener('periodicsync', event => {
+    if (event.tag === 'update-content') {
+        event.waitUntil(updateContent());
+    }
+});
+
+async function updateContent() {
+    // Refresh cached content periodically
+    const cache = await caches.open(CACHE_NAME);
+    await cache.add('/');
 }

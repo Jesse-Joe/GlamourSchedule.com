@@ -101,6 +101,9 @@ class Application
         $this->router->post('/partner/complete/{token}', 'BusinessRegisterController@completeRegistration');
         $this->router->post('/webhook/partner-payment', 'BusinessRegisterController@partnerPaymentWebhook');
 
+        // Mollie Connect OAuth Callback (public route)
+        $this->router->get('/business/mollie/callback', 'MollieConnectController@handleCallback');
+
         // Business dashboard routes (before /business/{slug})
         $this->router->group(['middleware' => 'business'], function($router) {
             $router->get('/business/dashboard', 'BusinessDashboardController@index');
@@ -133,6 +136,7 @@ class Application
             // Business Profile
             $router->get('/business/profile', 'BusinessDashboardController@profile');
             $router->post('/business/profile', 'BusinessDashboardController@updateProfile');
+            $router->post('/business/delete', 'BusinessDashboardController@deleteBusiness');
 
             // IBAN Verification (direct Mollie flow)
             $router->post('/business/iban/add', 'BusinessDashboardController@addIban');
@@ -172,14 +176,28 @@ class Application
             $router->get('/business/terminals/payment/status', 'MollieTerminalController@checkPaymentStatus');
             $router->post('/business/terminals/payment/cancel', 'MollieTerminalController@cancelPayment');
             $router->get('/business/terminals/transactions', 'MollieTerminalController@getTransactions');
+
+            // Mollie Connect - Automatic Payouts
+            $router->get('/business/mollie/connect', 'MollieConnectController@showOnboarding');
+            $router->get('/business/mollie/authorize', 'MollieConnectController@startAuthorization');
+            $router->post('/business/mollie/disconnect', 'MollieConnectController@disconnect');
         });
 
-        // Business page (after specific routes)
+        // Business page by UUID (primary - short URL)
+        $this->router->get('/s/{uuid}', 'BusinessController@showByUuid');
+
+        // Business page by slug (legacy support)
         $this->router->get('/business/{slug}', 'BusinessController@show');
-        
-        // Bookings
+
+        // Bookings by UUID (primary)
+        $this->router->get('/s/{uuid}/book', 'BookingController@createByUuid');
+        $this->router->post('/s/{uuid}/book', 'BookingController@storeByUuid');
+
+        // Bookings by slug (legacy support)
         $this->router->get('/book/{businessSlug}', 'BookingController@create');
         $this->router->post('/book/{businessSlug}', 'BookingController@store');
+        $this->router->get('/booking/checkout', 'BookingController@showCheckout');
+        $this->router->post('/booking/confirm', 'BookingController@confirmBooking');
         $this->router->get('/booking/{uuid}', 'BookingController@show');
         $this->router->post('/booking/{uuid}/cancel', 'BookingController@cancel');
 
@@ -257,10 +275,16 @@ class Application
         $this->router->get('/sales/login', 'SalesController@showLogin');
         $this->router->post('/sales/login', 'SalesController@login');
         $this->router->get('/sales/logout', 'SalesController@logout');
+        $this->router->get('/sales/2fa', 'SalesController@show2FA');
+        $this->router->post('/sales/2fa/verify', 'SalesController@verify2FA');
+        $this->router->get('/sales/2fa/resend', 'SalesController@resend2FA');
         $this->router->get('/sales/register', 'SalesController@showRegister');
         $this->router->post('/sales/register', 'SalesController@register');
         $this->router->get('/sales/dashboard', 'SalesController@dashboard');
         $this->router->get('/sales/referrals', 'SalesController@referrals');
+        $this->router->get('/sales/early-birds', 'SalesController@earlyBirds');
+        $this->router->post('/sales/early-birds/register', 'SalesController@registerEarlyBird');
+        $this->router->get('/sales/early-birds/resend/{id}', 'SalesController@resendEarlyBirdInvite');
         $this->router->get('/sales/payouts', 'SalesController@payouts');
         $this->router->get('/sales/materials', 'SalesController@materials');
         $this->router->post('/sales/send-referral-email', 'SalesController@sendReferralEmail');
@@ -282,9 +306,24 @@ class Application
         $this->router->get('/sales/payment/complete', 'SalesController@paymentComplete');
         $this->router->post('/sales/payment/webhook', 'SalesController@paymentWebhook');
 
+        // Sales account settings
+        $this->router->get('/sales/account', 'SalesController@showAccountSettings');
+        $this->router->post('/sales/account', 'SalesController@updateAccount');
+        $this->router->post('/sales/account/password', 'SalesController@updatePassword');
+        $this->router->post('/sales/account/delete', 'SalesController@deleteAccount');
+        $this->router->get('/sales/verify-iban', 'SalesController@showVerifyIban');
+        $this->router->post('/sales/verify-iban', 'SalesController@initiateIbanVerification');
+        $this->router->get('/sales/iban/complete', 'SalesController@ibanVerificationComplete');
+
         // Cron routes (protected by secret key)
         $this->router->get('/cron/trial-expiry', 'CronController@trialExpiry');
         $this->router->get('/cron/deactivate-expired', 'CronController@deactivateExpired');
+        $this->router->get('/cron/process-payouts', 'CronController@processPayouts');
+        $this->router->get('/cron/complete-payouts', 'CronController@completePayouts');
+        $this->router->get('/cron/weekly-payouts', 'CronController@weeklyPayouts');
+        $this->router->get('/cron/sales-payouts', 'CronController@salesPayouts');
+        $this->router->get('/cron/waitlist-expire', 'CronController@waitlistExpire');
+        $this->router->get('/cron/process-reminders', 'CronController@processReminders');
 
         // Admin business verification (public link from email)
         $this->router->get('/admin/verify-business/{token}', 'AdminController@showVerifyBusiness');

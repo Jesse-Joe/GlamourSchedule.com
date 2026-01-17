@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nieuw Wachtwoord - Sales Portal</title>
+    <title><?= $pageTitle ?? 'Nieuw Wachtwoord' ?> - Sales Portal</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -31,6 +31,9 @@
             font-size: 3rem;
             color: #333333;
             margin-bottom: 1rem;
+        }
+        .card-header i.error-icon {
+            color: #dc2626;
         }
         .card-header h1 {
             margin: 0;
@@ -74,6 +77,9 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
@@ -95,12 +101,6 @@
             color: #333333;
             text-decoration: none;
             font-weight: 500;
-        }
-        .code-input {
-            text-align: center;
-            font-size: 1.5rem;
-            letter-spacing: 0.5rem;
-            font-family: monospace;
         }
         .password-wrapper {
             position: relative;
@@ -129,55 +129,74 @@
 </head>
 <body>
     <div class="card">
-        <div class="card-header">
-            <i class="fas fa-lock"></i>
-            <h1>Nieuw Wachtwoord</h1>
-            <p>Voer de code in en kies een nieuw wachtwoord</p>
-        </div>
+        <?php if (isset($linkExpired) && $linkExpired): ?>
+            <!-- Link expired or invalid -->
+            <div class="card-header">
+                <i class="fas fa-exclamation-triangle error-icon"></i>
+                <h1><?= $pageTitle ?? 'Link Ongeldig' ?></h1>
+            </div>
 
-        <?php if (isset($error)): ?>
-            <div class="alert-error">
-                <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
+            <?php if (isset($error)): ?>
+                <div class="alert-error">
+                    <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <a href="/sales/forgot-password" class="btn-primary">
+                <i class="fas fa-redo"></i> Nieuwe Link Aanvragen
+            </a>
+
+            <div class="back-link">
+                <a href="/sales/login"><i class="fas fa-arrow-left"></i> Terug naar inloggen</a>
+            </div>
+        <?php else: ?>
+            <!-- Valid link - show password form -->
+            <div class="card-header">
+                <i class="fas fa-lock"></i>
+                <h1>Nieuw Wachtwoord</h1>
+                <p>Kies een nieuw wachtwoord voor je account</p>
+            </div>
+
+            <?php if (isset($error)): ?>
+                <div class="alert-error">
+                    <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="/sales/reset-password">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
+                <input type="hidden" name="email" value="<?= htmlspecialchars($email ?? '') ?>">
+                <input type="hidden" name="token" value="<?= htmlspecialchars($token ?? '') ?>">
+
+                <div class="form-group">
+                    <label class="form-label">Nieuw Wachtwoord</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Minimaal 8 karakters" minlength="8" required autofocus>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bevestig Wachtwoord</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Herhaal wachtwoord" minlength="8" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="Wachtwoord tonen">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Wachtwoord Opslaan
+                </button>
+            </form>
+
+            <div class="back-link">
+                <a href="/sales/login"><i class="fas fa-arrow-left"></i> Terug naar inloggen</a>
             </div>
         <?php endif; ?>
-
-        <form method="POST" action="/sales/reset-password">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
-            <input type="hidden" name="email" value="<?= htmlspecialchars($email ?? '') ?>">
-
-            <div class="form-group">
-                <label class="form-label">Reset Code</label>
-                <input type="text" name="code" class="form-control code-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autofocus>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Nieuw Wachtwoord</label>
-                <div class="password-wrapper">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Minimaal 8 karakters" minlength="8" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Bevestig Wachtwoord</label>
-                <div class="password-wrapper">
-                    <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Herhaal wachtwoord" minlength="8" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="Wachtwoord tonen">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-primary">
-                <i class="fas fa-save"></i> Wachtwoord Opslaan
-            </button>
-        </form>
-
-        <div class="back-link">
-            <a href="/sales/login"><i class="fas fa-arrow-left"></i> Terug naar inloggen</a>
-        </div>
     </div>
 
     <script>

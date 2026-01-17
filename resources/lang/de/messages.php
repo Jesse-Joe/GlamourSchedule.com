@@ -176,6 +176,10 @@ return [
     'select_time_slot' => 'Wähle eine Zeit',
     'time_booked' => 'gebucht',
     'no_times_this_day' => 'Keine Zeiten verfügbar an diesem Tag',
+    'next_available_date' => 'Nächster verfügbarer Termin',
+    'or_join_waitlist' => 'oder trage dich auf die Warteliste ein',
+    'join_waitlist' => 'Auf Warteliste',
+    'waitlist_for_date' => 'Warteliste für',
     'terms_cancel_notice' => 'Ich verstehe, dass bei einer Stornierung innerhalb von 24 Stunden vor dem Termin 50% Gebühren anfallen.',
     'payment_required' => 'Zahlung erforderlich',
     'complete_payment_to_confirm' => 'Schließe die Zahlung ab, um deine Buchung zu bestätigen',
@@ -196,6 +200,13 @@ return [
     'no_results' => 'Keine Ergebnisse gefunden',
     'try_different' => 'Versuche andere Suchbegriffe',
     'reviews' => 'Bewertungen',
+    'nearest' => 'Nächstgelegen',
+    'best_rated' => 'Bestbewertet',
+    'most_reviews' => 'Meiste Bewertungen',
+    'price_low_high' => 'Preis niedrig-hoch',
+    'price_high_low' => 'Preis hoch-niedrig',
+    'name_az' => 'Name A-Z',
+    'newest_first' => 'Neueste zuerst',
 
     // ═══════════════════════════════════════════════════════════════════════
     // ZAHLUNG
@@ -423,4 +434,105 @@ return [
     'pages' => 'Seiten',
     'no_results_for' => 'Keine Ergebnisse für',
     'search_all_salons' => 'Alle Salons durchsuchen',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // NAVIGATION & LAYOUT
+    // ═══════════════════════════════════════════════════════════════════════
+    'navigation' => 'Navigation',
+    'my_account' => 'Mein Konto',
+    'my_salon' => 'Mein Salon',
+    'salon_dashboard' => 'Salon Dashboard',
+    'appointments' => 'Termine',
+    'for_business' => 'Für Unternehmen',
+    'register_salon' => 'Salon Anmelden',
+    'become_partner' => 'Partner werden',
+    'sales_portal' => 'Vertriebsportal',
+    'features' => 'Funktionen',
+    'footer_desc' => 'Die Premium-Buchungsplattform. Finde und buche die besten Salons.',
+    'company' => 'Unternehmen',
+    'legal' => 'Rechtliches',
+    'rights' => 'Alle Rechte vorbehalten.',
+    'developed_by' => 'Entwickelt von',
+    'marketing' => 'Marketing',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // KATEGORIEN
+    // ═══════════════════════════════════════════════════════════════════════
+    'categories_title' => 'Entdecke Services',
+    'categories_subtitle' => 'Von Haaren bis Wellness - finde genau das, was du suchst',
+    'cat_hair' => 'Haare',
+    'cat_hair_desc' => 'Friseur, Barbier, Stylist',
+    'cat_nails' => 'Nägel',
+    'cat_nails_desc' => 'Maniküre, Pediküre, Gel',
+    'cat_skin' => 'Hautpflege',
+    'cat_skin_desc' => 'Gesichtsbehandlung, Hautpflege',
+    'cat_body' => 'Körper',
+    'cat_body_desc' => 'Massage, Körper',
+    'cat_hairremoval' => 'Haarentfernung',
+    'cat_hairremoval_desc' => 'Waxing, Laser',
+    'cat_makeup' => 'Make-up',
+    'cat_makeup_desc' => 'Visagist, Wimpern',
+    'cat_wellness' => 'Wellness',
+    'cat_wellness_desc' => 'Spa, Sauna',
+    'cat_tanning' => 'Bräunen',
+    'cat_tanning_desc' => 'Solarium, Spray-Tan',
+    'cat_medical' => 'Medizinisch',
+    'cat_medical_desc' => 'Botox, Filler',
+    'cat_alternative' => 'Alternativ',
+    'cat_alternative_desc' => 'Yoga, Reiki',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // HOMEPAGE SECTIONS
+    // ═══════════════════════════════════════════════════════════════════════
+    'featured' => 'Empfohlen',
+    'featured_businesses' => 'Empfohlene Unternehmen',
+    'featured_businesses_desc' => 'Premium-Salons, die besonders hervorstechen',
+    'slot_available' => 'Platz verfügbar',
+    'slot_available_desc' => 'Setze deinen Salon ins Rampenlicht und erreiche mehr Kunden',
+    'slot_duration' => '30 Tage hervorgehoben',
+    'become_sales_partner' => 'Werde Vertriebspartner',
+    'sales_partner_desc' => 'Verdiene Provision, indem du Unternehmen an GlamourSchedule vermittelst',
+    'start_now' => 'Jetzt starten',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // GLAMORI CHATBOT
+    // ═══════════════════════════════════════════════════════════════════════
+    'online_always_available' => 'Online - Immer verfügbar',
+    'type_your_message' => 'Schreibe deine Nachricht...',
+    'glamori_welcome' => 'Hallo! Ich bin Glamori. Wie kann ich dir helfen?',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MOLLIE TERMINALS
+    // ═══════════════════════════════════════════════════════════════════════
+    'terminals' => 'PIN-Terminals',
+    'terminals_desc' => 'Verwalte deine Mollie-Zahlungsterminals',
+    'linked_terminals' => 'Verknüpfte Terminals',
+    'available_terminals' => 'Verfügbare Terminals',
+    'no_terminals_linked' => 'Noch keine Terminals verknüpft',
+    'link_terminal_hint' => 'Verknüpfe ein Terminal aus der Liste unten, um PIN-Zahlungen zu akzeptieren',
+    'terminal_linked' => 'Terminal erfolgreich verknüpft',
+    'terminal_link_failed' => 'Verknüpfung des Terminals fehlgeschlagen',
+    'terminal_unlinked' => 'Terminal entfernt',
+    'terminal_unlink_failed' => 'Entfernen des Terminals fehlgeschlagen',
+    'new_payment' => 'Neue Zahlung',
+    'new_terminal_payment' => 'Neue Terminal-Zahlung',
+    'start_payment' => 'Zahlung starten',
+    'waiting_for_payment' => 'Warte auf Zahlung...',
+    'customer_should_tap' => 'Kunde kann jetzt tippen oder Karte einstecken',
+    'payment_started' => 'Zahlung am Terminal gestartet',
+    'payment_successful' => 'Zahlung erfolgreich!',
+    'payment_received' => 'Zahlung erhalten',
+    'payment_canceled' => 'Zahlung wurde abgebrochen',
+    'payment_not_completed' => 'Zahlung konnte nicht abgeschlossen werden',
+    'cancel_payment' => 'Zahlung abbrechen',
+    'try_again' => 'Erneut versuchen',
+    'confirm_unlink' => 'Bist du sicher, dass du dieses Terminal entfernen möchtest?',
+    'transactions_today' => 'Transaktionen heute',
+    'total_received' => 'Gesamt erhalten',
+    'successful' => 'Erfolgreich',
+    'failed_canceled' => 'Fehlgeschlagen/Abgebrochen',
+    'recent_transactions' => 'Letzte Transaktionen',
+    'no_transactions' => 'Noch keine Transaktionen',
+    'active' => 'Aktiv',
+    'link' => 'Verknüpfen',
 ];

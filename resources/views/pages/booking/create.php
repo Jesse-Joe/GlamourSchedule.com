@@ -551,6 +551,166 @@ select.form-input {
         padding: 1.25rem;
     }
 }
+
+/* ============================================
+   NEXT AVAILABLE DATE & WAITLIST STYLES
+   ============================================ */
+.no-times-info {
+    margin-top: 1rem;
+}
+.next-available-box {
+    background: var(--service-bg);
+    border: 1px solid var(--service-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+}
+.no-times-message {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+.no-times-message i {
+    color: #ef4444;
+    margin-right: 0.5rem;
+}
+.next-available-date {
+    margin-bottom: 1rem;
+}
+.next-available-date p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+.next-date-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.next-date-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+.next-date-link i {
+    margin-right: 0.5rem;
+}
+.no-next-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+.waitlist-divider {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+.waitlist-divider::before,
+.waitlist-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--divider);
+}
+.waitlist-divider span {
+    padding: 0 1rem;
+}
+.waitlist-btn {
+    background: transparent;
+    border: 2px solid var(--btn-primary-bg);
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+.waitlist-btn:hover {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+}
+.waitlist-btn i {
+    margin-right: 0.5rem;
+}
+
+/* Waitlist Modal */
+.waitlist-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+}
+.waitlist-modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.waitlist-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+.waitlist-modal-close:hover {
+    color: var(--text-primary);
+}
+.waitlist-modal-content h3 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+}
+.waitlist-modal-content h3 i {
+    margin-right: 0.5rem;
+    color: #10b981;
+}
+.waitlist-form .form-group {
+    margin-bottom: 1rem;
+}
+.waitlist-submit {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.waitlist-success {
+    text-align: center;
+    padding: 2rem 0;
+}
+.waitlist-success i {
+    font-size: 4rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+.waitlist-success h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+.waitlist-success p {
+    color: var(--text-secondary);
+}
 </style>
 
 <div class="booking-container">
@@ -626,6 +786,17 @@ select.form-input {
                     </select>
                     <div id="timeLoading" class="time-loading">
                         <i class="fas fa-spinner fa-spin"></i> <?= $__('loading_availability') ?>
+                    </div>
+                    <!-- Next Available Date & Waitlist Option -->
+                    <div id="noTimesInfo" class="no-times-info" style="display:none;">
+                        <div class="next-available-box">
+                            <p class="no-times-message"><i class="fas fa-calendar-times"></i> <?= $__('no_times_this_day') ?></p>
+                            <div id="nextAvailableDate" class="next-available-date"></div>
+                            <div class="waitlist-divider"><span><?= $__('or_join_waitlist') ?></span></div>
+                            <button type="button" id="waitlistBtn" class="waitlist-btn">
+                                <i class="fas fa-clipboard-list"></i> <?= $__('join_waitlist') ?>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -707,8 +878,15 @@ const translations = {
     selectTimeSlot: '<?= addslashes($__('select_time_slot')) ?>',
     timeBooked: '<?= addslashes($__('time_booked')) ?>',
     noTimesThisDay: '<?= addslashes($__('no_times_this_day')) ?>',
-    selectEmployeeFirst: 'Selecteer eerst een medewerker'
+    selectEmployeeFirst: 'Selecteer eerst een medewerker',
+    nextAvailableDate: '<?= addslashes($__('next_available_date')) ?>',
+    joinWaitlist: '<?= addslashes($__('join_waitlist')) ?>',
+    waitlistForDate: '<?= addslashes($__('waitlist_for_date')) ?>'
 };
+
+const noTimesInfo = document.getElementById('noTimesInfo');
+const nextAvailableDateEl = document.getElementById('nextAvailableDate');
+const waitlistBtn = document.getElementById('waitlistBtn');
 
 function loadAvailableTimes() {
     const date = dateInput.value;
@@ -762,6 +940,36 @@ function loadAvailableTimes() {
 
             if (!hasAvailable) {
                 html = `<option value="">${translations.noTimesThisDay}</option>`;
+
+                // Show next available date info
+                noTimesInfo.style.display = 'block';
+
+                if (data.nextAvailable) {
+                    const nextDate = new Date(data.nextAvailable.date);
+                    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                    const formattedDate = nextDate.toLocaleDateString('<?= $lang ?? 'nl' ?>', options);
+
+                    nextAvailableDateEl.innerHTML = `
+                        <p><strong>${translations.nextAvailableDate}:</strong></p>
+                        <a href="#" class="next-date-link" data-date="${data.nextAvailable.date}" data-time="${data.nextAvailable.time}">
+                            <i class="fas fa-calendar-check"></i> ${formattedDate} om ${data.nextAvailable.time}
+                        </a>
+                    `;
+
+                    // Add click handler to jump to next available date
+                    nextAvailableDateEl.querySelector('.next-date-link').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        dateInput.value = this.dataset.date;
+                        loadAvailableTimes();
+                    });
+                } else {
+                    nextAvailableDateEl.innerHTML = '<p class="no-next-date">Geen beschikbare data gevonden in de komende 60 dagen.</p>';
+                }
+
+                // Store current date for waitlist
+                waitlistBtn.dataset.date = date;
+            } else {
+                noTimesInfo.style.display = 'none';
             }
 
             timeSelect.innerHTML = html;
@@ -783,6 +991,91 @@ if (dateInput.value && document.querySelector('input[name="service_id"]:checked'
     if (!hasEmployees || document.querySelector('input[name="employee_id"]:checked')) {
         loadAvailableTimes();
     }
+}
+
+// Waitlist button handler
+waitlistBtn.addEventListener('click', function() {
+    const date = this.dataset.date;
+    const serviceInput = document.querySelector('input[name="service_id"]:checked');
+    const serviceId = serviceInput ? serviceInput.value : '';
+
+    if (!date || !serviceId) {
+        alert('Selecteer eerst een datum en dienst.');
+        return;
+    }
+
+    // Show waitlist modal/form
+    showWaitlistModal(date, serviceId);
+});
+
+function showWaitlistModal(date, serviceId) {
+    const formattedDate = new Date(date).toLocaleDateString('<?= $lang ?? 'nl' ?>', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    const modal = document.createElement('div');
+    modal.className = 'waitlist-modal';
+    modal.innerHTML = `
+        <div class="waitlist-modal-content">
+            <button class="waitlist-modal-close" onclick="this.closest('.waitlist-modal').remove()">&times;</button>
+            <h3><i class="fas fa-clipboard-list"></i> ${translations.waitlistForDate} ${formattedDate}</h3>
+            <form id="waitlistForm" class="waitlist-form">
+                <input type="hidden" name="service_id" value="${serviceId}">
+                <input type="hidden" name="date" value="${date}">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                <div class="form-group">
+                    <label class="form-label">Naam *</label>
+                    <input type="text" name="name" class="form-input" required value="<?= isset($user) ? htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) : '' ?>">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-mail *</label>
+                    <input type="email" name="email" class="form-input" required value="<?= isset($user) ? htmlspecialchars($user['email']) : '' ?>">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefoon</label>
+                    <input type="tel" name="phone" class="form-input" value="<?= isset($user) ? htmlspecialchars($user['phone'] ?? '') : '' ?>">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Opmerkingen</label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="Bijv. voorkeurstijd of andere wensen..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn waitlist-submit">
+                    <i class="fas fa-check"></i> Aanmelden op wachtlijst
+                </button>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Handle form submission
+    document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch(`/api/waitlist/${businessSlug}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.innerHTML = `
+                    <div class="waitlist-modal-content">
+                        <button class="waitlist-modal-close" onclick="this.closest('.waitlist-modal').remove()">&times;</button>
+                        <div class="waitlist-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Gelukt!</h3>
+                            <p>${data.message}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                alert(data.error || 'Er is een fout opgetreden.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Er is een fout opgetreden.');
+        });
+    });
 }
 </script>
 

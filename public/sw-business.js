@@ -1,18 +1,17 @@
 /**
- * GlamourSchedule Sales Portal Service Worker
- * Handles offline caching for the sales dashboard
+ * GlamourSchedule Business Portal Service Worker
+ * Handles offline caching for the business dashboard
  */
 
-const CACHE_NAME = 'gs-sales-v2';
-const OFFLINE_URL = '/sales/offline';
+const CACHE_NAME = 'gs-business-v1';
 
 const STATIC_ASSETS = [
-    '/sales/dashboard',
-    '/sales/materials',
-    '/sales/referrals',
-    '/manifest-sales.json',
-    '/images/sales-icon-192.png',
-    '/images/sales-icon-512.png',
+    '/business/dashboard',
+    '/business/calendar',
+    '/business/bookings',
+    '/manifest-business.json',
+    '/icon-192.png',
+    '/icon-512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
@@ -31,21 +30,21 @@ self.addEventListener('activate', event => {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames
-                    .filter(name => name.startsWith('gs-sales-') && name !== CACHE_NAME)
+                    .filter(name => name.startsWith('gs-business-') && name !== CACHE_NAME)
                     .map(name => caches.delete(name))
             );
         }).then(() => self.clients.claim())
     );
 });
 
-// Fetch event - network first with cache fallback
+// Fetch event - network first for real-time data
 self.addEventListener('fetch', event => {
     const { request } = event;
 
     if (request.method !== 'GET') return;
 
-    // Skip API requests
-    if (request.url.includes('/api/') || request.url.includes('/sales/send-')) return;
+    // Skip API requests - always go to network
+    if (request.url.includes('/api/')) return;
 
     event.respondWith(
         fetch(request)
@@ -60,14 +59,14 @@ self.addEventListener('fetch', event => {
     );
 });
 
-// Push notifications for sales updates
+// Push notifications for new bookings
 self.addEventListener('push', event => {
     let data = {
-        title: 'GlamourSchedule Sales',
-        body: 'Je hebt een nieuwe referral!',
-        icon: '/images/sales-icon-192.png',
-        badge: '/images/sales-icon-192.png',
-        data: { url: '/sales/dashboard' }
+        title: 'GlamourSchedule',
+        body: 'Je hebt een nieuwe boeking!',
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
+        data: { url: '/business/bookings' }
     };
 
     if (event.data) {
@@ -85,6 +84,7 @@ self.addEventListener('push', event => {
             badge: data.badge,
             vibrate: [200, 100, 200],
             data: data.data,
+            requireInteraction: true,
             actions: [
                 { action: 'view', title: 'Bekijken' },
                 { action: 'dismiss', title: 'Sluiten' }
@@ -99,12 +99,12 @@ self.addEventListener('notificationclick', event => {
 
     if (event.action === 'dismiss') return;
 
-    const url = event.notification.data?.url || '/sales/dashboard';
+    const url = event.notification.data?.url || '/business/dashboard';
 
     event.waitUntil(
         clients.matchAll({ type: 'window' }).then(clientList => {
             for (const client of clientList) {
-                if (client.url.includes('/sales/') && 'focus' in client) {
+                if (client.url.includes('/business/') && 'focus' in client) {
                     client.navigate(url);
                     return client.focus();
                 }

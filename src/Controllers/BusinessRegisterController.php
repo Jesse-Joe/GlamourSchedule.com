@@ -9,10 +9,11 @@ use GlamourSchedule\Core\GeoIP;
 class BusinessRegisterController extends Controller
 {
     // Pricing constants
-    private const REGISTRATION_FEE = 29.99;
-    private const SALES_PARTNER_DISCOUNT = 10.00;
-    private const SALES_PARTNER_COMMISSION = 10.00;
-    private const COMMISSION_PAYOUT_DAYS = 14; // Bedenktijd
+    private const REGISTRATION_FEE = 99.99;
+    private const SALES_PARTNER_DISCOUNT = 24.99;
+    private const SALES_PARTNER_COMMISSION = 49.99;      // Commission for normal sales (€74.99 payment)
+    private const EARLY_BIRD_COMMISSION = 9.99;          // Commission for early bird sales (€0.99 payment)
+    private const COMMISSION_PAYOUT_DAYS = 14;           // Bedenktijd
 
     private GeoIP $geoIP;
 
@@ -204,7 +205,7 @@ class BusinessRegisterController extends Controller
             // Determine registration fee and trial period
             // - Country promo (first 100 per country): €0.99 with trial
             // - Sales partner referral: discounted price (NO trial - direct payment)
-            // - Normal: €29.99 with trial
+            // - Normal: €99.99 with trial
             if ($isPromo) {
                 $regFee = $promoInfo['price']; // €0.99
                 $trialEndsAt = date('Y-m-d', strtotime('+14 days'));
@@ -250,10 +251,12 @@ class BusinessRegisterController extends Controller
             // If referred by sales partner, create referral record with 14-day payout delay
             if ($referredBy) {
                 // Commission eligible after 14 days from payment
+                // Early bird sales get €9.99 commission, normal sales get €49.99
+                $commission = $isPromo ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
                      VALUES (?, ?, 'pending', ?)",
-                    [$referredBy, $businessId, self::SALES_PARTNER_COMMISSION]
+                    [$referredBy, $businessId, $commission]
                 );
             }
 
@@ -787,10 +790,12 @@ GlamourSchedule
 
             // Create referral record
             if ($referredBy) {
+                // Early bird sales get €9.99 commission, normal sales get €49.99
+                $commission = $isSalesEarlyAdopter ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
                      VALUES (?, ?, 'pending', ?)",
-                    [$referredBy, $businessId, self::SALES_PARTNER_COMMISSION]
+                    [$referredBy, $businessId, $commission]
                 );
             }
 
@@ -907,6 +912,8 @@ GlamourSchedule
                         "UPDATE sales_referrals SET status = 'converted' WHERE business_id = ?",
                         [$businessId]
                     );
+                    // Notify sales partner of conversion
+                    $this->notifySalesPartnerConversion($businessId);
                 }
 
                 // Send completion email
@@ -976,11 +983,12 @@ GlamourSchedule
                         [$paidAmount, $completionToken, $trialEndsAt, $businessId]
                     );
 
-                    // Update referral status
+                    // Update referral status and notify sales partner
                     $this->db->query(
                         "UPDATE sales_referrals SET status = 'converted' WHERE business_id = ?",
                         [$businessId]
                     );
+                    $this->notifySalesPartnerConversion($businessId);
 
                     // Get user info for email
                     $stmt = $this->db->query(
@@ -1273,6 +1281,94 @@ GlamourSchedule
             $mailer->send($email, 'Welkom bij GlamourSchedule!', $html);
         } catch (\Exception $e) {
             error_log('Welcome email failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send notification email to sales partner when a referred business pays
+     */
+    private function notifySalesPartnerConversion(int $businessId): void
+    {
+        // Get referral and sales partner info
+        $stmt = $this->db->query(
+            "SELECT sr.commission, su.email, su.name, su.first_name, b.company_name
+             FROM sales_referrals sr
+             JOIN sales_users su ON sr.sales_user_id = su.id
+             JOIN businesses b ON sr.business_id = b.id
+             WHERE sr.business_id = ?",
+            [$businessId]
+        );
+        $referral = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$referral) {
+            return;
+        }
+
+        $partnerName = $referral['first_name'] ?: $referral['name'];
+        $businessName = $referral['company_name'];
+        $commission = number_format($referral['commission'], 2, ',', '.');
+
+        $html = "
+        <div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;'>
+            <div style='background:#22c55e;padding:30px;text-align:center;'>
+                <h1 style='color:#fff;margin:0;font-size:24px;'>Gefeliciteerd!</h1>
+            </div>
+            <div style='padding:30px;background:#fff;border:1px solid #e5e7eb;'>
+                <p style='font-size:16px;color:#333;'>Hallo {$partnerName},</p>
+
+                <p style='color:#374151;line-height:1.6'>
+                    Goed nieuws! Een salon die jij hebt aangebracht heeft zojuist de registratiefee betaald.
+                </p>
+
+                <div style='background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin:25px 0;text-align:center;'>
+                    <p style='margin:0 0 10px;color:#166534;font-size:14px;'>Jouw commissie</p>
+                    <p style='margin:0;font-size:36px;font-weight:bold;color:#22c55e;'>EUR {$commission}</p>
+                </div>
+
+                <div style='background:#f9fafb;border-radius:8px;padding:15px;margin:20px 0;'>
+                    <table style='width:100%;font-size:14px;'>
+                        <tr>
+                            <td style='padding:8px 0;color:#666;'>Salon:</td>
+                            <td style='padding:8px 0;text-align:right;font-weight:600;color:#333;'>{$businessName}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding:8px 0;color:#666;'>Commissie:</td>
+                            <td style='padding:8px 0;text-align:right;font-weight:600;color:#22c55e;'>EUR {$commission}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding:8px 0;color:#666;'>Status:</td>
+                            <td style='padding:8px 0;text-align:right;'>
+                                <span style='background:#3b82f620;color:#3b82f6;padding:4px 12px;border-radius:20px;font-size:12px;'>Wacht op uitbetaling</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p style='color:#374151;line-height:1.6'>
+                    <strong>Wanneer ontvang je je commissie?</strong><br>
+                    Je commissie wordt elke woensdag automatisch uitbetaald naar je IBAN.
+                </p>
+
+                <div style='text-align:center;margin:25px 0;'>
+                    <a href='https://glamourschedule.nl/sales/dashboard' style='display:inline-block;background:#000;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;'>
+                        Bekijk je dashboard
+                    </a>
+                </div>
+
+                <p style='color:#6b7280;font-size:13px;margin-top:20px;'>
+                    Blijf salons aanbrengen en verdien EUR 49,99 per betalende salon!
+                </p>
+            </div>
+            <div style='background:#fafafa;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>
+                <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Sales Partner</p>
+            </div>
+        </div>";
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($referral['email'], 'Je hebt EUR ' . $commission . ' commissie verdiend!', $html);
+        } catch (\Exception $e) {
+            error_log('Sales partner notification email failed: ' . $e->getMessage());
         }
     }
 }

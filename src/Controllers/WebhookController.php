@@ -201,7 +201,7 @@ class WebhookController extends Controller
 </html>
 HTML;
 
-            $mailer = new Mailer($this->config);
+            $mailer = new Mailer();
             $mailer->send($booking['customer_email'], $subject, $htmlBody);
             error_log("Mollie webhook: POS confirmation email sent for $posBookingUuid");
 
@@ -250,7 +250,9 @@ HTML;
                 'notes' => $booking['notes'] ?? ''
             ];
 
-            $mailer = new Mailer($this->config);
+            // Use booking's language for email (personalized based on platform language used during booking)
+            $bookingLang = $booking['language'] ?? 'nl';
+            $mailer = new Mailer($bookingLang);
 
             // Stuur bevestiging naar klant
             if ($customerEmail) {

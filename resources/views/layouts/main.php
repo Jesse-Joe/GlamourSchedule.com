@@ -111,7 +111,6 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="/" class="sidebar-logo">
-                <img src="/images/gs-logo-white.svg" alt="GS" class="sidebar-logo-icon">
                 <span>Glamourschedule</span>
             </a>
             <button class="sidebar-close" onclick="closeSidebar()">
@@ -187,6 +186,36 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </nav>
 
         <div class="sidebar-footer">
+            <!-- Mobile Language Selector -->
+            <?php
+            // Build language URLs for mobile that preserve current query parameters
+            $mobileLangFlags = [
+                'en' => ['code' => 'EN', 'color' => '#003399', 'name' => 'English'],
+                'nl' => ['code' => 'NL', 'color' => '#FF6B00', 'name' => 'Nederlands'],
+                'de' => ['code' => 'DE', 'color' => '#DD0000', 'name' => 'Deutsch'],
+                'fr' => ['code' => 'FR', 'color' => '#0055A4', 'name' => 'Français']
+            ];
+            $currentLangMobile = $lang ?? 'en';
+
+            $buildMobileLangUrl = function($newLang) {
+                $params = $_GET;
+                $params['lang'] = $newLang;
+                $query = http_build_query($params);
+                $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                return $path . '?' . $query;
+            };
+            ?>
+            <div class="sidebar-lang-selector">
+                <span class="sidebar-lang-label"><?= $translations['language'] ?? 'Language' ?></span>
+                <div class="sidebar-lang-options">
+                    <?php foreach ($mobileLangFlags as $lCode => $lData): ?>
+                    <a href="<?= htmlspecialchars($buildMobileLangUrl($lCode)) ?>" class="sidebar-lang-btn <?= $currentLangMobile === $lCode ? 'active' : '' ?>" title="<?= $lData['name'] ?>">
+                        <span class="lang-flag-badge" style="background: <?= $lData['color'] ?>"><?= $lData['code'] ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <button class="theme-toggle" onclick="toggleTheme()">
                 <i class="fas fa-sun theme-icon-light"></i>
                 <i class="fas fa-moon theme-icon-dark"></i>
@@ -210,7 +239,6 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </button>
 
         <a href="/" class="logo-prestige">
-            <img src="/images/gs-logo.svg" alt="GS" class="logo-icon">
             <span class="logo-text">Glamourschedule</span>
         </a>
 
@@ -233,6 +261,47 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <a href="javascript:void(0)" class="nav-search-mobile" title="<?= $translations['search'] ?? 'Search' ?>" onclick="openGlobalSearch()">
                 <i class="fas fa-search"></i>
             </a>
+
+            <!-- Language Selector Dropdown -->
+            <?php
+            // Build language URLs that preserve current query parameters
+            $langFlags = [
+                'en' => ['code' => 'EN', 'color' => '#003399'],
+                'nl' => ['code' => 'NL', 'color' => '#FF6B00'],
+                'de' => ['code' => 'DE', 'color' => '#DD0000'],
+                'fr' => ['code' => 'FR', 'color' => '#0055A4']
+            ];
+            $currentLang = $lang ?? 'en';
+            $currentFlag = $langFlags[$currentLang] ?? $langFlags['en'];
+            $langNames = ['en' => 'English', 'nl' => 'Nederlands', 'de' => 'Deutsch', 'fr' => 'Français'];
+
+            // Function to build lang URL preserving other query params
+            $buildLangUrl = function($newLang) {
+                $params = $_GET;
+                $params['lang'] = $newLang;
+                $query = http_build_query($params);
+                $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                return $path . '?' . $query;
+            };
+            ?>
+            <div class="lang-dropdown">
+                <button class="lang-dropdown-toggle" onclick="toggleLangDropdown()" title="<?= $translations['language'] ?? 'Language' ?>">
+                    <span class="lang-flag-badge" style="background: <?= $currentFlag['color'] ?>"><?= $currentFlag['code'] ?></span>
+                    <i class="fas fa-chevron-down lang-arrow"></i>
+                </button>
+                <div class="lang-dropdown-menu" id="langDropdownMenu">
+                    <?php foreach ($langFlags as $langCode => $flagData): ?>
+                    <a href="<?= htmlspecialchars($buildLangUrl($langCode)) ?>" class="lang-dropdown-item <?= $currentLang === $langCode ? 'active' : '' ?>">
+                        <span class="lang-flag-badge" style="background: <?= $flagData['color'] ?>"><?= $flagData['code'] ?></span>
+                        <span class="lang-name"><?= $langNames[$langCode] ?? $langCode ?></span>
+                        <?php if ($currentLang === $langCode): ?>
+                        <i class="fas fa-check lang-check"></i>
+                        <?php endif; ?>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <?php if (isset($user)): ?>
                 <div class="account-dropdown">
                     <button class="btn btn-primary account-dropdown-toggle" onclick="toggleAccountDropdown()">
@@ -396,7 +465,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Salons
             if (data.salons && data.salons.length > 0) {
-                html += '<div class="search-section-title"><?= $translations['salons'] ?? 'Salons' ?></div>';
+                html += '<div class="search-section-title"><?= addslashes($translations['salons'] ?? 'Salons') ?></div>';
                 data.salons.forEach(salon => {
                     const photo = salon.photos ? '/uploads/businesses/' + salon.id + '/' + salon.photos.split(',')[0] : '/images/placeholder-salon.jpg';
                     html += `
@@ -404,7 +473,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                             <img src="${photo}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
                             <div class="search-result-info">
                                 <span class="search-result-name">${salon.company_name}</span>
-                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || '<?= $translations['netherlands'] ?? 'Netherlands' ?>'}</span>
+                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || '<?= addslashes($translations['netherlands'] ?? 'Netherlands') ?>'}</span>
                             </div>
                         </a>
                     `;
@@ -413,12 +482,12 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Services
             if (data.services && data.services.length > 0) {
-                html += '<div class="search-section-title"><?= $translations['services'] ?? 'Services' ?></div>';
+                html += '<div class="search-section-title"><?= addslashes($translations['services'] ?? 'Services') ?></div>';
                 data.services.forEach(service => {
                     html += `
                         <a href="/business/${service.business_slug}?service=${service.id}" class="search-quick-link" onclick="closeGlobalSearch()">
                             <i class="fas fa-cut"></i>
-                            <span>${service.name} <small style="opacity:0.6"><?= $translations['at'] ?? 'at' ?> ${service.business_name}</small></span>
+                            <span>${service.name} <small style="opacity:0.6"><?= addslashes($translations['at'] ?? 'at') ?> ${service.business_name}</small></span>
                         </a>
                     `;
                 });
@@ -426,13 +495,13 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Pages (static matches)
             const pages = [
-                { url: '/search', name: '<?= $translations['all_salons'] ?? 'All Salons' ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search'] },
-                { url: '/register?type=business', name: '<?= $translations['register_salon'] ?? 'Register Salon' ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register'] },
-                { url: '/marketing', name: '<?= $translations['marketing_services'] ?? 'Marketing Services' ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
-                { url: '/about', name: '<?= $translations['platform_features'] ?? 'Platform Features' ?>', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
-                { url: '/contact', name: '<?= $translations['contact'] ?? 'Contact' ?>', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
-                { url: '/terms', name: '<?= $translations['terms'] ?? 'Terms' ?>', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel', 'conditions'] },
-                { url: '/privacy', name: '<?= $translations['privacy'] ?? 'Privacy' ?>', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
+                { url: '/search', name: '<?= addslashes($translations['all_salons'] ?? 'All Salons') ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search'] },
+                { url: '/register?type=business', name: '<?= addslashes($translations['register_salon'] ?? 'Register Salon') ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register'] },
+                { url: '/marketing', name: '<?= addslashes($translations['marketing_services'] ?? 'Marketing Services') ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
+                { url: '/about', name: '<?= addslashes($translations['platform_features'] ?? 'Platform Features') ?>', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
+                { url: '/contact', name: '<?= addslashes($translations['contact'] ?? 'Contact') ?>', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
+                { url: '/terms', name: '<?= addslashes($translations['terms'] ?? 'Terms') ?>', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel', 'conditions'] },
+                { url: '/privacy', name: '<?= addslashes($translations['privacy'] ?? 'Privacy') ?>', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
             ];
 
             const q = query.toLowerCase();
@@ -442,7 +511,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             );
 
             if (matchedPages.length > 0) {
-                html += '<div class="search-section-title"><?= $translations['pages'] ?? 'Pages' ?></div>';
+                html += '<div class="search-section-title"><?= addslashes($translations['pages'] ?? 'Pages') ?></div>';
                 matchedPages.forEach(page => {
                     html += `
                         <a href="${page.url}" class="search-quick-link" onclick="closeGlobalSearch()">
@@ -457,9 +526,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 html = `
                     <div class="search-no-results">
                         <i class="fas fa-search"></i>
-                        <p><?= $translations['no_results_for'] ?? 'No results for' ?> "${query}"</p>
+                        <p><?= addslashes($translations['no_results_for'] ?? 'No results for') ?> "${query}"</p>
                         <a href="/search?q=${encodeURIComponent(query)}" class="btn btn-primary" style="margin-top:1rem" onclick="closeGlobalSearch()">
-                            <?= $translations['search_all_salons'] ?? 'Search all salons' ?>
+                            <?= addslashes($translations['search_all_salons'] ?? 'Search all salons') ?>
                         </a>
                     </div>
                 `;
@@ -656,134 +725,249 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     .account-dropdown-logout:hover {
         background: rgba(220, 38, 38, 0.2);
     }
+
+    /* Language Dropdown */
+    .lang-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    .lang-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background: transparent;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .lang-dropdown-toggle:hover {
+        border-color: #555;
+        background: rgba(255,255,255,0.05);
+    }
+    .lang-flag-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.5px;
+    }
+    .lang-arrow {
+        font-size: 0.65rem;
+        opacity: 0.7;
+        transition: transform 0.2s;
+    }
+    .lang-dropdown.open .lang-arrow {
+        transform: rotate(180deg);
+    }
+    .lang-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background: #000;
+        border: 1px solid #333;
+        border-radius: 12px;
+        min-width: 160px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.2s ease;
+        z-index: 1001;
+        overflow: hidden;
+    }
+    .lang-dropdown.open .lang-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .lang-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+    .lang-dropdown-item:hover {
+        background: #1a1a1a;
+    }
+    .lang-dropdown-item.active {
+        background: rgba(255,255,255,0.08);
+    }
+    .lang-name {
+        flex: 1;
+    }
+    .lang-check {
+        color: #22c55e;
+        font-size: 0.8rem;
+    }
+
+    /* Mobile Sidebar Language Selector */
+    .sidebar-lang-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #222;
+        margin-bottom: 1rem;
+    }
+    .sidebar-lang-label {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.5);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .sidebar-lang-options {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .sidebar-lang-btn {
+        padding: 0.5rem;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid transparent;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .sidebar-lang-btn:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    .sidebar-lang-btn.active {
+        border-color: #fff;
+        background: rgba(255,255,255,0.1);
+    }
+
+    @media (max-width: 768px) {
+        .lang-dropdown {
+            display: none;
+        }
+    }
     </style>
 
     <script>
     function toggleAccountDropdown() {
         const menu = document.getElementById('accountDropdownMenu');
         menu.classList.toggle('active');
+        // Close language dropdown if open
+        document.querySelector('.lang-dropdown')?.classList.remove('open');
     }
 
-    // Close dropdown when clicking outside
+    function toggleLangDropdown() {
+        const dropdown = document.querySelector('.lang-dropdown');
+        dropdown.classList.toggle('open');
+        // Close account dropdown if open
+        document.getElementById('accountDropdownMenu')?.classList.remove('active');
+    }
+
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
-        const dropdown = document.querySelector('.account-dropdown');
-        const menu = document.getElementById('accountDropdownMenu');
-        if (dropdown && menu && !dropdown.contains(e.target)) {
-            menu.classList.remove('active');
+        const accountDropdown = document.querySelector('.account-dropdown');
+        const accountMenu = document.getElementById('accountDropdownMenu');
+        if (accountDropdown && accountMenu && !accountDropdown.contains(e.target)) {
+            accountMenu.classList.remove('active');
+        }
+
+        const langDropdown = document.querySelector('.lang-dropdown');
+        if (langDropdown && !langDropdown.contains(e.target)) {
+            langDropdown.classList.remove('open');
         }
     });
     </script>
 
-    <!-- Domain/Language Switch Popup - Disabled for now to fix mobile nav -->
-    <?php if (false && isset($domainSwitchPopup) && $domainSwitchPopup && $domainSwitchPopup['show']): ?>
-    <div id="domainSwitchPopup" class="domain-switch-popup">
-        <div class="domain-switch-overlay" onclick="dismissDomainPopup()"></div>
-        <div class="domain-switch-modal">
-            <button class="domain-switch-close" onclick="dismissDomainPopup()">&times;</button>
-            <div class="domain-switch-content">
-                <?php
-                // Use country code images instead of emoji for better compatibility
-                $detectedCountry = $domainSwitchPopup['detected_country'];
-                $countryNames = [
-                    'NL' => ['nl' => 'Nederland', 'en' => 'the Netherlands', 'de' => 'den Niederlanden', 'fr' => 'les Pays-Bas'],
-                    'BE' => ['nl' => 'België', 'en' => 'Belgium', 'de' => 'Belgien', 'fr' => 'la Belgique'],
-                    'DE' => ['nl' => 'Duitsland', 'en' => 'Germany', 'de' => 'Deutschland', 'fr' => 'l\'Allemagne'],
-                    'FR' => ['nl' => 'Frankrijk', 'en' => 'France', 'de' => 'Frankreich', 'fr' => 'la France'],
-                    'GB' => ['nl' => 'het Verenigd Koninkrijk', 'en' => 'the United Kingdom', 'de' => 'dem Vereinigten Königreich', 'fr' => 'le Royaume-Uni'],
-                    'US' => ['nl' => 'de Verenigde Staten', 'en' => 'the United States', 'de' => 'den Vereinigten Staaten', 'fr' => 'les États-Unis'],
-                ];
-                $countryName = $countryNames[$detectedCountry][$lang] ?? $detectedCountry;
-                ?>
-
-                <div class="domain-switch-icon">
+    <!-- Language Selection Popup - Shows on .com when detected language differs from English -->
+    <?php if (isset($domainSwitchPopup) && $domainSwitchPopup && $domainSwitchPopup['show']): ?>
+    <div id="languagePopup" class="language-popup" style="display: none;">
+        <div class="language-popup-overlay" onclick="dismissLanguagePopup()"></div>
+        <div class="language-popup-modal">
+            <button class="language-popup-close" onclick="dismissLanguagePopup()">&times;</button>
+            <div class="language-popup-content">
+                <div class="language-popup-icon">
                     <i class="fas fa-globe-europe"></i>
                 </div>
 
-                <?php if ($domainSwitchPopup['current_domain'] === 'com' && $domainSwitchPopup['suggested_domain'] === 'nl'): ?>
-                    <!-- User on .com detected in NL/BE - suggest Dutch site -->
-                    <h2><?= $translations['domain_popup_title'] ?? 'We detected you\'re in ' . $countryName ?></h2>
-                    <p><?= $translations['domain_popup_desc'] ?? 'Would you like to switch to our Dutch website for content in your language?' ?></p>
+                <h2>We detected you're visiting from <?= htmlspecialchars($domainSwitchPopup['detected_country_name']) ?></h2>
+                <p>Would you like to view the website in <?= htmlspecialchars($domainSwitchPopup['detected_lang_native']) ?> (<?= htmlspecialchars($domainSwitchPopup['detected_lang_name']) ?>) or continue in English?</p>
 
-                    <div class="domain-switch-buttons">
-                        <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=nl" class="domain-switch-btn domain-switch-btn-primary">
-                            <i class="fas fa-flag"></i> <?= $translations['domain_popup_switch_nl'] ?? 'Go to glamourschedule.nl' ?>
-                        </a>
-                        <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
-                            <i class="fas fa-globe"></i> <?= $translations['domain_popup_stay_en'] ?? 'Stay on English site' ?>
-                        </button>
-                    </div>
+                <div class="language-popup-buttons">
+                    <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>" class="language-popup-btn language-popup-btn-primary" onclick="setLanguageChoice('<?= $domainSwitchPopup['detected_lang'] ?>')">
+                        <?php
+                        $langFlags = ['nl' => '🇳🇱', 'de' => '🇩🇪', 'fr' => '🇫🇷'];
+                        $flag = $langFlags[$domainSwitchPopup['detected_lang']] ?? '🌐';
+                        ?>
+                        <span class="lang-flag"><?= $flag ?></span>
+                        Continue in <?= htmlspecialchars($domainSwitchPopup['detected_lang_native']) ?>
+                    </a>
+                    <a href="<?= htmlspecialchars($domainSwitchPopup['stay_url']) ?>" class="language-popup-btn language-popup-btn-secondary" onclick="setLanguageChoice('en')">
+                        <span class="lang-flag">🇬🇧</span>
+                        Keep English
+                    </a>
+                </div>
 
-                <?php elseif ($domainSwitchPopup['current_domain'] === 'nl' && $domainSwitchPopup['suggested_domain'] === 'com'): ?>
-                    <!-- User on .nl detected outside NL/BE - suggest international site -->
-                    <h2><?= $translations['domain_popup_title_int'] ?? 'Looking for the English site?' ?></h2>
-                    <p><?= $translations['domain_popup_desc_int'] ?? 'We detected you might prefer the international English version of our website.' ?></p>
-
-                    <div class="domain-switch-buttons">
-                        <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>?lang=en" class="domain-switch-btn domain-switch-btn-primary">
-                            <i class="fas fa-globe"></i> <?= $translations['domain_popup_switch_en'] ?? 'Go to glamourschedule.com' ?>
-                        </a>
-                        <button onclick="stayOnCurrentDomain()" class="domain-switch-btn domain-switch-btn-secondary">
-                            <i class="fas fa-flag"></i> <?= $translations['domain_popup_stay_nl'] ?? 'Blijf op Nederlandse site' ?>
-                        </button>
-                    </div>
-                <?php endif; ?>
-
-                <p class="domain-switch-note"><?= $translations['domain_popup_note'] ?? 'You can always change your language preference in the menu.' ?></p>
+                <p class="language-popup-note">You can always change your language preference in the menu.</p>
             </div>
         </div>
     </div>
 
     <style>
-    .domain-switch-popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; }
-    .domain-switch-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
-    .domain-switch-modal { position: relative; background: linear-gradient(180deg, #111 0%, #000 100%); border: 1px solid #333; border-radius: 24px; padding: 2.5rem; max-width: 440px; width: 90%; animation: domainSlide 0.4s ease; }
-    @keyframes domainSlide { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .domain-switch-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #666; font-size: 1.75rem; cursor: pointer; line-height: 1; transition: color 0.2s; padding: 0.5rem; }
-    .domain-switch-close:hover { color: #fff; }
-    .domain-switch-content { text-align: center; }
-    .domain-switch-icon { margin-bottom: 1.5rem; }
-    .domain-switch-icon i { font-size: 3.5rem; color: #fff; }
-    .domain-switch-content h2 { color: #fff; font-size: 1.4rem; margin: 0 0 0.75rem; font-weight: 600; }
-    .domain-switch-content > p { color: rgba(255,255,255,0.7); margin: 0 0 1.75rem; font-size: 0.95rem; line-height: 1.5; }
-    .domain-switch-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
-    .domain-switch-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem 1.25rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
-    .domain-switch-btn i { font-size: 1.1rem; }
-    .domain-switch-btn-primary { background: #fff; color: #000; }
-    .domain-switch-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
-    .domain-switch-btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
-    .domain-switch-btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: #666; }
-    .domain-switch-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0; }
+    .language-popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10001; display: flex; align-items: center; justify-content: center; }
+    .language-popup-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+    .language-popup-modal { position: relative; background: linear-gradient(180deg, #111 0%, #000 100%); border: 1px solid #333; border-radius: 24px; padding: 2.5rem; max-width: 440px; width: 90%; animation: langPopupSlide 0.4s ease; }
+    @keyframes langPopupSlide { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .language-popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #666; font-size: 1.75rem; cursor: pointer; line-height: 1; transition: color 0.2s; padding: 0.5rem; }
+    .language-popup-close:hover { color: #fff; }
+    .language-popup-content { text-align: center; }
+    .language-popup-icon { margin-bottom: 1.5rem; }
+    .language-popup-icon i { font-size: 3.5rem; color: #fff; }
+    .language-popup-content h2 { color: #fff; font-size: 1.4rem; margin: 0 0 0.75rem; font-weight: 600; }
+    .language-popup-content > p { color: rgba(255,255,255,0.7); margin: 0 0 1.75rem; font-size: 0.95rem; line-height: 1.5; }
+    .language-popup-buttons { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .language-popup-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem 1.25rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
+    .language-popup-btn .lang-flag { font-size: 1.4rem; }
+    .language-popup-btn-primary { background: #fff; color: #000; }
+    .language-popup-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
+    .language-popup-btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
+    .language-popup-btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: #666; }
+    .language-popup-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0; }
     @media (max-width: 480px) {
-        .domain-switch-modal { padding: 2rem 1.5rem; }
-        .domain-switch-icon i { font-size: 2.5rem; }
-        .domain-switch-content h2 { font-size: 1.2rem; }
+        .language-popup-modal { padding: 2rem 1.5rem; }
+        .language-popup-icon i { font-size: 2.5rem; }
+        .language-popup-content h2 { font-size: 1.2rem; }
     }
     </style>
 
     <script>
-    function dismissDomainPopup() {
-        document.getElementById('domainSwitchPopup').style.display = 'none';
+    function dismissLanguagePopup() {
+        document.getElementById('languagePopup').style.display = 'none';
         // Set cookie to not show again for 30 days
-        document.cookie = 'domain_popup_dismissed=1;max-age=' + (30 * 24 * 60 * 60) + ';path=/';
+        document.cookie = 'lang_popup_dismissed=1;max-age=' + (30 * 24 * 60 * 60) + ';path=/';
     }
 
-    function stayOnCurrentDomain() {
-        // Mark user's explicit choice to stay
-        document.cookie = 'lang_user_chosen=1;max-age=' + (365 * 24 * 60 * 60) + ';path=/';
-        dismissDomainPopup();
+    function setLanguageChoice(lang) {
+        // Mark user's explicit choice
+        document.cookie = 'lang=' + lang + ';max-age=' + (365 * 24 * 60 * 60) + ';path=/';
+        // The link will redirect to the chosen language
     }
 
     // Show popup after a short delay
     setTimeout(function() {
-        const popup = document.getElementById('domainSwitchPopup');
+        const popup = document.getElementById('languagePopup');
         if (popup) popup.style.display = 'flex';
     }, 2000);
 
     // Close on escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            const popup = document.getElementById('domainSwitchPopup');
-            if (popup && popup.style.display !== 'none') dismissDomainPopup();
+            const popup = document.getElementById('languagePopup');
+            if (popup && popup.style.display !== 'none') dismissLanguagePopup();
         }
     });
     </script>
@@ -1035,5 +1219,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         CookieConsent.init();
     });
     </script>
+
+    <!-- PWA Install Prompt -->
+    <?php include BASE_PATH . '/resources/views/components/pwa-install-prompt.php'; ?>
 </body>
 </html>

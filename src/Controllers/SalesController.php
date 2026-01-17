@@ -37,6 +37,7 @@ class SalesController extends Controller
 
         $stats = $this->getStats();
         $recentReferrals = $this->getRecentReferrals();
+        $trialReferrals = $this->getTrialReferrals();
         $pendingPayouts = $this->getPendingPayouts();
 
         return $this->view('pages/sales/dashboard', [
@@ -44,6 +45,7 @@ class SalesController extends Controller
             'salesUser' => $this->salesUser,
             'stats' => $stats,
             'recentReferrals' => $recentReferrals,
+            'trialReferrals' => $trialReferrals,
             'pendingPayouts' => $pendingPayouts,
             'csrfToken' => $this->csrf()
         ]);
@@ -63,6 +65,233 @@ class SalesController extends Controller
             'referrals' => $referrals,
             'csrfToken' => $this->csrf()
         ]);
+    }
+
+    /**
+     * Show early birds page
+     */
+    public function earlyBirds(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        $earlyBirds = $this->getEarlyBirds();
+        $stats = $this->getEarlyBirdStats();
+
+        return $this->view('pages/sales/early-birds', [
+            'pageTitle' => 'Early Birds',
+            'salesUser' => $this->salesUser,
+            'earlyBirds' => $earlyBirds,
+            'stats' => $stats,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Register a new early bird
+     */
+    public function registerEarlyBird(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/sales/early-birds');
+        }
+
+        $businessName = trim($_POST['business_name'] ?? '');
+        $contactName = trim($_POST['contact_name'] ?? '');
+        $contactEmail = trim($_POST['contact_email'] ?? '');
+        $contactPhone = trim($_POST['contact_phone'] ?? '');
+        $notes = trim($_POST['notes'] ?? '');
+
+        // Validation
+        if (empty($businessName) || empty($contactName) || empty($contactEmail)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Vul alle verplichte velden in'];
+            return $this->redirect('/sales/early-birds');
+        }
+
+        if (!filter_var($contactEmail, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldig e-mailadres'];
+            return $this->redirect('/sales/early-birds');
+        }
+
+        // Check if email already registered
+        $stmt = $this->db->query(
+            "SELECT id FROM sales_early_birds WHERE contact_email = ?",
+            [$contactEmail]
+        );
+        if ($stmt->fetch()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Dit e-mailadres is al geregistreerd als Early Bird'];
+            return $this->redirect('/sales/early-birds');
+        }
+
+        // Generate unique invite code
+        $inviteCode = 'EB-' . strtoupper(substr(md5(uniqid()), 0, 8));
+
+        // Set expiry date (30 days)
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+30 days'));
+
+        try {
+            $this->db->query(
+                "INSERT INTO sales_early_birds (sales_user_id, business_name, contact_name, contact_email, contact_phone, invite_code, notes, expires_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [$this->salesUser['id'], $businessName, $contactName, $contactEmail, $contactPhone, $inviteCode, $notes, $expiresAt]
+            );
+
+            // Send invitation email
+            $this->sendEarlyBirdInviteEmail($contactEmail, $contactName, $businessName, $inviteCode);
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Early Bird geregistreerd! Uitnodiging verstuurd naar ' . $contactEmail];
+        } catch (\Exception $e) {
+            error_log("Early bird registration error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Er ging iets mis bij het registreren'];
+        }
+
+        return $this->redirect('/sales/early-birds');
+    }
+
+    /**
+     * Resend early bird invite
+     */
+    public function resendEarlyBirdInvite(int $id): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        $stmt = $this->db->query(
+            "SELECT * FROM sales_early_birds WHERE id = ? AND sales_user_id = ? AND status = 'pending'",
+            [$id, $this->salesUser['id']]
+        );
+        $earlyBird = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$earlyBird) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Early Bird niet gevonden'];
+            return $this->redirect('/sales/early-birds');
+        }
+
+        // Update expiry date
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+30 days'));
+        $this->db->query(
+            "UPDATE sales_early_birds SET expires_at = ?, updated_at = NOW() WHERE id = ?",
+            [$expiresAt, $id]
+        );
+
+        // Resend email
+        $this->sendEarlyBirdInviteEmail(
+            $earlyBird['contact_email'],
+            $earlyBird['contact_name'],
+            $earlyBird['business_name'],
+            $earlyBird['invite_code']
+        );
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Uitnodiging opnieuw verstuurd!'];
+        return $this->redirect('/sales/early-birds');
+    }
+
+    /**
+     * Get all early birds for current sales user
+     */
+    private function getEarlyBirds(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT * FROM sales_early_birds WHERE sales_user_id = ? ORDER BY created_at DESC",
+            [$this->salesUser['id']]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get early bird statistics
+     */
+    private function getEarlyBirdStats(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'trial' THEN 1 ELSE 0 END) as in_trial,
+                SUM(CASE WHEN status = 'converted' THEN 1 ELSE 0 END) as converted,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending
+             FROM sales_early_birds
+             WHERE sales_user_id = ?",
+            [$this->salesUser['id']]
+        );
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: ['total' => 0, 'in_trial' => 0, 'converted' => 0, 'pending' => 0];
+    }
+
+    /**
+     * Send early bird invitation email
+     */
+    private function sendEarlyBirdInviteEmail(string $email, string $name, string $businessName, string $inviteCode): void
+    {
+        $inviteLink = "https://glamourschedule.nl/early-bird/{$inviteCode}";
+        $salesName = $this->salesUser['name'];
+
+        $subject = "Exclusieve Early Bird aanbieding - Start voor slechts €0,99!";
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #333;">
+                <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:40px;text-align:center;">
+                    <h1 style="margin:0;color:#000;font-size:28px;">Early Bird Aanbieding</h1>
+                    <p style="margin:10px 0 0;color:#000;font-size:16px;">Exclusief voor {$businessName}</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <p style="font-size:18px;color:#fff;margin:0 0 20px;">Beste {$name},</p>
+
+                    <p style="font-size:16px;color:#a1a1a1;line-height:1.6;margin:0 0 25px;">
+                        Via {$salesName} heb je een exclusieve Early Bird uitnodiging ontvangen voor GlamourSchedule -
+                        het slimste online boekingssysteem voor salons.
+                    </p>
+
+                    <div style="background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
+                        <p style="margin:0 0 10px;color:#f59e0b;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
+                        <p style="margin:0;font-size:48px;font-weight:bold;color:#fff;">€0,99</p>
+                        <p style="margin:10px 0 0;color:#666;font-size:14px;text-decoration:line-through;">Normaal €49,99</p>
+                    </div>
+
+                    <div style="margin:0 0 25px;">
+                        <p style="color:#fff;font-weight:600;margin:0 0 15px;">Wat krijg je?</p>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr><td style="padding:8px 0;color:#a1a1a1;font-size:14px;"><span style="color:#22c55e;margin-right:10px;">✓</span> Online boekingssysteem</td></tr>
+                            <tr><td style="padding:8px 0;color:#a1a1a1;font-size:14px;"><span style="color:#22c55e;margin-right:10px;">✓</span> Automatische herinneringen</td></tr>
+                            <tr><td style="padding:8px 0;color:#a1a1a1;font-size:14px;"><span style="color:#22c55e;margin-right:10px;">✓</span> Online betalingen</td></tr>
+                            <tr><td style="padding:8px 0;color:#a1a1a1;font-size:14px;"><span style="color:#22c55e;margin-right:10px;">✓</span> Eigen salon pagina</td></tr>
+                            <tr><td style="padding:8px 0;color:#a1a1a1;font-size:14px;"><span style="color:#22c55e;margin-right:10px;">✓</span> Gratis trial periode</td></tr>
+                        </table>
+                    </div>
+
+                    <a href="{$inviteLink}" style="display:block;background:#f59e0b;color:#000;text-decoration:none;padding:18px 30px;border-radius:10px;font-weight:bold;font-size:16px;text-align:center;">
+                        Start Nu - €0,99
+                    </a>
+
+                    <p style="margin:25px 0 0;font-size:13px;color:#666;text-align:center;">
+                        Deze aanbieding is 30 dagen geldig.
+                    </p>
+                </td></tr>
+                <tr><td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($email, $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send early bird invite email: " . $e->getMessage());
+        }
     }
 
     public function payouts(): string
@@ -125,74 +354,70 @@ class SalesController extends Controller
         $referralLink = "https://glamourschedule.nl/partner/register?ref={$referralCode}";
 
         // Build email content
-        $subject = "25 euro korting op GlamourSchedule - Exclusieve aanbieding";
+        $subject = "Early Bird Aanbieding - Start voor slechts €0,99!";
 
-        $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#6b7280;border-left:3px solid #333333;padding-left:1rem;margin-bottom:1.5rem'>{$personalMessage}</p>" : "";
+        $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#a1a1a1;border-left:3px solid #f59e0b;padding-left:1rem;margin-bottom:1.5rem;background:#1a1a1a;padding:1rem;border-radius:0 8px 8px 0'>\"{$personalMessage}\"</p>" : "";
 
         $htmlBody = "
-        <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto'>
-            <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
-                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>GlamourSchedule</h1>
-                <p style='color:#cccccc;margin:0.5rem 0 0 0'>Het slimste boekingssysteem voor salons</p>
+        <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a'>
+            <div style='background:linear-gradient(135deg,#f59e0b,#d97706);padding:2.5rem;text-align:center;border-radius:12px 12px 0 0'>
+                <p style='color:#000;margin:0 0 0.5rem 0;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>Early Bird Aanbieding</p>
+                <h1 style='color:#000;margin:0;font-size:1.75rem;font-weight:700'>GlamourSchedule</h1>
+                <p style='color:#000;margin:0.5rem 0 0 0;opacity:0.8'>Het slimste boekingssysteem voor salons</p>
             </div>
 
-            <div style='background:#fafafa;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
-                <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$salonName},</p>
+            <div style='background:#1a1a1a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
+                <p style='color:#ffffff;font-size:1.1rem;margin-top:0'>Beste {$salonName},</p>
 
                 {$personalLine}
 
-                <p style='color:#374151;line-height:1.6'>
-                    Ik had graag even langs willen komen, maar helaas is daar geen tijd voor.
-                    Daarom neem ik via deze weg contact met je op over GlamourSchedule.
+                <p style='color:#a1a1a1;line-height:1.7'>
+                    Via <strong style='color:#fff'>{$salesName}</strong> heb je een exclusieve <strong style='color:#f59e0b'>Early Bird uitnodiging</strong> ontvangen!
                 </p>
 
-                <p style='color:#374151;line-height:1.6'>
-                    Via {$salesName} ontvang je <strong style='color:#000000'>€25 korting</strong> op je registratie!
-                </p>
+                <div style='background:#0a0a0a;border:2px solid #f59e0b;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
+                    <p style='margin:0 0 0.5rem 0;color:#f59e0b;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>Exclusieve Early Bird Prijs</p>
+                    <p style='margin:0;font-size:3rem;font-weight:700;color:#ffffff'>€0,99</p>
+                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €49,99</span> - <strong style='color:#22c55e'>Je bespaart €49!</strong></p>
+                </div>
 
-                <div style='background:#f0fdf4;border-left:4px solid #000000;border-radius:8px;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0 0 0.75rem 0;color:#000000;font-weight:700;font-size:1.1rem'>Waarom GlamourSchedule anders is</p>
-                    <p style='color:#374151;line-height:1.6;margin:0 0 0.75rem 0'>
-                        Bij GlamourSchedule betaal je <strong>geen maandelijks abonnement</strong> en <strong>geen vaste kosten</strong>.
+                <div style='background:#0a0a0a;border-left:4px solid #333;border-radius:0 8px 8px 0;padding:1.5rem;margin:1.5rem 0'>
+                    <p style='margin:0 0 0.75rem 0;color:#ffffff;font-weight:700;font-size:1.1rem'>Waarom GlamourSchedule anders is</p>
+                    <p style='color:#a1a1a1;line-height:1.7;margin:0 0 0.75rem 0'>
+                        Bij GlamourSchedule betaal je <strong style='color:#fff'>geen maandelijks abonnement</strong> en <strong style='color:#fff'>geen vaste kosten</strong>.
                     </p>
-                    <p style='color:#374151;line-height:1.6;margin:0 0 0.75rem 0'>
+                    <p style='color:#a1a1a1;line-height:1.7;margin:0 0 0.75rem 0'>
                         Heb je een rustige periode, een dip in boekingen of ga je op vakantie?<br>
-                        👉 <strong>Dan betaal je helemaal niets.</strong>
+                        👉 <strong style='color:#22c55e'>Dan betaal je helemaal niets.</strong>
                     </p>
-                    <p style='color:#374151;line-height:1.6;margin:0'>
-                        Je betaalt pas <strong>€1,75 per boeking</strong>, alleen wanneer je écht klanten ontvangt.<br>
+                    <p style='color:#a1a1a1;line-height:1.7;margin:0'>
+                        Je betaalt alleen <strong style='color:#fff'>€1,75 per boeking</strong>, wanneer je écht klanten ontvangt.<br>
                         Dat maakt GlamourSchedule eerlijk, flexibel en risicoloos.
                     </p>
                 </div>
 
-                <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center'>
-                    <p style='margin:0 0 0.5rem 0;color:#000000;font-weight:600'>Jouw exclusieve korting:</p>
-                    <p style='margin:0;font-size:1.5rem;font-weight:700;color:#000000'>€25,- korting</p>
-                    <p style='margin:0.5rem 0 0 0;color:#6b7280;font-size:0.9rem'>Normale prijs: €99,99 - Jouw prijs: €74,99</p>
-                </div>
-
-                <p style='color:#374151;font-weight:600;margin-bottom:0.5rem'>Wat krijg je?</p>
-                <ul style='color:#374151;line-height:1.8;padding-left:1.25rem'>
-                    <li>Online boekingen 24/7</li>
-                    <li>Automatische herinneringen aan klanten</li>
-                    <li>Betalingen via iDEAL</li>
-                    <li>Eigen professionele salonpagina</li>
-                    <li>Klantenbeheer dashboard</li>
-                    <li>14 dagen gratis proberen</li>
-                </ul>
+                <p style='color:#ffffff;font-weight:600;margin-bottom:0.75rem'>Wat krijg je?</p>
+                <table style='width:100%;color:#a1a1a1;font-size:0.95rem'>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Online boekingen 24/7</td></tr>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Automatische herinneringen aan klanten</td></tr>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Betalingen via iDEAL</td></tr>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Eigen professionele salonpagina</td></tr>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Klantenbeheer dashboard</td></tr>
+                    <tr><td style='padding:8px 0'><span style='color:#22c55e;margin-right:10px'>✓</span> Gratis proefperiode</td></tr>
+                </table>
 
                 <div style='text-align:center;margin:2rem 0'>
-                    <a href='{$referralLink}' style='display:inline-block;background:linear-gradient(135deg,#333333,#000000);color:white;text-decoration:none;padding:1rem 2rem;border-radius:10px;font-weight:600;font-size:1.1rem'>
-                        Registreer nu met korting
+                    <a href='{$referralLink}' style='display:inline-block;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;text-decoration:none;padding:1.25rem 2.5rem;border-radius:10px;font-weight:700;font-size:1.1rem'>
+                        Start Nu - Slechts €0,99
                     </a>
                 </div>
 
-                <p style='color:#6b7280;font-size:0.9rem;text-align:center;margin-bottom:0'>
-                    Of kopieer deze link: <span style='color:#000000'>{$referralLink}</span>
+                <p style='color:#666;font-size:0.85rem;text-align:center;margin-bottom:0'>
+                    Of kopieer deze link: <span style='color:#f59e0b'>{$referralLink}</span>
                 </p>
             </div>
 
-            <p style='text-align:center;color:#9ca3af;font-size:0.8rem;margin-top:1rem'>
+            <p style='text-align:center;color:#666;font-size:0.8rem;margin-top:1rem;padding:0 1rem'>
                 Deze email is verstuurd namens {$salesName} via GlamourSchedule Sales
             </p>
         </div>
@@ -278,8 +503,170 @@ class SalesController extends Controller
             ]);
         }
 
-        $_SESSION['sales_user_id'] = $user['id'];
+        // 2FA: Generate and send verification code
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $expires = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+        $this->db->query(
+            "UPDATE sales_users SET two_factor_code = ?, two_factor_code_expires = ? WHERE id = ?",
+            [$code, $expires, $user['id']]
+        );
+
+        // Send 2FA code via email
+        $this->send2FAEmail($user['email'], $user['name'], $code);
+
+        // Store user ID in session for 2FA verification (not logged in yet)
+        $_SESSION['sales_2fa_user_id'] = $user['id'];
+        $_SESSION['sales_2fa_email'] = $user['email'];
+
+        return $this->redirect('/sales/2fa');
+    }
+
+    public function show2FA(): string
+    {
+        if (!isset($_SESSION['sales_2fa_user_id'])) {
+            return $this->redirect('/sales/login');
+        }
+
+        $email = $_SESSION['sales_2fa_email'] ?? '';
+        $parts = explode('@', $email);
+        $maskedEmail = substr($parts[0], 0, 2) . '***@' . ($parts[1] ?? '');
+
+        return $this->view('pages/sales/2fa', [
+            'pageTitle' => 'Verificatie',
+            'maskedEmail' => $maskedEmail,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function verify2FA(): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/sales/login?error=csrf');
+        }
+
+        if (!isset($_SESSION['sales_2fa_user_id'])) {
+            return $this->redirect('/sales/login');
+        }
+
+        $userId = $_SESSION['sales_2fa_user_id'];
+        $code = trim($_POST['code'] ?? '');
+
+        if (strlen($code) !== 6 || !ctype_digit($code)) {
+            return $this->view('pages/sales/2fa', [
+                'pageTitle' => 'Verificatie',
+                'maskedEmail' => substr($_SESSION['sales_2fa_email'], 0, 2) . '***@' . explode('@', $_SESSION['sales_2fa_email'])[1],
+                'error' => 'Voer een geldige 6-cijferige code in',
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        $stmt = $this->db->query(
+            "SELECT two_factor_code, two_factor_code_expires FROM sales_users WHERE id = ?",
+            [$userId]
+        );
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$user || $user['two_factor_code'] !== $code) {
+            return $this->view('pages/sales/2fa', [
+                'pageTitle' => 'Verificatie',
+                'maskedEmail' => substr($_SESSION['sales_2fa_email'], 0, 2) . '***@' . explode('@', $_SESSION['sales_2fa_email'])[1],
+                'error' => 'Ongeldige verificatiecode',
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        if (strtotime($user['two_factor_code_expires']) < time()) {
+            return $this->view('pages/sales/2fa', [
+                'pageTitle' => 'Verificatie',
+                'maskedEmail' => substr($_SESSION['sales_2fa_email'], 0, 2) . '***@' . explode('@', $_SESSION['sales_2fa_email'])[1],
+                'error' => 'Code is verlopen. Vraag een nieuwe aan.',
+                'expired' => true,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Clear 2FA code
+        $this->db->query(
+            "UPDATE sales_users SET two_factor_code = NULL, two_factor_code_expires = NULL WHERE id = ?",
+            [$userId]
+        );
+
+        // Log user in
+        $_SESSION['sales_user_id'] = $userId;
+        unset($_SESSION['sales_2fa_user_id']);
+        unset($_SESSION['sales_2fa_email']);
+
         return $this->redirect('/sales/dashboard');
+    }
+
+    public function resend2FA(): string
+    {
+        if (!isset($_SESSION['sales_2fa_user_id'])) {
+            return $this->redirect('/sales/login');
+        }
+
+        $userId = $_SESSION['sales_2fa_user_id'];
+
+        $stmt = $this->db->query("SELECT email, name FROM sales_users WHERE id = ?", [$userId]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return $this->redirect('/sales/login');
+        }
+
+        // Generate new code
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $expires = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+        $this->db->query(
+            "UPDATE sales_users SET two_factor_code = ?, two_factor_code_expires = ? WHERE id = ?",
+            [$code, $expires, $userId]
+        );
+
+        $this->send2FAEmail($user['email'], $user['name'], $code);
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Nieuwe code verzonden!'];
+        return $this->redirect('/sales/2fa');
+    }
+
+    private function send2FAEmail(string $email, string $name, string $code): void
+    {
+        $subject = "Je verificatiecode: $code - GlamourSchedule Sales";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+        <tr><td align="center">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #333;">
+                <tr><td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
+                    <h1 style="margin:0;font-size:22px;">Login Verificatie</h1>
+                </td></tr>
+                <tr><td style="padding:35px;text-align:center;">
+                    <p style="font-size:16px;color:#fff;margin:0 0 20px 0;">Hallo {$name},</p>
+                    <p style="font-size:14px;color:#a1a1a1;margin:0 0 25px 0;">Gebruik deze code om in te loggen op je Sales Portal:</p>
+                    <div style="background:#000;border:2px solid #333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
+                        <span style="font-size:36px;font-weight:bold;color:#ffffff;letter-spacing:8px;font-family:monospace;">{$code}</span>
+                    </div>
+                    <p style="font-size:13px;color:#666;margin:0 0 10px 0;">Deze code is 10 minuten geldig.</p>
+                    <p style="font-size:12px;color:#555;margin:0;">Heb jij niet geprobeerd in te loggen? Negeer deze e-mail en wijzig je wachtwoord.</p>
+                </td></tr>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2026 GlamourSchedule Sales</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($email, $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send 2FA email: " . $e->getMessage());
+        }
     }
 
     public function logout(): string
@@ -322,25 +709,24 @@ class SalesController extends Controller
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($user) {
-            // Generate 6-digit reset code
-            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            // Generate unique reset token (64 chars)
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
-            // Store reset code
+            // Store reset token
             $this->db->query(
                 "UPDATE sales_users SET reset_code = ?, reset_code_expires = ? WHERE id = ?",
-                [$code, $expires, $user['id']]
+                [$token, $expires, $user['id']]
             );
 
-            // Send reset email
-            $this->sendResetEmail($user['email'], $user['name'], $code);
+            // Send reset email with direct link
+            $this->sendResetEmail($user['email'], $user['name'], $token);
         }
 
         // Always show success message (security: don't reveal if email exists)
-        $_SESSION['reset_email'] = $email;
         return $this->view('pages/sales/forgot-password', [
             'pageTitle' => 'Wachtwoord Vergeten',
-            'success' => 'Als dit e-mailadres bekend is, ontvang je binnen enkele minuten een reset code.',
+            'success' => 'Als dit e-mailadres bekend is, ontvang je binnen enkele minuten een link om je wachtwoord te resetten.',
             'email' => $email,
             'csrfToken' => $this->csrf()
         ]);
@@ -348,15 +734,47 @@ class SalesController extends Controller
 
     public function showResetPassword(): string
     {
-        $email = $_SESSION['reset_email'] ?? $_GET['email'] ?? '';
+        $token = $_GET['token'] ?? '';
+        $email = $_GET['email'] ?? '';
 
-        if (empty($email)) {
-            return $this->redirect('/sales/forgot-password');
+        if (empty($token) || empty($email)) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Ongeldige Link',
+                'error' => 'Deze reset link is ongeldig. Vraag een nieuwe aan.',
+                'linkExpired' => true,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Verify token and email match
+        $stmt = $this->db->query(
+            "SELECT id, reset_code, reset_code_expires FROM sales_users WHERE email = ?",
+            [$email]
+        );
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$user || $user['reset_code'] !== $token) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Ongeldige Link',
+                'error' => 'Deze reset link is ongeldig of al gebruikt. Vraag een nieuwe aan.',
+                'linkExpired' => true,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        if (strtotime($user['reset_code_expires']) < time()) {
+            return $this->view('pages/sales/reset-password', [
+                'pageTitle' => 'Link Verlopen',
+                'error' => 'Deze reset link is verlopen. Vraag een nieuwe aan.',
+                'linkExpired' => true,
+                'csrfToken' => $this->csrf()
+            ]);
         }
 
         return $this->view('pages/sales/reset-password', [
             'pageTitle' => 'Nieuw Wachtwoord',
             'email' => $email,
+            'token' => $token,
             'csrfToken' => $this->csrf()
         ]);
     }
@@ -368,16 +786,16 @@ class SalesController extends Controller
         }
 
         $email = trim($_POST['email'] ?? '');
-        $code = trim($_POST['code'] ?? '');
+        $token = trim($_POST['token'] ?? '');
         $password = $_POST['password'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
 
         // Validate inputs
-        if (empty($email) || empty($code) || strlen($code) !== 6) {
+        if (empty($email) || empty($token)) {
             return $this->view('pages/sales/reset-password', [
-                'pageTitle' => 'Nieuw Wachtwoord',
-                'error' => 'Ongeldige reset code',
-                'email' => $email,
+                'pageTitle' => 'Ongeldige Link',
+                'error' => 'Ongeldige reset link.',
+                'linkExpired' => true,
                 'csrfToken' => $this->csrf()
             ]);
         }
@@ -387,6 +805,7 @@ class SalesController extends Controller
                 'pageTitle' => 'Nieuw Wachtwoord',
                 'error' => 'Wachtwoord moet minimaal 8 karakters zijn',
                 'email' => $email,
+                'token' => $token,
                 'csrfToken' => $this->csrf()
             ]);
         }
@@ -396,52 +815,51 @@ class SalesController extends Controller
                 'pageTitle' => 'Nieuw Wachtwoord',
                 'error' => 'Wachtwoorden komen niet overeen',
                 'email' => $email,
+                'token' => $token,
                 'csrfToken' => $this->csrf()
             ]);
         }
 
-        // Verify code
+        // Verify token
         $stmt = $this->db->query(
             "SELECT id, reset_code, reset_code_expires FROM sales_users WHERE email = ?",
             [$email]
         );
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if (!$user || $user['reset_code'] !== $code) {
+        if (!$user || $user['reset_code'] !== $token) {
             return $this->view('pages/sales/reset-password', [
-                'pageTitle' => 'Nieuw Wachtwoord',
-                'error' => 'Ongeldige reset code',
-                'email' => $email,
+                'pageTitle' => 'Ongeldige Link',
+                'error' => 'Deze reset link is ongeldig of al gebruikt.',
+                'linkExpired' => true,
                 'csrfToken' => $this->csrf()
             ]);
         }
 
         if (strtotime($user['reset_code_expires']) < time()) {
             return $this->view('pages/sales/reset-password', [
-                'pageTitle' => 'Nieuw Wachtwoord',
-                'error' => 'Reset code is verlopen. Vraag een nieuwe aan.',
-                'email' => $email,
+                'pageTitle' => 'Link Verlopen',
+                'error' => 'Deze reset link is verlopen. Vraag een nieuwe aan.',
+                'linkExpired' => true,
                 'csrfToken' => $this->csrf()
             ]);
         }
 
-        // Update password and clear reset code
+        // Update password and clear reset token
         $this->db->query(
             "UPDATE sales_users SET password = ?, reset_code = NULL, reset_code_expires = NULL WHERE id = ?",
             [password_hash($password, PASSWORD_BCRYPT), $user['id']]
         );
-
-        // Clear session
-        unset($_SESSION['reset_email']);
 
         // Set flash message and redirect to login
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Wachtwoord succesvol gewijzigd! Je kunt nu inloggen.'];
         return $this->redirect('/sales/login');
     }
 
-    private function sendResetEmail(string $email, string $name, string $code): void
+    private function sendResetEmail(string $email, string $name, string $token): void
     {
-        $subject = "Je wachtwoord reset code: $code";
+        $resetUrl = "https://glamourschedule.com/sales/reset-password?email=" . urlencode($email) . "&token=" . $token;
+        $subject = "Wachtwoord resetten - GlamourSchedule";
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
@@ -449,20 +867,23 @@ class SalesController extends Controller
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
         <tr><td align="center">
             <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
-                <tr><td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:30px;text-align:center;">
-                    <h1 style="margin:0;font-size:22px;">Wachtwoord Reset</h1>
+                <tr><td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
+                    <h1 style="margin:0;font-size:22px;">Wachtwoord Resetten</h1>
                 </td></tr>
                 <tr><td style="padding:35px;text-align:center;">
                     <p style="font-size:16px;color:#333;margin:0 0 20px 0;">Hallo {$name},</p>
-                    <p style="font-size:14px;color:#666;margin:0 0 25px 0;">Je hebt een wachtwoord reset aangevraagd. Gebruik deze code:</p>
-                    <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
-                        <span style="font-size:36px;font-weight:bold;color:#333333;letter-spacing:8px;font-family:monospace;">{$code}</span>
-                    </div>
-                    <p style="font-size:13px;color:#999;margin:0 0 15px 0;">Deze code is 30 minuten geldig.</p>
-                    <p style="font-size:13px;color:#999;margin:0;">Heb je geen reset aangevraagd? Negeer deze e-mail.</p>
+                    <p style="font-size:14px;color:#666;margin:0 0 25px 0;">Je hebt een wachtwoord reset aangevraagd. Klik op de knop hieronder om een nieuw wachtwoord in te stellen:</p>
+                    <p style="margin:25px 0;">
+                        <a href="{$resetUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">
+                            Wachtwoord Resetten
+                        </a>
+                    </p>
+                    <p style="font-size:13px;color:#999;margin:25px 0 15px 0;">Deze link is 1 uur geldig.</p>
+                    <p style="font-size:12px;color:#ccc;margin:0;word-break:break-all;">Of kopieer deze link:<br>{$resetUrl}</p>
+                    <p style="font-size:13px;color:#999;margin:20px 0 0 0;">Heb je geen reset aangevraagd? Negeer deze e-mail.</p>
                 </td></tr>
                 <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule Sales</p>
+                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -518,15 +939,25 @@ HTML;
         }
 
         // Check if email exists
-        $stmt = $this->db->query("SELECT id, registration_paid FROM sales_users WHERE email = ?", [$data['email']]);
+        $stmt = $this->db->query("SELECT id, registration_paid, email_verified FROM sales_users WHERE email = ?", [$data['email']]);
         $existing = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($existing) {
             if ($existing['registration_paid']) {
                 $errors['email'] = 'Dit e-mailadres is al in gebruik';
             } else {
-                // Existing unpaid registration - redirect to payment
+                // Existing unpaid registration
                 $_SESSION['sales_register_id'] = $existing['id'];
-                return $this->createSalesPayment($existing['id']);
+                $_SESSION['sales_register_email'] = $data['email'];
+
+                if (!$existing['email_verified']) {
+                    // Email not verified yet - send new code and redirect to verification
+                    $this->sendVerificationCode($data['email']);
+                    return $this->redirect('/sales/verify-email');
+                } else {
+                    // Email verified, redirect to payment
+                    $_SESSION['sales_verify_user_id'] = $existing['id'];
+                    return $this->redirect('/sales/payment');
+                }
             }
         }
 
@@ -546,9 +977,10 @@ HTML;
         // Generate temporary password (user will set their own after first login)
         $tempPassword = bin2hex(random_bytes(8));
 
+        // Create user with email_verified = 0 (needs verification first)
         $this->db->query(
             "INSERT INTO sales_users (email, password, name, first_name, last_name, referral_code, status, email_verified, registration_paid)
-             VALUES (?, ?, ?, ?, ?, ?, 'pending', 1, 0)",
+             VALUES (?, ?, ?, ?, ?, ?, 'pending', 0, 0)",
             [
                 $data['email'],
                 password_hash($tempPassword, PASSWORD_BCRYPT),
@@ -561,10 +993,13 @@ HTML;
 
         $salesUserId = $this->db->lastInsertId();
         $_SESSION['sales_register_id'] = $salesUserId;
+        $_SESSION['sales_register_email'] = $data['email'];
         $_SESSION['sales_temp_password'] = $tempPassword;
 
-        // Create payment and redirect
-        return $this->createSalesPayment($salesUserId);
+        // Send verification code first, then payment after verification
+        $this->sendVerificationCode($data['email']);
+
+        return $this->redirect('/sales/verify-email');
     }
 
     private function createSalesPayment(int $salesUserId): string
@@ -923,10 +1358,18 @@ HTML;
             if ($payment->isPaid()) {
                 $userId = $payment->metadata->sales_user_id ?? null;
                 if ($userId) {
+                    // Update user status
                     $this->db->query(
                         "UPDATE sales_users SET registration_paid = 1, status = 'active' WHERE id = ?",
                         [$userId]
                     );
+
+                    // Get user details and send admin notification
+                    $stmt = $this->db->query("SELECT * FROM sales_users WHERE id = ?", [$userId]);
+                    $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    if ($user) {
+                        $this->sendAdminNotification($user, $payment->amount->value);
+                    }
                 }
             }
 
@@ -937,6 +1380,70 @@ HTML;
             error_log("Mollie webhook error: " . $e->getMessage());
             http_response_code(500);
             return '';
+        }
+    }
+
+    private function sendAdminNotification(array $user, string $amount): void
+    {
+        $adminEmail = 'jjt-services@outlook.com';
+        $subject = "Nieuwe Sales Partner Registratie: {$user['name']}";
+
+        $html = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr><td align="center">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:#000000;color:#ffffff;padding:25px;text-align:center;">
+                    <h1 style="margin:0;font-size:20px;">Nieuwe Sales Partner!</h1>
+                </td></tr>
+                <tr><td style="padding:25px;">
+                    <p style="margin:0 0 15px;color:#333;">Er is een nieuwe sales partner geregistreerd en heeft betaald.</p>
+
+                    <table style="width:100%;border-collapse:collapse;">
+                        <tr>
+                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Naam:</td>
+                            <td style="padding:8px 0;color:#000;font-weight:600;border-bottom:1px solid #eee;">{$user['name']}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Email:</td>
+                            <td style="padding:8px 0;color:#000;border-bottom:1px solid #eee;">{$user['email']}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Telefoon:</td>
+                            <td style="padding:8px 0;color:#000;border-bottom:1px solid #eee;">{$user['phone']}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Referral Code:</td>
+                            <td style="padding:8px 0;color:#000;font-weight:600;font-family:monospace;letter-spacing:1px;border-bottom:1px solid #eee;">{$user['referral_code']}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px 0;color:#666;">Betaald:</td>
+                            <td style="padding:8px 0;color:#22c55e;font-weight:600;">&euro;{$amount}</td>
+                        </tr>
+                    </table>
+
+                    <p style="margin:20px 0 0;text-align:center;">
+                        <a href="https://glamourschedule.com/admin" style="display:inline-block;background:#000;color:#fff;padding:12px 25px;text-decoration:none;border-radius:8px;font-weight:600;">
+                            Bekijk in Admin
+                        </a>
+                    </p>
+                </td></tr>
+                <tr><td style="background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;">
+                    <p style="margin:0;color:#999;font-size:12px;">GlamourSchedule Sales Notificatie</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($adminEmail, $subject, $html);
+        } catch (\Exception $e) {
+            error_log("Failed to send admin notification: " . $e->getMessage());
         }
     }
 
@@ -1003,37 +1510,93 @@ HTML;
     {
         $userId = $this->salesUser['id'];
 
+        // Total referrals
         $stmt = $this->db->query(
             "SELECT COUNT(*) as total FROM sales_referrals WHERE sales_user_id = ?",
             [$userId]
         );
         $totalReferrals = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
 
+        // Converted (paid after trial, waiting for payout)
         $stmt = $this->db->query(
             "SELECT COUNT(*) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'converted'",
             [$userId]
         );
         $convertedReferrals = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
 
+        // Paid out (completed)
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'paid'",
+            [$userId]
+        );
+        $paidReferrals = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        // In trial (pending)
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'pending'",
+            [$userId]
+        );
+        $pendingReferrals = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        // Cancelled/failed
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as total FROM sales_referrals WHERE sales_user_id = ? AND status IN ('cancelled', 'failed', 'expired')",
+            [$userId]
+        );
+        $cancelledReferrals = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        // Total earnings paid out
         $stmt = $this->db->query(
             "SELECT COALESCE(SUM(commission), 0) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'paid'",
             [$userId]
         );
-        $totalEarnings = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+        $totalEarnings = (float)$stmt->fetch(\PDO::FETCH_ASSOC)['total'];
 
+        // Pending earnings (converted, waiting for payout)
         $stmt = $this->db->query(
             "SELECT COALESCE(SUM(commission), 0) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'converted'",
             [$userId]
         );
-        $pendingEarnings = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+        $pendingEarnings = (float)$stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        // Potential earnings (in trial)
+        $stmt = $this->db->query(
+            "SELECT COALESCE(SUM(commission), 0) as total FROM sales_referrals WHERE sales_user_id = ? AND status = 'pending'",
+            [$userId]
+        );
+        $potentialEarnings = (float)$stmt->fetch(\PDO::FETCH_ASSOC)['total'];
 
         return [
             'totalReferrals' => $totalReferrals,
             'convertedReferrals' => $convertedReferrals,
+            'paidReferrals' => $paidReferrals,
+            'pendingReferrals' => $pendingReferrals,
+            'cancelledReferrals' => $cancelledReferrals,
             'totalEarnings' => $totalEarnings,
             'pendingEarnings' => $pendingEarnings,
-            'conversionRate' => $totalReferrals > 0 ? round(($convertedReferrals / $totalReferrals) * 100, 1) : 0
+            'potentialEarnings' => $potentialEarnings,
+            'conversionRate' => $totalReferrals > 0 ? round((($convertedReferrals + $paidReferrals) / $totalReferrals) * 100, 1) : 0
         ];
+    }
+
+    /**
+     * Get referrals currently in trial period with days remaining
+     */
+    private function getTrialReferrals(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT sr.*, b.company_name, b.email, b.trial_ends_at, b.created_at as business_created,
+                    DATEDIFF(b.trial_ends_at, NOW()) as days_remaining
+             FROM sales_referrals sr
+             JOIN businesses b ON sr.business_id = b.id
+             WHERE sr.sales_user_id = ?
+               AND sr.status = 'pending'
+               AND b.subscription_status = 'trial'
+               AND b.trial_ends_at > NOW()
+             ORDER BY b.trial_ends_at ASC",
+            [$this->salesUser['id']]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function getRecentReferrals(): array
@@ -1099,5 +1662,424 @@ HTML;
         }
 
         return $code;
+    }
+
+    // ============================================================
+    // ACCOUNT SETTINGS
+    // ============================================================
+
+    public function showAccountSettings(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        return $this->view('pages/sales/account', [
+            'pageTitle' => 'Account Instellingen',
+            'salesUser' => $this->salesUser,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    public function updateAccount(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/sales/account?error=csrf');
+        }
+
+        $data = [
+            'first_name' => trim($_POST['first_name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'phone' => trim($_POST['phone'] ?? ''),
+            'iban' => trim($_POST['iban'] ?? '')
+        ];
+
+        $errors = [];
+
+        if (empty($data['first_name'])) {
+            $errors['first_name'] = 'Voornaam is verplicht';
+        }
+
+        if (empty($data['last_name'])) {
+            $errors['last_name'] = 'Achternaam is verplicht';
+        }
+
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Geldig e-mailadres is verplicht';
+        }
+
+        // Check if email is taken by another user
+        if ($data['email'] !== $this->salesUser['email']) {
+            $stmt = $this->db->query("SELECT id FROM sales_users WHERE email = ? AND id != ?", [$data['email'], $this->salesUser['id']]);
+            if ($stmt->fetch()) {
+                $errors['email'] = 'Dit e-mailadres is al in gebruik';
+            }
+        }
+
+        // Validate IBAN format if provided
+        if (!empty($data['iban'])) {
+            $iban = strtoupper(preg_replace('/\s+/', '', $data['iban']));
+            if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$/', $iban)) {
+                $errors['iban'] = 'Ongeldig IBAN formaat';
+            } else {
+                $data['iban'] = $iban;
+            }
+        }
+
+        if (!empty($errors)) {
+            // Refresh user data
+            $stmt = $this->db->query("SELECT * FROM sales_users WHERE id = ?", [$this->salesUser['id']]);
+            $this->salesUser = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $this->view('pages/sales/account', [
+                'pageTitle' => 'Account Instellingen',
+                'salesUser' => $this->salesUser,
+                'errors' => $errors,
+                'data' => $data,
+                'csrfToken' => $this->csrf()
+            ]);
+        }
+
+        // Check if IBAN is being changed/added
+        $currentIban = $this->salesUser['iban'] ?? '';
+        $newIban = $data['iban'] ?? '';
+
+        // Update account (without IBAN - IBAN requires verification)
+        $fullName = $data['first_name'] . ' ' . $data['last_name'];
+        $this->db->query(
+            "UPDATE sales_users SET first_name = ?, last_name = ?, name = ?, email = ?, phone = ?, updated_at = NOW() WHERE id = ?",
+            [$data['first_name'], $data['last_name'], $fullName, $data['email'], $data['phone'], $this->salesUser['id']]
+        );
+
+        // If IBAN is being changed/added, redirect to verification
+        if (!empty($newIban) && $newIban !== $currentIban) {
+            $_SESSION['pending_sales_iban'] = $newIban;
+            $_SESSION['flash'] = ['type' => 'info', 'message' => 'Overige gegevens bijgewerkt. Verifieer je bankrekening via een betaling van €0,01.'];
+            return $this->redirect('/sales/verify-iban');
+        }
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Account gegevens bijgewerkt!'];
+        return $this->redirect('/sales/account');
+    }
+
+    public function updatePassword(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/sales/account?error=csrf');
+        }
+
+        $currentPassword = $_POST['current_password'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        // Verify current password
+        if (!password_verify($currentPassword, $this->salesUser['password'])) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Huidig wachtwoord is onjuist'];
+            return $this->redirect('/sales/account');
+        }
+
+        if (strlen($newPassword) < 8) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Nieuw wachtwoord moet minimaal 8 karakters zijn'];
+            return $this->redirect('/sales/account');
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Wachtwoorden komen niet overeen'];
+            return $this->redirect('/sales/account');
+        }
+
+        // Update password
+        $this->db->query(
+            "UPDATE sales_users SET password = ?, updated_at = NOW() WHERE id = ?",
+            [password_hash($newPassword, PASSWORD_BCRYPT), $this->salesUser['id']]
+        );
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Wachtwoord succesvol gewijzigd!'];
+        return $this->redirect('/sales/account');
+    }
+
+    /**
+     * Delete sales partner account
+     */
+    public function deleteAccount(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/sales/account');
+        }
+
+        $confirmText = trim($_POST['confirm_text'] ?? '');
+
+        if ($confirmText !== 'VERWIJDER') {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Bevestigingstekst onjuist'];
+            return $this->redirect('/sales/account');
+        }
+
+        $userId = $this->salesUser['id'];
+
+        try {
+            // Delete related records first
+            $this->db->query("DELETE FROM sales_commissions WHERE sales_user_id = ?", [$userId]);
+            $this->db->query("DELETE FROM sales_payouts WHERE sales_user_id = ?", [$userId]);
+            $this->db->query("DELETE FROM sales_iban_verifications WHERE sales_user_id = ?", [$userId]);
+
+            // Clear referral links from businesses
+            $this->db->query("UPDATE businesses SET referred_by = NULL WHERE referred_by = ?", [$userId]);
+
+            // Delete the sales user
+            $this->db->query("DELETE FROM sales_users WHERE id = ?", [$userId]);
+
+            // Clear session
+            unset($_SESSION['sales_user_id']);
+            unset($_SESSION['sales_2fa_user_id']);
+            unset($_SESSION['sales_2fa_email']);
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Je account is succesvol verwijderd'];
+            return $this->redirect('/sales/login');
+
+        } catch (\Exception $e) {
+            error_log("Sales account deletion error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Fout bij verwijderen account'];
+            return $this->redirect('/sales/account');
+        }
+    }
+
+    /**
+     * Show IBAN verification page
+     */
+    public function showVerifyIban(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        $pendingIban = $_SESSION['pending_sales_iban'] ?? null;
+
+        return $this->view('pages/sales/verify-iban', [
+            'pageTitle' => 'Bankrekening Verificatie',
+            'salesUser' => $this->salesUser,
+            'pendingIban' => $pendingIban,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Initiate IBAN verification via Mollie payment
+     */
+    public function initiateIbanVerification(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/sales/account');
+        }
+
+        $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+
+        if (empty($mollieApiKey)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betalingssysteem niet geconfigureerd'];
+            return $this->redirect('/sales/account');
+        }
+
+        try {
+            $mollie = new \Mollie\Api\MollieApiClient();
+            $mollie->setApiKey($mollieApiKey);
+
+            // Create unique payment reference
+            $reference = 'SALES-IBAN-' . $this->salesUser['id'] . '-' . time();
+
+            $payment = $mollie->payments->create([
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => '0.01'
+                ],
+                'description' => 'GlamourSchedule Sales IBAN Verificatie',
+                'redirectUrl' => 'https://glamourschedule.nl/sales/iban/complete?ref=' . $reference,
+                'webhookUrl' => 'https://glamourschedule.nl/api/webhooks/mollie',
+                'method' => 'ideal',
+                'metadata' => [
+                    'type' => 'sales_iban_verification',
+                    'sales_user_id' => $this->salesUser['id'],
+                    'reference' => $reference
+                ]
+            ]);
+
+            // Store payment reference
+            $this->db->query(
+                "INSERT INTO sales_iban_verifications (sales_user_id, verification_code, mollie_payment_id, status, expires_at)
+                 VALUES (?, ?, ?, 'payment_pending', DATE_ADD(NOW(), INTERVAL 1 HOUR))",
+                [$this->salesUser['id'], $reference, $payment->id]
+            );
+
+            // Redirect to Mollie payment
+            return $this->redirect($payment->getCheckoutUrl());
+
+        } catch (\Exception $e) {
+            error_log("Sales IBAN verification error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Fout bij starten verificatie: ' . $e->getMessage()];
+            return $this->redirect('/sales/account');
+        }
+    }
+
+    /**
+     * Handle IBAN verification completion
+     */
+    public function ibanVerificationComplete(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        $reference = $_GET['ref'] ?? '';
+
+        if (empty($reference)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige verificatie referentie'];
+            return $this->redirect('/sales/account');
+        }
+
+        try {
+            // Get verification record
+            $stmt = $this->db->query(
+                "SELECT * FROM sales_iban_verifications WHERE sales_user_id = ? AND verification_code = ? ORDER BY id DESC LIMIT 1",
+                [$this->salesUser['id'], $reference]
+            );
+            $verification = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$verification) {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Verificatie niet gevonden'];
+                return $this->redirect('/sales/account');
+            }
+
+            // Check payment status with Mollie
+            $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+            $mollie = new \Mollie\Api\MollieApiClient();
+            $mollie->setApiKey($mollieApiKey);
+
+            $payment = $mollie->payments->get($verification['mollie_payment_id']);
+
+            if ($payment->isPaid()) {
+                // Get IBAN from payment details
+                $details = $payment->details;
+                if ($details) {
+                    $iban = $details->consumerAccount ?? null;
+                    $accountHolder = $details->consumerName ?? null;
+
+                    if ($iban && $accountHolder) {
+                        // Update sales user with verified IBAN
+                        $this->db->query(
+                            "UPDATE sales_users SET iban = ?, account_holder = ?, iban_verified = 1, iban_changed_at = NOW() WHERE id = ?",
+                            [$iban, $accountHolder, $this->salesUser['id']]
+                        );
+
+                        // Update verification record
+                        $this->db->query(
+                            "UPDATE sales_iban_verifications SET iban = ?, account_holder = ?, status = 'verified', verified_at = NOW()
+                             WHERE sales_user_id = ? AND mollie_payment_id = ?",
+                            [$iban, $accountHolder, $this->salesUser['id'], $payment->id]
+                        );
+
+                        // Clear pending IBAN
+                        unset($_SESSION['pending_sales_iban']);
+
+                        // Send confirmation email
+                        $this->sendIbanVerifiedEmail($iban);
+
+                        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Bankrekening succesvol geverifieerd!'];
+                        return $this->redirect('/sales/account');
+                    }
+                }
+
+                // Payment successful but couldn't get IBAN details
+                $this->db->query("UPDATE sales_iban_verifications SET status = 'failed' WHERE id = ?", [$verification['id']]);
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Kon IBAN niet ophalen uit betaling'];
+                return $this->redirect('/sales/account');
+            }
+
+            // Payment not completed
+            $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Betaling niet voltooid. Probeer opnieuw.'];
+            return $this->redirect('/sales/verify-iban');
+
+        } catch (\Exception $e) {
+            error_log("Sales IBAN verification complete error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Fout bij verificatie: ' . $e->getMessage()];
+            return $this->redirect('/sales/account');
+        }
+    }
+
+    /**
+     * Send IBAN verified confirmation email
+     */
+    private function sendIbanVerifiedEmail(string $iban): void
+    {
+        $maskedIban = substr($iban, 0, 4) . ' **** **** ' . substr($iban, -4);
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
+                            <h1 style="margin:0;font-size:24px;">Bankrekening Geverifieerd</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#333;">Hallo <strong>{$this->salesUser['name']}</strong>,</p>
+                            <p style="font-size:16px;color:#555;line-height:1.6;">
+                                Je bankrekening is succesvol geverifieerd en gekoppeld aan je Sales Partner account.
+                            </p>
+
+                            <div style="background:#f5f5f5;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
+                                <p style="margin:0;color:#666;font-size:14px;">Gekoppelde bankrekening</p>
+                                <p style="margin:10px 0 0;color:#000000;font-size:20px;font-weight:700;letter-spacing:2px;">
+                                    {$maskedIban}
+                                </p>
+                            </div>
+
+                            <p style="font-size:14px;color:#888;text-align:center;">
+                                Vanaf nu ontvang je uitbetalingen op dit rekeningnummer.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+                            <p style="margin:0;color:#666;font-size:13px;">GlamourSchedule Sales Partner</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($this->salesUser['email'], "Bankrekening Geverifieerd - GlamourSchedule", $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send sales IBAN verified email: " . $e->getMessage());
+        }
     }
 }

@@ -19,9 +19,9 @@ abstract class Controller
      * Detect language based on domain, user preference, and IP location
      *
      * Rules:
-     * - .com domain: Always English (international site)
-     * - .nl domain: Always Dutch (Dutch site)
-     * - User preference (URL param) can override
+     * - .nl domain: Always Dutch (not used anymore, focus on .com)
+     * - .com domain: IP-based detection with popup to choose language
+     * - User preference (URL param or cookie) can override
      */
     protected function detectLanguage(): string
     {
@@ -36,16 +36,32 @@ abstract class Controller
             return $_GET['lang'];
         }
 
-        // 2. Domain-based language (simple and reliable)
-        // .nl = Dutch, .com = English
-        if ($currentDomain === 'nl') {
-            $_SESSION['lang'] = 'nl';
-            return 'nl';
+        // 2. Check cookie (user previously made a choice)
+        if (isset($_COOKIE['lang']) && in_array($_COOKIE['lang'], $availableLangs)) {
+            $_SESSION['lang'] = $_COOKIE['lang'];
+            $_SESSION['lang_user_chosen'] = true;
+            return $_COOKIE['lang'];
         }
 
-        // .com = English
-        $_SESSION['lang'] = 'en';
-        return 'en';
+        // 3. For .com domain: detect country from IP and set suggested language
+        if ($currentDomain === 'com') {
+            $ipData = $this->detectCountryFromIP();
+
+            // Store detected country for popup
+            if ($ipData['country']) {
+                $_SESSION['detected_country'] = $ipData['country'];
+                $_SESSION['detected_country_name'] = $ipData['country_name'] ?? null;
+                $_SESSION['detected_lang'] = $ipData['lang'] ?? 'en';
+            }
+
+            // Default to English, popup will offer to switch
+            $_SESSION['lang'] = 'en';
+            return 'en';
+        }
+
+        // 4. .nl domain: Always Dutch
+        $_SESSION['lang'] = 'nl';
+        return 'nl';
     }
 
     /**
@@ -115,61 +131,77 @@ abstract class Controller
     }
 
     /**
-     * Check if user should see the domain switch popup
+     * Check if user should see the language selection popup on .com
+     * Shows popup when detected language differs from English
      * Returns popup data or null if no popup needed
      */
-    protected function getDomainSwitchPopupData(): ?array
+    protected function getLanguagePopupData(): ?array
     {
+        $currentDomain = Router::getCurrentDomain();
+
+        // Only show on .com domain
+        if ($currentDomain !== 'com') {
+            return null;
+        }
+
         // Don't show if user has already made a choice
         if (isset($_SESSION['lang_user_chosen']) && $_SESSION['lang_user_chosen']) {
             return null;
         }
 
         // Don't show if user dismissed the popup
-        if (isset($_COOKIE['domain_popup_dismissed'])) {
+        if (isset($_COOKIE['lang_popup_dismissed'])) {
             return null;
         }
 
-        $currentDomain = Router::getCurrentDomain();
         $detectedCountry = $_SESSION['detected_country'] ?? null;
+        $detectedLang = $_SESSION['detected_lang'] ?? 'en';
+        $detectedCountryName = $_SESSION['detected_country_name'] ?? null;
 
-        if (!$detectedCountry) {
+        // Don't show popup if no country detected or if detected language is English
+        if (!$detectedCountry || $detectedLang === 'en') {
             return null;
         }
 
-        // Country to suggested domain mapping
-        $countryToDomain = [
-            'NL' => 'nl', // Netherlands -> .nl
-            'BE' => 'nl', // Belgium -> .nl (Dutch)
+        // Language names in different languages
+        $langNames = [
+            'nl' => ['en' => 'Dutch', 'nl' => 'Nederlands', 'de' => 'Niederländisch', 'fr' => 'Néerlandais'],
+            'de' => ['en' => 'German', 'nl' => 'Duits', 'de' => 'Deutsch', 'fr' => 'Allemand'],
+            'fr' => ['en' => 'French', 'nl' => 'Frans', 'de' => 'Französisch', 'fr' => 'Français'],
+            'en' => ['en' => 'English', 'nl' => 'Engels', 'de' => 'Englisch', 'fr' => 'Anglais'],
         ];
 
-        $suggestedDomain = $countryToDomain[$detectedCountry] ?? 'com';
+        // Country names for display
+        $countryNames = [
+            'NL' => 'the Netherlands',
+            'BE' => 'Belgium',
+            'DE' => 'Germany',
+            'AT' => 'Austria',
+            'CH' => 'Switzerland',
+            'FR' => 'France',
+            'LU' => 'Luxembourg',
+        ];
 
-        // If user is on .com but detected in NL/BE, suggest .nl
-        if ($currentDomain === 'com' && $suggestedDomain === 'nl') {
-            return [
-                'show' => true,
-                'detected_country' => $detectedCountry,
-                'current_domain' => 'com',
-                'suggested_domain' => 'nl',
-                'switch_url' => Router::getSwitchDomainUrl('nl'),
-                'stay_url' => null, // Stay on current
-            ];
-        }
+        return [
+            'show' => true,
+            'detected_country' => $detectedCountry,
+            'detected_country_name' => $countryNames[$detectedCountry] ?? $detectedCountryName ?? $detectedCountry,
+            'detected_lang' => $detectedLang,
+            'detected_lang_name' => $langNames[$detectedLang]['en'] ?? $detectedLang,
+            'detected_lang_native' => $langNames[$detectedLang][$detectedLang] ?? $detectedLang,
+            'current_lang' => 'en',
+            'switch_url' => '?lang=' . $detectedLang,
+            'stay_url' => '?lang=en',
+        ];
+    }
 
-        // If user is on .nl but detected outside NL/BE, suggest .com
-        if ($currentDomain === 'nl' && !in_array($detectedCountry, ['NL', 'BE'])) {
-            return [
-                'show' => true,
-                'detected_country' => $detectedCountry,
-                'current_domain' => 'nl',
-                'suggested_domain' => 'com',
-                'switch_url' => Router::getSwitchDomainUrl('com'),
-                'stay_url' => null,
-            ];
-        }
-
-        return null;
+    /**
+     * Legacy method - redirects to new language popup
+     * @deprecated Use getLanguagePopupData() instead
+     */
+    protected function getDomainSwitchPopupData(): ?array
+    {
+        return $this->getLanguagePopupData();
     }
 
     protected function view(string $template, array $data = []): string
@@ -303,81 +335,11 @@ abstract class Controller
     }
 
     /**
-     * Generate business URL (with subdomain support)
-     * If we're on a business subdomain, use relative URLs
-     * Otherwise, generate subdomain URLs
+     * Generate business URL using UUID
      */
-    protected function businessUrl(string $slug, string $path = ''): string
+    protected function businessUrl(string $uuid, string $path = ''): string
     {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-
-        // Check if we're already on a business subdomain
-        if ($this->isBusinessSubdomain()) {
-            // Use relative URL
-            return '/' . ltrim($path, '/');
-        }
-
-        // Generate subdomain URL
-        // Determine base domain
-        $baseDomain = 'glamourschedule.nl';
-        if (str_contains($host, 'glamourschedule.com')) {
-            $baseDomain = 'glamourschedule.com';
-        }
-
-        $subdomainUrl = "{$protocol}://{$slug}.{$baseDomain}";
-
-        if ($path) {
-            $subdomainUrl .= '/' . ltrim($path, '/');
-        }
-
-        return $subdomainUrl;
-    }
-
-    /**
-     * Check if current request is on a business subdomain
-     */
-    protected function isBusinessSubdomain(): bool
-    {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $host = preg_replace('/:\d+$/', '', $host);
-
-        $mainDomains = ['glamourschedule.nl', 'glamourschedule.com', 'www.glamourschedule.nl', 'www.glamourschedule.com', 'new.glamourschedule.nl', 'localhost'];
-
-        if (in_array($host, $mainDomains)) {
-            return false;
-        }
-
-        // Check if it's a subdomain
-        foreach (['glamourschedule.nl', 'glamourschedule.com'] as $baseDomain) {
-            if (str_ends_with($host, '.' . $baseDomain)) {
-                $subdomain = str_replace('.' . $baseDomain, '', $host);
-                if ($subdomain !== 'www' && $subdomain !== 'new') {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the current business subdomain slug, or null if not on a subdomain
-     */
-    protected function getBusinessSubdomain(): ?string
-    {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $host = preg_replace('/:\d+$/', '', $host);
-
-        foreach (['glamourschedule.nl', 'glamourschedule.com'] as $baseDomain) {
-            if (str_ends_with($host, '.' . $baseDomain)) {
-                $subdomain = str_replace('.' . $baseDomain, '', $host);
-                if ($subdomain !== 'www' && $subdomain !== 'new') {
-                    return $subdomain;
-                }
-            }
-        }
-
-        return null;
+        $baseUrl = '/s/' . $uuid;
+        return $path ? $baseUrl . '/' . ltrim($path, '/') : $baseUrl;
     }
 }

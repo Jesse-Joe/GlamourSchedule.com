@@ -4,42 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Login - GlamourSchedule</title>
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000000;
-            padding: 2rem;
+            background: #0a0a0a;
+            padding: 1rem;
         }
-        .login-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 3rem;
+        .container {
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
         }
-        .login-header {
+        .logo {
             text-align: center;
             margin-bottom: 2rem;
         }
-        .login-header i {
-            font-size: 3rem;
-            color: #333333;
-            margin-bottom: 1rem;
+        .logo i {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
         }
-        .login-header h1 {
-            margin: 0;
-            font-size: 1.75rem;
-            color: #1f2937;
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 600;
         }
-        .login-header p {
-            margin: 0.5rem 0 0 0;
-            color: #6b7280;
+        .logo span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .login-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #333;
         }
         .form-group {
             margin-bottom: 1.25rem;
@@ -48,55 +51,66 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: #374151;
+            color: #a1a1a1;
+            font-size: 0.875rem;
         }
         .form-control {
             width: 100%;
             padding: 0.875rem 1rem;
-            border: 2px solid #e5e7eb;
+            border: 2px solid #333;
             border-radius: 10px;
             font-size: 1rem;
             transition: border-color 0.2s;
             box-sizing: border-box;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: #555;
         }
         .form-control:focus {
             outline: none;
-            border-color: #333333;
+            border-color: #fff;
         }
         .btn-primary {
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #333333, #000000);
-            color: white;
+            padding: 0.875rem 1rem;
+            background: #fff;
+            color: #000;
             border: none;
             border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         .btn-primary:hover {
-            transform: translateY(-2px);
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
         }
         .alert-error {
-            background: #f5f5f5;
-            color: #000000;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
         }
-        .register-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
         }
-        .register-link a {
-            color: #333333;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        /* Password Toggle */
         .password-wrapper {
             position: relative;
         }
@@ -107,7 +121,7 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: #9ca3af;
+            color: #666;
             cursor: pointer;
             padding: 4px;
             display: flex;
@@ -115,7 +129,7 @@
             justify-content: center;
         }
         .password-toggle:hover {
-            color: #333333;
+            color: #fff;
         }
         .password-wrapper .form-control {
             padding-right: 44px;
@@ -125,68 +139,100 @@
             margin-top: 1.25rem;
         }
         .forgot-password-link a {
-            color: #6b7280;
+            color: #666;
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .forgot-password-link a:hover {
-            color: #333333;
-            text-decoration: underline;
+            color: #fff;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #333;
+        }
+        .register-link p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .register-link a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .register-link a:hover {
+            border-color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="login-header">
+    <div class="container">
+        <div class="logo">
             <i class="fas fa-chart-line"></i>
             <h1>Sales Portal</h1>
-            <p>Log in op je sales dashboard</p>
+            <span>GlamourSchedule</span>
         </div>
 
-        <?php if (isset($error)): ?>
-            <div class="alert-error">
-                <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($_SESSION['flash'])): ?>
-            <div style="background:#ffffff;color:#000000;padding:1rem;border-radius:10px;margin-bottom:1.5rem">
-                <i class="fas fa-check-circle"></i> <?= htmlspecialchars($_SESSION['flash']['message']) ?>
-            </div>
-            <?php unset($_SESSION['flash']); ?>
-        <?php endif; ?>
-
-        <form method="POST" action="/sales/login">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
-
-            <div class="form-group">
-                <label class="form-label">E-mailadres</label>
-                <input type="email" name="email" class="form-control" placeholder="jouw@email.nl" required autofocus>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Wachtwoord</label>
-                <div class="password-wrapper">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Je wachtwoord" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
-                        <i class="fas fa-eye"></i>
-                    </button>
+        <div class="login-card">
+            <?php if (isset($error)): ?>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
                 </div>
+            <?php endif; ?>
+
+            <?php if (!empty($_SESSION['flash'])): ?>
+                <div class="alert alert-<?= $_SESSION['flash']['type'] === 'success' ? 'success' : 'error' ?>">
+                    <i class="fas fa-<?= $_SESSION['flash']['type'] === 'success' ? 'check-circle' : 'exclamation-circle' ?>"></i>
+                    <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+                </div>
+                <?php unset($_SESSION['flash']); ?>
+            <?php endif; ?>
+
+            <form method="POST" action="/sales/login">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
+
+                <div class="form-group">
+                    <label class="form-label">E-mailadres</label>
+                    <input type="email" name="email" class="form-control" placeholder="jouw@email.nl" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Wachtwoord</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Je wachtwoord" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Inloggen
+                </button>
+            </form>
+
+            <div class="forgot-password-link">
+                <a href="/sales/forgot-password"><i class="fas fa-key"></i> Wachtwoord vergeten?</a>
             </div>
 
-            <button type="submit" class="btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Inloggen
-            </button>
-        </form>
-
-        <div class="forgot-password-link">
-            <a href="/sales/forgot-password"><i class="fas fa-key"></i> Wachtwoord vergeten?</a>
-        </div>
-
-        <div class="register-link">
-            <p style="margin:0;color:#6b7280">Nog geen account?</p>
-            <a href="/sales/register">Word Sales Partner</a>
+            <div class="register-link">
+                <p>Nog geen account?</p>
+                <a href="/sales/register"><i class="fas fa-user-plus"></i> Word Sales Partner</a>
+            </div>
         </div>
     </div>
 

@@ -12,6 +12,19 @@ class SearchController extends Controller
         $location = trim($_GET['location'] ?? '');
         $sort = $_GET['sort'] ?? 'rating';
 
+        // User location for distance calculation
+        $userLat = !empty($_GET['lat']) ? (float)$_GET['lat'] : null;
+        $userLng = !empty($_GET['lng']) ? (float)$_GET['lng'] : null;
+
+        // If no GPS coordinates, try IP-based geolocation
+        if (!$userLat || !$userLng) {
+            $ipLocation = $this->getLocationFromIP();
+            if ($ipLocation) {
+                $userLat = $userLat ?: $ipLocation['lat'];
+                $userLng = $userLng ?: $ipLocation['lng'];
+            }
+        }
+
         // New filter parameters
         $filters = [
             'price_min' => !empty($_GET['price_min']) ? (float)$_GET['price_min'] : null,
@@ -20,6 +33,8 @@ class SearchController extends Controller
             'open_now' => isset($_GET['open_now']) && $_GET['open_now'] === '1',
             'open_weekend' => isset($_GET['open_weekend']) && $_GET['open_weekend'] === '1',
             'open_evening' => isset($_GET['open_evening']) && $_GET['open_evening'] === '1',
+            'user_lat' => $userLat,
+            'user_lng' => $userLng,
         ];
 
         $businesses = [];
@@ -47,8 +62,77 @@ class SearchController extends Controller
             'category' => $category,
             'location' => $location,
             'sort' => $sort,
-            'filters' => $filters
+            'filters' => $filters,
+            'userLat' => $userLat,
+            'userLng' => $userLng
         ]);
+    }
+
+    /**
+     * Get location from IP address using free IP geolocation API
+     */
+    private function getLocationFromIP(): ?array
+    {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+
+        // Skip localhost/private IPs
+        if (empty($ip) || $ip === '127.0.0.1' || $ip === '::1' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
+            // Default to Amsterdam for local development
+            return ['lat' => 52.3676, 'lng' => 4.9041, 'city' => 'Amsterdam'];
+        }
+
+        // Handle multiple IPs (X-Forwarded-For can contain comma-separated list)
+        if (strpos($ip, ',') !== false) {
+            $ip = trim(explode(',', $ip)[0]);
+        }
+
+        // Use ip-api.com (free, no key required, 45 requests/minute)
+        $cacheKey = 'ip_geo_' . md5($ip);
+        $cached = $_SESSION[$cacheKey] ?? null;
+
+        if ($cached && $cached['expires'] > time()) {
+            return $cached['data'];
+        }
+
+        try {
+            $response = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,lat,lon,city");
+            if ($response) {
+                $data = json_decode($response, true);
+                if ($data && $data['status'] === 'success') {
+                    $result = [
+                        'lat' => (float)$data['lat'],
+                        'lng' => (float)$data['lon'],
+                        'city' => $data['city'] ?? ''
+                    ];
+                    // Cache for 1 hour
+                    $_SESSION[$cacheKey] = ['data' => $result, 'expires' => time() + 3600];
+                    return $result;
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate distance between two coordinates using Haversine formula
+     */
+    private function calculateDistance(float $lat1, float $lng1, float $lat2, float $lng2): float
+    {
+        $earthRadius = 6371; // km
+
+        $latDelta = deg2rad($lat2 - $lat1);
+        $lngDelta = deg2rad($lng2 - $lng1);
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($lngDelta / 2) * sin($lngDelta / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return round($earthRadius * $c, 1);
     }
 
     private function searchBusinesses(string $query, string $category, string $location, string $sort, array $filters = []): array
@@ -250,10 +334,24 @@ class SearchController extends Controller
         }
     }
 
-    private function enrichBusinessData(array $businesses): array
+    private function enrichBusinessData(array $businesses, ?float $userLat = null, ?float $userLng = null): array
     {
         if (empty($businesses)) {
             return [];
+        }
+
+        // Get user location from filters if not passed directly
+        if (!$userLat || !$userLng) {
+            $userLat = $_GET['lat'] ?? null;
+            $userLng = $_GET['lng'] ?? null;
+
+            if (!$userLat || !$userLng) {
+                $ipLocation = $this->getLocationFromIP();
+                if ($ipLocation) {
+                    $userLat = $ipLocation['lat'];
+                    $userLng = $ipLocation['lng'];
+                }
+            }
         }
 
         $businessIds = array_column($businesses, 'id');
@@ -311,6 +409,29 @@ class SearchController extends Controller
             $biz['min_price'] = $prices[$biz['id']] ?? null;
             $biz['services_preview'] = $servicesMap[$biz['id']] ?? '';
             $biz['category_name'] = $categoriesMap[$biz['id']] ?? '';
+
+            // Calculate distance if user location is available and business has coordinates
+            $biz['distance'] = null;
+            if ($userLat && $userLng && !empty($biz['latitude']) && !empty($biz['longitude'])) {
+                $biz['distance'] = $this->calculateDistance(
+                    (float)$userLat,
+                    (float)$userLng,
+                    (float)$biz['latitude'],
+                    (float)$biz['longitude']
+                );
+            }
+        }
+
+        // Sort by distance if requested
+        $sort = $_GET['sort'] ?? 'rating';
+        if ($sort === 'distance' && $userLat && $userLng) {
+            usort($businesses, function($a, $b) {
+                // Put businesses without distance at the end
+                if ($a['distance'] === null && $b['distance'] === null) return 0;
+                if ($a['distance'] === null) return 1;
+                if ($b['distance'] === null) return -1;
+                return $a['distance'] <=> $b['distance'];
+            });
         }
 
         return $businesses;

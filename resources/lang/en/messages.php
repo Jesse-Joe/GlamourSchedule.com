@@ -176,6 +176,10 @@ return [
     'select_time_slot' => 'Select a time',
     'time_booked' => 'booked',
     'no_times_this_day' => 'No times available on this day',
+    'next_available_date' => 'Next available date',
+    'or_join_waitlist' => 'or sign up for the waitlist',
+    'join_waitlist' => 'Join waitlist',
+    'waitlist_for_date' => 'Waitlist for',
     'terms_cancel_notice' => 'I understand that cancelling within 24 hours of the appointment will incur a 50% fee.',
     'payment_required' => 'Payment required',
     'complete_payment_to_confirm' => 'Complete payment to confirm your booking',
@@ -196,6 +200,13 @@ return [
     'no_results' => 'No results found',
     'try_different' => 'Try different search terms',
     'reviews' => 'reviews',
+    'nearest' => 'Nearest',
+    'best_rated' => 'Best rated',
+    'most_reviews' => 'Most reviews',
+    'price_low_high' => 'Price low-high',
+    'price_high_low' => 'Price high-low',
+    'name_az' => 'Name A-Z',
+    'newest_first' => 'Newest first',
 
     // ═══════════════════════════════════════════════════════════════════════
     // PAYMENT

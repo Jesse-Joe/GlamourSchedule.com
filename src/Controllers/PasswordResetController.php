@@ -241,7 +241,7 @@ class PasswordResetController extends Controller
 HTML;
 
         try {
-            $mailer = new Mailer($this->config['mail']);
+            $mailer = new Mailer();
             $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send password reset email: " . $e->getMessage());
@@ -297,7 +297,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer($this->config['mail']);
+            $mailer = new Mailer();
             $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send password changed email: " . $e->getMessage());

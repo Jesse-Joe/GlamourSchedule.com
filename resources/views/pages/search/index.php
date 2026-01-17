@@ -401,6 +401,147 @@
 .filter-search input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
+
+/* Location Button */
+.location-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.2s;
+}
+.location-btn:hover {
+    color: #ffffff;
+}
+.location-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+.location-btn.success {
+    color: #10b981;
+}
+@keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Distance Badge */
+.biz-card-distance {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #60a5fa;
+    margin-left: 0.5rem;
+}
+.biz-card-distance i {
+    font-size: 0.7rem;
+}
+
+/* Location Permission Banner */
+.location-banner {
+    background: linear-gradient(135deg, #1e3a5f, #2d4a6f);
+    border: 2px solid #3b82f6;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #ffffff;
+}
+.location-banner.hidden {
+    display: none;
+}
+.location-banner-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(59, 130, 246, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.location-banner-icon i {
+    font-size: 1.5rem;
+    color: #60a5fa;
+}
+.location-banner-content {
+    flex: 1;
+}
+.location-banner-content h4 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.location-banner-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+.location-banner-btn {
+    padding: 0.75rem 1.25rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.location-banner-btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+.location-banner-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+.location-banner-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+.location-banner-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    transition: color 0.2s;
+}
+.location-banner-close:hover {
+    color: #ffffff;
+}
+@media (max-width: 640px) {
+    .location-banner {
+        flex-wrap: wrap;
+        text-align: center;
+        justify-content: center;
+    }
+    .location-banner-content {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .location-banner-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}
 .filter-groups {
     display: flex;
     flex-wrap: wrap;
@@ -975,11 +1116,16 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="search-bar-select">
+                        <div class="search-bar-select" style="position: relative;">
                             <input type="text" name="location" placeholder="Stad of postcode"
-                                   value="<?= htmlspecialchars($location) ?>">
+                                   value="<?= htmlspecialchars($location) ?>" id="location-input">
+                            <button type="button" class="location-btn" onclick="useMyLocation()" title="Gebruik mijn locatie">
+                                <i class="fas fa-crosshairs"></i>
+                            </button>
                         </div>
                     </div>
+                    <input type="hidden" name="lat" id="user-lat" value="<?= htmlspecialchars($userLat ?? '') ?>">
+                    <input type="hidden" name="lng" id="user-lng" value="<?= htmlspecialchars($userLng ?? '') ?>">
                     <button type="submit" class="search-bar-btn">
                         <i class="fas fa-search"></i>
                         <span>Zoeken</span>
@@ -1151,6 +1297,24 @@
 
     <!-- Results Container -->
     <div class="results-container">
+        <!-- Location Permission Banner -->
+        <div class="location-banner <?= !empty($userLat) ? 'hidden' : '' ?>" id="location-banner">
+            <div class="location-banner-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="location-banner-content">
+                <h4><i class="fas fa-location-arrow"></i> Vind salons bij jou in de buurt</h4>
+                <p>Zet locatie aan om de dichtstbijzijnde salons te zien met afstand in km</p>
+            </div>
+            <button class="location-banner-btn" onclick="requestLocationPermission()" id="location-banner-btn">
+                <i class="fas fa-crosshairs"></i>
+                <span>Locatie inschakelen</span>
+            </button>
+            <button class="location-banner-close" onclick="dismissLocationBanner()" title="Sluiten">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
         <!-- Quick Category Pills -->
         <div class="category-pills">
             <a href="/search" class="category-pill <?= empty($category) && empty($_GET['group']) ? 'active' : '' ?>">
@@ -1191,14 +1355,15 @@
                 <span class="results-count"><?= count($businesses) ?></span>
             </h2>
             <div class="results-sort">
-                <label for="sort">Sorteer:</label>
+                <label for="sort"><?= $__('sort_by') ?>:</label>
                 <select id="sort" onchange="sortResults(this.value)">
-                    <option value="rating" <?= ($_GET['sort'] ?? '') === 'rating' ? 'selected' : '' ?>>Beste beoordeeld</option>
-                    <option value="reviews" <?= ($_GET['sort'] ?? '') === 'reviews' ? 'selected' : '' ?>>Meeste reviews</option>
-                    <option value="price_asc" <?= ($_GET['sort'] ?? '') === 'price_asc' ? 'selected' : '' ?>>Prijs laag-hoog</option>
-                    <option value="price_desc" <?= ($_GET['sort'] ?? '') === 'price_desc' ? 'selected' : '' ?>>Prijs hoog-laag</option>
-                    <option value="name" <?= ($_GET['sort'] ?? '') === 'name' ? 'selected' : '' ?>>Naam A-Z</option>
-                    <option value="newest" <?= ($_GET['sort'] ?? '') === 'newest' ? 'selected' : '' ?>>Nieuwste eerst</option>
+                    <option value="distance" <?= ($_GET['sort'] ?? '') === 'distance' ? 'selected' : '' ?>><?= $__('nearest') ?></option>
+                    <option value="rating" <?= ($_GET['sort'] ?? '') === 'rating' ? 'selected' : '' ?>><?= $__('best_rated') ?></option>
+                    <option value="reviews" <?= ($_GET['sort'] ?? '') === 'reviews' ? 'selected' : '' ?>><?= $__('most_reviews') ?></option>
+                    <option value="price_asc" <?= ($_GET['sort'] ?? '') === 'price_asc' ? 'selected' : '' ?>><?= $__('price_low_high') ?></option>
+                    <option value="price_desc" <?= ($_GET['sort'] ?? '') === 'price_desc' ? 'selected' : '' ?>><?= $__('price_high_low') ?></option>
+                    <option value="name" <?= ($_GET['sort'] ?? '') === 'name' ? 'selected' : '' ?>><?= $__('name_az') ?></option>
+                    <option value="newest" <?= ($_GET['sort'] ?? '') === 'newest' ? 'selected' : '' ?>><?= $__('newest_first') ?></option>
                 </select>
             </div>
         </div>
@@ -1256,6 +1421,12 @@
                             <div class="biz-card-location">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <?= htmlspecialchars($biz['city']) ?>
+                                <?php if (!empty($biz['distance'])): ?>
+                                    <span class="biz-card-distance">
+                                        <i class="fas fa-route"></i>
+                                        <?= $biz['distance'] ?> km
+                                    </span>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
 
@@ -1429,6 +1600,229 @@ function applyFilters() {
 function resetFilters() {
     window.location.href = '/search';
 }
+
+// Geolocation functionality
+function useMyLocation() {
+    const btn = document.querySelector('.location-btn');
+    const locationInput = document.getElementById('location-input');
+    const latInput = document.getElementById('user-lat');
+    const lngInput = document.getElementById('user-lng');
+
+    if (!navigator.geolocation) {
+        alert('Geolocation wordt niet ondersteund door je browser');
+        return;
+    }
+
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="fas fa-spinner"></i>';
+
+    navigator.geolocation.getCurrentPosition(
+        // Success
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            latInput.value = lat;
+            lngInput.value = lng;
+
+            btn.classList.remove('loading');
+            btn.classList.add('success');
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+
+            // Reverse geocode to get city name
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+                .then(res => res.json())
+                .then(data => {
+                    const city = data.address?.city || data.address?.town || data.address?.village || 'Mijn locatie';
+                    locationInput.value = city;
+                    locationInput.placeholder = city;
+
+                    // Auto-submit the form after getting location
+                    setTimeout(() => {
+                        document.querySelector('.search-bar-form').submit();
+                    }, 500);
+                })
+                .catch(() => {
+                    locationInput.value = 'Mijn locatie';
+                    setTimeout(() => {
+                        document.querySelector('.search-bar-form').submit();
+                    }, 500);
+                });
+        },
+        // Error
+        function(error) {
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="fas fa-crosshairs"></i>';
+
+            let message = 'Kon locatie niet bepalen';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Locatietoegang geweigerd. Sta locatie toe in je browser.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Locatie niet beschikbaar';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Locatieverzoek timeout';
+                    break;
+            }
+            alert(message);
+        },
+        // Options
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000 // 5 minutes cache
+        }
+    );
+}
+
+// Request location permission from banner
+function requestLocationPermission() {
+    const btn = document.getElementById('location-banner-btn');
+    const banner = document.getElementById('location-banner');
+
+    if (!navigator.geolocation) {
+        alert('Geolocation wordt niet ondersteund door je browser');
+        return;
+    }
+
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="fas fa-spinner"></i><span>Locatie ophalen...</span>';
+
+    navigator.geolocation.getCurrentPosition(
+        // Success
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Store in localStorage so we remember permission was granted
+            localStorage.setItem('locationPermission', 'granted');
+            localStorage.setItem('userLat', lat);
+            localStorage.setItem('userLng', lng);
+
+            // Redirect with coordinates and sort by distance
+            const url = new URL(window.location.href);
+            url.searchParams.set('lat', lat);
+            url.searchParams.set('lng', lng);
+            url.searchParams.set('sort', 'distance');
+            window.location.href = url.toString();
+        },
+        // Error
+        function(error) {
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="fas fa-crosshairs"></i><span>Locatie inschakelen</span>';
+
+            localStorage.setItem('locationPermission', 'denied');
+
+            let message = 'Kon locatie niet bepalen';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Locatietoegang geweigerd.\n\nOm salons bij jou in de buurt te vinden:\n1. Klik op het slot-icoon in je adresbalk\n2. Sta locatie toe voor deze website\n3. Ververs de pagina';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Locatie niet beschikbaar. Probeer het later opnieuw.';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Locatieverzoek timeout. Probeer het opnieuw.';
+                    break;
+            }
+            alert(message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+    );
+}
+
+// Dismiss location banner
+function dismissLocationBanner() {
+    const banner = document.getElementById('location-banner');
+    banner.classList.add('hidden');
+    localStorage.setItem('locationBannerDismissed', 'true');
+}
+
+// Auto-detect location on page load if no location set
+document.addEventListener('DOMContentLoaded', function() {
+    const latInput = document.getElementById('user-lat');
+    const locationInput = document.getElementById('location-input');
+    const banner = document.getElementById('location-banner');
+
+    // If we have coordinates but no location text, show "In de buurt" indicator
+    if (latInput && latInput.value && !locationInput.value) {
+        const btn = document.querySelector('.location-btn');
+        if (btn) {
+            btn.classList.add('success');
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+        }
+    }
+
+    // Check if banner was previously dismissed
+    if (localStorage.getItem('locationBannerDismissed') === 'true') {
+        if (banner) banner.classList.add('hidden');
+    }
+
+    // Check if we have stored location from previous grant
+    const storedLat = localStorage.getItem('userLat');
+    const storedLng = localStorage.getItem('userLng');
+    const permission = localStorage.getItem('locationPermission');
+
+    // If permission was previously granted and we don't have coords in URL, auto-apply them
+    if (permission === 'granted' && storedLat && storedLng && !latInput.value) {
+        const url = new URL(window.location.href);
+        if (!url.searchParams.get('lat')) {
+            url.searchParams.set('lat', storedLat);
+            url.searchParams.set('lng', storedLng);
+            // Only redirect if we're on search page without filters
+            if (url.pathname === '/search' && !url.searchParams.get('q')) {
+                window.location.href = url.toString();
+            }
+        }
+    }
+
+    // Auto-check location permission status
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+            if (result.state === 'granted') {
+                // Permission already granted, hide banner and auto-get location
+                if (banner) banner.classList.add('hidden');
+
+                // If no coords yet, get them
+                if (!latInput.value) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        localStorage.setItem('userLat', lat);
+                        localStorage.setItem('userLng', lng);
+                        localStorage.setItem('locationPermission', 'granted');
+
+                        const url = new URL(window.location.href);
+                        if (!url.searchParams.get('lat')) {
+                            url.searchParams.set('lat', lat);
+                            url.searchParams.set('lng', lng);
+                            url.searchParams.set('sort', 'distance');
+                            window.location.href = url.toString();
+                        }
+                    });
+                }
+            } else if (result.state === 'denied') {
+                // Permission denied, update banner text
+                if (banner) {
+                    const content = banner.querySelector('.location-banner-content');
+                    if (content) {
+                        content.innerHTML = `
+                            <h4><i class="fas fa-exclamation-triangle"></i> Locatie geblokkeerd</h4>
+                            <p>Sta locatie toe in je browserinstellingen om salons bij jou in de buurt te zien</p>
+                        `;
+                    }
+                }
+            }
+            // 'prompt' state - show banner normally
+        });
+    }
+});
 </script>
 
 <?php $content = ob_get_clean(); ?>

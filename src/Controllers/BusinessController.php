@@ -5,6 +5,35 @@ use GlamourSchedule\Core\Controller;
 
 class BusinessController extends Controller
 {
+    /**
+     * Show business page by UUID (primary method)
+     */
+    public function showByUuid(string $uuid): string
+    {
+        $stmt = $this->db->query(
+            "SELECT b.*, b.company_name as name, b.street as address,
+                    COALESCE(AVG(r.rating), 0) as avg_rating,
+                    COUNT(DISTINCT r.id) as review_count
+             FROM businesses b
+             LEFT JOIN reviews r ON b.id = r.business_id
+             WHERE b.uuid = ?
+             GROUP BY b.id",
+            [$uuid]
+        );
+
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business) {
+            http_response_code(404);
+            return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
+        }
+
+        return $this->renderBusinessPage($business);
+    }
+
+    /**
+     * Show business page by slug (legacy support)
+     */
     public function show(string $slug): string
     {
         $stmt = $this->db->query(
@@ -25,6 +54,14 @@ class BusinessController extends Controller
             return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
         }
 
+        return $this->renderBusinessPage($business);
+    }
+
+    /**
+     * Render the business page with all data
+     */
+    private function renderBusinessPage(array $business): string
+    {
         $services = $this->getServices($business['id']);
         $reviews = $this->getReviews($business['id']);
         $hours = $this->getBusinessHours($business['id']);
@@ -32,11 +69,11 @@ class BusinessController extends Controller
         $settings = $this->getBusinessSettings($business['id']);
         $reviewStats = $this->getReviewStats($business['id']);
 
-        // Generate business URL helper for subdomain support
-        $businessSlug = $business['slug'];
-        $isSubdomain = $this->isBusinessSubdomain();
-        $businessUrlHelper = function($path = '') use ($businessSlug) {
-            return $this->businessUrl($businessSlug, $path);
+        // Generate business URL using UUID
+        $businessUuid = $business['uuid'];
+        $businessUrlHelper = function($path = '') use ($businessUuid) {
+            $baseUrl = '/s/' . $businessUuid;
+            return $path ? $baseUrl . '/' . ltrim($path, '/') : $baseUrl;
         };
 
         return $this->view('pages/business/show', [
@@ -49,7 +86,7 @@ class BusinessController extends Controller
             'settings' => $settings,
             'reviewStats' => $reviewStats,
             'businessUrl' => $businessUrlHelper,
-            'isSubdomain' => $isSubdomain
+            'isSubdomain' => false
         ]);
     }
 

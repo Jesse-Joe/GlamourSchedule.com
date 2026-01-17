@@ -176,6 +176,10 @@ return [
     'select_time_slot' => 'Selecteer een tijd',
     'time_booked' => 'bezet',
     'no_times_this_day' => 'Geen tijden beschikbaar op deze dag',
+    'next_available_date' => 'Volgende beschikbare datum',
+    'or_join_waitlist' => 'of meld je aan op de wachtlijst',
+    'join_waitlist' => 'Op wachtlijst',
+    'waitlist_for_date' => 'Wachtlijst voor',
     'terms_cancel_notice' => 'Ik begrijp dat annuleren binnen 24 uur voor de afspraak 50% kosten met zich meebrengt.',
     'payment_required' => 'Betaling vereist',
     'complete_payment_to_confirm' => 'Rond de betaling af om je boeking te bevestigen',
@@ -196,6 +200,13 @@ return [
     'no_results' => 'Geen resultaten gevonden',
     'try_different' => 'Probeer andere zoektermen',
     'reviews' => 'reviews',
+    'nearest' => 'Dichtstbijzijnd',
+    'best_rated' => 'Beste beoordeeld',
+    'most_reviews' => 'Meeste reviews',
+    'price_low_high' => 'Prijs laag-hoog',
+    'price_high_low' => 'Prijs hoog-laag',
+    'name_az' => 'Naam A-Z',
+    'newest_first' => 'Nieuwste eerst',
 
     // ═══════════════════════════════════════════════════════════════════════
     // BETALING

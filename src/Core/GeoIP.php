@@ -209,8 +209,8 @@ class GeoIP
 
         // Default pricing if country not found or promo exhausted
         return [
-            'price' => 29.99,
-            'original_price' => 29.99,
+            'price' => 99.99,
+            'original_price' => 99.99,
             'is_promo' => false,
             'spots_left' => 0,
             'country' => $countryCode

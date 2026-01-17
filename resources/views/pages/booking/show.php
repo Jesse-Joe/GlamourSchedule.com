@@ -73,6 +73,34 @@
             <?php endif; ?>
         </div>
 
+        <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'cancelled'): ?>
+        <!-- 24-hour Policy Box -->
+        <div style="margin-top:1.5rem;padding:1.25rem;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px">
+            <h4 style="margin:0 0 0.75rem;color:#92400e;display:flex;align-items:center;gap:0.5rem;font-size:1rem">
+                <i class="fas fa-exclamation-triangle"></i> 24-uurs annuleringsbeleid
+            </h4>
+            <p style="margin:0;color:#92400e;font-size:0.9rem;line-height:1.5">
+                Je kunt gratis annuleren tot 24 uur voor de afspraak. Bij annulering binnen 24 uur wordt 50% van het bedrag in rekening gebracht. De overige 50% wordt teruggestort.
+            </p>
+        </div>
+
+        <!-- Confirmation Email Notice -->
+        <div style="margin-top:1rem;padding:1rem;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #10b981;border-radius:12px">
+            <p style="margin:0;color:#065f46;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem">
+                <i class="fas fa-envelope-circle-check"></i>
+                <span>Er is een bevestigingsmail verstuurd naar <strong><?= htmlspecialchars($booking['guest_email'] ?? $booking['user_email'] ?? 'je e-mailadres') ?></strong></span>
+            </p>
+        </div>
+
+        <!-- Reminder Notice -->
+        <div style="margin-top:1rem;padding:1rem;background:var(--secondary);border-radius:12px">
+            <p style="margin:0;color:var(--text-light);font-size:0.85rem;display:flex;align-items:center;gap:0.5rem">
+                <i class="fas fa-bell"></i>
+                <span>Je ontvangt een herinnering 24 uur en 1 uur voor je afspraak</span>
+            </p>
+        </div>
+        <?php endif; ?>
+
         <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'checked_in'): ?>
             <!-- Check-in QR Code -->
             <div style="margin-top:1.5rem;padding:1.5rem;background:linear-gradient(135deg,#ffffff,#f5f5f5);border:2px dashed #333333;border-radius:12px;text-align:center">

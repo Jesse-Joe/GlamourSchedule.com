@@ -682,6 +682,60 @@ class BusinessDashboardController extends Controller
         return $this->redirect('/business/profile');
     }
 
+    /**
+     * Delete business account
+     */
+    public function deleteBusiness(): string
+    {
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/business/profile');
+        }
+
+        $confirmText = trim($_POST['confirm_text'] ?? '');
+
+        if ($confirmText !== 'VERWIJDER') {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Bevestigingstekst onjuist'];
+            return $this->redirect('/business/profile');
+        }
+
+        $businessId = $this->business['id'];
+        $userId = $_SESSION['user_id'] ?? null;
+
+        try {
+            // Delete related records in order of dependencies
+            $this->db->query("DELETE FROM bookings WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM pos_bookings WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM services WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_hours WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_categories WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_images WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM reviews WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_settings WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_employees WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM push_subscriptions WHERE business_id = ?", [$businessId]);
+
+            // Delete the business itself
+            $this->db->query("DELETE FROM businesses WHERE id = ?", [$businessId]);
+
+            // Update user's business_id
+            if ($userId) {
+                $this->db->query("UPDATE users SET business_id = NULL WHERE id = ?", [$userId]);
+            }
+
+            // Clear session
+            unset($_SESSION['business_id']);
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Je bedrijf is succesvol verwijderd'];
+            return $this->redirect('/dashboard');
+
+        } catch (\Exception $e) {
+            error_log("Business deletion error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Fout bij verwijderen bedrijf'];
+            return $this->redirect('/business/profile');
+        }
+    }
+
     // ============================================================
     // REVIEWS MANAGEMENT
     // ============================================================
@@ -2069,7 +2123,7 @@ HTML;
     }
 
     /**
-     * Zoek klanten
+     * Zoek klanten (op naam, email, telefoon of klant-ID)
      */
     public function posSearchCustomers(): string
     {
@@ -2077,16 +2131,29 @@ HTML;
 
         $query = trim($_GET['q'] ?? '');
 
-        if (strlen($query) < 2) {
+        if (strlen($query) < 1) {
             return json_encode(['customers' => []]);
         }
 
-        $stmt = $this->db->query(
-            "SELECT * FROM pos_customers
-             WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)
-             ORDER BY name LIMIT 10",
-            [$this->business['id'], "%$query%", "%$query%", "%$query%"]
-        );
+        // Check if query is a numeric ID
+        if (is_numeric($query)) {
+            $stmt = $this->db->query(
+                "SELECT * FROM pos_customers
+                 WHERE business_id = ? AND (id = ? OR name LIKE ? OR email LIKE ? OR phone LIKE ?)
+                 ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, name LIMIT 10",
+                [$this->business['id'], $query, "%$query%", "%$query%", "%$query%", $query]
+            );
+        } else {
+            if (strlen($query) < 2) {
+                return json_encode(['customers' => []]);
+            }
+            $stmt = $this->db->query(
+                "SELECT * FROM pos_customers
+                 WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)
+                 ORDER BY name LIMIT 10",
+                [$this->business['id'], "%$query%", "%$query%", "%$query%"]
+            );
+        }
         $customers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return json_encode(['customers' => $customers]);

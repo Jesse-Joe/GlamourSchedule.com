@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="<?= $lang ?? 'nl' ?>" data-theme="light">
+<html lang="<?= $lang ?? 'nl' ?>" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?> - GlamourSchedule Business</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/manifest-business.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GS Business">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,11 +29,11 @@
             --sidebar-width: 280px;
         }
         [data-theme="dark"] {
-            --secondary: #0a0a0a;
-            --text: #fafafa;
-            --text-light: #9ca3af;
-            --white: #171717;
-            --border: #262626;
+            --secondary: #000000;
+            --text: #ffffff;
+            --text-light: #a1a1a1;
+            --white: #0a0a0a;
+            --border: #222222;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -330,6 +336,39 @@
             background: #ffffff;
             color: #000000;
         }
+        [data-theme="dark"] .alert-success,
+        [data-theme="dark"] .alert-danger,
+        [data-theme="dark"] .alert-warning {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+        [data-theme="dark"] .card {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+        }
+        [data-theme="dark"] .card-title i {
+            color: #ffffff;
+        }
+        [data-theme="dark"] .btn-primary {
+            background: #ffffff;
+            color: #000000;
+        }
+        [data-theme="dark"] .btn-primary:hover {
+            background: #f0f0f0;
+        }
+        [data-theme="dark"] .btn-secondary {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+        [data-theme="dark"] table th {
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+        [data-theme="dark"] table td {
+            border-color: #1a1a1a;
+        }
 
         .grid {
             display: grid;
@@ -387,6 +426,60 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0a0a0a;
+            border-top: 1px solid #333;
+            padding: 0.5rem 0.25rem;
+            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+        }
+        .mobile-bottom-nav nav {
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 0.5rem;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.6rem;
+            flex: 1;
+            text-align: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            min-height: 50px;
+            justify-content: center;
+        }
+        .mobile-bottom-nav a i {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+        .mobile-bottom-nav a.active {
+            color: #fff;
+            background: #1a1a1a;
+        }
+        .mobile-bottom-nav a.nav-logout {
+            color: #ef4444;
+        }
+        @media (max-width: 1024px) {
+            .mobile-bottom-nav {
+                display: block;
+            }
+            .page-content {
+                padding-bottom: 100px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -436,9 +529,9 @@
                 <a href="/business/pos" class="nav-item <?= $currentPath === '/business/pos' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#1e40af,#1d4ed8);color:white;border-radius:10px;margin-top:0.5rem">
                     <i class="fas fa-cash-register"></i> POS Systeem
                 </a>
-                <a href="/business/terminals" class="nav-item <?= $currentPath === '/business/terminals' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#059669,#047857);color:white;border-radius:10px;margin-top:0.5rem">
-                    <i class="fas fa-credit-card"></i> PIN Terminals
-                </a>
+                <span class="nav-item" style="background:#333333;color:#888888;border-radius:10px;margin-top:0.5rem;cursor:not-allowed;opacity:0.7">
+                    <i class="fas fa-credit-card"></i> PIN Terminals <i class="fas fa-lock" style="font-size:0.7rem;margin-left:0.25rem"></i>
+                </span>
             </div>
 
             <div class="nav-section">
@@ -484,6 +577,9 @@
                 <a href="/business/profile" class="nav-item <?= $currentPath === '/business/profile' ? 'active' : '' ?>">
                     <i class="fas fa-building"></i> Bedrijfsprofiel
                 </a>
+                <a href="/business/mollie/connect" class="nav-item <?= $currentPath === '/business/mollie/connect' ? 'active' : '' ?>" style="<?= empty($business['mollie_account_id']) ? 'background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;' : '' ?>">
+                    <i class="fas fa-link"></i> <?= empty($business['mollie_account_id']) ? 'Mollie Koppelen' : 'Mollie Verbonden' ?>
+                </a>
             </div>
         </nav>
 
@@ -526,6 +622,32 @@
         </div>
     </div>
 
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <nav>
+            <a href="/business/dashboard" class="<?= $currentPath === '/business/dashboard' ? 'active' : '' ?>">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="/business/calendar" class="<?= $currentPath === '/business/calendar' ? 'active' : '' ?>">
+                <i class="fas fa-calendar-alt"></i>
+                Agenda
+            </a>
+            <a href="/business/bookings" class="<?= $currentPath === '/business/bookings' ? 'active' : '' ?>">
+                <i class="fas fa-clipboard-list"></i>
+                Boekingen
+            </a>
+            <a href="/business/profile" class="<?= $currentPath === '/business/profile' ? 'active' : '' ?>">
+                <i class="fas fa-cog"></i>
+                Profiel
+            </a>
+            <a href="/logout" class="nav-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Uitloggen
+            </a>
+        </nav>
+    </div>
+
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -540,8 +662,170 @@
             localStorage.setItem('theme', next);
         }
 
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+        // Always use dark mode as default
+        document.documentElement.setAttribute('data-theme', 'dark');
+
+        // Initialize Push Notifications for Business
+        async function initBusinessPush() {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                return;
+            }
+
+            try {
+                // Register service worker
+                await navigator.serviceWorker.register('/sw.js');
+                const registration = await navigator.serviceWorker.ready;
+
+                // Check if already subscribed
+                const existingSubscription = await registration.pushManager.getSubscription();
+                if (existingSubscription) {
+                    return; // Already subscribed
+                }
+
+                // Request permission
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    return;
+                }
+
+                // Get VAPID key
+                const response = await fetch('/api/push/vapid-key');
+                const { publicKey } = await response.json();
+                if (!publicKey) return;
+
+                // Subscribe
+                const applicationServerKey = urlBase64ToUint8Array(publicKey);
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: applicationServerKey
+                });
+
+                // Save to server
+                await fetch('/api/push/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(subscription.toJSON())
+                });
+
+                console.log('Business push notifications enabled');
+            } catch (error) {
+                console.error('Push notification setup failed:', error);
+            }
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        // Initialize push after short delay
+        setTimeout(initBusinessPush, 2000);
+
+        // Register business service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw-business.js').catch(() => {});
+        }
+    </script>
+
+    <!-- PWA Install Prompt for Business -->
+    <div id="businessInstallPrompt" class="business-install-prompt" style="display:none">
+        <div class="install-content">
+            <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('businessInstallDismissed','1')">&times;</button>
+            <img src="/icon-192.png" alt="GS Business" width="48" height="48" style="border-radius:10px">
+            <div class="install-text">
+                <strong>Installeer GS Business</strong>
+                <span>Snelle toegang tot je dashboard</span>
+            </div>
+            <button class="install-btn" id="businessInstallBtn">Installeren</button>
+        </div>
+    </div>
+
+    <style>
+    .business-install-prompt {
+        position: fixed;
+        bottom: 80px;
+        left: 1rem;
+        right: 1rem;
+        z-index: 10000;
+    }
+    .install-content {
+        max-width: 400px;
+        margin: 0 auto;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 16px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+    }
+    .install-close {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.5rem;
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 1.25rem;
+        cursor: pointer;
+    }
+    .install-text {
+        flex: 1;
+    }
+    .install-text strong {
+        display: block;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+    .install-text span {
+        font-size: 0.8rem;
+        color: #888;
+    }
+    .install-btn {
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    @media (min-width: 1025px) {
+        .business-install-prompt { bottom: 1rem; }
+    }
+    </style>
+
+    <script>
+    (function() {
+        let deferredPrompt = null;
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+        const dismissed = localStorage.getItem('businessInstallDismissed');
+
+        if (isPWA || dismissed) return;
+
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                document.getElementById('businessInstallPrompt').style.display = 'block';
+            }, 5000);
+        });
+
+        document.getElementById('businessInstallBtn')?.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            document.getElementById('businessInstallPrompt').style.display = 'none';
+        });
+    })();
     </script>
 </body>
 </html>
