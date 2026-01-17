@@ -21,8 +21,8 @@
                      alt="QR Code" style="max-width:150px;display:block">
             </div>
         </div>
-        <p style="text-align:center;color:#999999;font-size:0.9rem;margin:0">
-            Scan om direct te registreren met jouw partnercode
+        <p style="text-align:center;color:#555555;font-size:0.9rem;margin:0">
+            Laat scannen om direct te registreren met jouw partnerkorting
         </p>
     </div>
 </div>
@@ -32,25 +32,27 @@
     <h3 style="color:#000000"><i class="fas fa-info-circle"></i> Jouw Partner Voordelen</h3>
     <div class="grid-3" style="text-align:center">
         <div>
-            <div style="font-size:2rem;font-weight:700;color:#000000">25,-</div>
-            <div style="color:#666666;font-size:0.9rem">Korting voor klant</div>
+            <div style="font-size:2rem;font-weight:700;color:#000000">€25</div>
+            <div style="color:#555555;font-size:0.9rem">Korting voor de klant</div>
+            <div style="color:#888888;font-size:0.8rem">op registratiekosten</div>
         </div>
         <div>
-            <div style="font-size:2rem;font-weight:700;color:#000000">99,99</div>
-            <div style="color:#666666;font-size:0.9rem">Jouw commissie</div>
+            <div style="font-size:2rem;font-weight:700;color:#000000">€99,99</div>
+            <div style="color:#555555;font-size:0.9rem">Jouw commissie</div>
+            <div style="color:#888888;font-size:0.8rem">per betalende klant</div>
         </div>
         <div>
             <div style="font-size:2rem;font-weight:700;color:#000000"><?= htmlspecialchars($salesUser['referral_code']) ?></div>
-            <div style="color:#666666;font-size:0.9rem">Jouw code</div>
+            <div style="color:#555555;font-size:0.9rem">Jouw partnercode</div>
         </div>
     </div>
 </div>
 
 <!-- Quick Email Send -->
 <div class="card" style="margin-top:1.5rem;border:2px solid #333333">
-    <h3><i class="fas fa-paper-plane"></i> Geen tijd om langs te gaan? Stuur een email!</h3>
-    <p style="color:#999999;margin-bottom:1.5rem">
-        Stuur direct een email naar een salon met jouw referral link. De email wordt verstuurd vanuit sales@glamourschedule.com.
+    <h3><i class="fas fa-paper-plane"></i> Stuur een uitnodiging per email</h3>
+    <p style="color:#555555;margin-bottom:1.5rem">
+        Stuur direct een professionele uitnodiging naar een salon. De email bevat informatie over de 14 dagen gratis proefperiode en jouw partnerkorting. Verstuurd vanuit sales@glamourschedule.com.
     </p>
 
     <form id="quickEmailForm" onsubmit="sendQuickEmail(event)">
@@ -94,7 +96,7 @@
     <div style="margin-bottom:1.5rem">
         <h4 style="margin:0 0 0.5rem 0;color:#333333">WhatsApp / SMS</h4>
         <div style="background:#ffffff;padding:1rem;border-radius:10px;position:relative;border:1px solid rgba(0,0,0,0.1)">
-            <p style="margin:0;font-size:0.95rem;line-height:1.6;color:#333333" id="whatsappText">Hey! Ken je GlamourSchedule al? Het is een super handig online boekingssysteem voor salons. Via mijn link krijg je 25 euro korting op de registratie! Registreer hier: https://glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referral_code']) ?></p>
+            <p style="margin:0;font-size:0.95rem;line-height:1.6;color:#333333" id="whatsappText">Hey! Ken je GlamourSchedule al? Het online boekingssysteem voor salons. Je kunt het 14 dagen gratis proberen en via mijn link krijg je 25 euro korting op de eenmalige registratie. Geen maandelijkse kosten, je betaalt alleen per boeking. Kijk hier: https://glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referral_code']) ?></p>
             <button onclick="copyText('whatsappText')" style="position:absolute;top:0.5rem;right:0.5rem;background:#333333;color:#ffffff;border:none;padding:0.5rem 0.75rem;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600">
                 <i class="fas fa-copy"></i>
             </button>
@@ -104,19 +106,22 @@
     <div style="margin-bottom:1.5rem">
         <h4 style="margin:0 0 0.5rem 0;color:#333333">E-mail Template</h4>
         <div style="background:#ffffff;padding:1rem;border-radius:10px;position:relative;border:1px solid rgba(0,0,0,0.1)">
-            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="emailText">Onderwerp: 25 euro korting op GlamourSchedule!
+            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="emailText">Onderwerp: 14 dagen gratis proberen + 25 euro korting op GlamourSchedule
 
 Beste ondernemer,
 
-Ben je op zoek naar een modern en gebruiksvriendelijk boekingssysteem voor je salon? GlamourSchedule biedt alles wat je nodig hebt:
+Ben je op zoek naar een modern boekingssysteem voor je salon? Met GlamourSchedule kun je:
 
-- Online boekingen 24/7
-- Automatische herinneringen aan klanten
-- Betalingen via iDEAL
-- Eigen professionele salonpagina
-- Klantenbeheer dashboard
+- Online boekingen ontvangen, 24/7
+- Automatische herinneringen sturen naar klanten
+- Betalingen ontvangen via iDEAL
+- Je eigen professionele salonpagina krijgen
 
-Registreer via mijn persoonlijke link en ontvang 25 euro korting!
+Het mooie: je kunt het 14 dagen gratis uitproberen. Daarna betaal je eenmalig 74,99 euro registratiekosten (normaal 99,99 euro). Geen maandelijkse kosten - je betaalt alleen 1,75 euro per boeking die je ontvangt.
+
+Geen boekingen? Dan betaal je niets.
+
+Registreer via onderstaande link:
 https://glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referral_code']) ?>
 
 Met vriendelijke groet</p>
@@ -129,17 +134,21 @@ Met vriendelijke groet</p>
     <div style="margin-bottom:1.5rem">
         <h4 style="margin:0 0 0.5rem 0;color:#333333">Social Media Post</h4>
         <div style="background:#ffffff;padding:1rem;border-radius:10px;position:relative;border:1px solid rgba(0,0,0,0.1)">
-            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="socialText">Tip voor salon eigenaren!
+            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="socialText">Tip voor saloneigenaren!
 
-Ken je GlamourSchedule al? Het makkelijkste boekingssysteem voor beauty professionals!
+GlamourSchedule: het boekingssysteem zonder maandelijkse kosten.
+
+14 dagen gratis proberen
+Daarna eenmalig 74,99 euro (25 euro korting via mijn link)
+Je betaalt alleen per boeking die je ontvangt
 
 Wat krijg je:
 - Online boekingen 24/7
-- Automatische herinneringen
+- Automatische herinneringen naar klanten
 - iDEAL betalingen
-- Professionele salonpagina
+- Je eigen salonpagina
 
-Registreer nu met 25 euro korting via mijn link:
+Bekijk het hier:
 glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referral_code']) ?>
 
 #salon #beauty #ondernemen #boekingssysteem</p>
@@ -152,9 +161,13 @@ glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referra
     <div>
         <h4 style="margin:0 0 0.5rem 0;color:#333333">Korte pitch (face-to-face)</h4>
         <div style="background:#ffffff;padding:1rem;border-radius:10px;position:relative;border:1px solid rgba(0,0,0,0.1)">
-            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="pitchText">GlamourSchedule is een online boekingssysteem speciaal voor salons. Klanten kunnen 24/7 online boeken, krijgen automatisch een herinnering, en kunnen direct via iDEAL betalen.
+            <p style="margin:0;font-size:0.95rem;line-height:1.6;white-space:pre-line;color:#333333" id="pitchText">GlamourSchedule is een online boekingssysteem voor salons.
 
-Het kost eenmalig 74,99 euro - dat is met 25 euro korting via mij. Geen maandelijkse kosten, alleen 1,75 euro per boeking.
+Klanten kunnen 24/7 online boeken, krijgen automatisch een herinnering, en kunnen direct via iDEAL betalen.
+
+Je kunt het 14 dagen gratis proberen. Daarna kost het eenmalig 74,99 euro - met 25 euro korting via mij. Geen maandelijkse kosten. Je betaalt alleen 1,75 euro per boeking die je ontvangt.
+
+Geen boekingen? Dan betaal je ook niets.
 
 Zal ik je even laten zien hoe het werkt?</p>
             <button onclick="copyText('pitchText')" style="position:absolute;top:0.5rem;right:0.5rem;background:#333333;color:#ffffff;border:none;padding:0.5rem 0.75rem;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600">
