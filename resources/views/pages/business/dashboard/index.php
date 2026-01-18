@@ -6,8 +6,10 @@ $trialEndsAt = !empty($business['trial_ends_at']) ? strtotime($business['trial_e
 $daysRemaining = max(0, ceil(($trialEndsAt - time()) / 86400));
 $isOnTrial = $business['subscription_status'] === 'trial' && $daysRemaining > 0;
 $trialExpired = $business['subscription_status'] === 'trial' && $daysRemaining <= 0;
+$isEarlyAdopter = !empty($business['is_early_adopter']);
 $subscriptionPrice = (float)($business['subscription_price'] ?? 99.99);
-$welcomeDiscount = (float)($business['welcome_discount'] ?? 0);
+// Early adopters don't get welcome discount applied - they pay the early bird price
+$welcomeDiscount = $isEarlyAdopter ? 0 : (float)($business['welcome_discount'] ?? 0);
 $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 ?>
 
@@ -475,6 +477,95 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Glamori AI Manager Widget -->
+<?php if (!empty($aiManager)): ?>
+<div class="ai-manager-widget" style="margin-top:1.5rem">
+    <div class="dash-card" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);color:white;overflow:hidden;position:relative">
+        <div class="ai-glow" style="position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(139,92,246,0.3) 0%,transparent 70%);pointer-events:none"></div>
+        <div class="dash-card-header" style="position:relative">
+            <h3 class="dash-card-title" style="color:white">
+                <i class="fas fa-robot" style="color:#a78bfa"></i>
+                Glamori Manager
+            </h3>
+            <span style="background:rgba(255,255,255,0.15);padding:0.25rem 0.5rem;border-radius:6px;font-size:0.7rem;color:#c4b5fd">
+                <i class="fas fa-sparkles"></i> AI
+            </span>
+        </div>
+
+        <p style="margin:0 0 1rem 0;font-size:0.95rem;opacity:0.95"><?= htmlspecialchars($aiManager['greeting'] ?? 'Welkom!') ?></p>
+
+        <!-- Stats Row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem">
+            <div style="background:rgba(255,255,255,0.1);padding:0.75rem;border-radius:10px;text-align:center">
+                <div style="font-size:1.25rem;font-weight:bold"><?= $aiManager['today']['total_bookings'] ?? 0 ?></div>
+                <div style="font-size:0.7rem;opacity:0.8">Vandaag</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1);padding:0.75rem;border-radius:10px;text-align:center">
+                <div style="font-size:1.25rem;font-weight:bold">&euro;<?= number_format($aiManager['week']['revenue'] ?? 0, 0, ',', '.') ?></div>
+                <div style="font-size:0.7rem;opacity:0.8">Deze week</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.1);padding:0.75rem;border-radius:10px;text-align:center">
+                <div style="font-size:1.25rem;font-weight:bold">
+                    <?php
+                    $change = $aiManager['week']['revenue_change_percent'] ?? 0;
+                    $arrow = $change >= 0 ? '<i class="fas fa-arrow-up" style="color:#4ade80"></i>' : '<i class="fas fa-arrow-down" style="color:#f87171"></i>';
+                    echo $arrow . ' ' . abs($change) . '%';
+                    ?>
+                </div>
+                <div style="font-size:0.7rem;opacity:0.8">vs vorige week</div>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <?php if (!empty($aiManager['tips'])): ?>
+        <div style="margin-bottom:1rem">
+            <?php foreach (array_slice($aiManager['tips'], 0, 2) as $tip): ?>
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;background:rgba(255,255,255,0.08);padding:0.6rem 0.75rem;border-radius:8px;margin-bottom:0.5rem;font-size:0.85rem">
+                <?php
+                $iconColor = '#fbbf24';
+                if ($tip['priority'] === 'high') $iconColor = '#f87171';
+                elseif ($tip['priority'] === 'low') $iconColor = '#4ade80';
+                ?>
+                <i class="fas fa-lightbulb" style="color:<?= $iconColor ?>;flex-shrink:0;margin-top:2px"></i>
+                <span style="opacity:0.95"><?= htmlspecialchars($tip['message']) ?></span>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- Quick Stats -->
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.8rem;opacity:0.9">
+            <?php if ($aiManager['unanswered_reviews'] ?? 0 > 0): ?>
+            <a href="/business/reviews" style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(251,191,36,0.2);color:#fcd34d;padding:0.35rem 0.6rem;border-radius:6px;text-decoration:none">
+                <i class="fas fa-star"></i>
+                <?= $aiManager['unanswered_reviews'] ?> onbeantwoorde review<?= $aiManager['unanswered_reviews'] > 1 ? 's' : '' ?>
+            </a>
+            <?php endif; ?>
+            <?php if (!empty($aiManager['popular_service'])): ?>
+            <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(74,222,128,0.2);color:#86efac;padding:0.35rem 0.6rem;border-radius:6px">
+                <i class="fas fa-fire"></i>
+                Populair: <?= htmlspecialchars($aiManager['popular_service']) ?>
+            </span>
+            <?php endif; ?>
+            <?php if (count($aiManager['notifications'] ?? []) > 0): ?>
+            <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(139,92,246,0.3);color:#c4b5fd;padding:0.35rem 0.6rem;border-radius:6px">
+                <i class="fas fa-bell"></i>
+                <?= count($aiManager['notifications']) ?> nieuwe melding<?= count($aiManager['notifications']) > 1 ? 'en' : '' ?>
+            </span>
+            <?php endif; ?>
+        </div>
+
+        <!-- Expand Link -->
+        <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1)">
+            <a href="/business/insights" style="display:flex;justify-content:space-between;align-items:center;color:#c4b5fd;text-decoration:none;font-size:0.85rem">
+                <span>Bekijk alle inzichten</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- New Registration Welcome Popup -->
 <?php if (!empty($isNewRegistration)): ?>

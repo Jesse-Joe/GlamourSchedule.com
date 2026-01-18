@@ -28,7 +28,7 @@ class CronController extends Controller
             // Find businesses where trial ends today (send warning email)
             $stmt = $this->db->query(
                 "SELECT b.id, b.company_name, b.email, b.trial_ends_at, b.subscription_price,
-                        u.first_name
+                        b.is_early_adopter, u.first_name
                  FROM businesses b
                  JOIN users u ON b.user_id = u.id
                  WHERE b.subscription_status = 'trial'
@@ -126,8 +126,21 @@ class CronController extends Controller
     private function sendTrialExpiryEmail(array $business): void
     {
         $mailer = new Mailer();
+        $isEarlyAdopter = !empty($business['is_early_adopter']);
+        $price = number_format($business['subscription_price'], 2, ',', '.');
 
         $subject = 'Je proefperiode bij GlamourSchedule eindigt vandaag';
+
+        // Different pricing text for early adopters vs regular users
+        if ($isEarlyAdopter) {
+            $priceLabel = 'Early Bird aanmeldkosten';
+            $priceSubtext = 'eenmalig';
+            $activateText = 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om je Early Bird aanmelding af te ronden.';
+        } else {
+            $priceLabel = 'Maandelijks abonnement';
+            $priceSubtext = 'per maand';
+            $activateText = 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het maandelijkse abonnement te activeren.';
+        }
 
         $body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -144,16 +157,15 @@ class CronController extends Controller
                 </p>
 
                 <p style='color: #666666; line-height: 1.6;'>
-                    Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het
-                    maandelijkse abonnement te activeren.
+                    {$activateText}
                 </p>
 
                 <div style='background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;'>
-                    <p style='margin: 0 0 10px 0; color: #333333;'>Maandelijks abonnement</p>
+                    <p style='margin: 0 0 10px 0; color: #333333;'>{$priceLabel}</p>
                     <p style='font-size: 2rem; font-weight: bold; color: #000000; margin: 0;'>
-                        &euro;" . number_format($business['subscription_price'], 2, ',', '.') . "
+                        &euro;{$price}
                     </p>
-                    <p style='margin: 10px 0 0 0; color: #666666; font-size: 0.9rem;'>per maand</p>
+                    <p style='margin: 10px 0 0 0; color: #666666; font-size: 0.9rem;'>{$priceSubtext}</p>
                 </div>
 
                 <p style='color: #e74c3c; font-weight: bold;'>
@@ -1316,7 +1328,7 @@ class CronController extends Controller
     }
 
     // Minimum payout amount for sales partners
-    private const SALES_MINIMUM_PAYOUT = 99.99;
+    private const SALES_MINIMUM_PAYOUT = 49.99;
 
     /**
      * Process weekly payouts for sales partners
@@ -1325,7 +1337,7 @@ class CronController extends Controller
      * Sales partners earn commission per converted salon (after trial, when they pay registration fee).
      * Commission amount is stored in sales_referrals.commission column.
      * NO commission for Early Bird registrations.
-     * Minimum payout: €99.99 (1 converted salon)
+     * Minimum payout: €49.99 (1 converted salon)
      */
     public function salesPayouts(): string
     {
@@ -1745,7 +1757,7 @@ class CronController extends Controller
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
                     <p style='margin:0;font-size:13px;color:#666;'>
                         <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
-                        <strong>Commissie per salon:</strong> €99,99 (na betaling registratiefee)<br>
+                        <strong>Commissie per salon:</strong> €49,99 (na betaling registratiefee)<br>
                         <strong>Minimum uitbetaling:</strong> €" . number_format(self::SALES_MINIMUM_PAYOUT, 2, ',', '.') . "
                     </p>
                 </div>
@@ -2198,6 +2210,148 @@ HTML;
     private function logReminder(string $message): void
     {
         $logFile = BASE_PATH . '/storage/logs/cron-reminders.log';
+        $timestamp = date('Y-m-d H:i:s');
+        file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
+    }
+
+    // =========================================================================
+    // AI MANAGER - GLAMORI MANAGER
+    // =========================================================================
+
+    /**
+     * Process daily AI Manager tasks for all businesses
+     * Run daily at 8:00 AM: /cron/ai-manager?key=glamour-cron-2024-secret
+     *
+     * This processes:
+     * - Daily summary emails to business owners
+     * - Tomorrow's appointment reminders (internal notifications)
+     * - New review notifications
+     * - Milestone achievements
+     */
+    public function aiManager(): string
+    {
+        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+            http_response_code(403);
+            return json_encode(['error' => 'Unauthorized']);
+        }
+
+        $this->logAiManager('Starting AI Manager daily processing');
+
+        try {
+            $mailer = new Mailer();
+            $manager = new \GlamourSchedule\Core\GlamoriManager($this->db, $mailer);
+
+            $results = $manager->processDailyTasks();
+
+            $this->logAiManager(sprintf(
+                "AI Manager complete. Summaries: %d, Reminders: %d, Notifications: %d, Errors: %d",
+                $results['summaries_sent'],
+                $results['reminders_sent'],
+                $results['notifications_created'],
+                count($results['errors'])
+            ));
+
+            // Log any errors
+            foreach ($results['errors'] as $error) {
+                $this->logAiManager("Error for business {$error['business_id']}: {$error['error']}");
+            }
+
+            return json_encode([
+                'success' => true,
+                'summaries_sent' => $results['summaries_sent'],
+                'reminders_sent' => $results['reminders_sent'],
+                'notifications_created' => $results['notifications_created'],
+                'errors' => count($results['errors']),
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logAiManager("Error: " . $e->getMessage());
+            http_response_code(500);
+            return json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Process hourly AI Manager alerts (new bookings, cancellations)
+     * Run hourly: /cron/ai-manager-alerts?key=glamour-cron-2024-secret
+     */
+    public function aiManagerAlerts(): string
+    {
+        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+            http_response_code(403);
+            return json_encode(['error' => 'Unauthorized']);
+        }
+
+        $this->logAiManager('Starting AI Manager hourly alerts');
+
+        try {
+            $manager = new \GlamourSchedule\Core\GlamoriManager($this->db);
+
+            $alertsCreated = 0;
+            $errors = [];
+
+            // Get all active businesses
+            $businesses = $this->db->query(
+                "SELECT id, language FROM businesses
+                 WHERE status = 'active'
+                 AND subscription_status IN ('active', 'trial')"
+            )->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($businesses as $business) {
+                try {
+                    // Check for new bookings in the last hour
+                    $newBookings = $manager->checkNewBookings($business['id'], 60);
+                    foreach ($newBookings as $alert) {
+                        $manager->createNotification(
+                            $business['id'],
+                            'new_booking',
+                            $alert['message'],
+                            $alert['data']
+                        );
+                        $alertsCreated++;
+                    }
+
+                    // Check for cancellations in the last hour
+                    $cancellations = $manager->checkCancellations($business['id'], 60);
+                    foreach ($cancellations as $alert) {
+                        $manager->createNotification(
+                            $business['id'],
+                            'cancellation',
+                            $alert['message'],
+                            $alert['data']
+                        );
+                        $alertsCreated++;
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = [
+                        'business_id' => $business['id'],
+                        'error' => $e->getMessage()
+                    ];
+                }
+            }
+
+            $this->logAiManager("AI Manager alerts complete. Alerts created: $alertsCreated");
+
+            return json_encode([
+                'success' => true,
+                'alerts_created' => $alertsCreated,
+                'businesses_processed' => count($businesses),
+                'errors' => count($errors),
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logAiManager("Error: " . $e->getMessage());
+            http_response_code(500);
+            return json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    private function logAiManager(string $message): void
+    {
+        $logFile = BASE_PATH . '/storage/logs/cron-ai-manager.log';
         $timestamp = date('Y-m-d H:i:s');
         file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
     }

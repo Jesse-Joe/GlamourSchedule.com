@@ -2,6 +2,7 @@
 namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
+use GlamourSchedule\Core\GlamoriManager;
 
 class BusinessDashboardController extends Controller
 {
@@ -39,6 +40,10 @@ class BusinessDashboardController extends Controller
         // Check profile completion
         $profileCompletion = $this->getProfileCompletion();
 
+        // Get AI Manager widget data
+        $aiManager = new GlamoriManager($this->db);
+        $aiManagerData = $aiManager->getWidgetData($this->business['id']);
+
         return $this->view('pages/business/dashboard/index', [
             'pageTitle' => 'Bedrijf Dashboard',
             'business' => $this->business,
@@ -46,7 +51,8 @@ class BusinessDashboardController extends Controller
             'todayBookings' => $todayBookings,
             'recentBookings' => $recentBookings,
             'isNewRegistration' => $isNewRegistration,
-            'profileCompletion' => $profileCompletion
+            'profileCompletion' => $profileCompletion,
+            'aiManager' => $aiManagerData
         ]);
     }
 
@@ -1638,6 +1644,211 @@ HTML;
         }
 
         return $this->redirect('/business/boost');
+    }
+
+    // ============================================================
+    // SUBSCRIPTION ACTIVATION (After Trial)
+    // ============================================================
+
+    /**
+     * Show subscription activation page
+     */
+    public function subscription(): string
+    {
+        $isEarlyAdopter = !empty($this->business['is_early_adopter']);
+        $subscriptionPrice = (float)($this->business['subscription_price'] ?? 99.99);
+
+        // Early adopters don't get welcome discount - they pay the early bird price
+        $welcomeDiscount = $isEarlyAdopter ? 0 : (float)($this->business['welcome_discount'] ?? 0);
+        $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
+
+        // Calculate trial status
+        $trialEndsAt = !empty($this->business['trial_ends_at']) ? strtotime($this->business['trial_ends_at']) : 0;
+        $daysRemaining = max(0, ceil(($trialEndsAt - time()) / 86400));
+        $isOnTrial = $this->business['subscription_status'] === 'trial' && $daysRemaining > 0;
+        $trialExpired = $this->business['subscription_status'] === 'trial' && $daysRemaining <= 0;
+
+        return $this->view('pages/business/dashboard/subscription', [
+            'pageTitle' => 'Abonnement Activeren',
+            'business' => $this->business,
+            'isEarlyAdopter' => $isEarlyAdopter,
+            'subscriptionPrice' => $subscriptionPrice,
+            'welcomeDiscount' => $welcomeDiscount,
+            'finalPrice' => $finalPrice,
+            'isOnTrial' => $isOnTrial,
+            'trialExpired' => $trialExpired,
+            'daysRemaining' => $daysRemaining,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Activate subscription - redirect to Mollie payment
+     */
+    public function activateSubscription(): string
+    {
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/business/subscription');
+        }
+
+        // Calculate price
+        $isEarlyAdopter = !empty($this->business['is_early_adopter']);
+        $subscriptionPrice = (float)($this->business['subscription_price'] ?? 99.99);
+        $welcomeDiscount = $isEarlyAdopter ? 0 : (float)($this->business['welcome_discount'] ?? 0);
+        $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
+
+        // Don't allow if already active
+        if ($this->business['subscription_status'] === 'active') {
+            $_SESSION['flash'] = ['type' => 'info', 'message' => 'Je abonnement is al actief!'];
+            return $this->redirect('/business/dashboard');
+        }
+
+        // Create Mollie payment
+        $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+        if (empty($mollieApiKey)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betalingssysteem niet geconfigureerd'];
+            return $this->redirect('/business/subscription');
+        }
+
+        try {
+            $mollie = new \Mollie\Api\MollieApiClient();
+            $mollie->setApiKey($mollieApiKey);
+
+            $reference = 'SUB-' . $this->business['id'] . '-' . time();
+            $priceType = $isEarlyAdopter ? 'Early Bird aanmeldkosten' : 'Abonnement activatie';
+
+            $payment = $mollie->payments->create([
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => number_format($finalPrice, 2, '.', '')
+                ],
+                'description' => 'GlamourSchedule ' . $priceType . ' - ' . $this->business['company_name'],
+                'redirectUrl' => 'https://glamourschedule.nl/business/subscription/complete?ref=' . $reference,
+                'webhookUrl' => 'https://glamourschedule.nl/api/webhooks/mollie',
+                'method' => ['ideal', 'creditcard', 'bancontact', 'paypal'],
+                'metadata' => [
+                    'type' => 'subscription_activation',
+                    'business_id' => $this->business['id'],
+                    'reference' => $reference,
+                    'is_early_adopter' => $isEarlyAdopter
+                ]
+            ]);
+
+            // Store payment reference in business record
+            $this->db->query(
+                "UPDATE businesses SET payment_id = ? WHERE id = ?",
+                [$payment->id, $this->business['id']]
+            );
+
+            return $this->redirect($payment->getCheckoutUrl());
+
+        } catch (\Exception $e) {
+            error_log("Subscription payment error: " . $e->getMessage());
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling kon niet worden gestart. Probeer later opnieuw.'];
+            return $this->redirect('/business/subscription');
+        }
+    }
+
+    /**
+     * Handle subscription payment completion
+     */
+    public function subscriptionComplete(): string
+    {
+        $reference = $_GET['ref'] ?? '';
+
+        if (empty($reference)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige verificatie'];
+            return $this->redirect('/business/subscription');
+        }
+
+        // Verify reference matches this business
+        if (strpos($reference, 'SUB-' . $this->business['id'] . '-') !== 0) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige betaling'];
+            return $this->redirect('/business/subscription');
+        }
+
+        // Check Mollie payment status
+        $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+        if (!empty($mollieApiKey) && !empty($this->business['payment_id'])) {
+            try {
+                $mollie = new \Mollie\Api\MollieApiClient();
+                $mollie->setApiKey($mollieApiKey);
+
+                $payment = $mollie->payments->get($this->business['payment_id']);
+
+                if ($payment->isPaid()) {
+                    // Activate subscription
+                    $this->db->query(
+                        "UPDATE businesses SET
+                            subscription_status = 'active',
+                            status = 'active',
+                            registration_fee_paid = subscription_price
+                         WHERE id = ?",
+                        [$this->business['id']]
+                    );
+
+                    // Check if there's a sales referral and notify the sales partner
+                    if (!empty($this->business['referred_by_sales_partner'])) {
+                        $this->notifySalesPartnerOnActivation();
+                    }
+
+                    $_SESSION['flash'] = ['type' => 'success', 'message' => 'Welkom! Je abonnement is geactiveerd. Je kunt nu volledig gebruik maken van GlamourSchedule.'];
+                    return $this->redirect('/business/dashboard');
+
+                } elseif ($payment->isFailed() || $payment->isCanceled() || $payment->isExpired()) {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling niet gelukt. Probeer opnieuw.'];
+                } else {
+                    $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Betaling wordt verwerkt. Ververs de pagina over enkele momenten.'];
+                }
+            } catch (\Exception $e) {
+                error_log("Subscription payment check error: " . $e->getMessage());
+                $_SESSION['flash'] = ['type' => 'warning', 'message' => 'Status wordt gecontroleerd...'];
+            }
+        }
+
+        return $this->redirect('/business/subscription');
+    }
+
+    /**
+     * Notify sales partner when business activates subscription
+     */
+    private function notifySalesPartnerOnActivation(): void
+    {
+        try {
+            // Get sales referral info
+            $stmt = $this->db->query(
+                "SELECT sr.*, su.id as sales_user_id, su.name, su.email
+                 FROM sales_referrals sr
+                 JOIN sales_users su ON su.id = sr.sales_user_id
+                 WHERE sr.business_id = ?",
+                [$this->business['id']]
+            );
+            $referral = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($referral) {
+                // Update referral status to converted
+                $this->db->query(
+                    "UPDATE sales_referrals SET status = 'converted', converted_at = NOW() WHERE id = ?",
+                    [$referral['id']]
+                );
+
+                // Send notification email
+                $salesUser = [
+                    'id' => $referral['sales_user_id'],
+                    'name' => $referral['name'],
+                    'email' => $referral['email']
+                ];
+
+                SalesController::notifySalesPartnerActivation(
+                    $salesUser,
+                    $this->business,
+                    (float)$referral['commission']
+                );
+            }
+        } catch (\Exception $e) {
+            error_log("Failed to notify sales partner on activation: " . $e->getMessage());
+        }
     }
 
     // ============================================================
