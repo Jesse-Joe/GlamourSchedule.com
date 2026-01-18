@@ -138,6 +138,10 @@ class Application
             $router->post('/business/profile', 'BusinessDashboardController@updateProfile');
             $router->post('/business/delete', 'BusinessDashboardController@deleteBusiness');
 
+            // Language Settings
+            $router->get('/business/settings/language', 'BusinessDashboardController@getLanguage');
+            $router->post('/business/settings/language', 'BusinessDashboardController@updateLanguage');
+
             // IBAN Verification (direct Mollie flow)
             $router->post('/business/iban/add', 'BusinessDashboardController@addIban');
             $router->get('/business/iban/complete', 'BusinessDashboardController@ibanPaymentComplete');
@@ -151,11 +155,19 @@ class Application
             $router->get('/business/reviews', 'BusinessDashboardController@reviews');
             $router->post('/business/reviews/respond', 'BusinessDashboardController@respondToReview');
 
+            // AI Manager Insights
+            $router->get('/business/insights', 'BusinessDashboardController@insights');
+
             // Business Boost / Marketing
             $router->get('/business/boost', 'BusinessDashboardController@boost');
             $router->post('/business/boost/activate', 'BusinessDashboardController@activateBoost');
             $router->post('/business/boost/extend', 'BusinessDashboardController@extendBoost');
             $router->get('/business/boost/complete', 'BusinessDashboardController@boostComplete');
+
+            // Subscription activation (after trial)
+            $router->get('/business/subscription', 'BusinessDashboardController@subscription');
+            $router->post('/business/subscription/activate', 'BusinessDashboardController@activateSubscription');
+            $router->get('/business/subscription/complete', 'BusinessDashboardController@subscriptionComplete');
 
             // POS System (Digital POS)
             $router->get('/business/pos', 'BusinessDashboardController@pos');
@@ -285,6 +297,7 @@ class Application
         $this->router->post('/sales/register', 'SalesController@register');
         $this->router->get('/sales/dashboard', 'SalesController@dashboard');
         $this->router->get('/sales/referrals', 'SalesController@referrals');
+        $this->router->get('/sales/mijn-salons', 'SalesController@mijnSalons');
         $this->router->get('/sales/early-birds', 'SalesController@earlyBirds');
         $this->router->post('/sales/early-birds/register', 'SalesController@registerEarlyBird');
         $this->router->get('/sales/early-birds/resend/{id}', 'SalesController@resendEarlyBirdInvite');

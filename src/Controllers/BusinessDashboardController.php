@@ -778,6 +778,25 @@ class BusinessDashboardController extends Controller
         return $this->redirect('/business/reviews');
     }
 
+    /**
+     * AI Manager Insights pagina
+     */
+    public function insights(): string
+    {
+        $aiManager = new GlamoriManager($this->db);
+        $stats = $aiManager->getBusinessStats($this->business['id']);
+        $tips = $aiManager->getProactiveTips($this->business['id']);
+        $notifications = $aiManager->getNotifications($this->business['id'], 20);
+
+        return $this->view('pages/business/dashboard/insights', [
+            'pageTitle' => 'Inzichten & Statistieken',
+            'business' => $this->business,
+            'stats' => $stats,
+            'tips' => $tips,
+            'notifications' => $notifications
+        ]);
+    }
+
     private function getAllReviews(): array
     {
         $stmt = $this->db->query(
@@ -929,6 +948,91 @@ class BusinessDashboardController extends Controller
             $result[$h['day_of_week']] = $h;
         }
         return $result;
+    }
+
+    // ============================================================
+    // LANGUAGE SETTINGS
+    // ============================================================
+
+    /**
+     * Update business language setting
+     * POST /business/settings/language
+     */
+    public function updateLanguage(): string
+    {
+        if (!$this->verifyCsrf()) {
+            return $this->json(['success' => false, 'message' => 'Ongeldige aanvraag']);
+        }
+
+        $language = $_POST['language'] ?? 'nl';
+
+        // Validate language
+        $validLangs = ['nl', 'en', 'de', 'fr'];
+        if (!in_array($language, $validLangs)) {
+            return $this->json(['success' => false, 'message' => 'Ongeldige taal geselecteerd']);
+        }
+
+        try {
+            // Update business language
+            $this->db->query(
+                "UPDATE businesses SET language = ? WHERE id = ?",
+                [$language, $this->business['id']]
+            );
+
+            // Also update the owner's user account language
+            $this->db->query(
+                "UPDATE users SET language = ? WHERE id = ?",
+                [$language, $this->business['user_id']]
+            );
+
+            // Update session language
+            $_SESSION['lang'] = $language;
+
+            // Set language cookie
+            setcookie('lang', $language, [
+                'expires' => time() + (365 * 24 * 60 * 60),
+                'path' => '/',
+                'secure' => true,
+                'httponly' => false,
+                'samesite' => 'Lax'
+            ]);
+
+            return $this->json([
+                'success' => true,
+                'message' => $this->getLanguageUpdateMessage($language),
+                'language' => $language
+            ]);
+
+        } catch (\Exception $e) {
+            error_log('Language update failed: ' . $e->getMessage());
+            return $this->json(['success' => false, 'message' => 'Er is een fout opgetreden']);
+        }
+    }
+
+    /**
+     * Get language update success message in the new language
+     */
+    private function getLanguageUpdateMessage(string $lang): string
+    {
+        $messages = [
+            'nl' => 'Taalinstelling opgeslagen',
+            'en' => 'Language setting saved',
+            'de' => 'Spracheinstellung gespeichert',
+            'fr' => 'Paramètre de langue enregistré'
+        ];
+        return $messages[$lang] ?? $messages['nl'];
+    }
+
+    /**
+     * Get current business language
+     * GET /business/settings/language
+     */
+    public function getLanguage(): string
+    {
+        return $this->json([
+            'success' => true,
+            'language' => $this->business['language'] ?? 'nl'
+        ]);
     }
 
     // ============================================================

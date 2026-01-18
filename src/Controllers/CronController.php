@@ -28,7 +28,7 @@ class CronController extends Controller
             // Find businesses where trial ends today (send warning email)
             $stmt = $this->db->query(
                 "SELECT b.id, b.company_name, b.email, b.trial_ends_at, b.subscription_price,
-                        b.is_early_adopter, u.first_name
+                        b.is_early_adopter, b.language, u.first_name
                  FROM businesses b
                  JOIN users u ON b.user_id = u.id
                  WHERE b.subscription_status = 'trial'
@@ -83,7 +83,7 @@ class CronController extends Controller
         try {
             // Find businesses where trial ended 3 days ago and still on trial status
             $stmt = $this->db->query(
-                "SELECT b.id, b.company_name, b.email, b.trial_ends_at,
+                "SELECT b.id, b.company_name, b.email, b.trial_ends_at, b.language,
                         u.first_name
                  FROM businesses b
                  JOIN users u ON b.user_id = u.id
@@ -125,22 +125,28 @@ class CronController extends Controller
 
     private function sendTrialExpiryEmail(array $business): void
     {
-        $mailer = new Mailer();
+        $lang = $business['language'] ?? 'nl';
+        $mailer = new Mailer($lang);
         $isEarlyAdopter = !empty($business['is_early_adopter']);
         $price = number_format($business['subscription_price'], 2, ',', '.');
 
-        $subject = 'Je proefperiode bij GlamourSchedule eindigt vandaag';
+        // Translations
+        $translations = $this->getTrialExpiryTranslations($lang, $isEarlyAdopter);
 
-        // Different pricing text for early adopters vs regular users
-        if ($isEarlyAdopter) {
-            $priceLabel = 'Early Bird aanmeldkosten';
-            $priceSubtext = 'eenmalig';
-            $activateText = 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om je Early Bird aanmelding af te ronden.';
-        } else {
-            $priceLabel = 'Maandelijks abonnement';
-            $priceSubtext = 'per maand';
-            $activateText = 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het maandelijkse abonnement te activeren.';
-        }
+        $subject = $translations['subject'];
+        $priceLabel = $translations['price_label'];
+        $priceSubtext = $translations['price_subtext'];
+        $activateText = $translations['activate_text'];
+        $greeting = $translations['greeting'];
+        $trialEndsText = str_replace(
+            ['{company}'],
+            [$business['company_name']],
+            $translations['trial_ends']
+        );
+        $warningText = $translations['warning'];
+        $buttonText = $translations['button'];
+        $questionsText = $translations['questions'];
+        $copyrightText = $translations['copyright'];
 
         $body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -149,11 +155,10 @@ class CronController extends Controller
             </div>
 
             <div style='padding: 30px; background: #ffffff;'>
-                <h2 style='color: #333333;'>Hallo {$business['first_name']},</h2>
+                <h2 style='color: #333333;'>{$greeting} {$business['first_name']},</h2>
 
                 <p style='color: #666666; line-height: 1.6;'>
-                    Je 14-daagse proefperiode voor <strong>{$business['company_name']}</strong>
-                    eindigt vandaag.
+                    {$trialEndsText}
                 </p>
 
                 <p style='color: #666666; line-height: 1.6;'>
@@ -169,7 +174,7 @@ class CronController extends Controller
                 </div>
 
                 <p style='color: #e74c3c; font-weight: bold;'>
-                    Let op: Als je niet binnen 3 dagen activeert, wordt je account gedeactiveerd.
+                    {$warningText}
                 </p>
 
                 <div style='text-align: center; margin: 30px 0;'>
@@ -177,18 +182,18 @@ class CronController extends Controller
                        style='display: inline-block; background: #000000; color: #ffffff;
                               padding: 15px 30px; text-decoration: none; border-radius: 25px;
                               font-weight: bold;'>
-                        Abonnement Activeren
+                        {$buttonText}
                     </a>
                 </div>
 
                 <p style='color: #999999; font-size: 0.9rem;'>
-                    Heb je vragen? Neem contact op via info@glamourschedule.nl
+                    {$questionsText}
                 </p>
             </div>
 
             <div style='background: #f5f5f5; padding: 20px; text-align: center;'>
                 <p style='color: #999999; font-size: 0.8rem; margin: 0;'>
-                    &copy; " . date('Y') . " GlamourSchedule. Alle rechten voorbehouden.
+                    {$copyrightText}
                 </p>
             </div>
         </div>
@@ -197,11 +202,96 @@ class CronController extends Controller
         $mailer->send($business['email'], $subject, $body);
     }
 
+    private function getTrialExpiryTranslations(string $lang, bool $isEarlyAdopter): array
+    {
+        $translations = [
+            'nl' => [
+                'subject' => 'Je proefperiode bij GlamourSchedule eindigt vandaag',
+                'greeting' => 'Hallo',
+                'trial_ends' => 'Je 14-daagse proefperiode voor <strong>{company}</strong> eindigt vandaag.',
+                'price_label_early' => 'Early Bird aanmeldkosten',
+                'price_label_normal' => 'Maandelijks abonnement',
+                'price_subtext_early' => 'eenmalig',
+                'price_subtext_normal' => 'per maand',
+                'activate_text_early' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om je Early Bird aanmelding af te ronden.',
+                'activate_text_normal' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het maandelijkse abonnement te activeren.',
+                'warning' => 'Let op: Als je niet binnen 3 dagen activeert, wordt je account gedeactiveerd.',
+                'button' => 'Abonnement Activeren',
+                'questions' => 'Heb je vragen? Neem contact op via info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle rechten voorbehouden.',
+            ],
+            'en' => [
+                'subject' => 'Your GlamourSchedule trial ends today',
+                'greeting' => 'Hello',
+                'trial_ends' => 'Your 14-day trial for <strong>{company}</strong> ends today.',
+                'price_label_early' => 'Early Bird registration fee',
+                'price_label_normal' => 'Monthly subscription',
+                'price_subtext_early' => 'one-time',
+                'price_subtext_normal' => 'per month',
+                'activate_text_early' => 'To continue using GlamourSchedule, please complete your Early Bird registration.',
+                'activate_text_normal' => 'To continue using GlamourSchedule, please activate your monthly subscription.',
+                'warning' => 'Note: If you don\'t activate within 3 days, your account will be deactivated.',
+                'button' => 'Activate Subscription',
+                'questions' => 'Questions? Contact us at info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. All rights reserved.',
+            ],
+            'de' => [
+                'subject' => 'Ihre GlamourSchedule Testphase endet heute',
+                'greeting' => 'Hallo',
+                'trial_ends' => 'Ihre 14-tägige Testphase für <strong>{company}</strong> endet heute.',
+                'price_label_early' => 'Early Bird Anmeldegebühr',
+                'price_label_normal' => 'Monatliches Abonnement',
+                'price_subtext_early' => 'einmalig',
+                'price_subtext_normal' => 'pro Monat',
+                'activate_text_early' => 'Um GlamourSchedule weiterhin zu nutzen, schließen Sie bitte Ihre Early Bird Anmeldung ab.',
+                'activate_text_normal' => 'Um GlamourSchedule weiterhin zu nutzen, aktivieren Sie bitte Ihr monatliches Abonnement.',
+                'warning' => 'Hinweis: Wenn Sie nicht innerhalb von 3 Tagen aktivieren, wird Ihr Konto deaktiviert.',
+                'button' => 'Abonnement Aktivieren',
+                'questions' => 'Fragen? Kontaktieren Sie uns unter info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle Rechte vorbehalten.',
+            ],
+            'fr' => [
+                'subject' => 'Votre période d\'essai GlamourSchedule se termine aujourd\'hui',
+                'greeting' => 'Bonjour',
+                'trial_ends' => 'Votre période d\'essai de 14 jours pour <strong>{company}</strong> se termine aujourd\'hui.',
+                'price_label_early' => 'Frais d\'inscription Early Bird',
+                'price_label_normal' => 'Abonnement mensuel',
+                'price_subtext_early' => 'unique',
+                'price_subtext_normal' => 'par mois',
+                'activate_text_early' => 'Pour continuer à utiliser GlamourSchedule, veuillez finaliser votre inscription Early Bird.',
+                'activate_text_normal' => 'Pour continuer à utiliser GlamourSchedule, veuillez activer votre abonnement mensuel.',
+                'warning' => 'Attention: Si vous n\'activez pas dans les 3 jours, votre compte sera désactivé.',
+                'button' => 'Activer l\'Abonnement',
+                'questions' => 'Des questions? Contactez-nous à info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Tous droits réservés.',
+            ],
+        ];
+
+        $t = $translations[$lang] ?? $translations['nl'];
+
+        return [
+            'subject' => $t['subject'],
+            'greeting' => $t['greeting'],
+            'trial_ends' => $t['trial_ends'],
+            'price_label' => $isEarlyAdopter ? $t['price_label_early'] : $t['price_label_normal'],
+            'price_subtext' => $isEarlyAdopter ? $t['price_subtext_early'] : $t['price_subtext_normal'],
+            'activate_text' => $isEarlyAdopter ? $t['activate_text_early'] : $t['activate_text_normal'],
+            'warning' => $t['warning'],
+            'button' => $t['button'],
+            'questions' => $t['questions'],
+            'copyright' => $t['copyright'],
+        ];
+    }
+
     private function sendDeactivationEmail(array $business): void
     {
-        $mailer = new Mailer();
+        $lang = $business['language'] ?? 'nl';
+        $mailer = new Mailer($lang);
 
-        $subject = 'Je GlamourSchedule account is gedeactiveerd';
+        $t = $this->getDeactivationTranslations($lang);
+        $subject = $t['subject'];
+
+        $deactivatedText = str_replace('{company}', $business['company_name'], $t['deactivated']);
 
         $body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -210,16 +300,14 @@ class CronController extends Controller
             </div>
 
             <div style='padding: 30px; background: #ffffff;'>
-                <h2 style='color: #333333;'>Hallo {$business['first_name']},</h2>
+                <h2 style='color: #333333;'>{$t['greeting']} {$business['first_name']},</h2>
 
                 <p style='color: #666666; line-height: 1.6;'>
-                    Je account voor <strong>{$business['company_name']}</strong> is gedeactiveerd
-                    omdat de proefperiode is verlopen zonder activatie van het abonnement.
+                    {$deactivatedText}
                 </p>
 
                 <p style='color: #666666; line-height: 1.6;'>
-                    Je kunt je account op elk moment opnieuw activeren door in te loggen en
-                    het abonnement te activeren.
+                    {$t['reactivate_info']}
                 </p>
 
                 <div style='text-align: center; margin: 30px 0;'>
@@ -227,24 +315,68 @@ class CronController extends Controller
                        style='display: inline-block; background: #000000; color: #ffffff;
                               padding: 15px 30px; text-decoration: none; border-radius: 25px;
                               font-weight: bold;'>
-                        Opnieuw Activeren
+                        {$t['button']}
                     </a>
                 </div>
 
                 <p style='color: #999999; font-size: 0.9rem;'>
-                    Heb je vragen? Neem contact op via info@glamourschedule.nl
+                    {$t['questions']}
                 </p>
             </div>
 
             <div style='background: #f5f5f5; padding: 20px; text-align: center;'>
                 <p style='color: #999999; font-size: 0.8rem; margin: 0;'>
-                    &copy; " . date('Y') . " GlamourSchedule. Alle rechten voorbehouden.
+                    {$t['copyright']}
                 </p>
             </div>
         </div>
         ";
 
         $mailer->send($business['email'], $subject, $body);
+    }
+
+    private function getDeactivationTranslations(string $lang): array
+    {
+        $translations = [
+            'nl' => [
+                'subject' => 'Je GlamourSchedule account is gedeactiveerd',
+                'greeting' => 'Hallo',
+                'deactivated' => 'Je account voor <strong>{company}</strong> is gedeactiveerd omdat de proefperiode is verlopen zonder activatie van het abonnement.',
+                'reactivate_info' => 'Je kunt je account op elk moment opnieuw activeren door in te loggen en het abonnement te activeren.',
+                'button' => 'Opnieuw Activeren',
+                'questions' => 'Heb je vragen? Neem contact op via info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle rechten voorbehouden.',
+            ],
+            'en' => [
+                'subject' => 'Your GlamourSchedule account has been deactivated',
+                'greeting' => 'Hello',
+                'deactivated' => 'Your account for <strong>{company}</strong> has been deactivated because the trial period expired without subscription activation.',
+                'reactivate_info' => 'You can reactivate your account at any time by logging in and activating your subscription.',
+                'button' => 'Reactivate Account',
+                'questions' => 'Questions? Contact us at info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. All rights reserved.',
+            ],
+            'de' => [
+                'subject' => 'Ihr GlamourSchedule Konto wurde deaktiviert',
+                'greeting' => 'Hallo',
+                'deactivated' => 'Ihr Konto für <strong>{company}</strong> wurde deaktiviert, da die Testphase ohne Abonnement-Aktivierung abgelaufen ist.',
+                'reactivate_info' => 'Sie können Ihr Konto jederzeit reaktivieren, indem Sie sich anmelden und Ihr Abonnement aktivieren.',
+                'button' => 'Konto Reaktivieren',
+                'questions' => 'Fragen? Kontaktieren Sie uns unter info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle Rechte vorbehalten.',
+            ],
+            'fr' => [
+                'subject' => 'Votre compte GlamourSchedule a été désactivé',
+                'greeting' => 'Bonjour',
+                'deactivated' => 'Votre compte pour <strong>{company}</strong> a été désactivé car la période d\'essai a expiré sans activation de l\'abonnement.',
+                'reactivate_info' => 'Vous pouvez réactiver votre compte à tout moment en vous connectant et en activant votre abonnement.',
+                'button' => 'Réactiver le Compte',
+                'questions' => 'Des questions? Contactez-nous à info@glamourschedule.nl',
+                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Tous droits réservés.',
+            ],
+        ];
+
+        return $translations[$lang] ?? $translations['nl'];
     }
 
     private function logCron(string $message): void

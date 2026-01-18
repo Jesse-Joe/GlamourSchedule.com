@@ -3,6 +3,7 @@ namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
+use GlamourSchedule\Core\GeoIP;
 
 class AuthController extends Controller
 {
@@ -356,18 +357,39 @@ class AuthController extends Controller
         $data = $_SESSION['pending_registration'];
         $uuid = $this->generateUuid();
 
+        // Detect user's language from IP location
+        $geoIP = new GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $userLanguage = $location['language'] ?? 'nl';
+
+        // Validate language
+        $validLangs = ['nl', 'en', 'de', 'fr'];
+        if (!in_array($userLanguage, $validLangs)) {
+            $userLanguage = 'nl';
+        }
+
         $this->db->query(
             "INSERT INTO users (uuid, email, password_hash, first_name, last_name, phone,
-                               email_verified, email_verified_at, terms_accepted_at, terms_version, status)
-             VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW(), ?, 'active')",
+                               email_verified, email_verified_at, terms_accepted_at, terms_version, status, language)
+             VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW(), ?, 'active', ?)",
             [$uuid, $data['email'], $data['password_hash'], $data['first_name'],
-             $data['last_name'], $data['phone'], $data['terms_version']]
+             $data['last_name'], $data['phone'], $data['terms_version'], $userLanguage]
         );
 
         $userId = $this->db->lastInsertId();
         $_SESSION['user_id'] = $userId;
         $_SESSION['user_type'] = 'customer';
+        $_SESSION['lang'] = $userLanguage;
         unset($_SESSION['pending_registration']);
+
+        // Set language cookie
+        setcookie('lang', $userLanguage, [
+            'expires' => time() + (365 * 24 * 60 * 60),
+            'path' => '/',
+            'secure' => true,
+            'httponly' => false,
+            'samesite' => 'Lax'
+        ]);
 
         return $this->redirect('/dashboard');
     }

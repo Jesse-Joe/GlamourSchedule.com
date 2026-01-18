@@ -67,12 +67,16 @@ class BookingController extends Controller
             $employees = $this->getEmployees($business['id']);
         }
 
+        // Get business settings for theme
+        $settings = $this->getBusinessSettings($business['id']);
+
         return $this->view('pages/booking/create', [
             'pageTitle' => 'Boeken bij ' . $business['name'],
             'business' => $business,
             'services' => $services,
             'selectedService' => $selectedService,
-            'employees' => $employees
+            'employees' => $employees,
+            'settings' => $settings
         ]);
     }
 
@@ -238,13 +242,17 @@ class BookingController extends Controller
             $employee = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 
+        // Get business settings for theme
+        $settings = $this->getBusinessSettings($business['id']);
+
         return $this->view('pages/booking/checkout', [
             'pageTitle' => 'Bevestig je boeking',
             'business' => $business,
             'service' => $service,
             'employee' => $employee,
             'bookingData' => $bookingData,
-            'csrfToken' => $this->csrf()
+            'csrfToken' => $this->csrf(),
+            'settings' => $settings
         ]);
     }
 
@@ -322,9 +330,10 @@ class BookingController extends Controller
         // Schedule reminders (24 hours and 1 hour before)
         $this->scheduleReminders($bookingData['date'], $bookingData['time'], $uuid);
 
-        // Send push notification to business owner
+        // Send push notification to business owner in their preferred language
         try {
             $push = new PushNotification();
+            $businessLang = $business['language'] ?? 'nl';
             $push->notifyNewBooking([
                 'business_id' => $business['id'],
                 'guest_name' => $bookingData['guest_name'],
@@ -332,7 +341,7 @@ class BookingController extends Controller
                 'service_name' => $service['name'],
                 'appointment_date' => $bookingData['date'],
                 'appointment_time' => $bookingData['time']
-            ]);
+            ], $businessLang);
         } catch (\Exception $e) {
             error_log('Push notification failed: ' . $e->getMessage());
         }
@@ -735,6 +744,19 @@ HTML;
             [$uuid]
         );
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
+
+    private function getBusinessSettings(int $businessId): array
+    {
+        $stmt = $this->db->query(
+            "SELECT * FROM business_settings WHERE business_id = ?",
+            [$businessId]
+        );
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [
+            'primary_color' => '#000000',
+            'secondary_color' => '#333333',
+            'accent_color' => '#000000',
+        ];
     }
 
     private function getServices(int $businessId): array

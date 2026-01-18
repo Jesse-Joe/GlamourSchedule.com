@@ -134,43 +134,113 @@ class PushNotification
 
     /**
      * Notify about new booking
+     * @param array $booking Booking data
+     * @param string $lang Language code for notification (defaults to business language or 'nl')
      */
-    public function notifyNewBooking(array $booking): bool
+    public function notifyNewBooking(array $booking, string $lang = 'nl'): bool
     {
-        $customerName = $booking['guest_name'] ?? $booking['customer_name'] ?? 'Klant';
-        $serviceName = $booking['service_name'] ?? 'Behandeling';
+        $customerName = $booking['guest_name'] ?? $booking['customer_name'] ?? $this->getTranslation('customer', $lang);
+        $serviceName = $booking['service_name'] ?? $this->getTranslation('treatment', $lang);
         $date = date('j M', strtotime($booking['appointment_date']));
         $time = date('H:i', strtotime($booking['appointment_time']));
 
+        // Get translated title and message
+        $title = $this->getTranslation('new_booking', $lang);
+        $messageTemplate = $this->getTranslation('booking_message', $lang);
+        $message = str_replace(
+            ['{customer}', '{service}', '{date}', '{time}'],
+            [$customerName, $serviceName, $date, $time],
+            $messageTemplate
+        );
+
         return $this->sendToBusinessOwner(
             $booking['business_id'],
-            'Nieuwe Boeking',
-            "{$customerName} heeft {$serviceName} geboekt op {$date} om {$time}.",
+            $title,
+            $message,
             ['url' => '/business/dashboard/bookings']
         );
     }
 
     /**
-     * Notify about new business registration
+     * Get translation for push notification text
      */
-    public function notifyNewBusiness(array $business): bool
+    private function getTranslation(string $key, string $lang): string
     {
-        $name = $business['company_name'] ?? $business['name'] ?? 'Nieuw bedrijf';
+        $translations = [
+            'nl' => [
+                'new_booking' => 'Nieuwe Boeking',
+                'booking_message' => '{customer} heeft {service} geboekt op {date} om {time}.',
+                'customer' => 'Klant',
+                'treatment' => 'Behandeling',
+                'new_business' => 'Nieuw Bedrijf Geregistreerd',
+                'business_registered' => '{name} heeft zich zojuist aangemeld via GlamourSchedule.',
+                'reminder_tomorrow' => 'Herinnering: Afspraak morgen',
+                'reminder_message' => 'Je hebt morgen om {time} een afspraak bij {business} voor {service}.',
+            ],
+            'en' => [
+                'new_booking' => 'New Booking',
+                'booking_message' => '{customer} booked {service} on {date} at {time}.',
+                'customer' => 'Customer',
+                'treatment' => 'Treatment',
+                'new_business' => 'New Business Registered',
+                'business_registered' => '{name} has just registered via GlamourSchedule.',
+                'reminder_tomorrow' => 'Reminder: Appointment tomorrow',
+                'reminder_message' => 'You have an appointment at {business} tomorrow at {time} for {service}.',
+            ],
+            'de' => [
+                'new_booking' => 'Neue Buchung',
+                'booking_message' => '{customer} hat {service} am {date} um {time} gebucht.',
+                'customer' => 'Kunde',
+                'treatment' => 'Behandlung',
+                'new_business' => 'Neues Unternehmen Registriert',
+                'business_registered' => '{name} hat sich gerade über GlamourSchedule angemeldet.',
+                'reminder_tomorrow' => 'Erinnerung: Termin morgen',
+                'reminder_message' => 'Sie haben morgen um {time} einen Termin bei {business} für {service}.',
+            ],
+            'fr' => [
+                'new_booking' => 'Nouvelle Réservation',
+                'booking_message' => '{customer} a réservé {service} le {date} à {time}.',
+                'customer' => 'Client',
+                'treatment' => 'Traitement',
+                'new_business' => 'Nouvelle Entreprise Enregistrée',
+                'business_registered' => '{name} vient de s\'inscrire via GlamourSchedule.',
+                'reminder_tomorrow' => 'Rappel: Rendez-vous demain',
+                'reminder_message' => 'Vous avez un rendez-vous chez {business} demain à {time} pour {service}.',
+            ],
+        ];
+
+        return $translations[$lang][$key] ?? $translations['nl'][$key] ?? $key;
+    }
+
+    /**
+     * Notify about new business registration
+     * @param array $business Business data
+     * @param string $lang Language code for notification (defaults to 'nl')
+     */
+    public function notifyNewBusiness(array $business, string $lang = 'nl'): bool
+    {
+        $name = $business['company_name'] ?? $business['name'] ?? $this->getTranslation('new_business', $lang);
+
+        $title = $this->getTranslation('new_business', $lang);
+        $messageTemplate = $this->getTranslation('business_registered', $lang);
+        $message = str_replace('{name}', $name, $messageTemplate);
 
         return $this->sendToAdmins(
-            'Nieuw Bedrijf Geregistreerd',
-            "{$name} heeft zich zojuist aangemeld via GlamourSchedule.",
+            $title,
+            $message,
             ['url' => '/admin/businesses']
         );
     }
 
     /**
      * Send appointment reminder
+     * @param array $booking Booking data
+     * @param string $lang Language code for notification (defaults to 'nl')
      */
-    public function sendReminder(array $booking): bool
+    public function sendReminder(array $booking, string $lang = 'nl'): bool
     {
         $businessName = $booking['business_name'] ?? $booking['company_name'] ?? 'de salon';
-        $serviceName = $booking['service_name'] ?? 'je afspraak';
+        $serviceName = $booking['service_name'] ?? $this->getTranslation('treatment', $lang);
         $time = date('H:i', strtotime($booking['appointment_time']));
 
         $userId = $booking['user_id'] ?? null;
@@ -178,10 +248,18 @@ class PushNotification
             return false;
         }
 
+        $title = $this->getTranslation('reminder_tomorrow', $lang);
+        $messageTemplate = $this->getTranslation('reminder_message', $lang);
+        $message = str_replace(
+            ['{time}', '{business}', '{service}'],
+            [$time, $businessName, $serviceName],
+            $messageTemplate
+        );
+
         return $this->sendToUser(
             $userId,
-            'Herinnering: Afspraak morgen',
-            "Je hebt morgen om {$time} een afspraak bij {$businessName} voor {$serviceName}.",
+            $title,
+            $message,
             ['url' => '/dashboard/appointments']
         );
     }

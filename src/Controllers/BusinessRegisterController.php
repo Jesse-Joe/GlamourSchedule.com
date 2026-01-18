@@ -11,7 +11,7 @@ class BusinessRegisterController extends Controller
     // Pricing constants
     private const REGISTRATION_FEE = 99.99;
     private const SALES_PARTNER_DISCOUNT = 25.00;
-    private const SALES_PARTNER_COMMISSION = 99.99;      // Commission for normal sales (€74.99 payment)
+    private const SALES_PARTNER_COMMISSION = 49.99;      // Commission for normal sales (€74.99 payment)
     private const EARLY_BIRD_COMMISSION = 9.99;          // Commission for early bird sales (€0.99 payment)
     private const COMMISSION_PAYOUT_DAYS = 14;           // Bedenktijd
 
@@ -165,19 +165,26 @@ class BusinessRegisterController extends Controller
             $slug = $this->generateSlug($data['company_name']);
             $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
 
-            // Create user account (not verified yet)
-            $this->db->query(
-                "INSERT INTO users (uuid, email, password_hash, first_name, phone, status, email_verified)
-                 VALUES (?, ?, ?, ?, ?, 'active', 0)",
-                [$userUuid, $data['email'], $passwordHash, $data['company_name'], $data['phone']]
-            );
-            $userId = $this->db->lastInsertId();
-
-            // Get user location for country-based pricing
+            // Get user location for country-based pricing and language detection
             $location = $this->geoIP->lookup();
             $countryCode = $location['country_code'];
+            $detectedLanguage = $location['language'] ?? 'nl';
             $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
             $isPromo = $promoInfo['is_promo'];
+
+            // Validate language
+            $validLangs = ['nl', 'en', 'de', 'fr'];
+            if (!in_array($detectedLanguage, $validLangs)) {
+                $detectedLanguage = 'nl';
+            }
+
+            // Create user account (not verified yet) with detected language
+            $this->db->query(
+                "INSERT INTO users (uuid, email, password_hash, first_name, phone, status, email_verified, language)
+                 VALUES (?, ?, ?, ?, ?, 'active', 0, ?)",
+                [$userUuid, $data['email'], $passwordHash, $data['company_name'], $data['phone'], $detectedLanguage]
+            );
+            $userId = $this->db->lastInsertId();
 
             // Log the registration attempt
             $this->geoIP->logLocation($location, null, null, '/business/register [POST]');
@@ -221,20 +228,20 @@ class BusinessRegisterController extends Controller
                 $subscriptionStatus = 'trial';
             }
 
-            // Create business (pending status until verified)
+            // Create business (pending status until verified) with detected language
             $this->db->query(
                 "INSERT INTO businesses (
                     uuid, user_id, company_name, slug, email, phone,
-                    street, house_number, postal_code, city,
+                    street, house_number, postal_code, city, language,
                     description, kvk_number,
                     is_early_adopter, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner,
                     registration_country, registration_ip, promo_applied
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     $businessUuid, $userId, $data['company_name'], $slug, $data['email'], $data['phone'],
-                    $data['street'], $data['house_number'], $data['postal_code'], $data['city'],
+                    $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $detectedLanguage,
                     $data['description'], $data['kvk_number'],
                     $isPromo ? 1 : 0,
                     $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
@@ -251,13 +258,16 @@ class BusinessRegisterController extends Controller
             // If referred by sales partner, create referral record with 14-day payout delay
             if ($referredBy) {
                 // Commission eligible after 14 days from payment
-                // Early bird sales get €9.99 commission, normal sales get €99.99
+                // Early bird sales get €9.99 commission, normal sales get €49.99
                 $commission = $isPromo ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
                      VALUES (?, ?, 'pending', ?)",
                     [$referredBy, $businessId, $commission]
                 );
+
+                // Notify sales partner of new registration
+                $this->notifySalesPartnerNewRegistration($referredBy, $businessId, $commission);
             }
 
             // Add to category
@@ -754,11 +764,19 @@ GlamourSchedule
             $passwordHash = password_hash($tempPassword, PASSWORD_BCRYPT);
             $fullName = $data['first_name'] . ' ' . $data['last_name'];
 
-            // Create user (inactive until email verified)
+            // Detect language from IP
+            $location = $this->geoIP->lookup();
+            $detectedLanguage = $location['language'] ?? 'nl';
+            $validLangs = ['nl', 'en', 'de', 'fr'];
+            if (!in_array($detectedLanguage, $validLangs)) {
+                $detectedLanguage = 'nl';
+            }
+
+            // Create user (inactive until email verified) with detected language
             $this->db->query(
-                "INSERT INTO users (uuid, email, password_hash, first_name, last_name, status, email_verified)
-                 VALUES (?, ?, ?, ?, ?, 'inactive', 0)",
-                [$userUuid, $data['email'], $passwordHash, $data['first_name'], $data['last_name']]
+                "INSERT INTO users (uuid, email, password_hash, first_name, last_name, status, email_verified, language)
+                 VALUES (?, ?, ?, ?, ?, 'inactive', 0, ?)",
+                [$userUuid, $data['email'], $passwordHash, $data['first_name'], $data['last_name'], $detectedLanguage]
             );
             $userId = $this->db->lastInsertId();
 
@@ -775,13 +793,13 @@ GlamourSchedule
 
             $this->db->query(
                 "INSERT INTO businesses (
-                    uuid, user_id, company_name, slug, email,
+                    uuid, user_id, company_name, slug, email, language,
                     is_early_adopter, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner, verification_token
-                ) VALUES (?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
                 [
-                    $businessUuid, $userId, $data['company_name'], $slug, $data['email'],
+                    $businessUuid, $userId, $data['company_name'], $slug, $data['email'], $detectedLanguage,
                     $isSalesEarlyAdopter ? 1 : 0,
                     $trialEndsAt, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy, $verificationToken
                 ]
@@ -790,13 +808,16 @@ GlamourSchedule
 
             // Create referral record
             if ($referredBy) {
-                // Early bird sales get €9.99 commission, normal sales get €99.99
+                // Early bird sales get €9.99 commission, normal sales get €49.99
                 $commission = $isSalesEarlyAdopter ? self::EARLY_BIRD_COMMISSION : self::SALES_PARTNER_COMMISSION;
                 $this->db->query(
                     "INSERT INTO sales_referrals (sales_user_id, business_id, status, commission)
                      VALUES (?, ?, 'pending', ?)",
                     [$referredBy, $businessId, $commission]
                 );
+
+                // Notify sales partner of new registration
+                $this->notifySalesPartnerNewRegistration($referredBy, $businessId, $commission);
             }
 
             // Create default hours
@@ -1365,7 +1386,7 @@ GlamourSchedule
                 </div>
 
                 <p style='color:#6b7280;font-size:13px;margin-top:20px;'>
-                    Blijf salons aanbrengen en verdien EUR 99,99 per betalende salon!
+                    Blijf salons aanbrengen en verdien EUR 49,99 per betalende salon!
                 </p>
             </div>
             <div style='background:#fafafa;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>
@@ -1378,6 +1399,42 @@ GlamourSchedule
             $mailer->send($referral['email'], 'Je hebt EUR ' . $commission . ' commissie verdiend!', $html);
         } catch (\Exception $e) {
             error_log('Sales partner notification email failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Notify sales partner when a new business registers via their referral code
+     */
+    private function notifySalesPartnerNewRegistration(int $salesUserId, int $businessId, float $commission): void
+    {
+        try {
+            // Get sales user data
+            $stmt = $this->db->query(
+                "SELECT id, name, email FROM sales_users WHERE id = ?",
+                [$salesUserId]
+            );
+            $salesUser = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$salesUser) {
+                return;
+            }
+
+            // Get business data
+            $stmt = $this->db->query(
+                "SELECT company_name, city, is_early_adopter FROM businesses WHERE id = ?",
+                [$businessId]
+            );
+            $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$business) {
+                return;
+            }
+
+            // Send notification using SalesController static method
+            SalesController::notifySalesPartnerNewRegistration($salesUser, $business, $commission);
+
+        } catch (\Exception $e) {
+            error_log("Failed to notify sales partner of new registration: " . $e->getMessage());
         }
     }
 }

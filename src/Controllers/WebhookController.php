@@ -3,6 +3,7 @@ namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
+use GlamourSchedule\Core\PushNotification;
 use Mollie\Api\MollieApiClient;
 
 class WebhookController extends Controller
@@ -216,6 +217,7 @@ HTML;
             $stmt = $this->db->query(
                 "SELECT b.*,
                         biz.company_name as business_name, biz.email as business_email,
+                        biz.language as business_language,
                         s.name as service_name, s.duration_minutes,
                         u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
@@ -231,6 +233,9 @@ HTML;
                 error_log("Mollie webhook: Booking not found for email: $bookingUuid");
                 return;
             }
+
+            // Get business settings for email theming
+            $settings = $this->getBusinessSettings($booking['business_id']);
 
             $customerEmail = $booking['guest_email'] ?? $booking['user_email'] ?? null;
             $customerName = $booking['guest_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? ''));
@@ -250,24 +255,41 @@ HTML;
                 'notes' => $booking['notes'] ?? ''
             ];
 
-            // Use booking's language for email (personalized based on platform language used during booking)
-            $bookingLang = $booking['language'] ?? 'nl';
-            $mailer = new Mailer($bookingLang);
+            // Get customer language from booking (personalized based on platform language used during booking)
+            $customerLang = $booking['language'] ?? 'nl';
 
-            // Stuur bevestiging naar klant
+            // Get business language (for business notifications)
+            $businessLang = $booking['business_language'] ?? 'nl';
+
+            // Send confirmation email to customer in CUSTOMER'S language
             if ($customerEmail) {
-                $mailer->sendBookingConfirmation($bookingData);
-                error_log("Mollie webhook: Confirmation email sent to customer for $bookingUuid");
+                $mailerCustomer = new Mailer($customerLang);
+                $mailerCustomer->sendBookingConfirmation($bookingData, $settings);
+                error_log("Mollie webhook: Confirmation email sent to customer for $bookingUuid (lang: $customerLang)");
             }
 
-            // Stuur notificatie naar bedrijf
+            // Send notification email to business in BUSINESS'S language
             if ($booking['business_email']) {
-                $mailer->sendBookingNotificationToBusiness($bookingData);
-                error_log("Mollie webhook: Notification email sent to business for $bookingUuid");
+                $mailerBusiness = new Mailer($businessLang);
+                $mailerBusiness->sendBookingNotificationToBusiness($bookingData, $settings);
+                error_log("Mollie webhook: Notification email sent to business for $bookingUuid (lang: $businessLang)");
             }
 
         } catch (\Exception $e) {
             error_log("Mollie webhook: Email sending failed for $bookingUuid: " . $e->getMessage());
         }
+    }
+
+    private function getBusinessSettings(int $businessId): array
+    {
+        $stmt = $this->db->query(
+            "SELECT * FROM business_settings WHERE business_id = ?",
+            [$businessId]
+        );
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: [
+            'primary_color' => '#000000',
+            'secondary_color' => '#333333',
+            'accent_color' => '#000000',
+        ];
     }
 }
