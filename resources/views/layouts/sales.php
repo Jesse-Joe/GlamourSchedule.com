@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Sales Dashboard') ?> - GlamourSchedule</title>
     <link rel="manifest" href="/manifest-sales.json">
     <meta name="theme-color" content="#000000">
@@ -10,6 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/images/sales-icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <style>
         * {
             box-sizing: border-box;
@@ -561,6 +562,9 @@
             <a href="/sales/referrals" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/referrals') !== false ? 'active' : '' ?>">
                 <i class="fas fa-users"></i> Referrals
             </a>
+            <a href="/sales/mijn-salons" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/mijn-salons') !== false ? 'active' : '' ?>">
+                <i class="fas fa-store"></i> Mijn Salons
+            </a>
             <a href="/sales/payouts" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/payouts') !== false ? 'active' : '' ?>">
                 <i class="fas fa-euro-sign"></i> Uitbetalingen
             </a>
@@ -621,17 +625,17 @@
                 <i class="fas fa-seedling"></i>
                 Early Birds
             </a>
-            <a href="/sales/referrals" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/referrals') !== false ? 'active' : '' ?>">
-                <i class="fas fa-users"></i>
-                Referrals
+            <a href="/sales/mijn-salons" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/mijn-salons') !== false ? 'active' : '' ?>">
+                <i class="fas fa-store"></i>
+                Salons
             </a>
             <a href="/sales/payouts" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/payouts') !== false ? 'active' : '' ?>">
                 <i class="fas fa-euro-sign"></i>
                 Geld
             </a>
-            <a href="/sales/logout" class="nav-logout">
-                <i class="fas fa-sign-out-alt"></i>
-                Uitloggen
+            <a href="/sales/account" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/account') !== false ? 'active' : '' ?>">
+                <i class="fas fa-cog"></i>
+                Account
             </a>
         </nav>
     </div>
