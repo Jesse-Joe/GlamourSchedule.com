@@ -158,6 +158,26 @@
         margin: 0;
         font-size: 16px;
         font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .glamori-ai-badge {
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        animation: glamoriPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glamoriPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
     }
 
     .glamori-info span {
@@ -364,6 +384,19 @@
         50% { transform: translateY(-4px); }
     }
 
+    .glamori-thinking-text {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-left: 8px;
+        font-style: italic;
+        animation: glamoriFade 1.5s ease-in-out infinite;
+    }
+
+    @keyframes glamoriFade {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+    }
+
     /* Dark mode */
     [data-theme="dark"] .glamori-window {
         background: #1a1a1a;
@@ -448,7 +481,7 @@
                 <img src="/images/gs-logo.svg" alt="GS" style="width:28px;height:28px;">
             </div>
             <div class="glamori-info">
-                <h4>Glamori</h4>
+                <h4>Glamori <span class="glamori-ai-badge" id="glamoriAiBadge" style="display:none;">AI</span></h4>
                 <span><span class="glamori-status"></span><?= $translations['online_always_available'] ?? 'Online - Always available' ?></span>
             </div>
             <button class="glamori-close" onclick="toggleGlamori()" aria-label="<?= $translations['close'] ?? 'Close' ?>">
@@ -502,6 +535,10 @@ function initGlamori() {
     fetch('/api/glamori/welcome')
         .then(res => res.json())
         .then(data => {
+            // Show AI badge if AI is enabled
+            if (data.ai_powered) {
+                document.getElementById('glamoriAiBadge').style.display = 'inline-block';
+            }
             addGlamoriMessage(data, 'assistant');
             updateSuggestions(data.suggestions || []);
         })
@@ -541,6 +578,12 @@ function sendGlamoriMessage() {
     .then(res => res.json())
     .then(data => {
         hideTyping();
+
+        // Update AI badge based on response
+        if (data.ai_powered) {
+            document.getElementById('glamoriAiBadge').style.display = 'inline-block';
+        }
+
         addGlamoriMessage(data, 'assistant');
         updateSuggestions(data.suggestions || []);
 
@@ -603,10 +646,16 @@ function showTyping() {
     const typing = document.createElement('div');
     typing.id = 'glamoriTypingIndicator';
     typing.className = 'glamori-message';
+
+    // Check if AI is enabled for a more descriptive indicator
+    const aiEnabled = document.getElementById('glamoriAiBadge').style.display !== 'none';
+    const thinkingText = aiEnabled ? 'Glamori denkt na...' : '';
+
     typing.innerHTML = `
         <div class="glamori-message-avatar"><img src="/images/gs-logo.svg" alt="GS" style="width:20px;height:20px;"></div>
         <div class="glamori-typing">
             <span></span><span></span><span></span>
+            ${thinkingText ? `<span class="glamori-thinking-text">${thinkingText}</span>` : ''}
         </div>
     `;
     container.appendChild(typing);
