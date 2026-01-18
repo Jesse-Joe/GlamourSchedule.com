@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Sales Dashboard') ?> - GlamourSchedule</title>
+
+    <!-- Early Theme Detection (prevents flash of wrong theme) -->
+    <script>
+    (function() {
+        var saved = localStorage.getItem('glamour_theme_mode');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
     <link rel="manifest" href="/manifest-sales.json">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/images/sales-icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/prestige.css?v=<?= time() ?>">
     <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <style>
         * {
@@ -19,8 +30,8 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0a;
-            color: #ffffff;
+            background: var(--theme-bg, #000000);
+            color: var(--theme-text, #ffffff);
             min-height: 100vh;
         }
 
@@ -831,5 +842,8 @@
 
     <!-- Security PIN Setup Popup -->
     <?php include BASE_PATH . '/resources/views/components/security-pin-popup.php'; ?>
+
+    <!-- Theme Manager -->
+    <script src="/js/theme.js?v=<?= time() ?>"></script>
 </body>
 </html>

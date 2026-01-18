@@ -106,20 +106,45 @@ class ThemeManager {
                 this.setMode(e.target.checked ? 'dark' : 'light');
             });
         });
-        
+
         // Mode buttons
         document.querySelectorAll('[data-mode]').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.setMode(btn.dataset.mode);
             });
         });
-        
+
         // Gender theme buttons
         document.querySelectorAll('.gender-theme-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.setGender(btn.dataset.gender);
             });
         });
+
+        // Theme toggle buttons (.theme-toggle class)
+        document.querySelectorAll('.theme-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.toggleMode();
+                this.updateToggleUI();
+            });
+        });
+
+        // Initial UI update
+        this.updateToggleUI();
+    }
+
+    /**
+     * Update the UI of theme toggle buttons
+     */
+    updateToggleUI() {
+        const currentMode = this.getMode();
+
+        // Update toggle button text
+        document.querySelectorAll('.theme-toggle-text').forEach(el => {
+            el.textContent = currentMode === 'dark' ? 'Lichte modus' : 'Donkere modus';
+        });
+
+        // Update theme toggle icons (CSS handles visibility via data-theme attribute)
     }
 }
 

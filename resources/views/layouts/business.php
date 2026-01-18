@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="<?= $lang ?? 'nl' ?>" data-theme="dark">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?> - GlamourSchedule Business</title>
+
+    <!-- Early Theme Detection (prevents flash of wrong theme) -->
+    <script>
+    (function() {
+        var saved = localStorage.getItem('glamour_theme_mode');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest-business.json">
     <meta name="theme-color" content="#000000">
@@ -12,6 +22,7 @@
     <meta name="apple-mobile-web-app-title" content="GS Business">
     <link rel="apple-touch-icon" href="/icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/prestige.css?v=<?= time() ?>">
     <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,22 +30,22 @@
             --primary: #000000;
             --primary-dark: #000000;
             --primary-light: #333333;
-            --secondary: #fafafa;
-            --text: #111827;
-            --text-light: #6b7280;
-            --white: #ffffff;
-            --border: #e5e7eb;
-            --success: #333333;
-            --danger: #333333;
-            --warning: #000000;
-            --sidebar-width: 280px;
-        }
-        [data-theme="dark"] {
             --secondary: #000000;
             --text: #ffffff;
-            --text-light: #a1a1a1;
+            --text-light: #999999;
             --white: #0a0a0a;
-            --border: #222222;
+            --border: #333333;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --sidebar-width: 280px;
+        }
+        [data-theme="light"] {
+            --secondary: #ffffff;
+            --text: #000000;
+            --text-light: #666666;
+            --white: #ffffff;
+            --border: #e0e0e0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -832,5 +843,8 @@
 
     <!-- Security PIN Setup Popup -->
     <?php include BASE_PATH . '/resources/views/components/security-pin-popup.php'; ?>
+
+    <!-- Theme Manager -->
+    <script src="/js/theme.js?v=<?= time() ?>"></script>
 </body>
 </html>

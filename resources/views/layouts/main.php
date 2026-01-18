@@ -4,11 +4,20 @@ $isLoggedIn = isset($_SESSION['user_id']);
 $isBusiness = isset($_SESSION['business_id']);
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 ?>
-<html lang="<?= $lang ?? 'nl' ?>" data-theme="dark">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Glamourschedule' ?> - Booking Platform</title>
+
+    <!-- Early Theme Detection (prevents flash of wrong theme) -->
+    <script>
+    (function() {
+        var saved = localStorage.getItem('glamour_theme_mode');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
 
     <link rel="icon" type="image/svg+xml" href="/images/gs-logo-circle.svg">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -546,31 +555,35 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             }
         });
 
-        // Theme Toggle
+        // Theme Toggle - uses ThemeManager from theme.js
         function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeToggleText(newTheme);
+            if (window.GlamourTheme) {
+                window.GlamourTheme.toggleMode();
+            } else {
+                // Fallback if theme.js not loaded
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('glamour_theme_mode', newTheme);
+            }
+            updateThemeToggleText();
         }
 
-        function updateThemeToggleText(theme) {
+        function updateThemeToggleText() {
+            const theme = document.documentElement.getAttribute('data-theme') || 'dark';
             const toggleText = document.querySelector('.theme-toggle-text');
             if (toggleText) {
-                toggleText.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
+                toggleText.textContent = theme === 'dark' ? 'Lichte modus' : 'Donkere modus';
             }
         }
 
-        // Initialize theme on page load
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeToggleText(savedTheme);
-        })();
+        // Initialize theme toggle text on page load
+        document.addEventListener('DOMContentLoaded', updateThemeToggleText);
     </script>
+
+    <!-- Theme Manager -->
+    <script src="/js/theme.js?v=<?= time() ?>"></script>
 
     <!-- Glamori AI Chatbot -->
     <?php include BASE_PATH . '/resources/views/components/glamori-chat.php'; ?>

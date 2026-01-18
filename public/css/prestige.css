@@ -7,29 +7,44 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    /* Core Colors - Black & White */
+    /* Theme Variables - Dark Mode (Default) */
+    --theme-bg: #000000;
+    --theme-text: #FFFFFF;
+    --theme-text-muted: #999999;
+    --theme-border: #FFFFFF;
+
+    /* Button Variables */
+    --btn-bg: transparent;
+    --btn-text: #FFFFFF;
+    --btn-border: #FFFFFF;
+    --btn-hover-bg: #FFFFFF;
+    --btn-hover-text: #000000;
+
+    /* Input Variables */
+    --input-bg: #1a1a1a;
+    --input-text: #FFFFFF;
+    --input-border: #FFFFFF;
+    --input-placeholder: #666666;
+
+    /* Card Variables */
+    --card-bg: #0a0a0a;
+    --card-border: #333333;
+
+    /* Legacy Variables (for backwards compatibility) */
     --black: #000000;
     --onyx: #0a0a0a;
     --charcoal-dark: #111111;
     --white: #ffffff;
     --snow: #f5f5f5;
     --cream: #e0e0e0;
-
-    /* Grays - Monochrome Palette (Improved Contrast) */
     --silver: #b8b8b8;
     --gray: #8a8a8a;
     --charcoal: #1a1a1a;
     --graphite: #2a2a2a;
-
-    /* Lines */
     --line: #444444;
     --line-dark: #2a2a2a;
-
-    /* Accent - White for highlights */
     --accent: #ffffff;
     --accent-light: #f0f0f0;
-
-    /* Semantic */
     --bg-primary: var(--onyx);
     --bg-secondary: var(--charcoal-dark);
     --bg-dark: var(--black);
@@ -37,21 +52,40 @@
     --text-primary: var(--white);
     --text-secondary: var(--silver);
     --text-light: var(--gray);
-
-    /* Component Variables - Dark Mode (Default) */
     --primary: #ffffff;
     --primary-dark: #e0e0e0;
     --secondary: #1a1a1a;
     --border: #333333;
     --text: #ffffff;
     --text-muted: #999999;
-    --card-bg: #0f0f0f;
-    --input-bg: #1a1a1a;
-    --input-border: #333333;
 }
 
 /* Light Mode */
 [data-theme="light"] {
+    /* Theme Variables */
+    --theme-bg: #FFFFFF;
+    --theme-text: #000000;
+    --theme-text-muted: #666666;
+    --theme-border: #000000;
+
+    /* Button Variables */
+    --btn-bg: transparent;
+    --btn-text: #000000;
+    --btn-border: #000000;
+    --btn-hover-bg: #000000;
+    --btn-hover-text: #FFFFFF;
+
+    /* Input Variables */
+    --input-bg: #FFFFFF;
+    --input-text: #000000;
+    --input-border: #000000;
+    --input-placeholder: #888888;
+
+    /* Card Variables */
+    --card-bg: #FFFFFF;
+    --card-border: #e0e0e0;
+
+    /* Legacy Variables (for backwards compatibility) */
     --black: #ffffff;
     --onyx: #f8f8f8;
     --charcoal-dark: #f0f0f0;
@@ -79,9 +113,6 @@
     --border: #e0e0e0;
     --text: #000000;
     --text-muted: #666666;
-    --card-bg: #ffffff;
-    --input-bg: #ffffff;
-    --input-border: #e0e0e0;
 }
 
 [data-theme="light"] body::before {
@@ -95,10 +126,10 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.875rem 1rem;
-    background: var(--secondary);
-    border: 1px solid var(--border);
+    background: var(--btn-bg);
+    border: 2px solid var(--btn-border);
     border-radius: 12px;
-    color: var(--text);
+    color: var(--btn-text);
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -106,15 +137,16 @@
     margin-bottom: 0.75rem;
 }
 .theme-toggle:hover {
-    background: var(--border);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
 }
 .theme-icon-light {
     display: none;
-    color: #f59e0b;
+    color: var(--theme-text);
 }
 .theme-icon-dark {
     display: block;
-    color: #6366f1;
+    color: var(--theme-text);
 }
 [data-theme="light"] .theme-icon-light {
     display: block;
@@ -129,8 +161,8 @@ html {
 
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--onyx);
-    color: var(--white);
+    background: var(--theme-bg);
+    color: var(--theme-text);
     min-height: 100vh;
     line-height: 1.6;
     position: relative;
@@ -559,44 +591,48 @@ main:has(.hero-prestige:first-child) {
 }
 
 .btn-primary {
-    background: var(--white);
-    color: var(--black);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
+    border: 2px solid var(--btn-border);
 }
 
 .btn-primary:hover {
-    background: var(--cream);
+    background: var(--btn-bg);
+    color: var(--btn-text);
     transform: translateY(-1px);
 }
 
 .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid var(--line-dark);
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: 2px solid var(--btn-border);
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: var(--silver);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
 }
 
 .btn-dark {
-    background: var(--black);
-    color: var(--white);
+    background: var(--theme-bg);
+    color: var(--theme-text);
+    border: 2px solid var(--theme-border);
 }
 
 .btn-dark:hover {
-    background: var(--charcoal);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
 }
 
 .btn-outline {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid var(--silver);
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: 2px solid var(--btn-border);
 }
 
 .btn-outline:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--white);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
 }
 
 .btn-lg {
@@ -849,12 +885,12 @@ main:has(.hero-prestige:first-child) {
 }
 
 .card-prestige {
-    background: rgba(30, 30, 35, 0.6);
+    background: var(--card-bg);
     backdrop-filter: blur(10px);
     padding: 2.5rem 2rem;
     text-align: center;
     transition: all 0.4s;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 2px solid var(--card-border);
     text-decoration: none;
     color: inherit;
     display: block;
@@ -862,8 +898,8 @@ main:has(.hero-prestige:first-child) {
 }
 
 .card-prestige:hover {
-    background: rgba(40, 40, 45, 0.8);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--card-bg);
+    border-color: var(--theme-border);
     transform: translateY(-6px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
@@ -1272,43 +1308,43 @@ main:has(.hero-prestige:first-child) {
     padding: 1rem 0;
     background: transparent;
     border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid var(--input-border);
     border-radius: 0;
     font-family: inherit;
     font-size: 1rem;
-    color: var(--white);
+    color: var(--input-text);
     transition: border-color 0.3s;
 }
 
 .form-input:focus {
     outline: none;
-    border-bottom-color: var(--white);
+    border-bottom-color: var(--input-border);
 }
 
 .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--input-placeholder);
 }
 
 /* Form input variant with background (for cards) */
 .form-input-filled {
     width: 100%;
     padding: 1rem 1.25rem;
-    background: rgba(30, 30, 35, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
     border-radius: 4px;
     font-family: inherit;
     font-size: 0.95rem;
-    color: var(--white);
+    color: var(--input-text);
     transition: border-color 0.3s;
 }
 
 .form-input-filled:focus {
     outline: none;
-    border-color: var(--white);
+    border-color: var(--input-border);
 }
 
 .form-input-filled::placeholder {
-    color: var(--gray);
+    color: var(--input-placeholder);
 }
 
 /* ========================================

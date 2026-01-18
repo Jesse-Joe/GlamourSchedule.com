@@ -4,23 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Admin - GlamourSchedule' ?></title>
+
+    <!-- Early Theme Detection (prevents flash of wrong theme) -->
+    <script>
+    (function() {
+        var saved = localStorage.getItem('glamour_theme_mode');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/prestige.css?v=<?= time() ?>">
     <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #1a1a2e;
-            --primary-dark: #0f0f1a;
-            --accent: #e94560;
-            --accent-light: #ff6b6b;
-            --bg: #f8f9fa;
+            --primary: #000000;
+            --primary-dark: #000000;
+            --accent: #ffffff;
+            --accent-light: #e0e0e0;
+            --bg: #000000;
+            --card: #0a0a0a;
+            --text: #ffffff;
+            --text-light: #999999;
+            --border: #333333;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        [data-theme="light"] {
+            --primary: #000000;
+            --primary-dark: #000000;
+            --accent: #000000;
+            --accent-light: #333333;
+            --bg: #ffffff;
             --card: #ffffff;
-            --text: #333333;
-            --text-light: #6c757d;
-            --border: #e9ecef;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
+            --text: #000000;
+            --text-light: #666666;
+            --border: #e0e0e0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -498,5 +520,8 @@
             document.getElementById('sidebar').classList.toggle('open');
         }
     </script>
+
+    <!-- Theme Manager -->
+    <script src="/js/theme.js?v=<?= time() ?>"></script>
 </body>
 </html>
