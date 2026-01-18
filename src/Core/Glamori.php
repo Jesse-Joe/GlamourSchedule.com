@@ -161,7 +161,7 @@ class Glamori
     {
         $spotsLeft = $platform['promo_spots_left'] ?? 0;
         $promoPrice = $platform['promo_price'] ?? '0,99';
-        $normalPrice = $platform['normal_price'] ?? '19,99';
+        $normalPrice = $platform['normal_price'] ?? '99,99';
         $userName = $user['name'] ?? '';
         $businessName = $user['business_name'] ?? '';
         $isBusinessOwner = !empty($user['business_id']);
@@ -191,11 +191,13 @@ GlamourSchedule is een all-in-one boekingsplatform voor beautyprofessionals:
 - Promotietools en kortingscodes
 
 **Huidige Actie:**
-- Normaal: €{$normalPrice}/maand
-- ACTIEPRIJS: €{$promoPrice}/maand (eerste 1000 salons!)
-- Nog {$spotsLeft} plekken beschikbaar voor deze actie!
+- Eerste 14 dagen GRATIS proefperiode!
+- Daarna: normaal €{$normalPrice} eenmalig, of ACTIEPRIJS €{$promoPrice} eenmalig (eerste 100 salons!)
+- Nog {$spotsLeft} plekken beschikbaar voor de actieprijs!
 
 **Categorieën:** Kapper, Nagelsalon, Schoonheidssalon, Barbershop, Wimpers & Wenkbrauwen, Massagesalon, Tattoo & Piercing, en meer.
+
+**Ontwikkeld door:** Phantrium - een high-end development bedrijf gespecialiseerd in premium software oplossingen.
 
 ## HUIDIGE GEBRUIKER CONTEXT
 PROMPT
@@ -289,7 +291,9 @@ GlamourSchedule is an all-in-one booking platform for beauty professionals offer
 - Beautiful booking page with own URL
 - Reviews and ratings
 
-**Current Promotion:** €{$promoPrice}/month for the first 1000 salons! {$spotsLeft} spots left!
+**Current Promotion:** First 14 days FREE trial! After that: €{$promoPrice} one-time for the first 100 salons (normal price €99,99). {$spotsLeft} spots left!
+
+**Developed by:** Phantrium - a high-end development company specialized in premium software solutions.
 
 ## CURRENT USER CONTEXT
 PROMPT
@@ -353,7 +357,9 @@ All-in-one Buchungsplattform für Beauty-Profis:
 - Automatische Erinnerungen
 - Online-Zahlungen
 
-**Aktion:** €0,99/Monat für die ersten 1000 Salons! Noch {$spotsLeft} Plätze verfügbar!
+**Aktion:** Erste 14 Tage GRATIS Testphase! Danach: €0,99 einmalig für die ersten 100 Salons (Normalpreis €99,99). Noch {$spotsLeft} Plätze verfügbar!
+
+**Entwickelt von:** Phantrium - ein High-End-Entwicklungsunternehmen spezialisiert auf Premium-Softwarelösungen.
 
 Halte Antworten kurz (2-4 Sätze) und ende oft mit einer Frage.
 
@@ -397,7 +403,9 @@ Plateforme tout-en-un pour les professionnels de la beauté:
 - Rappels automatiques
 - Paiements en ligne
 
-**Promotion:** €0,99/mois pour les 1000 premiers salons! Encore {$spotsLeft} places disponibles!
+**Promotion:** 14 premiers jours GRATUITS! Ensuite: €0,99 unique pour les 100 premiers salons (prix normal €99,99). Encore {$spotsLeft} places disponibles!
+
+**Développé par:** Phantrium - une entreprise de développement haut de gamme spécialisée dans les solutions logicielles premium.
 
 Garde tes réponses courtes (2-4 phrases) et termine souvent par une question.
 
@@ -465,7 +473,7 @@ PROMPT;
         $data = [
             'promo_spots_left' => 0,
             'promo_price' => '0,99',
-            'normal_price' => '19,99',
+            'normal_price' => '99,99',
             'total_salons' => 0
         ];
 

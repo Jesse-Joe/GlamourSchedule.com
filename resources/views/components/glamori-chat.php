@@ -288,10 +288,12 @@
         background: #262626;
         border: 1px solid #333333;
         border-radius: 20px;
-        font-size: 13px;
+        font-size: 16px;
         color: #ffffff;
         cursor: pointer;
         transition: all 0.2s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .glamori-suggestion:hover {
@@ -314,10 +316,11 @@
         background: #262626;
         border: 2px solid #333333;
         border-radius: 24px;
-        font-size: 14px;
+        font-size: 16px;
         color: #ffffff;
         outline: none;
         transition: border-color 0.2s ease;
+        touch-action: manipulation;
     }
 
     .glamori-input::placeholder {
@@ -478,7 +481,7 @@
     <div class="glamori-window">
         <div class="glamori-header">
             <div class="glamori-avatar">
-                <img src="/images/gs-logo.svg" alt="GS" style="width:28px;height:28px;">
+                <img src="/images/glamori-logo.svg" alt="GS" style="width:28px;height:28px;">
             </div>
             <div class="glamori-info">
                 <h4>Glamori <span class="glamori-ai-badge" id="glamoriAiBadge" style="display:none;">AI</span></h4>
@@ -610,7 +613,7 @@ function addGlamoriMessage(data, role) {
     div.className = 'glamori-message ' + role;
 
     const avatar = role === 'assistant'
-        ? '<img src="/images/gs-logo.svg" alt="GS" style="width:20px;height:20px;">'
+        ? '<img src="/images/glamori-logo.svg" alt="GS" style="width:20px;height:20px;">'
         : '<i class="fas fa-user"></i>';
 
     div.innerHTML = `
@@ -652,7 +655,7 @@ function showTyping() {
     const thinkingText = aiEnabled ? 'Glamori denkt na...' : '';
 
     typing.innerHTML = `
-        <div class="glamori-message-avatar"><img src="/images/gs-logo.svg" alt="GS" style="width:20px;height:20px;"></div>
+        <div class="glamori-message-avatar"><img src="/images/glamori-logo.svg" alt="GS" style="width:20px;height:20px;"></div>
         <div class="glamori-typing">
             <span></span><span></span><span></span>
             ${thinkingText ? `<span class="glamori-thinking-text">${thinkingText}</span>` : ''}
