@@ -33,11 +33,16 @@
 /* Mobile-friendly dashboard styles */
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-top: 2rem;
 }
-@media (max-width: 768px) {
+@media (max-width: 992px) {
+    .quick-links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
     .quick-links {
         grid-template-columns: 1fr;
     }
@@ -187,6 +192,19 @@
                     <div>
                         <h3 style="margin:0;font-size:1rem"><?= $__('search_salons') ?></h3>
                         <p style="color:var(--text-light);margin:0;font-size:0.85rem"><?= $__('make_new_appointment') ?></p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="/dashboard/loyalty" class="quick-link-card">
+            <div class="card">
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <div style="width:50px;height:50px;background:linear-gradient(135deg,#f59e0b,#eab308);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fas fa-star" style="color:white;font-size:1.3rem"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin:0;font-size:1rem"><?= $translations['loyalty_points'] ?? 'Loyaliteitspunten' ?></h3>
+                        <p style="color:var(--text-light);margin:0;font-size:0.85rem"><?= $translations['view_your_points'] ?? 'Bekijk je punten' ?></p>
                     </div>
                 </div>
             </div>

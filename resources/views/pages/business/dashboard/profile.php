@@ -1,5 +1,36 @@
 <?php ob_start(); ?>
 
+<style>
+/* Mobile-first responsive styles */
+@media (max-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+    .card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    .btn {
+        width: 100%;
+        padding: 0.875rem 1rem;
+    }
+}
+@media (max-width: 480px) {
+    h1, .page-title {
+        font-size: 1.5rem;
+    }
+    .card-title {
+        font-size: 1rem;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
 <?php
 $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
 ?>

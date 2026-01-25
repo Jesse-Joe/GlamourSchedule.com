@@ -148,6 +148,36 @@
         background: #dc2626;
         color: white;
     }
+
+    /* Mobile-first responsive styles */
+    @media (max-width: 768px) {
+        .photo-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        .upload-zone {
+            padding: 2rem 1rem;
+        }
+        .upload-zone i {
+            font-size: 2rem;
+        }
+        .photo-item-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 50%);
+        }
+    }
+    @media (max-width: 480px) {
+        .card {
+            padding: 1rem;
+        }
+        .photo-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .photo-item-actions button {
+            padding: 0.35rem;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 
 <!-- Salon Banner Section -->

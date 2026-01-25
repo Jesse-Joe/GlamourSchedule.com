@@ -134,6 +134,45 @@
         width: 18px;
         height: 18px;
     }
+
+    /* Mobile-first responsive styles */
+    @media (max-width: 768px) {
+        .grid-2 {
+            grid-template-columns: 1fr !important;
+        }
+        .employee-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .employee-avatar {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+        .employee-info {
+            width: 100%;
+        }
+        .employee-actions {
+            width: 100%;
+        }
+        .employee-actions .btn {
+            flex: 1;
+        }
+        .form-control {
+            font-size: 16px;
+        }
+    }
+    @media (max-width: 480px) {
+        .card {
+            padding: 1rem;
+        }
+        .service-checkbox {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+    }
 </style>
 
 <div class="grid grid-2">

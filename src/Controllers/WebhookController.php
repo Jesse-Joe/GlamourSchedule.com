@@ -4,6 +4,7 @@ namespace GlamourSchedule\Controllers;
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
 use GlamourSchedule\Core\PushNotification;
+use GlamourSchedule\Services\LoyaltyService;
 use Mollie\Api\MollieApiClient;
 
 class WebhookController extends Controller
@@ -62,6 +63,9 @@ class WebhookController extends Controller
                 [$bookingUuid]
             );
             error_log("Mollie webhook: Payment confirmed for booking $bookingUuid");
+
+            // Award loyalty points for completed booking
+            $this->awardLoyaltyPoints($bookingUuid);
 
             // Stuur bevestigingsemails na succesvolle betaling
             $this->sendBookingEmails($bookingUuid);
@@ -291,5 +295,35 @@ HTML;
             'secondary_color' => '#333333',
             'accent_color' => '#000000',
         ];
+    }
+
+    /**
+     * Award loyalty points for a completed booking
+     */
+    private function awardLoyaltyPoints(string $bookingUuid): void
+    {
+        try {
+            // Get booking details
+            $stmt = $this->db->query(
+                "SELECT id, user_id, business_id FROM bookings WHERE uuid = ?",
+                [$bookingUuid]
+            );
+            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$booking || !$booking['user_id']) {
+                return; // No user (guest booking) - no loyalty points
+            }
+
+            $loyaltyService = new LoyaltyService();
+            $loyaltyService->awardBookingPoints(
+                $booking['user_id'],
+                $booking['business_id'],
+                $booking['id']
+            );
+
+            error_log("Mollie webhook: Loyalty points awarded for booking $bookingUuid");
+        } catch (\Exception $e) {
+            error_log("Mollie webhook: Failed to award loyalty points for $bookingUuid: " . $e->getMessage());
+        }
     }
 }

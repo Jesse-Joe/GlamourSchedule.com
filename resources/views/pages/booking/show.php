@@ -1,5 +1,34 @@
 <?php ob_start(); ?>
 
+<style>
+/* Mobile-first responsive styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    .btn {
+        width: 100%;
+        padding: 0.875rem 1rem;
+    }
+    table td {
+        font-size: 0.9rem;
+    }
+}
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+    .qr-code-container img {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
+</style>
+
 <div class="container" style="max-width:600px">
     <div class="card text-center">
         <?php if ($booking['status'] === 'cancelled'): ?>

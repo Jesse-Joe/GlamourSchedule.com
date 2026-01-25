@@ -1,6 +1,18 @@
 <?php ob_start(); ?>
+<?php
+$primaryColor = $settings['primary_color'] ?? '#000000';
+$secondaryColor = $settings['secondary_color'] ?? '#333333';
+$accentColor = $settings['accent_color'] ?? '#000000';
+?>
 
 <style>
+/* Business Theme Colors */
+:root {
+    --business-primary: <?= htmlspecialchars($primaryColor) ?>;
+    --business-secondary: <?= htmlspecialchars($secondaryColor) ?>;
+    --business-accent: <?= htmlspecialchars($accentColor) ?>;
+}
+
 .checkout-container {
     max-width: 600px;
     margin: 0 auto;
@@ -13,7 +25,7 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 .checkout-header {
-    background: linear-gradient(135deg, #000000, #1a1a1a);
+    background: linear-gradient(135deg, var(--business-primary), var(--business-secondary));
     color: white;
     padding: 1.5rem;
     text-align: center;
@@ -104,7 +116,7 @@
 }
 .business-address i {
     margin-top: 0.2rem;
-    color: var(--primary);
+    color: var(--business-primary);
 }
 
 /* Service Box */
@@ -132,7 +144,7 @@
 .service-price {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--business-primary);
 }
 
 /* Date Time Box */
@@ -149,7 +161,7 @@
 }
 .datetime-item i {
     font-size: 1.5rem;
-    color: var(--primary);
+    color: var(--business-primary);
     margin-bottom: 0.5rem;
 }
 .datetime-item .label {
@@ -209,7 +221,7 @@
 
 /* Total Box */
 .total-box {
-    background: linear-gradient(135deg, #000000, #1a1a1a);
+    background: linear-gradient(135deg, var(--business-primary), var(--business-secondary));
     color: white;
     border-radius: 12px;
     padding: 1.25rem;
@@ -255,7 +267,7 @@
 .btn-confirm {
     flex: 2;
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #000000, #1a1a1a);
+    background: linear-gradient(135deg, var(--business-primary), var(--business-secondary));
     color: white;
     border: none;
     border-radius: 12px;
@@ -308,15 +320,15 @@
 <div class="checkout-container">
     <div class="checkout-card">
         <div class="checkout-header">
-            <h2><i class="fas fa-clipboard-check"></i> Controleer je boeking</h2>
-            <p>Bekijk de details voordat je betaalt</p>
+            <h2><i class="fas fa-clipboard-check"></i> <?= $translations['checkout_review_booking'] ?? 'Review your booking' ?></h2>
+            <p><?= $translations['checkout_review_details'] ?? 'Review the details before you pay' ?></p>
         </div>
 
         <div class="checkout-body">
             <!-- Business Info -->
             <div class="checkout-section">
                 <div class="checkout-section-title">
-                    <i class="fas fa-store"></i> Salon
+                    <i class="fas fa-store"></i> <?= $translations['salon'] ?? 'Salon' ?>
                 </div>
                 <div class="business-info-card">
                     <div class="business-logo">
@@ -339,13 +351,13 @@
             <!-- Service -->
             <div class="checkout-section">
                 <div class="checkout-section-title">
-                    <i class="fas fa-cut"></i> Dienst
+                    <i class="fas fa-cut"></i> <?= $translations['service'] ?? 'Service' ?>
                 </div>
                 <div class="service-box">
                     <div class="service-name"><?= htmlspecialchars($service['name']) ?></div>
                     <div class="service-meta">
                         <span class="service-duration">
-                            <i class="fas fa-clock"></i> <?= $service['duration_minutes'] ?> minuten
+                            <i class="fas fa-clock"></i> <?= $service['duration_minutes'] ?> <?= $translations['minutes'] ?? 'minutes' ?>
                         </span>
                         <span class="service-price">&euro;<?= number_format($service['sale_price'] ?? $service['price'], 2, ',', '.') ?></span>
                     </div>
@@ -357,7 +369,7 @@
                     </div>
                     <div>
                         <div style="font-weight: 500;"><?= htmlspecialchars($employee['name']) ?></div>
-                        <div style="font-size: 0.8rem; color: var(--text-light);">Medewerker</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);"><?= $translations['employee'] ?? 'Employee' ?></div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -366,17 +378,17 @@
             <!-- Date & Time -->
             <div class="checkout-section">
                 <div class="checkout-section-title">
-                    <i class="fas fa-calendar-alt"></i> Datum & Tijd
+                    <i class="fas fa-calendar-alt"></i> <?= $translations['date_time'] ?? 'Date & Time' ?>
                 </div>
                 <div class="datetime-box">
                     <div class="datetime-item">
                         <i class="fas fa-calendar"></i>
-                        <div class="label">Datum</div>
+                        <div class="label"><?= $translations['date'] ?? 'Date' ?></div>
                         <div class="value"><?= date('d-m-Y', strtotime($bookingData['date'])) ?></div>
                     </div>
                     <div class="datetime-item">
                         <i class="fas fa-clock"></i>
-                        <div class="label">Tijd</div>
+                        <div class="label"><?= $translations['time'] ?? 'Time' ?></div>
                         <div class="value"><?= date('H:i', strtotime($bookingData['time'])) ?></div>
                     </div>
                 </div>
@@ -385,7 +397,7 @@
             <!-- Customer Info -->
             <div class="checkout-section">
                 <div class="checkout-section-title">
-                    <i class="fas fa-user"></i> Jouw gegevens
+                    <i class="fas fa-user"></i> <?= $translations['your_details'] ?? 'Your details' ?>
                 </div>
                 <div class="customer-info">
                     <div class="customer-info-row">
@@ -409,7 +421,7 @@
             <!-- Notes -->
             <div class="checkout-section">
                 <div class="checkout-section-title">
-                    <i class="fas fa-comment"></i> Opmerkingen
+                    <i class="fas fa-comment"></i> <?= $translations['notes'] ?? 'Notes' ?>
                 </div>
                 <div class="notes-box">
                     "<?= htmlspecialchars($bookingData['notes']) ?>"
@@ -417,21 +429,74 @@
             </div>
             <?php endif; ?>
 
+            <?php if (!empty($loyaltyData) && $loyaltyData['enabled'] && $loyaltyData['user_points'] > 0): ?>
+            <!-- Loyalty Points -->
+            <div class="checkout-section">
+                <div class="checkout-section-title">
+                    <i class="fas fa-star"></i> <?= $translations['loyalty_points'] ?? 'Loyaliteitspunten' ?>
+                </div>
+                <div class="loyalty-box" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:1rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <div>
+                            <span style="color:#92400e;font-weight:600;"><?= $translations['your_points'] ?? 'Jouw punten' ?></span>
+                            <div style="font-size:1.5rem;font-weight:700;color:#92400e;"><?= number_format($loyaltyData['user_points']) ?></div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="color:#92400e;font-size:0.85rem;"><?= $translations['max_redeemable'] ?? 'Max. inwisselbaar' ?></span>
+                            <div style="font-weight:600;color:#92400e;"><?= number_format($loyaltyData['max_redeemable']) ?> <?= $translations['points'] ?? 'punten' ?></div>
+                        </div>
+                    </div>
+
+                    <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;margin-bottom:1rem;">
+                        <input type="checkbox" id="use_loyalty_points" style="width:20px;height:20px;accent-color:#f59e0b;">
+                        <span style="color:#92400e;font-weight:500;"><?= $translations['use_points_discount'] ?? 'Punten gebruiken voor korting' ?></span>
+                    </label>
+
+                    <div id="loyalty_slider_container" style="display:none;">
+                        <div style="margin-bottom:0.5rem;">
+                            <input type="range" id="loyalty_slider" min="0" max="<?= $loyaltyData['max_redeemable'] ?>" step="100" value="0" style="width:100%;accent-color:#f59e0b;">
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span id="points_selected" style="font-weight:600;color:#92400e;">0 <?= $translations['points'] ?? 'punten' ?></span>
+                            <span id="discount_preview" style="font-weight:700;color:#16a34a;">-&euro;0,00</span>
+                        </div>
+                        <p style="margin:0.5rem 0 0;font-size:0.8rem;color:#92400e;">
+                            <?= $translations['loyalty_100_equals_1'] ?? '100 punten = 1% korting' ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- 24 Hour Policy -->
             <div class="checkout-section">
                 <div class="policy-box">
-                    <h4><i class="fas fa-exclamation-triangle"></i> 24-uurs annuleringsbeleid</h4>
+                    <h4><i class="fas fa-exclamation-triangle"></i> <?= $translations['checkout_cancel_policy_title'] ?? '24-hour cancellation policy' ?></h4>
                     <p>
-                        Gratis annuleren tot 24 uur voor de afspraak. Bij annulering binnen 24 uur wordt 50% van het bedrag in rekening gebracht.
+                        <?= $translations['checkout_cancel_policy_text'] ?? 'Free cancellation up to 24 hours before the appointment. Cancellation within 24 hours will incur a 50% fee.' ?>
                     </p>
                 </div>
             </div>
 
             <!-- Total -->
             <div class="checkout-section">
+                <div id="price_breakdown" style="background:var(--secondary);border-radius:12px;padding:1rem;margin-bottom:1rem;display:none;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+                        <span style="color:var(--text-light);"><?= $translations['service_price'] ?? 'Dienstprijs' ?></span>
+                        <span>&euro;<?= number_format($bookingData['service_price'], 2, ',', '.') ?></span>
+                    </div>
+                    <div id="loyalty_discount_row" style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#16a34a;">
+                        <span><?= $translations['loyalty_discount'] ?? 'Puntkorting' ?></span>
+                        <span id="loyalty_discount_amount">-&euro;0,00</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding-top:0.5rem;border-top:1px dashed var(--border);">
+                        <span style="color:var(--text-light);"><?= $translations['platform_fee'] ?? 'Platformkosten' ?></span>
+                        <span>&euro;1,75</span>
+                    </div>
+                </div>
                 <div class="total-box">
-                    <span class="total-label">Totaal te betalen</span>
-                    <span class="total-amount">&euro;<?= number_format($bookingData['total_price'], 2, ',', '.') ?></span>
+                    <span class="total-label"><?= $translations['checkout_total_to_pay'] ?? 'Total to pay' ?></span>
+                    <span class="total-amount" id="total_amount">&euro;<?= number_format($bookingData['total_price'], 2, ',', '.') ?></span>
                 </div>
             </div>
 
@@ -439,19 +504,81 @@
             <form method="POST" action="/booking/confirm">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="confirm_booking" value="1">
+                <input type="hidden" name="loyalty_points" id="loyalty_points_input" value="0">
 
                 <div class="checkout-actions">
                     <a href="/book/<?= htmlspecialchars($business['slug']) ?>" class="btn-back">
-                        <i class="fas fa-arrow-left"></i> Terug
+                        <i class="fas fa-arrow-left"></i> <?= $translations['back'] ?? 'Back' ?>
                     </a>
                     <button type="submit" class="btn-confirm">
-                        <i class="fas fa-lock"></i> Bevestig & Betaal
+                        <i class="fas fa-lock"></i> <?= $translations['confirm_pay'] ?? 'Confirm & Pay' ?>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<?php if (!empty($loyaltyData) && $loyaltyData['enabled'] && $loyaltyData['user_points'] > 0): ?>
+<script>
+(function() {
+    const servicePrice = <?= $bookingData['service_price'] ?>;
+    const platformFee = 1.75;
+    const pointsPerPercent = <?= $loyaltyData['points_per_percent'] ?>;
+
+    const checkbox = document.getElementById('use_loyalty_points');
+    const sliderContainer = document.getElementById('loyalty_slider_container');
+    const slider = document.getElementById('loyalty_slider');
+    const pointsSelected = document.getElementById('points_selected');
+    const discountPreview = document.getElementById('discount_preview');
+    const priceBreakdown = document.getElementById('price_breakdown');
+    const loyaltyDiscountRow = document.getElementById('loyalty_discount_row');
+    const loyaltyDiscountAmount = document.getElementById('loyalty_discount_amount');
+    const totalAmount = document.getElementById('total_amount');
+    const loyaltyInput = document.getElementById('loyalty_points_input');
+
+    function formatCurrency(amount) {
+        return '€' + amount.toFixed(2).replace('.', ',');
+    }
+
+    function calculateDiscount(points) {
+        const discountPercent = points / pointsPerPercent;
+        return Math.min((servicePrice * discountPercent) / 100, servicePrice);
+    }
+
+    function updateDisplay() {
+        const points = parseInt(slider.value) || 0;
+        const discount = calculateDiscount(points);
+        const newTotal = Math.max(0, servicePrice - discount) + platformFee;
+
+        pointsSelected.textContent = points.toLocaleString() + ' <?= $translations['points'] ?? 'punten' ?>';
+        discountPreview.textContent = '-' + formatCurrency(discount);
+        loyaltyDiscountAmount.textContent = '-' + formatCurrency(discount);
+        totalAmount.textContent = formatCurrency(newTotal);
+        loyaltyInput.value = points;
+
+        if (points > 0) {
+            priceBreakdown.style.display = 'block';
+            loyaltyDiscountRow.style.display = 'flex';
+        } else {
+            priceBreakdown.style.display = 'none';
+        }
+    }
+
+    checkbox.addEventListener('change', function() {
+        sliderContainer.style.display = this.checked ? 'block' : 'none';
+        if (!this.checked) {
+            slider.value = 0;
+            loyaltyInput.value = 0;
+            priceBreakdown.style.display = 'none';
+            totalAmount.textContent = formatCurrency(servicePrice + platformFee);
+        }
+    });
+
+    slider.addEventListener('input', updateDisplay);
+})();
+</script>
+<?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>
 <?php include BASE_PATH . '/resources/views/layouts/main.php'; ?>

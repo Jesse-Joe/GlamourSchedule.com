@@ -103,6 +103,46 @@
                 </div>
             </div>
 
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-star"></i> <?= $translations['loyalty_points'] ?? 'Loyaliteitspunten' ?></h3>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:1rem">
+                    <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
+                        <input type="checkbox" name="loyalty_enabled" id="loyalty_enabled" <?= ($settings['loyalty_enabled'] ?? 0) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
+                        <span><?= $translations['loyalty_enable'] ?? 'Loyaliteitspunten inschakelen' ?></span>
+                    </label>
+
+                    <div id="loyalty_settings" style="display:<?= ($settings['loyalty_enabled'] ?? 0) ? 'block' : 'none' ?>;margin-top:0.5rem;padding:1rem;background:var(--secondary);border-radius:8px;">
+                        <div class="form-group" style="margin-bottom:1rem">
+                            <label class="form-label"><?= $translations['loyalty_max_redeem'] ?? 'Max. punten per boeking' ?></label>
+                            <select name="loyalty_max_redeem_points" class="form-control">
+                                <option value="1000" <?= ($settings['loyalty_max_redeem_points'] ?? 2000) == 1000 ? 'selected' : '' ?>>1000 <?= $translations['points'] ?? 'punten' ?> (10% max)</option>
+                                <option value="2000" <?= ($settings['loyalty_max_redeem_points'] ?? 2000) == 2000 ? 'selected' : '' ?>>2000 <?= $translations['points'] ?? 'punten' ?> (20% max)</option>
+                                <option value="5000" <?= ($settings['loyalty_max_redeem_points'] ?? 2000) == 5000 ? 'selected' : '' ?>>5000 <?= $translations['points'] ?? 'punten' ?> (50% max)</option>
+                            </select>
+                        </div>
+
+                        <div style="background:var(--bg-card);border-radius:8px;padding:1rem;font-size:0.85rem;">
+                            <p style="margin:0 0 0.5rem;color:var(--text-light)"><strong><?= $translations['how_it_works'] ?? 'Hoe werkt het?' ?></strong></p>
+                            <ul style="margin:0;padding-left:1.25rem;color:var(--text-light)">
+                                <li><?= $translations['loyalty_earn_booking'] ?? 'Klanten verdienen 100 punten per voltooide boeking' ?></li>
+                                <li><?= $translations['loyalty_earn_review'] ?? 'Klanten verdienen 35 punten per review' ?></li>
+                                <li><?= $translations['loyalty_redeem_info'] ?? '100 punten = 1% korting op de dienstprijs' ?></li>
+                                <li><?= $translations['loyalty_platform_fee'] ?? 'Platformkosten blijven altijd van toepassing' ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            document.getElementById('loyalty_enabled').addEventListener('change', function() {
+                document.getElementById('loyalty_settings').style.display = this.checked ? 'block' : 'none';
+            });
+            </script>
+
             <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
                 <h4 style="margin-bottom:0.5rem"><i class="fas fa-lightbulb"></i> Tip</h4>
                 <p style="font-size:0.9rem;opacity:0.9">Voeg goede foto's en een duidelijke beschrijving toe om meer klanten aan te trekken!</p>

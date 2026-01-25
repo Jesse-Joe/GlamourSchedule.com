@@ -282,6 +282,7 @@ class Application
             $router->post('/dashboard/settings', 'DashboardController@settings');
             $router->get('/dashboard/security', 'DashboardController@security');
             $router->post('/dashboard/security', 'DashboardController@security');
+            $router->get('/dashboard/loyalty', 'DashboardController@loyalty');
             $router->post('/api/verify-pin', 'DashboardController@verifyPin');
         });
 

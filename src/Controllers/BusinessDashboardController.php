@@ -347,6 +347,8 @@ class BusinessDashboardController extends Controller
             'show_prices' => isset($_POST['show_prices']) ? 1 : 0,
             'show_duration' => isset($_POST['show_duration']) ? 1 : 0,
             'show_availability' => isset($_POST['show_availability']) ? 1 : 0,
+            'loyalty_enabled' => isset($_POST['loyalty_enabled']) ? 1 : 0,
+            'loyalty_max_redeem_points' => (int)($_POST['loyalty_max_redeem_points'] ?? 2000),
         ];
 
         $this->saveBusinessSettings($settings);

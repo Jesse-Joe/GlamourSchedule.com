@@ -2,6 +2,7 @@
 namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
+use GlamourSchedule\Services\LoyaltyService;
 
 class DashboardController extends Controller
 {
@@ -87,6 +88,30 @@ class DashboardController extends Controller
     {
         // Redirect to settings page
         return $this->redirect('/dashboard/settings');
+    }
+
+    /**
+     * Loyalty points overview page
+     */
+    public function loyalty(): string
+    {
+        $user = $this->getCurrentUser();
+
+        $loyaltyService = new LoyaltyService();
+        $totalPoints = $loyaltyService->getTotalPoints($user['id']);
+        $balances = $loyaltyService->getAllBalances($user['id']);
+        $transactions = $loyaltyService->getAllTransactionHistory($user['id'], 20);
+
+        return $this->view('pages/dashboard/loyalty', [
+            'pageTitle' => 'Loyaliteitspunten',
+            'user' => $user,
+            'totalPoints' => $totalPoints,
+            'balances' => $balances,
+            'transactions' => $transactions,
+            'pointsPerBooking' => LoyaltyService::getPointsPerBooking(),
+            'pointsPerReview' => LoyaltyService::getPointsPerReview(),
+            'pointsPerPercent' => LoyaltyService::getPointsPerPercent()
+        ]);
     }
 
     private function getUpcomingBookings(int $userId): array

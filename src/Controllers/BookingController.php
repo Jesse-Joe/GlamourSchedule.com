@@ -4,6 +4,7 @@ namespace GlamourSchedule\Controllers;
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
 use GlamourSchedule\Core\PushNotification;
+use GlamourSchedule\Services\LoyaltyService;
 
 class BookingController extends Controller
 {
@@ -245,6 +246,27 @@ class BookingController extends Controller
         // Get business settings for theme
         $settings = $this->getBusinessSettings($business['id']);
 
+        // Get loyalty data if user is logged in
+        $loyaltyData = null;
+        $userId = $_SESSION['user_id'] ?? null;
+        if ($userId) {
+            $loyaltyService = new LoyaltyService();
+            $loyaltyEnabled = $loyaltyService->isEnabled($business['id']);
+            if ($loyaltyEnabled) {
+                $userPoints = $loyaltyService->getBalance($userId, $business['id']);
+                $servicePrice = $bookingData['service_price'];
+                $maxRedeemable = $loyaltyService->getMaxRedeemablePoints($business['id'], $userPoints, $servicePrice);
+
+                $loyaltyData = [
+                    'enabled' => true,
+                    'user_points' => $userPoints,
+                    'max_redeemable' => $maxRedeemable,
+                    'points_per_percent' => LoyaltyService::getPointsPerPercent(),
+                    'points_per_booking' => LoyaltyService::getPointsPerBooking(),
+                ];
+            }
+        }
+
         return $this->view('pages/booking/checkout', [
             'pageTitle' => 'Bevestig je boeking',
             'business' => $business,
@@ -252,7 +274,8 @@ class BookingController extends Controller
             'employee' => $employee,
             'bookingData' => $bookingData,
             'csrfToken' => $this->csrf(),
-            'settings' => $settings
+            'settings' => $settings,
+            'loyaltyData' => $loyaltyData
         ]);
     }
 
@@ -300,10 +323,43 @@ class BookingController extends Controller
             return $this->redirect('/book/' . $business['slug'] . '?error=slot_taken');
         }
 
+        // Handle loyalty points redemption
+        $loyaltyDiscount = 0.00;
+        $loyaltyPointsRedeemed = 0;
+        $userId = $bookingData['user_id'];
+
+        if ($userId) {
+            $loyaltyService = new LoyaltyService();
+            $pointsToRedeem = (int)($_POST['loyalty_points'] ?? 0);
+
+            if ($pointsToRedeem > 0 && $loyaltyService->isEnabled($business['id'])) {
+                $userPoints = $loyaltyService->getBalance($userId, $business['id']);
+                $maxRedeemable = $loyaltyService->getMaxRedeemablePoints(
+                    $business['id'],
+                    $userPoints,
+                    $bookingData['service_price']
+                );
+
+                // Validate points to redeem (must be in steps of 100 and within limits)
+                $pointsToRedeem = min($pointsToRedeem, $maxRedeemable);
+                $pointsToRedeem = (int)floor($pointsToRedeem / 100) * 100; // Round to nearest 100
+
+                if ($pointsToRedeem > 0) {
+                    $loyaltyDiscount = $loyaltyService->calculateDiscount($pointsToRedeem, $bookingData['service_price']);
+                    $loyaltyPointsRedeemed = $pointsToRedeem;
+                }
+            }
+        }
+
+        // Calculate final price (service price - loyalty discount, platform fee always applies)
+        $servicePrice = $bookingData['service_price'];
+        $finalServicePrice = max(0, $servicePrice - $loyaltyDiscount);
+        $adminFee = 1.75; // Platform fee ALWAYS applies
+        $totalPrice = $finalServicePrice + $adminFee;
+
         // Create the booking
         $uuid = $this->generateUuid();
         $bookingNumber = 'GS' . strtoupper(substr(md5($uuid), 0, 8));
-        $adminFee = 1.75;
         $qrCodeHash = hash('sha256', $uuid . $bookingNumber);
 
         // Get current platform language for email personalization
@@ -316,16 +372,25 @@ class BookingController extends Controller
             "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
              duration_minutes, service_price, admin_fee, total_price, qr_code_hash, customer_notes,
-             language, terms_accepted_at, terms_version, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending')",
+             language, terms_accepted_at, terms_version, status, loyalty_discount, loyalty_points_redeemed)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
             [
                 $uuid, $bookingNumber, $business['id'], $bookingData['employee_id'], $bookingData['user_id'], $bookingData['service_id'],
                 $bookingData['guest_name'] ?: null, $bookingData['guest_email'] ?: null, $bookingData['guest_phone'] ?: null,
                 $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'],
-                $bookingData['service_price'], $adminFee, $bookingData['total_price'], $qrCodeHash, $bookingData['notes'] ?: null,
-                $bookingLanguage
+                $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $bookingData['notes'] ?: null,
+                $bookingLanguage, $loyaltyDiscount, $loyaltyPointsRedeemed
             ]
         );
+
+        // Redeem loyalty points if applicable
+        if ($loyaltyPointsRedeemed > 0 && $userId) {
+            $stmt = $this->db->query("SELECT id FROM bookings WHERE uuid = ?", [$uuid]);
+            $newBooking = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($newBooking) {
+                $loyaltyService->redeemPoints($userId, $business['id'], $newBooking['id'], $loyaltyPointsRedeemed);
+            }
+        }
 
         // Schedule reminders (24 hours and 1 hour before)
         $this->scheduleReminders($bookingData['date'], $bookingData['time'], $uuid);
@@ -1288,6 +1353,24 @@ HTML;
                 $comment ?: null
             ]
         );
+
+        // Get the review ID for loyalty points
+        $reviewId = $this->db->lastInsertId();
+
+        // Award loyalty points for review (if user is logged in and loyalty is enabled)
+        if ($booking['user_id']) {
+            try {
+                $loyaltyService = new LoyaltyService();
+                $loyaltyService->awardReviewPoints(
+                    $booking['user_id'],
+                    $booking['business_id'],
+                    $reviewId,
+                    $booking['id']
+                );
+            } catch (\Exception $e) {
+                error_log("Failed to award review loyalty points: " . $e->getMessage());
+            }
+        }
 
         // Update business average rating
         $this->updateBusinessRating($booking['business_id']);

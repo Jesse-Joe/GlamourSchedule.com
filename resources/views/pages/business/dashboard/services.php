@@ -40,6 +40,48 @@
         display: flex;
         gap: 0.5rem;
     }
+
+    /* Mobile-first responsive styles */
+    @media (max-width: 768px) {
+        .grid-2 {
+            grid-template-columns: 1fr !important;
+        }
+        .service-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .service-icon {
+            width: 44px;
+            height: 44px;
+        }
+        .service-info {
+            width: 100%;
+        }
+        .service-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+        .form-control {
+            font-size: 16px;
+        }
+        .btn {
+            padding: 0.75rem 1rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .card {
+            padding: 1rem;
+        }
+        .service-price {
+            font-size: 1.1rem;
+        }
+        .service-actions .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+    }
 </style>
 
 <div class="grid grid-2">
