@@ -967,6 +967,13 @@ HTML;
         $duration = $service['duration_minutes'];
         $bookedSlots = $this->getBookedSlots($business['id'], $date, $employeeId);
 
+        // Get current time in salon timezone (Europe/Amsterdam)
+        $salonTimezone = new \DateTimeZone('Europe/Amsterdam');
+        $now = new \DateTime('now', $salonTimezone);
+        $currentDate = $now->format('Y-m-d');
+        $currentTime = $now->format('H:i');
+        $isToday = ($date === $currentDate);
+
         // Generate all possible time slots (9:00 - 18:00, every 30 min)
         $availableSlots = [];
         for ($h = 9; $h <= 18; $h++) {
@@ -977,12 +984,19 @@ HTML;
                 // Skip if slot ends after closing time
                 if ($endTime > '19:00') continue;
 
+                // Check if slot is in the past (for today only)
+                $isPast = $isToday && $time <= $currentTime;
+
                 // Check if slot overlaps with any booked slot
                 $isAvailable = true;
-                foreach ($bookedSlots as $booked) {
-                    if ($this->timeSlotsOverlap($time, $duration, $booked['time'], $booked['duration'])) {
-                        $isAvailable = false;
-                        break;
+                if ($isPast) {
+                    $isAvailable = false;
+                } else {
+                    foreach ($bookedSlots as $booked) {
+                        if ($this->timeSlotsOverlap($time, $duration, $booked['time'], $booked['duration'])) {
+                            $isAvailable = false;
+                            break;
+                        }
                     }
                 }
 
@@ -1083,7 +1097,13 @@ HTML;
      */
     private function findNextAvailableDateTime(int $businessId, int $serviceId, int $duration, ?int $employeeId = null, string $startDate = null): ?array
     {
-        $startDate = $startDate ?? date('Y-m-d');
+        // Get current time in salon timezone (Europe/Amsterdam)
+        $salonTimezone = new \DateTimeZone('Europe/Amsterdam');
+        $now = new \DateTime('now', $salonTimezone);
+        $currentDate = $now->format('Y-m-d');
+        $currentTime = $now->format('H:i');
+
+        $startDate = $startDate ?? $currentDate;
         $maxDaysToSearch = 60; // Search up to 60 days ahead
 
         for ($i = 0; $i < $maxDaysToSearch; $i++) {
@@ -1099,8 +1119,8 @@ HTML;
                     // Skip if slot ends after closing time
                     if ($endTime > '19:00') continue;
 
-                    // Skip past times for today
-                    if ($checkDate === date('Y-m-d') && $time <= date('H:i')) continue;
+                    // Skip past times for today (using salon timezone)
+                    if ($checkDate === $currentDate && $time <= $currentTime) continue;
 
                     // Check if slot overlaps with any booked slot
                     $isAvailable = true;
