@@ -126,6 +126,10 @@
                         <td>Boeking</td>
                         <td id="detailNumber">-</td>
                     </tr>
+                    <tr id="verificationRow" style="display:none">
+                        <td><i class="fas fa-shield-alt" style="color:#f59e0b"></i> Verificatie</td>
+                        <td id="detailVerification" style="font-family:monospace;letter-spacing:1px">-</td>
+                    </tr>
                     <tr>
                         <td>Klant</td>
                         <td id="detailCustomer">-</td>
@@ -157,13 +161,20 @@
     <!-- Manual input fallback -->
     <div class="card" style="margin-top:1rem">
         <h4 style="margin:0 0 1rem 0"><i class="fas fa-keyboard"></i> Handmatige invoer</h4>
-        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem">
-            Camera werkt niet? Voer het boekingsnummer in (bijv. <strong>GS-240104-AB12</strong>)
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:0.5rem">
+            Camera werkt niet? Voer een van de volgende codes in:
         </p>
+        <ul style="color:var(--text-light);font-size:0.85rem;margin:0 0 1rem 1rem;padding:0">
+            <li>Boekingsnummer: <strong>GS12345678</strong></li>
+            <li>Verificatiecode (SHA256): <strong>A1B2-C3D4-E5F6</strong></li>
+        </ul>
         <form id="manualForm" style="display:flex;gap:0.5rem">
-            <input type="text" id="manualInput" class="form-control" placeholder="Bijv. GS-240104-AB12" style="flex:1;text-transform:uppercase">
+            <input type="text" id="manualInput" class="form-control" placeholder="GS12345678 of A1B2-C3D4-E5F6" style="flex:1;text-transform:uppercase">
             <button type="submit" class="btn"><i class="fas fa-check"></i> Check-in</button>
         </form>
+        <p style="margin-top:0.75rem;font-size:0.75rem;color:#666">
+            <i class="fas fa-shield-alt"></i> De verificatiecode is gekoppeld aan uw salon via SHA256 encryptie
+        </p>
     </div>
 </div>
 
@@ -281,6 +292,15 @@ function showResult(data) {
         document.getElementById('detailService').textContent = data.booking.service_name;
         document.getElementById('detailTime').textContent = data.booking.date + ' ' + data.booking.time;
         document.getElementById('detailPrice').textContent = '€' + data.booking.price;
+
+        // Show verification code if available
+        const verificationRow = document.getElementById('verificationRow');
+        if (data.booking.verification_code) {
+            verificationRow.style.display = '';
+            document.getElementById('detailVerification').textContent = data.booking.verification_code;
+        } else {
+            verificationRow.style.display = 'none';
+        }
     } else {
         details.style.display = 'none';
     }

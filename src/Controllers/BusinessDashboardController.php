@@ -1438,7 +1438,7 @@ HTML;
             return json_encode(['success' => false, 'error' => 'Voer een code in']);
         }
 
-        // Try to find booking by UUID (from QR URL) or booking number
+        // Try to find booking by UUID (from QR URL), booking number, or verification code
         $booking = null;
 
         // Check if it's a URL with UUID
@@ -1466,7 +1466,20 @@ HTML;
             );
             $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
-        // Check if it's a booking number (e.g., GS-240104-ABC1)
+        // Check if it's a SHA256 verification code (format: XXXX-XXXX-XXXX)
+        elseif (preg_match('/^[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/i', $qrData)) {
+            $verificationCode = strtoupper($qrData);
+            $stmt = $this->db->query(
+                "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
+                 FROM bookings b
+                 JOIN services s ON b.service_id = s.id
+                 LEFT JOIN users u ON b.user_id = u.id
+                 WHERE b.verification_code = ? AND b.business_id = ?",
+                [$verificationCode, $this->business['id']]
+            );
+            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        // Check if it's a booking number (e.g., GS12345678)
         else {
             $bookingNumber = strtoupper($qrData);
             $stmt = $this->db->query(
@@ -1523,6 +1536,7 @@ HTML;
         $customerName = $booking['guest_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?: 'Klant';
         return [
             'booking_number' => $booking['booking_number'],
+            'verification_code' => $booking['verification_code'] ?? null,
             'customer_name' => $customerName,
             'service_name' => $booking['service_name'],
             'date' => date('d-m-Y', strtotime($booking['appointment_date'])),

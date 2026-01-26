@@ -25,6 +25,12 @@
                         <td style="padding:0.5rem 0;color:#6b7280">Boeking</td>
                         <td style="padding:0.5rem 0;text-align:right;font-weight:600">#<?= htmlspecialchars($booking['booking_number']) ?></td>
                     </tr>
+                    <?php if (!empty($booking['verification_code'])): ?>
+                    <tr>
+                        <td style="padding:0.5rem 0;color:#6b7280"><i class="fas fa-shield-alt" style="color:#f59e0b"></i> Verificatie</td>
+                        <td style="padding:0.5rem 0;text-align:right;font-weight:700;font-family:monospace;letter-spacing:1px;color:#000"><?= htmlspecialchars($booking['verification_code']) ?></td>
+                    </tr>
+                    <?php endif; ?>
                     <tr>
                         <td style="padding:0.5rem 0;color:#6b7280">Dienst</td>
                         <td style="padding:0.5rem 0;text-align:right;font-weight:600"><?= htmlspecialchars($booking['service_name']) ?></td>

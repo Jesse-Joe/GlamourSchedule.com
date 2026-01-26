@@ -136,12 +136,30 @@
                 <h4 style="margin:0 0 1rem 0;color:#000000"><i class="fas fa-qrcode"></i> Check-in Code</h4>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>"
                      alt="Check-in QR" style="border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
+
+                <!-- Booking Number -->
                 <div style="margin-top:1rem;padding:0.75rem 1.5rem;background:#ffffff;border-radius:8px;display:inline-block">
-                    <p style="margin:0;color:#6b7280;font-size:0.8rem">Of noem dit nummer:</p>
+                    <p style="margin:0;color:#6b7280;font-size:0.8rem">Boekingsnummer:</p>
                     <p style="margin:0.25rem 0 0 0;font-size:1.5rem;font-weight:700;color:#000000;letter-spacing:2px"><?= htmlspecialchars($booking['booking_number']) ?></p>
                 </div>
+
+                <!-- SHA256 Verification Code (for manual entry if scanner doesn't work) -->
+                <?php if (!empty($booking['verification_code'])): ?>
+                <div style="margin-top:1rem;padding:1rem 1.5rem;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;display:inline-block">
+                    <p style="margin:0;color:#92400e;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;font-weight:600">
+                        <i class="fas fa-shield-alt"></i> Verificatiecode (SHA256)
+                    </p>
+                    <p style="margin:0.5rem 0 0 0;font-size:1.75rem;font-weight:800;color:#000000;letter-spacing:3px;font-family:monospace">
+                        <?= htmlspecialchars($booking['verification_code']) ?>
+                    </p>
+                    <p style="margin:0.5rem 0 0 0;color:#92400e;font-size:0.7rem">
+                        <i class="fas fa-lock"></i> Beveiligd met SHA256 encryptie
+                    </p>
+                </div>
+                <?php endif; ?>
+
                 <p style="margin:1rem 0 0 0;color:#000000;font-size:0.9rem">
-                    <i class="fas fa-info-circle"></i> Toon deze code bij aankomst aan de salon
+                    <i class="fas fa-info-circle"></i> Toon de QR-code of noem de verificatiecode bij aankomst
                 </p>
             </div>
         <?php elseif ($booking['status'] === 'checked_in'): ?>

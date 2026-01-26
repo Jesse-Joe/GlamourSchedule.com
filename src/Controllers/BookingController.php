@@ -362,6 +362,11 @@ class BookingController extends Controller
         $bookingNumber = 'GS' . strtoupper(substr(md5($uuid), 0, 8));
         $qrCodeHash = hash('sha256', $uuid . $bookingNumber);
 
+        // Generate SHA256 verification code (like Bitcoin address)
+        // Combines: business_id + customer identifier + uuid + secret
+        $customerIdentifier = $bookingData['user_id'] ?? $bookingData['guest_email'] ?? '';
+        $verificationCode = $this->generateVerificationCode($business['id'], $customerIdentifier, $uuid);
+
         // Get current platform language for email personalization
         $bookingLanguage = $_SESSION['lang'] ?? 'nl';
         if (!in_array($bookingLanguage, ['nl', 'en', 'de', 'fr'])) {
@@ -371,14 +376,14 @@ class BookingController extends Controller
         $this->db->query(
             "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
-             duration_minutes, service_price, admin_fee, total_price, qr_code_hash, customer_notes,
+             duration_minutes, service_price, admin_fee, total_price, qr_code_hash, verification_code, customer_notes,
              language, terms_accepted_at, terms_version, status, loyalty_discount, loyalty_points_redeemed)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
             [
                 $uuid, $bookingNumber, $business['id'], $bookingData['employee_id'], $bookingData['user_id'], $bookingData['service_id'],
                 $bookingData['guest_name'] ?: null, $bookingData['guest_email'] ?: null, $bookingData['guest_phone'] ?: null,
                 $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'],
-                $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $bookingData['notes'] ?: null,
+                $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $verificationCode, $bookingData['notes'] ?: null,
                 $bookingLanguage, $loyaltyDiscount, $loyaltyPointsRedeemed
             ]
         );
@@ -462,7 +467,7 @@ class BookingController extends Controller
     public function show(string $uuid): string
     {
         $stmt = $this->db->query(
-            "SELECT b.*, biz.company_name as business_name, biz.street as address, biz.city,
+            "SELECT b.*, b.verification_code, biz.company_name as business_name, biz.street as address, biz.city,
                     biz.phone as business_phone, biz.slug as business_slug,
                     s.name as service_name,
                     u.first_name, u.last_name, u.email as user_email
@@ -866,6 +871,69 @@ HTML;
     }
 
     /**
+     * Generate SHA256-based verification code (similar to Bitcoin address format)
+     * Links business_id with customer for secure check-in verification
+     *
+     * @param int $businessId The business ID
+     * @param mixed $customerIdentifier User ID or guest email
+     * @param string $uuid The booking UUID
+     * @return string 12-character verification code (format: XXXX-XXXX-XXXX)
+     */
+    private function generateVerificationCode(int $businessId, $customerIdentifier, string $uuid): string
+    {
+        // Get secret key from environment
+        $secretKey = $_ENV['APP_KEY'] ?? 'glamourschedule-secret-key-2025';
+
+        // Create the data string: business_id + customer + uuid + timestamp seed
+        $dataString = sprintf(
+            '%d:%s:%s:%s',
+            $businessId,
+            (string)$customerIdentifier,
+            $uuid,
+            $secretKey
+        );
+
+        // Generate SHA256 hash
+        $hash = hash('sha256', $dataString);
+
+        // Take first 12 characters (uppercase) and format as XXXX-XXXX-XXXX
+        $code = strtoupper(substr($hash, 0, 12));
+        return substr($code, 0, 4) . '-' . substr($code, 4, 4) . '-' . substr($code, 8, 4);
+    }
+
+    /**
+     * Verify a verification code matches the booking's business
+     *
+     * @param string $verificationCode The code to verify
+     * @param int $businessId The business ID to match
+     * @param array $booking The booking data
+     * @return bool True if verification passes
+     */
+    public static function verifyCode(string $verificationCode, int $businessId, array $booking): bool
+    {
+        // Regenerate the code and compare
+        $secretKey = $_ENV['APP_KEY'] ?? 'glamourschedule-secret-key-2025';
+        $customerIdentifier = $booking['user_id'] ?? $booking['guest_email'] ?? '';
+
+        $dataString = sprintf(
+            '%d:%s:%s:%s',
+            $businessId,
+            (string)$customerIdentifier,
+            $booking['uuid'],
+            $secretKey
+        );
+
+        $hash = hash('sha256', $dataString);
+        $expectedCode = strtoupper(substr($hash, 0, 12));
+        $expectedCode = substr($expectedCode, 0, 4) . '-' . substr($expectedCode, 4, 4) . '-' . substr($expectedCode, 8, 4);
+
+        // Timing-safe comparison
+        return hash_equals($expectedCode, strtoupper(str_replace('-', '', $verificationCode) !== $verificationCode
+            ? $verificationCode
+            : strtoupper($verificationCode)));
+    }
+
+    /**
      * API endpoint to get available time slots
      */
     public function getAvailableTimes(string $businessSlug): string
@@ -1191,7 +1259,7 @@ HTML;
     public function showCheckin(string $uuid): string
     {
         $stmt = $this->db->query(
-            "SELECT b.*, biz.company_name as business_name, biz.id as biz_id,
+            "SELECT b.*, b.verification_code, biz.company_name as business_name, biz.id as biz_id,
                     s.name as service_name, s.duration_minutes,
                     u.first_name, u.last_name, u.email as user_email
              FROM bookings b
