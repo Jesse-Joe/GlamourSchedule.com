@@ -231,10 +231,23 @@
             <h2>10. Cookies</h2>
             <p>Onze website gebruikt cookies voor:</p>
             <ul>
-                <li>Functionele cookies: noodzakelijk voor werking website</li>
-                <li>Analytische cookies: inzicht in websitegebruik</li>
-                <li>Voorkeurscookies: onthouden van uw taalinstellingen</li>
+                <li><strong>Functionele cookies:</strong> noodzakelijk voor werking website (sessie, inlogstatus)</li>
+                <li><strong>Analytische cookies:</strong> inzicht in websitegebruik en verbeterpunten</li>
+                <li><strong>Voorkeurscookies:</strong> onthouden van uw taalinstellingen en voorkeuren</li>
+                <li><strong>Marketing/Advertentie cookies:</strong> tonen van gepersonaliseerde content en aanbevelingen</li>
             </ul>
+
+            <h3>10.1 Advertentie cookies</h3>
+            <p>Indien u toestemming geeft voor marketing cookies, verzamelen wij de volgende gegevens om u relevante content te tonen:</p>
+            <ul>
+                <li>Bekeken diensten en categorieën (bijv. kapper, nagels, massage)</li>
+                <li>Bezochte salons en bedrijfspagina's</li>
+                <li>Zoekopdrachten binnen het Platform</li>
+                <li>Interesses afgeleid uit uw browsegedrag</li>
+            </ul>
+            <p>Deze gegevens worden lokaal opgeslagen in de cookie "gs_ad_profile" en worden niet gedeeld met externe advertentienetwerken. De gegevens worden uitsluitend gebruikt om u gepersonaliseerde salonaanbevelingen te tonen binnen ons Platform.</p>
+            <p><strong>Bewaartermijn:</strong> advertentie cookies worden maximaal 365 dagen bewaard.</p>
+            <p><strong>Intrekken toestemming:</strong> U kunt uw cookievoorkeuren op elk moment wijzigen via de cookie-instellingen onderaan elke pagina. Bij intrekking worden uw advertentiegegevens direct verwijderd.</p>
 
             <h2>11. Klachten</h2>
             <p>Als u een klacht heeft over hoe wij met uw gegevens omgaan, kunt u contact opnemen met ons of een klacht indienen bij de Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl).</p>
@@ -353,10 +366,23 @@
             <h2>10. Cookies</h2>
             <p>Our website uses cookies for:</p>
             <ul>
-                <li>Functional cookies: necessary for website operation</li>
-                <li>Analytical cookies: insight into website usage</li>
-                <li>Preference cookies: remembering your language settings</li>
+                <li><strong>Functional cookies:</strong> necessary for website operation (session, login status)</li>
+                <li><strong>Analytical cookies:</strong> insight into website usage and improvement areas</li>
+                <li><strong>Preference cookies:</strong> remembering your language settings and preferences</li>
+                <li><strong>Marketing/Advertising cookies:</strong> showing personalized content and recommendations</li>
             </ul>
+
+            <h3>10.1 Advertising cookies</h3>
+            <p>If you consent to marketing cookies, we collect the following data to show you relevant content:</p>
+            <ul>
+                <li>Viewed services and categories (e.g., hairdresser, nails, massage)</li>
+                <li>Visited salons and business pages</li>
+                <li>Search queries within the Platform</li>
+                <li>Interests derived from your browsing behavior</li>
+            </ul>
+            <p>This data is stored locally in the "gs_ad_profile" cookie and is not shared with external advertising networks. The data is only used to show you personalized salon recommendations within our Platform.</p>
+            <p><strong>Retention period:</strong> advertising cookies are stored for a maximum of 365 days.</p>
+            <p><strong>Withdrawing consent:</strong> You can change your cookie preferences at any time via the cookie settings at the bottom of each page. Upon withdrawal, your advertising data will be immediately deleted.</p>
 
             <h2>11. Complaints</h2>
             <p>If you have a complaint about how we handle your data, you can contact us or file a complaint with the Dutch Data Protection Authority (autoriteitpersoonsgegevens.nl).</p>
@@ -372,7 +398,7 @@
             <?php endif; ?>
 
             <p class="last-updated">
-                <?= $lang === 'nl' ? 'Laatst bijgewerkt: januari 2025' : 'Last updated: January 2025' ?>
+                <?= $lang === 'nl' ? 'Laatst bijgewerkt: januari 2026' : 'Last updated: January 2026' ?>
             </p>
         </div>
     </div>

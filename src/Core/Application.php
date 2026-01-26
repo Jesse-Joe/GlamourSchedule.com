@@ -110,6 +110,14 @@ class Application
             $router->get('/business/bookings', 'BusinessDashboardController@bookings');
             $router->get('/business/services', 'BusinessDashboardController@services');
             $router->post('/business/services', 'BusinessDashboardController@services');
+
+            // Inventory Management
+            $router->get('/business/inventory', 'BusinessDashboardController@inventory');
+            $router->post('/business/inventory', 'BusinessDashboardController@inventory');
+            $router->post('/business/inventory/link', 'BusinessDashboardController@linkInventoryToService');
+            $router->post('/business/inventory/unlink', 'BusinessDashboardController@unlinkInventoryFromService');
+            $router->post('/business/inventory/adjust', 'BusinessDashboardController@adjustInventory');
+
             $router->get('/business/employees', 'BusinessDashboardController@employees');
             $router->post('/business/employees', 'BusinessDashboardController@employees');
             $router->get('/business/calendar', 'BusinessDashboardController@calendar');

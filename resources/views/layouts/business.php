@@ -551,6 +551,9 @@
                 <a href="/business/services" class="nav-item <?= $currentPath === '/business/services' ? 'active' : '' ?>">
                     <i class="fas fa-cut"></i> Diensten
                 </a>
+                <a href="/business/inventory" class="nav-item <?= $currentPath === '/business/inventory' ? 'active' : '' ?>">
+                    <i class="fas fa-boxes"></i> Voorraad
+                </a>
                 <?php if (($business['business_type'] ?? 'eenmanszaak') === 'bv'): ?>
                 <a href="/business/employees" class="nav-item <?= $currentPath === '/business/employees' ? 'active' : '' ?>">
                     <i class="fas fa-users"></i> Medewerkers

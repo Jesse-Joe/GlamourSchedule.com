@@ -3020,4 +3020,245 @@ HTML;
             error_log("Failed to send POS cancellation email: " . $e->getMessage());
         }
     }
+
+    // =========================================================================
+    // INVENTORY MANAGEMENT
+    // =========================================================================
+
+    public function inventory(): string
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handleInventoryAction();
+            return $this->redirect('/business/inventory');
+        }
+
+        $inventory = $this->getInventory();
+        $services = $this->getServices();
+        $lowStockItems = $this->getLowStockItems();
+
+        return $this->view('pages/business/dashboard/inventory', [
+            'pageTitle' => 'Voorraad',
+            'business' => $this->business,
+            'inventory' => $inventory,
+            'services' => $services,
+            'lowStockItems' => $lowStockItems,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    private function handleInventoryAction(): void
+    {
+        $action = $_POST['action'] ?? '';
+
+        if ($action === 'add') {
+            $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+
+            $quantity = (int)$_POST['quantity'];
+
+            $this->db->query(
+                "INSERT INTO inventory (uuid, business_id, name, description, sku, quantity, min_quantity, unit, purchase_price, sell_price)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    $uuid,
+                    $this->business['id'],
+                    trim($_POST['name']),
+                    trim($_POST['description'] ?? ''),
+                    trim($_POST['sku'] ?? ''),
+                    $quantity,
+                    (int)($_POST['min_quantity'] ?? 0),
+                    trim($_POST['unit'] ?? 'stuks'),
+                    (float)($_POST['purchase_price'] ?? 0),
+                    (float)($_POST['sell_price'] ?? 0)
+                ]
+            );
+
+            // Log initial stock transaction
+            $inventoryId = $this->db->lastInsertId();
+            if ($quantity > 0) {
+                $this->logInventoryTransaction($inventoryId, 'purchase', $quantity, 0, $quantity, 'Beginvoorraad');
+            }
+
+        } elseif ($action === 'edit') {
+            $inventoryId = (int)$_POST['inventory_id'];
+
+            // Verify ownership
+            $item = $this->db->fetch(
+                "SELECT * FROM inventory WHERE id = ? AND business_id = ?",
+                [$inventoryId, $this->business['id']]
+            );
+
+            if ($item) {
+                $this->db->query(
+                    "UPDATE inventory SET name = ?, description = ?, sku = ?, min_quantity = ?, unit = ?, purchase_price = ?, sell_price = ?
+                     WHERE id = ? AND business_id = ?",
+                    [
+                        trim($_POST['name']),
+                        trim($_POST['description'] ?? ''),
+                        trim($_POST['sku'] ?? ''),
+                        (int)($_POST['min_quantity'] ?? 0),
+                        trim($_POST['unit'] ?? 'stuks'),
+                        (float)($_POST['purchase_price'] ?? 0),
+                        (float)($_POST['sell_price'] ?? 0),
+                        $inventoryId,
+                        $this->business['id']
+                    ]
+                );
+            }
+
+        } elseif ($action === 'delete') {
+            $inventoryId = (int)$_POST['inventory_id'];
+            $this->db->query(
+                "DELETE FROM inventory WHERE id = ? AND business_id = ?",
+                [$inventoryId, $this->business['id']]
+            );
+        }
+    }
+
+    public function adjustInventory(): string
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return $this->redirect('/business/inventory');
+        }
+
+        $inventoryId = (int)$_POST['inventory_id'];
+        $adjustmentType = $_POST['adjustment_type'] ?? 'add';
+        $quantity = abs((int)$_POST['quantity']);
+        $notes = trim($_POST['notes'] ?? '');
+
+        // Get current item
+        $item = $this->db->fetch(
+            "SELECT * FROM inventory WHERE id = ? AND business_id = ?",
+            [$inventoryId, $this->business['id']]
+        );
+
+        if (!$item) {
+            return $this->redirect('/business/inventory');
+        }
+
+        $quantityBefore = $item['quantity'];
+
+        if ($adjustmentType === 'add') {
+            $quantityAfter = $quantityBefore + $quantity;
+            $transactionType = 'purchase';
+        } else {
+            $quantityAfter = max(0, $quantityBefore - $quantity);
+            $quantity = -$quantity;
+            $transactionType = 'adjustment';
+        }
+
+        // Update quantity
+        $this->db->query(
+            "UPDATE inventory SET quantity = ? WHERE id = ?",
+            [$quantityAfter, $inventoryId]
+        );
+
+        // Log transaction
+        $this->logInventoryTransaction($inventoryId, $transactionType, $quantity, $quantityBefore, $quantityAfter, $notes);
+
+        return $this->redirect('/business/inventory');
+    }
+
+    public function linkInventoryToService(): string
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return $this->redirect('/business/inventory');
+        }
+
+        $inventoryId = (int)$_POST['inventory_id'];
+        $serviceId = (int)$_POST['service_id'];
+        $quantityUsed = (float)($_POST['quantity_used'] ?? 1);
+
+        // Verify ownership of both inventory and service
+        $item = $this->db->fetch(
+            "SELECT id FROM inventory WHERE id = ? AND business_id = ?",
+            [$inventoryId, $this->business['id']]
+        );
+
+        $service = $this->db->fetch(
+            "SELECT id FROM services WHERE id = ? AND business_id = ?",
+            [$serviceId, $this->business['id']]
+        );
+
+        if ($item && $service) {
+            // Insert or update link
+            $this->db->query(
+                "INSERT INTO inventory_service_link (inventory_id, service_id, quantity_used)
+                 VALUES (?, ?, ?)
+                 ON DUPLICATE KEY UPDATE quantity_used = ?",
+                [$inventoryId, $serviceId, $quantityUsed, $quantityUsed]
+            );
+        }
+
+        return $this->redirect('/business/inventory');
+    }
+
+    public function unlinkInventoryFromService(): string
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return $this->redirect('/business/inventory');
+        }
+
+        $inventoryId = (int)$_POST['inventory_id'];
+        $serviceId = (int)$_POST['service_id'];
+
+        // Verify ownership
+        $item = $this->db->fetch(
+            "SELECT id FROM inventory WHERE id = ? AND business_id = ?",
+            [$inventoryId, $this->business['id']]
+        );
+
+        if ($item) {
+            $this->db->query(
+                "DELETE FROM inventory_service_link WHERE inventory_id = ? AND service_id = ?",
+                [$inventoryId, $serviceId]
+            );
+        }
+
+        return $this->redirect('/business/inventory');
+    }
+
+    private function getInventory(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT i.*,
+                    GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') as linked_services,
+                    GROUP_CONCAT(DISTINCT CONCAT(isl.service_id, ':', isl.quantity_used) SEPARATOR ',') as service_links
+             FROM inventory i
+             LEFT JOIN inventory_service_link isl ON i.id = isl.inventory_id
+             LEFT JOIN services s ON isl.service_id = s.id
+             WHERE i.business_id = ? AND i.is_active = 1
+             GROUP BY i.id
+             ORDER BY i.name ASC",
+            [$this->business['id']]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function getLowStockItems(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT * FROM inventory
+             WHERE business_id = ? AND is_active = 1 AND quantity <= min_quantity AND min_quantity > 0
+             ORDER BY quantity ASC",
+            [$this->business['id']]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function logInventoryTransaction(int $inventoryId, string $type, int $quantity, int $before, int $after, string $notes = '', ?int $bookingId = null): void
+    {
+        $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+
+        $this->db->query(
+            "INSERT INTO inventory_transactions (uuid, inventory_id, business_id, booking_id, transaction_type, quantity, quantity_before, quantity_after, notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [$uuid, $inventoryId, $this->business['id'], $bookingId, $type, $quantity, $before, $after, $notes]
+        );
+    }
 }

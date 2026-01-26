@@ -226,7 +226,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 </div>
             </div>
 
-            <button class="theme-toggle" onclick="toggleTheme()">
+            <button class="theme-toggle">
                 <i class="fas fa-sun theme-icon-light"></i>
                 <i class="fas fa-moon theme-icon-dark"></i>
                 <span class="theme-toggle-text"><?= $translations['light_mode'] ?? 'Light Mode' ?></span>
@@ -249,11 +249,12 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </button>
 
         <a href="/" class="logo-prestige">
+            <span class="logo-mark">GS</span>
             <span class="logo-text">Glamourschedule</span>
         </a>
 
         <ul class="nav-links-prestige" id="navMenu">
-            <li><a href="javascript:void(0)" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Search' ?>"><i class="fas fa-search"></i></a></li>
+            <li><a href="javascript:void(0)" class="nav-search-btn" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Search' ?>"><i class="fas fa-search"></i> <?= $translations['search'] ?? 'Search' ?></a></li>
             <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
             <li><a href="/sales/register"><?= $translations['become_partner'] ?? 'Become Partner' ?></a></li>
             <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
@@ -268,6 +269,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </ul>
 
         <div class="nav-actions-prestige">
+            <button class="nav-theme-toggle theme-toggle" title="<?= $translations['toggle_theme'] ?? 'Toggle theme' ?>">
+                <i class="fas fa-sun theme-icon-light"></i>
+                <i class="fas fa-moon theme-icon-dark"></i>
+            </button>
+
             <a href="javascript:void(0)" class="nav-search-mobile" title="<?= $translations['search'] ?? 'Search' ?>" onclick="openGlobalSearch()">
                 <i class="fas fa-search"></i>
             </a>
@@ -458,7 +464,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             }
 
             searchTimeout = setTimeout(() => {
-                fetch('/api/global-search?q=' + encodeURIComponent(query))
+                const lang = '<?= $lang ?? 'nl' ?>';
+                fetch('/api/global-search?q=' + encodeURIComponent(query) + '&lang=' + lang)
                     .then(response => response.json())
                     .then(data => {
                         displaySearchResults(data, query);
@@ -477,7 +484,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             if (data.salons && data.salons.length > 0) {
                 html += '<div class="search-section-title"><?= addslashes($translations['salons'] ?? 'Salons') ?></div>';
                 data.salons.forEach(salon => {
-                    const photo = salon.photos ? '/uploads/businesses/' + salon.id + '/' + salon.photos.split(',')[0] : '/images/placeholder-salon.jpg';
+                    const photo = salon.cover_image || salon.logo || '/images/placeholder-salon.jpg';
                     html += `
                         <a href="/business/${salon.slug}" class="search-result-item" onclick="closeGlobalSearch()">
                             <img src="${photo}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
@@ -494,10 +501,39 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             if (data.services && data.services.length > 0) {
                 html += '<div class="search-section-title"><?= addslashes($translations['services'] ?? 'Services') ?></div>';
                 data.services.forEach(service => {
+                    const price = service.price ? ` <small style="opacity:0.6">€${parseFloat(service.price).toFixed(2)}</small>` : '';
                     html += `
                         <a href="/business/${service.business_slug}?service=${service.id}" class="search-quick-link" onclick="closeGlobalSearch()">
                             <i class="fas fa-cut"></i>
-                            <span>${service.name} <small style="opacity:0.6"><?= addslashes($translations['at'] ?? 'at') ?> ${service.business_name}</small></span>
+                            <span>${service.name}${price} <small style="opacity:0.6"><?= addslashes($translations['at'] ?? 'at') ?> ${service.business_name}</small></span>
+                        </a>
+                    `;
+                });
+            }
+
+            // Categories
+            if (data.categories && data.categories.length > 0) {
+                html += '<div class="search-section-title"><?= addslashes($translations['categories'] ?? 'Categories') ?></div>';
+                data.categories.forEach(cat => {
+                    const icon = cat.icon ? (cat.icon.startsWith('fa-') ? cat.icon : 'fa-' + cat.icon) : 'fa-tag';
+                    const count = cat.salon_count > 0 ? ` <small style="opacity:0.6">(${cat.salon_count} salons)</small>` : '';
+                    html += `
+                        <a href="/search?category=${cat.slug}" class="search-quick-link" onclick="closeGlobalSearch()">
+                            <i class="fas ${icon}"></i>
+                            <span>${cat.name}${count}</span>
+                        </a>
+                    `;
+                });
+            }
+
+            // Locations
+            if (data.locations && data.locations.length > 0) {
+                html += '<div class="search-section-title"><?= addslashes($translations['locations'] ?? 'Locations') ?></div>';
+                data.locations.forEach(loc => {
+                    html += `
+                        <a href="/search?location=${encodeURIComponent(loc.city)}" class="search-quick-link" onclick="closeGlobalSearch()">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${loc.city} <small style="opacity:0.6">(${loc.salon_count} salons)</small></span>
                         </a>
                     `;
                 });
@@ -505,13 +541,20 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             // Pages (static matches)
             const pages = [
-                { url: '/search', name: '<?= addslashes($translations['all_salons'] ?? 'All Salons') ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search'] },
-                { url: '/register?type=business', name: '<?= addslashes($translations['register_salon'] ?? 'Register Salon') ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register'] },
-                { url: '/marketing', name: '<?= addslashes($translations['marketing_services'] ?? 'Marketing Services') ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert'] },
-                { url: '/about', name: '<?= addslashes($translations['platform_features'] ?? 'Platform Features') ?>', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info'] },
-                { url: '/contact', name: '<?= addslashes($translations['contact'] ?? 'Contact') ?>', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail'] },
-                { url: '/terms', name: '<?= addslashes($translations['terms'] ?? 'Terms') ?>', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel', 'conditions'] },
-                { url: '/privacy', name: '<?= addslashes($translations['privacy'] ?? 'Privacy') ?>', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data'] },
+                { url: '/search', name: '<?= addslashes($translations['all_salons'] ?? 'All Salons') ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search', 'browse'] },
+                { url: '/register?type=business', name: '<?= addslashes($translations['register_salon'] ?? 'Register Salon') ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register', 'nieuw'] },
+                { url: '/sales/register', name: '<?= addslashes($translations['become_partner'] ?? 'Become Partner') ?>', icon: 'fa-handshake', keywords: ['partner', 'sales', 'verkoop', 'samenwerk'] },
+                { url: '/sales/login', name: '<?= addslashes($translations['sales_portal'] ?? 'Sales Portal') ?>', icon: 'fa-briefcase', keywords: ['sales', 'portal', 'verkoop', 'agent'] },
+                { url: '/marketing', name: '<?= addslashes($translations['marketing_services'] ?? 'Marketing Services') ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert', 'social'] },
+                { url: '/about', name: '<?= addslashes($translations['platform_features'] ?? 'Platform Features') ?>', icon: 'fa-cogs', keywords: ['functie', 'feature', 'over', 'about', 'info', 'platform'] },
+                { url: '/contact', name: '<?= addslashes($translations['contact'] ?? 'Contact') ?>', icon: 'fa-envelope', keywords: ['contact', 'help', 'vraag', 'mail', 'support', 'bericht'] },
+                { url: '/terms', name: '<?= addslashes($translations['terms'] ?? 'Terms') ?>', icon: 'fa-file-contract', keywords: ['voorwaard', 'terms', 'regel', 'conditions', 'algemene'] },
+                { url: '/privacy', name: '<?= addslashes($translations['privacy'] ?? 'Privacy') ?>', icon: 'fa-shield-alt', keywords: ['privacy', 'gegeven', 'data', 'cookies', 'gdpr', 'avg'] },
+                { url: '/login', name: '<?= addslashes($translations['login'] ?? 'Login') ?>', icon: 'fa-sign-in-alt', keywords: ['login', 'inlog', 'aanmeld', 'account', 'sign in'] },
+                { url: '/register', name: '<?= addslashes($translations['register'] ?? 'Register') ?>', icon: 'fa-user-plus', keywords: ['registr', 'aanmeld', 'account', 'nieuw', 'sign up'] },
+                { url: '/dashboard', name: '<?= addslashes($translations['dashboard'] ?? 'Dashboard') ?>', icon: 'fa-tachometer-alt', keywords: ['dashboard', 'overzicht', 'account', 'mijn'] },
+                { url: '/dashboard/bookings', name: '<?= addslashes($translations['my_bookings'] ?? 'My Bookings') ?>', icon: 'fa-calendar-check', keywords: ['boeking', 'afspraak', 'booking', 'reserv', 'agenda'] },
+                { url: '/dashboard/settings', name: '<?= addslashes($translations['settings'] ?? 'Settings') ?>', icon: 'fa-cog', keywords: ['instelling', 'settings', 'profiel', 'wachtwoord', 'account'] },
             ];
 
             const q = query.toLowerCase();
@@ -574,7 +617,15 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             const theme = document.documentElement.getAttribute('data-theme') || 'dark';
             const toggleText = document.querySelector('.theme-toggle-text');
             if (toggleText) {
-                toggleText.textContent = theme === 'dark' ? 'Lichte modus' : 'Donkere modus';
+                const themeTexts = {
+                    nl: { light: 'Lichte modus', dark: 'Donkere modus' },
+                    en: { light: 'Light mode', dark: 'Dark mode' },
+                    de: { light: 'Heller Modus', dark: 'Dunkler Modus' },
+                    fr: { light: 'Mode clair', dark: 'Mode sombre' }
+                };
+                const pageLang = document.documentElement.lang || 'nl';
+                const texts = themeTexts[pageLang] || themeTexts['nl'];
+                toggleText.textContent = theme === 'dark' ? texts.light : texts.dark;
             }
         }
 
@@ -1188,10 +1239,158 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 setTimeout(() => {
                     document.getElementById('cookieConsent').style.display = 'block';
                 }, 1500);
+            } else {
+                // Initialize tracking if consent given
+                const prefs = this.getPreferences();
+                if (prefs.marketing || prefs.personalization) {
+                    AdTracking.init();
+                }
             }
         },
         hasConsent() {
             return document.cookie.includes('gs_consent=');
+        },
+        getPreferences() {
+            const match = document.cookie.match(/gs_consent=([^;]+)/);
+            if (match) {
+                try {
+                    return JSON.parse(decodeURIComponent(match[1]));
+                } catch (e) {}
+            }
+            return { essential: true, analytics: false, marketing: false, personalization: false };
+        }
+    };
+
+    // Advertising & Personalization Tracking
+    const AdTracking = {
+        data: null,
+
+        init() {
+            this.loadData();
+            this.trackPageView();
+            this.setupEventListeners();
+        },
+
+        loadData() {
+            const match = document.cookie.match(/gs_ad_profile=([^;]+)/);
+            if (match) {
+                try {
+                    this.data = JSON.parse(decodeURIComponent(match[1]));
+                } catch (e) {
+                    this.data = this.getDefaultProfile();
+                }
+            } else {
+                this.data = this.getDefaultProfile();
+            }
+        },
+
+        getDefaultProfile() {
+            return {
+                interests: [],
+                categories: [],
+                viewedServices: [],
+                viewedBusinesses: [],
+                searchQueries: [],
+                lastVisit: null,
+                visitCount: 0
+            };
+        },
+
+        saveData() {
+            const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+            document.cookie = `gs_ad_profile=${encodeURIComponent(JSON.stringify(this.data))}; expires=${expires}; path=/; SameSite=Lax`;
+        },
+
+        trackPageView() {
+            this.data.lastVisit = new Date().toISOString();
+            this.data.visitCount++;
+
+            // Track category from URL or page content
+            const url = window.location.pathname;
+            const params = new URLSearchParams(window.location.search);
+
+            // Track search queries
+            const query = params.get('q');
+            if (query && !this.data.searchQueries.includes(query)) {
+                this.data.searchQueries.push(query);
+                if (this.data.searchQueries.length > 20) this.data.searchQueries.shift();
+            }
+
+            // Track category interest
+            const category = params.get('category') || params.get('group');
+            if (category && !this.data.categories.includes(category)) {
+                this.data.categories.push(category);
+                if (this.data.categories.length > 10) this.data.categories.shift();
+            }
+
+            // Track business page views
+            if (url.startsWith('/salon/') || url.startsWith('/business/')) {
+                const slug = url.split('/')[2];
+                if (slug && !this.data.viewedBusinesses.includes(slug)) {
+                    this.data.viewedBusinesses.push(slug);
+                    if (this.data.viewedBusinesses.length > 20) this.data.viewedBusinesses.shift();
+                }
+            }
+
+            this.saveData();
+        },
+
+        setupEventListeners() {
+            // Track service clicks
+            document.addEventListener('click', (e) => {
+                const serviceCard = e.target.closest('[data-service-id]');
+                if (serviceCard) {
+                    const serviceId = serviceCard.dataset.serviceId;
+                    const serviceName = serviceCard.dataset.serviceName || '';
+                    if (serviceId && !this.data.viewedServices.includes(serviceId)) {
+                        this.data.viewedServices.push(serviceId);
+                        if (this.data.viewedServices.length > 30) this.data.viewedServices.shift();
+                    }
+                    // Extract interest keywords from service name
+                    this.extractInterests(serviceName);
+                    this.saveData();
+                }
+
+                // Track category clicks
+                const categoryLink = e.target.closest('[data-category]');
+                if (categoryLink) {
+                    const cat = categoryLink.dataset.category;
+                    if (cat && !this.data.categories.includes(cat)) {
+                        this.data.categories.push(cat);
+                        if (this.data.categories.length > 10) this.data.categories.shift();
+                        this.saveData();
+                    }
+                }
+            });
+        },
+
+        extractInterests(text) {
+            if (!text) return;
+            const keywords = ['haar', 'nagels', 'huid', 'massage', 'makeup', 'beauty', 'wellness',
+                            'kapper', 'manicure', 'pedicure', 'facial', 'waxing', 'laser',
+                            'botox', 'fillers', 'spray tan', 'sauna', 'spa'];
+            const lower = text.toLowerCase();
+            keywords.forEach(kw => {
+                if (lower.includes(kw) && !this.data.interests.includes(kw)) {
+                    this.data.interests.push(kw);
+                    if (this.data.interests.length > 15) this.data.interests.shift();
+                }
+            });
+        },
+
+        // Get relevant content recommendations
+        getRecommendations() {
+            return {
+                categories: this.data.categories.slice(-5),
+                interests: this.data.interests.slice(-10),
+                isFrequentVisitor: this.data.visitCount > 5
+            };
+        },
+
+        // Clear all tracking data
+        clearData() {
+            this.data = this.getDefaultProfile();
+            document.cookie = 'gs_ad_profile=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         }
     };
 
@@ -1202,6 +1401,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             marketing: true,
             personalization: true
         });
+        AdTracking.init();
     }
 
     function rejectAllCookies() {
@@ -1211,15 +1411,22 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             marketing: false,
             personalization: false
         });
+        AdTracking.clearData();
     }
 
     function saveSelectedCookies() {
-        saveCookiePreferences({
+        const prefs = {
             essential: true,
             analytics: document.getElementById('cookieAnalytics').checked,
             marketing: document.getElementById('cookieMarketing').checked,
             personalization: document.getElementById('cookiePersonalization').checked
-        });
+        };
+        saveCookiePreferences(prefs);
+        if (prefs.marketing || prefs.personalization) {
+            AdTracking.init();
+        } else {
+            AdTracking.clearData();
+        }
     }
 
     function saveCookiePreferences(prefs) {

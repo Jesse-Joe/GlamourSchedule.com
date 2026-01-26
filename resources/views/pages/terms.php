@@ -141,6 +141,7 @@
                     <li><a href="#artikel-6">Artikel 6 - Annulering</a></li>
                     <li><a href="#artikel-7">Artikel 7 - Aansprakelijkheid</a></li>
                     <li><a href="#artikel-8">Artikel 8 - Privacy</a></li>
+                    <li><a href="#artikel-8a">Artikel 8a - Cookies & Advertenties</a></li>
                     <li><a href="#artikel-9">Artikel 9 - Klachten</a></li>
                     <li><a href="#artikel-10">Artikel 10 - Slotbepalingen</a></li>
                 </ul>
@@ -199,6 +200,29 @@
             <p>8.2 Persoonsgegevens worden uitsluitend gebruikt voor het uitvoeren van boekingen, communicatie en het verbeteren van onze dienstverlening.</p>
             <p>8.3 Voor meer informatie verwijzen wij naar ons <a href="/privacy" style="color:#000000">Privacybeleid</a>.</p>
 
+            <h2 id="artikel-8a">Artikel 8a - Cookies & Advertenties</h2>
+            <p>8a.1 GlamourSchedule maakt gebruik van cookies om de gebruikerservaring te verbeteren en relevante content aan te bieden.</p>
+            <p>8a.2 Wij gebruiken de volgende soorten cookies:</p>
+            <ul>
+                <li><strong>Functionele cookies:</strong> Noodzakelijk voor de werking van het Platform (bijv. sessie, taalvoorkeur).</li>
+                <li><strong>Analytische cookies:</strong> Om het gebruik van het Platform te analyseren en te verbeteren.</li>
+                <li><strong>Marketing/Advertentie cookies:</strong> Om gepersonaliseerde content en aanbevelingen te tonen op basis van uw interesses en browsegedrag.</li>
+            </ul>
+            <p>8a.3 Advertentie cookies verzamelen informatie over:</p>
+            <ul>
+                <li>Bekeken diensten en categorieën (bijv. kapper, nagelsalon, massages)</li>
+                <li>Bezochte salons en bedrijven</li>
+                <li>Zoekopdrachten binnen het Platform</li>
+                <li>Interesses afgeleid uit uw activiteit</li>
+            </ul>
+            <p>8a.4 Deze gegevens worden alleen verzameld nadat u uitdrukkelijk toestemming heeft gegeven via de cookiebanner. U kunt uw toestemming te allen tijde intrekken via de cookie-instellingen.</p>
+            <p>8a.5 Advertentie cookies worden opgeslagen voor maximaal 365 dagen. De verzamelde gegevens worden niet gedeeld met derden voor externe advertentiedoeleinden.</p>
+            <p>8a.6 Door het accepteren van marketing cookies stemt u in met het tonen van gepersonaliseerde aanbevelingen voor salons en diensten die aansluiten bij uw voorkeuren.</p>
+
+            <div class="terms-info">
+                <p><strong>Let op:</strong> U kunt uw cookievoorkeuren op elk moment wijzigen door op "Cookie-instellingen" te klikken onderaan elke pagina.</p>
+            </div>
+
             <h2 id="artikel-9">Artikel 9 - Klachten</h2>
             <p>9.1 Klachten over het Platform of de dienstverlening van GlamourSchedule kunnen worden ingediend via info@glamourschedule.nl.</p>
             <p>9.2 Wij streven ernaar klachten binnen 14 dagen af te handelen.</p>
@@ -223,6 +247,7 @@
                     <li><a href="#artikel-6">Article 6 - Cancellation</a></li>
                     <li><a href="#artikel-7">Article 7 - Liability</a></li>
                     <li><a href="#artikel-8">Article 8 - Privacy</a></li>
+                    <li><a href="#artikel-8a">Article 8a - Cookies & Advertising</a></li>
                     <li><a href="#artikel-9">Article 9 - Complaints</a></li>
                     <li><a href="#artikel-10">Article 10 - Final Provisions</a></li>
                 </ul>
@@ -281,6 +306,29 @@
             <p>8.2 Personal data is only used to execute bookings, communication and to improve our services.</p>
             <p>8.3 For more information, please refer to our <a href="/privacy" style="color:#000000">Privacy Policy</a>.</p>
 
+            <h2 id="artikel-8a">Article 8a - Cookies & Advertising</h2>
+            <p>8a.1 GlamourSchedule uses cookies to improve the user experience and to offer relevant content.</p>
+            <p>8a.2 We use the following types of cookies:</p>
+            <ul>
+                <li><strong>Functional cookies:</strong> Necessary for the operation of the Platform (e.g., session, language preference).</li>
+                <li><strong>Analytical cookies:</strong> To analyze and improve the use of the Platform.</li>
+                <li><strong>Marketing/Advertising cookies:</strong> To show personalized content and recommendations based on your interests and browsing behavior.</li>
+            </ul>
+            <p>8a.3 Advertising cookies collect information about:</p>
+            <ul>
+                <li>Viewed services and categories (e.g., hairdresser, nail salon, massages)</li>
+                <li>Visited salons and businesses</li>
+                <li>Search queries within the Platform</li>
+                <li>Interests derived from your activity</li>
+            </ul>
+            <p>8a.4 This data is only collected after you have explicitly given consent via the cookie banner. You can withdraw your consent at any time via the cookie settings.</p>
+            <p>8a.5 Advertising cookies are stored for a maximum of 365 days. The collected data is not shared with third parties for external advertising purposes.</p>
+            <p>8a.6 By accepting marketing cookies, you consent to seeing personalized recommendations for salons and services that match your preferences.</p>
+
+            <div class="terms-info">
+                <p><strong>Note:</strong> You can change your cookie preferences at any time by clicking "Cookie Settings" at the bottom of any page.</p>
+            </div>
+
             <h2 id="artikel-9">Article 9 - Complaints</h2>
             <p>9.1 Complaints about the Platform or GlamourSchedule's services can be submitted via info@glamourschedule.nl.</p>
             <p>9.2 We aim to handle complaints within 14 days.</p>
@@ -294,7 +342,7 @@
             <?php endif; ?>
 
             <p class="last-updated">
-                <?= $lang === 'nl' ? 'Laatst bijgewerkt: januari 2025' : 'Last updated: January 2025' ?>
+                <?= $lang === 'nl' ? 'Laatst bijgewerkt: januari 2026' : 'Last updated: January 2026' ?>
             </p>
         </div>
     </div>
