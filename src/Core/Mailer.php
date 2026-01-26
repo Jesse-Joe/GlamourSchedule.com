@@ -48,7 +48,7 @@ class Mailer
                 'checkin_qr' => 'Check-in QR Code',
                 'show_code' => 'Show this code upon arrival.',
                 'salon_scans' => 'The salon will scan this to confirm your presence.',
-                'view_booking' => 'View your booking',
+                'view_booking' => 'View Booking',
                 'reminder_24h' => 'You will receive a reminder 24 hours before your appointment.',
                 'new_booking' => 'New Booking!',
                 'customer_details' => 'Customer Details',
@@ -58,11 +58,13 @@ class Mailer
                 'go_to_dashboard' => 'Go to Dashboard',
                 'reminder' => 'Reminder',
                 'appointment_tomorrow' => 'Your appointment is tomorrow!',
+                'appointment_1hour' => 'Your appointment starts in 1 hour!',
+                'almost_time' => 'Almost Time!',
                 'hi' => 'Hi',
                 'friendly_reminder' => 'Just a friendly reminder that you have an appointment tomorrow.',
                 'where' => 'Where',
                 'when' => 'When',
-                'view_booking_btn' => 'View booking',
+                'view_booking_btn' => 'View Booking',
                 'cant_make_it' => 'Can\'t make it? Cancel or modify your appointment via the link above.',
                 'welcome' => 'Welcome to GlamourSchedule!',
                 'registration_success' => 'Your registration is successful',
@@ -83,7 +85,7 @@ class Mailer
                 'no_payment_warning' => 'If you don\'t pay within 48 hours, your account will be automatically deactivated. Your salon page will no longer be visible to customers and you won\'t be able to receive bookings.',
                 'monthly_subscription' => 'Monthly subscription',
                 'per_month' => 'per month, excl. VAT',
-                'activate_now_btn' => 'Activate now',
+                'activate_now_btn' => 'Activate Now',
                 'account_deactivated' => 'Your account has been deactivated',
                 'no_payment_received' => 'Unfortunately, we did not receive payment within 48 hours after your trial period ended. Therefore, your account is now deactivated.',
                 'this_means' => 'This means:',
@@ -107,6 +109,10 @@ class Mailer
                 'all_rights' => 'All rights reserved.',
                 'translate_email' => 'Translate this email',
                 'no_notes' => 'No notes',
+                'payout' => 'Payout',
+                'email_subject_booking' => 'Booking Confirmation',
+                'email_subject_reminder' => 'Reminder: Appointment tomorrow at',
+                'email_subject_reminder_1h' => 'Reminder: Appointment in 1 hour at',
             ],
             'nl' => [
                 'booking_confirmed' => 'Boeking Bevestigd!',
@@ -119,7 +125,7 @@ class Mailer
                 'checkin_qr' => 'Check-in QR Code',
                 'show_code' => 'Toon deze code bij aankomst.',
                 'salon_scans' => 'De salon scant deze om je aanwezigheid te bevestigen.',
-                'view_booking' => 'Bekijk je boeking',
+                'view_booking' => 'Bekijk Boeking',
                 'reminder_24h' => 'Je ontvangt 24 uur voor je afspraak nog een herinnering.',
                 'new_booking' => 'Nieuwe Boeking!',
                 'customer_details' => 'Klantgegevens',
@@ -129,11 +135,13 @@ class Mailer
                 'go_to_dashboard' => 'Ga naar Dashboard',
                 'reminder' => 'Herinnering',
                 'appointment_tomorrow' => 'Je afspraak is morgen!',
+                'appointment_1hour' => 'Je afspraak begint over 1 uur!',
+                'almost_time' => 'Bijna Tijd!',
                 'hi' => 'Hoi',
                 'friendly_reminder' => 'Even een vriendelijke herinnering dat je morgen een afspraak hebt.',
                 'where' => 'Waar',
                 'when' => 'Wanneer',
-                'view_booking_btn' => 'Bekijk boeking',
+                'view_booking_btn' => 'Bekijk Boeking',
                 'cant_make_it' => 'Kun je niet komen? Annuleer of wijzig je afspraak via bovenstaande link.',
                 'welcome' => 'Welkom bij GlamourSchedule!',
                 'registration_success' => 'Je registratie is succesvol',
@@ -154,7 +162,7 @@ class Mailer
                 'no_payment_warning' => 'Als je niet binnen 48 uur betaalt, wordt je account automatisch gedeactiveerd. Je salonpagina zal dan niet meer zichtbaar zijn voor klanten en je kunt geen boekingen meer ontvangen.',
                 'monthly_subscription' => 'Maandelijks abonnement',
                 'per_month' => 'per maand, excl. BTW',
-                'activate_now_btn' => 'Activeer nu',
+                'activate_now_btn' => 'Activeer Nu',
                 'account_deactivated' => 'Je account is gedeactiveerd',
                 'no_payment_received' => 'Helaas hebben we geen betaling ontvangen binnen 48 uur na het eindigen van je proefperiode. Daarom is je account nu gedeactiveerd.',
                 'this_means' => 'Dit betekent:',
@@ -178,6 +186,10 @@ class Mailer
                 'all_rights' => 'Alle rechten voorbehouden.',
                 'translate_email' => 'Vertaal deze email',
                 'no_notes' => 'Geen opmerkingen',
+                'payout' => 'Uitbetaling',
+                'email_subject_booking' => 'Boekingsbevestiging',
+                'email_subject_reminder' => 'Herinnering: Morgen afspraak bij',
+                'email_subject_reminder_1h' => 'Herinnering: Over 1 uur afspraak bij',
             ],
             'de' => [
                 'booking_confirmed' => 'Buchung Bestätigt!',
@@ -192,8 +204,25 @@ class Mailer
                 'salon_scans' => 'Der Salon scannt ihn, um Ihre Anwesenheit zu bestätigen.',
                 'view_booking' => 'Buchung ansehen',
                 'reminder_24h' => 'Sie erhalten 24 Stunden vor Ihrem Termin eine Erinnerung.',
+                'new_booking' => 'Neue Buchung!',
+                'reminder' => 'Erinnerung',
+                'appointment_tomorrow' => 'Ihr Termin ist morgen!',
+                'appointment_1hour' => 'Ihr Termin beginnt in 1 Stunde!',
+                'almost_time' => 'Fast Zeit!',
+                'hi' => 'Hallo',
+                'view_booking_btn' => 'Buchung ansehen',
+                'welcome' => 'Willkommen bei GlamourSchedule!',
+                'trial_ending' => 'Ihre Testphase endet heute!',
+                'activate_now_btn' => 'Jetzt Aktivieren',
+                'account_deactivated' => 'Ihr Konto wurde deaktiviert',
+                'reactivate_btn' => 'Konto reaktivieren',
+                'setup_page' => 'Zeit, Ihre Seite einzurichten!',
                 'translate_email' => 'Diese E-Mail übersetzen',
                 'no_notes' => 'Keine Anmerkungen',
+                'payout' => 'Auszahlung',
+                'email_subject_booking' => 'Buchungsbestätigung',
+                'email_subject_reminder' => 'Erinnerung: Morgen Termin bei',
+                'email_subject_reminder_1h' => 'Erinnerung: In 1 Stunde Termin bei',
             ],
             'fr' => [
                 'booking_confirmed' => 'Réservation Confirmée!',
@@ -206,10 +235,27 @@ class Mailer
                 'checkin_qr' => 'QR Code de Check-in',
                 'show_code' => 'Montrez ce code à votre arrivée.',
                 'salon_scans' => 'Le salon le scannera pour confirmer votre présence.',
-                'view_booking' => 'Voir votre réservation',
+                'view_booking' => 'Voir la réservation',
                 'reminder_24h' => 'Vous recevrez un rappel 24 heures avant votre rendez-vous.',
+                'new_booking' => 'Nouvelle Réservation!',
+                'reminder' => 'Rappel',
+                'appointment_tomorrow' => 'Votre rendez-vous est demain!',
+                'appointment_1hour' => 'Votre rendez-vous commence dans 1 heure!',
+                'almost_time' => 'Presque l\'heure!',
+                'hi' => 'Bonjour',
+                'view_booking_btn' => 'Voir la réservation',
+                'welcome' => 'Bienvenue sur GlamourSchedule!',
+                'trial_ending' => 'Votre période d\'essai se termine aujourd\'hui!',
+                'activate_now_btn' => 'Activer Maintenant',
+                'account_deactivated' => 'Votre compte a été désactivé',
+                'reactivate_btn' => 'Réactiver mon compte',
+                'setup_page' => 'Il est temps de configurer votre page!',
                 'translate_email' => 'Traduire cet e-mail',
                 'no_notes' => 'Pas de notes',
+                'payout' => 'Paiement',
+                'email_subject_booking' => 'Confirmation de réservation',
+                'email_subject_reminder' => 'Rappel: Rendez-vous demain chez',
+                'email_subject_reminder_1h' => 'Rappel: Rendez-vous dans 1 heure chez',
             ],
         ];
 
@@ -217,34 +263,28 @@ class Mailer
     }
 
     /**
+     * Get content in the user's selected language only
+     * Falls back to English, then Dutch if language not available
+     */
+    private function getSingleLangContent(array $texts): string
+    {
+        // Get content in user's language, fallback to en, then nl
+        $content = $texts[$this->lang] ?? $texts['en'] ?? $texts['nl'] ?? '';
+
+        return <<<HTML
+        <div style="color:#333;font-size:14px;line-height:1.6;">
+            {$content}
+        </div>
+HTML;
+    }
+
+    /**
      * Get multi-language section for emails
-     * Each language block is clearly separated with flag indicators
+     * Now uses single language based on user preference
      */
     private function getMultiLangSection(array $texts): string
     {
-        $html = '';
-        $langs = [
-            'nl' => ['flag' => 'NL', 'color' => '#FF6B00'],
-            'en' => ['flag' => 'EN', 'color' => '#003399'],
-            'de' => ['flag' => 'DE', 'color' => '#DD0000'],
-            'fr' => ['flag' => 'FR', 'color' => '#0055A4']
-        ];
-
-        foreach ($langs as $code => $config) {
-            if (isset($texts[$code])) {
-                $flag = $config['flag'];
-                $color = $config['color'];
-                $html .= <<<HTML
-                <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #eee;">
-                    <div style="display:inline-block;background:{$color};color:#fff;padding:4px 10px;margin-bottom:12px;border-radius:3px;font-size:11px;font-weight:bold;letter-spacing:1px;">{$flag}</div>
-                    <div style="color:#333;font-size:14px;line-height:1.6;">
-                        {$texts[$code]}
-                    </div>
-                </div>
-HTML;
-            }
-        }
-        return $html;
+        return $this->getSingleLangContent($texts);
     }
 
     /**
@@ -468,10 +508,10 @@ HTML;
     /**
      * Send booking confirmation to customer
      */
-    public function sendBookingConfirmation(array $booking): bool
+    public function sendBookingConfirmation(array $booking, array $businessSettings = []): bool
     {
         $to = $booking['customer_email'];
-        $subject = "Boekingsbevestiging #{$booking['booking_number']} - GlamourSchedule";
+        $subject = $this->t('email_subject_booking') . " #{$booking['booking_number']} - GlamourSchedule";
 
         $dateFormatted = date('d-m-Y', strtotime($booking['date']));
         $priceFormatted = number_format($booking['price'], 2, ',', '.');
@@ -489,7 +529,7 @@ HTML;
             'price' => $priceFormatted,
             'booking_url' => $bookingUrl,
             'qr_code_url' => $qrCodeUrl
-        ]));
+        ]), $businessSettings);
 
         return $this->send($to, $subject, $htmlBody);
     }
@@ -497,7 +537,7 @@ HTML;
     /**
      * Send booking notification to business
      */
-    public function sendBookingNotificationToBusiness(array $booking): bool
+    public function sendBookingNotificationToBusiness(array $booking, array $businessSettings = []): bool
     {
         $to = $booking['business_email'];
         $customerName = $this->sanitize($booking['customer_name']);
@@ -519,7 +559,7 @@ HTML;
             'price' => $priceFormatted,
             'notes' => $booking['notes'] ?? 'Geen opmerkingen',
             'dashboard_url' => "{$this->baseUrl}/business/dashboard"
-        ]));
+        ]), $businessSettings);
 
         return $this->send($to, $subject, $htmlBody);
     }
@@ -527,11 +567,11 @@ HTML;
     /**
      * Send 24-hour reminder to customer
      */
-    public function sendBookingReminder(array $booking): bool
+    public function sendBookingReminder(array $booking, array $businessSettings = []): bool
     {
         $to = $booking['customer_email'];
         $businessName = $this->sanitize($booking['business_name']);
-        $subject = "Herinnering: Morgen afspraak bij {$businessName}";
+        $subject = $this->t('email_subject_reminder') . " {$businessName}";
 
         $dateFormatted = date('d-m-Y', strtotime($booking['date']));
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
@@ -545,7 +585,7 @@ HTML;
             'address' => $booking['address'] ?? '',
             'city' => $booking['city'] ?? '',
             'booking_url' => $bookingUrl
-        ]));
+        ]), $businessSettings);
 
         return $this->send($to, $subject, $htmlBody);
     }
@@ -553,11 +593,11 @@ HTML;
     /**
      * Send 1-hour reminder to customer
      */
-    public function sendBookingReminder1Hour(array $booking): bool
+    public function sendBookingReminder1Hour(array $booking, array $businessSettings = []): bool
     {
         $to = $booking['customer_email'];
         $businessName = $this->sanitize($booking['business_name']);
-        $subject = "Herinnering: Over 1 uur afspraak bij {$businessName}";
+        $subject = $this->t('email_subject_reminder_1h') . " {$businessName}";
 
         $timeFormatted = date('H:i', strtotime($booking['time']));
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
@@ -570,7 +610,7 @@ HTML;
             'address' => $booking['address'] ?? '',
             'city' => $booking['city'] ?? '',
             'booking_url' => $bookingUrl
-        ]));
+        ]), $businessSettings);
 
         return $this->send($to, $subject, $htmlBody);
     }
@@ -607,9 +647,14 @@ HTML;
 
     // ========== EMAIL TEMPLATES ==========
 
-    private function getBookingConfirmationTemplate(array $data): string
+    private function getBookingConfirmationTemplate(array $data, array $settings = []): string
     {
-        $multiLangContent = $this->getMultiLangSection([
+        $primaryColor = $settings['primary_color'] ?? '#000000';
+        $headerTitle = $this->t('booking_confirmed');
+        $viewBookingBtn = $this->t('view_booking');
+        $qrTitle = $this->t('checkin_qr');
+
+        $content = $this->getSingleLangContent([
             'nl' => "
                 <p><strong>Beste {$data['customer_name']},</strong></p>
                 <p>Je afspraak is succesvol geboekt! Hieronder vind je alle details.</p>
@@ -649,21 +694,21 @@ HTML;
                     <p style='margin:0;color:#92400e;font-weight:600;font-size:14px;'>24-Stunden Stornierungsrichtlinie</p>
                     <p style='margin:5px 0 0;color:#92400e;font-size:13px;'>Kostenlose Stornierung bis 24 Stunden vorher. Innerhalb von 24 Stunden: 50% Stornogebühr.</p>
                 </div>
-                <p>Zeigen Sie den QR-Code unten bei Ihrer Ankunft. Der Salon scannt ihn, um Ihre Anwesenheit zu bestatigen.</p>
+                <p>Zeigen Sie den QR-Code unten bei Ihrer Ankunft. Der Salon scannt ihn, um Ihre Anwesenheit zu bestätigen.</p>
                 <p>Sie erhalten eine Erinnerung 24 Stunden und 1 Stunde vor Ihrem Termin.</p>
             ",
             'fr' => "
-                <p><strong>Cher/Chere {$data['customer_name']},</strong></p>
-                <p>Votre rendez-vous a ete reserve avec succes! Vous trouverez tous les details ci-dessous.</p>
+                <p><strong>Cher/Chère {$data['customer_name']},</strong></p>
+                <p>Votre rendez-vous a été réservé avec succès! Vous trouverez tous les détails ci-dessous.</p>
                 <p><strong>Salon:</strong> {$data['business_name']}<br>
                 <strong>Traitement:</strong> {$data['service_name']}<br>
-                <strong>Date et Heure:</strong> {$data['date']} a {$data['time']}<br>
+                <strong>Date et Heure:</strong> {$data['date']} à {$data['time']}<br>
                 <strong>Prix:</strong> EUR {$data['price']}</p>
                 <div style='background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:12px;margin:15px 0;'>
                     <p style='margin:0;color:#92400e;font-weight:600;font-size:14px;'>Politique d'annulation 24 heures</p>
-                    <p style='margin:5px 0 0;color:#92400e;font-size:13px;'>Annulation gratuite jusqu'a 24 heures avant. Moins de 24 heures: 50% de frais.</p>
+                    <p style='margin:5px 0 0;color:#92400e;font-size:13px;'>Annulation gratuite jusqu'à 24 heures avant. Moins de 24 heures: 50% de frais.</p>
                 </div>
-                <p>Montrez le code QR ci-dessous a votre arrivee. Le salon le scannera pour confirmer votre presence.</p>
+                <p>Montrez le code QR ci-dessous à votre arrivée. Le salon le scannera pour confirmer votre présence.</p>
                 <p>Vous recevrez un rappel 24 heures et 1 heure avant votre rendez-vous.</p>
             "
         ]);
@@ -682,25 +727,25 @@ HTML;
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
-                        <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">Booking Confirmed / Boeking Bevestigd</h1>
+                        <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
+                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
                             <p style="margin:10px 0 0;opacity:0.9;font-size:16px;">#{$data['booking_number']}</p>
                         </td>
                     </tr>
-                    <!-- Multi-language Content -->
+                    <!-- Content -->
                     <tr>
                         <td style="padding:30px;">
-                            {$multiLangContent}
+                            {$content}
 
                             <!-- QR Code -->
                             <div style="text-align:center;padding:25px;background:#f9f9f9;border-radius:12px;margin:20px 0;">
-                                <p style="margin:0 0 15px;color:#333;font-weight:bold;">Check-in QR Code</p>
+                                <p style="margin:0 0 15px;color:#333;font-weight:bold;">{$qrTitle}</p>
                                 <img src="{$data['qr_code_url']}" alt="QR Code" style="width:150px;height:150px;">
                             </div>
 
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
-                                    View Booking / Bekijk Boeking
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                    {$viewBookingBtn}
                                 </a>
                             </p>
                         </td>
@@ -721,8 +766,10 @@ HTML;
 HTML;
     }
 
-    private function getBusinessNotificationTemplate(array $data): string
+    private function getBusinessNotificationTemplate(array $data, array $settings = []): string
     {
+        $primaryColor = $settings['primary_color'] ?? '#000000';
+
         $multiLangContent = $this->getMultiLangSection([
             'nl' => "
                 <p><strong>Beste {$data['business_name']},</strong></p>
@@ -792,7 +839,7 @@ HTML;
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
-                        <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
+                        <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">New Booking / Nieuwe Boeking</h1>
                             <p style="margin:10px 0 0;opacity:0.9;">#{$data['booking_number']}</p>
                         </td>
@@ -803,7 +850,7 @@ HTML;
                             {$multiLangContent}
 
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['dashboard_url']}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                <a href="{$data['dashboard_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
                                     Dashboard
                                 </a>
                             </p>
@@ -824,9 +871,14 @@ HTML;
 HTML;
     }
 
-    private function getReminderTemplate(array $data): string
+    private function getReminderTemplate(array $data, array $settings = []): string
     {
-        $multiLangContent = $this->getMultiLangSection([
+        $primaryColor = $settings['primary_color'] ?? '#000000';
+        $headerTitle = $this->t('reminder');
+        $subTitle = $this->t('appointment_tomorrow');
+        $viewBookingBtn = $this->t('view_booking_btn');
+
+        $content = $this->getSingleLangContent([
             'nl' => "
                 <p><strong>Hoi {$data['customer_name']}!</strong></p>
                 <p>Even een vriendelijke herinnering dat je morgen een afspraak hebt.</p>
@@ -852,14 +904,14 @@ HTML;
                 <strong>Adresse:</strong> {$data['address']}, {$data['city']}<br>
                 <strong>Wann:</strong> {$data['date']} um {$data['time']}<br>
                 <strong>Behandlung:</strong> {$data['service_name']}</p>
-                <p>Konnen Sie nicht kommen? Stornieren oder andern Sie Ihren Termin uber den Link unten.</p>
+                <p>Können Sie nicht kommen? Stornieren oder ändern Sie Ihren Termin über den Link unten.</p>
             ",
             'fr' => "
                 <p><strong>Bonjour {$data['customer_name']}!</strong></p>
                 <p>Un petit rappel que vous avez un rendez-vous demain.</p>
-                <p><strong>Ou:</strong> {$data['business_name']}<br>
+                <p><strong>Où:</strong> {$data['business_name']}<br>
                 <strong>Adresse:</strong> {$data['address']}, {$data['city']}<br>
-                <strong>Quand:</strong> {$data['date']} a {$data['time']}<br>
+                <strong>Quand:</strong> {$data['date']} à {$data['time']}<br>
                 <strong>Traitement:</strong> {$data['service_name']}</p>
                 <p>Vous ne pouvez pas venir? Annulez ou modifiez votre rendez-vous via le lien ci-dessous.</p>
             "
@@ -878,17 +930,17 @@ HTML;
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
-                        <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">Reminder / Herinnering</h1>
-                            <p style="margin:10px 0 0;opacity:0.9;">Appointment Tomorrow / Afspraak Morgen</p>
+                        <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
+                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;">{$subTitle}</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:30px;">
-                            {$multiLangContent}
+                            {$content}
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
-                                    View Booking / Bekijk Boeking
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                    {$viewBookingBtn}
                                 </a>
                             </p>
                         </td>
@@ -907,9 +959,14 @@ HTML;
 HTML;
     }
 
-    private function getReminder1HourTemplate(array $data): string
+    private function getReminder1HourTemplate(array $data, array $settings = []): string
     {
-        $multiLangContent = $this->getMultiLangSection([
+        $primaryColor = $settings['primary_color'] ?? '#000000';
+        $headerTitle = $this->t('appointment_1hour');
+        $subTitle = $this->t('almost_time');
+        $viewBookingBtn = $this->t('view_booking_btn');
+
+        $content = $this->getSingleLangContent([
             'nl' => "
                 <p><strong>Hoi {$data['customer_name']}!</strong></p>
                 <p>Over 1 uur begint je afspraak. Vergeet niet op tijd te komen!</p>
@@ -935,16 +992,16 @@ HTML;
                 <strong>Adresse:</strong> {$data['address']}, {$data['city']}<br>
                 <strong>Zeit:</strong> {$data['time']}<br>
                 <strong>Behandlung:</strong> {$data['service_name']}</p>
-                <p>Halten Sie Ihren QR-Code fur den Check-in bereit!</p>
+                <p>Halten Sie Ihren QR-Code für den Check-in bereit!</p>
             ",
             'fr' => "
                 <p><strong>Bonjour {$data['customer_name']}!</strong></p>
-                <p>Votre rendez-vous commence dans 1 heure. N'oubliez pas d'arriver a l'heure!</p>
-                <p><strong>Ou:</strong> {$data['business_name']}<br>
+                <p>Votre rendez-vous commence dans 1 heure. N'oubliez pas d'arriver à l'heure!</p>
+                <p><strong>Où:</strong> {$data['business_name']}<br>
                 <strong>Adresse:</strong> {$data['address']}, {$data['city']}<br>
                 <strong>Heure:</strong> {$data['time']}<br>
                 <strong>Traitement:</strong> {$data['service_name']}</p>
-                <p>Assurez-vous d'avoir votre code QR pret pour l'enregistrement!</p>
+                <p>Assurez-vous d'avoir votre code QR prêt pour l'enregistrement!</p>
             "
         ]);
 
@@ -962,16 +1019,16 @@ HTML;
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">1 Hour Reminder / 1 Uur Herinnering</h1>
-                            <p style="margin:10px 0 0;opacity:0.9;">Almost Time! / Bijna Tijd!</p>
+                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;">{$subTitle}</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:30px;">
-                            {$multiLangContent}
+                            {$content}
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
-                                    View Booking / Bekijk Boeking
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                    {$viewBookingBtn}
                                 </a>
                             </p>
                         </td>

@@ -670,7 +670,8 @@ class BookingController extends Controller
 HTML;
 
         try {
-            $mailer = new Mailer();
+            $customerLang = $booking['language'] ?? $this->lang ?? 'nl';
+            $mailer = new Mailer($customerLang);
             $mailer->send($email, "Boeking geannuleerd - #{$booking['booking_number']}", $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send cancellation email: " . $e->getMessage());
