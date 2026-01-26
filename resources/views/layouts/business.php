@@ -515,92 +515,92 @@
                 GlamourSchedule
             </a>
             <div class="sidebar-business">
-                <div class="sidebar-business-name"><?= htmlspecialchars($business['company_name'] ?? 'Mijn Bedrijf') ?></div>
+                <div class="sidebar-business-name"><?= htmlspecialchars($business['company_name'] ?? ($translations['default_business_name'] ?? 'My Business')) ?></div>
                 <div class="sidebar-business-status">
                     <span class="status-dot <?= ($business['status'] ?? '') === 'active' ? '' : 'pending' ?>"></span>
-                    <?= ($business['status'] ?? '') === 'active' ? 'Actief' : 'In afwachting' ?>
+                    <?= ($business['status'] ?? '') === 'active' ? ($translations['status_active'] ?? 'Active') : ($translations['status_pending'] ?? 'Pending') ?>
                 </div>
             </div>
         </div>
 
         <nav class="sidebar-nav">
             <div class="nav-section">
-                <div class="nav-section-title">Overzicht</div>
+                <div class="nav-section-title"><?= $translations['nav_overview'] ?? 'Overview' ?></div>
                 <a href="/business/dashboard" class="nav-item <?= $currentPath === '/business/dashboard' ? 'active' : '' ?>">
-                    <i class="fas fa-home"></i> Dashboard
+                    <i class="fas fa-home"></i> <?= $translations['nav_dashboard'] ?? 'Dashboard' ?>
                 </a>
                 <a href="/business/calendar" class="nav-item <?= $currentPath === '/business/calendar' ? 'active' : '' ?>">
-                    <i class="fas fa-calendar-alt"></i> Agenda
+                    <i class="fas fa-calendar-alt"></i> <?= $translations['nav_calendar'] ?? 'Calendar' ?>
                 </a>
                 <a href="/business/bookings" class="nav-item <?= $currentPath === '/business/bookings' ? 'active' : '' ?>">
-                    <i class="fas fa-clipboard-list"></i> Boekingen
+                    <i class="fas fa-clipboard-list"></i> <?= $translations['nav_bookings'] ?? 'Bookings' ?>
                 </a>
                 <a href="/business/scanner" class="nav-item <?= $currentPath === '/business/scanner' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#333333,#000000);color:white;border-radius:10px;margin-top:0.5rem">
-                    <i class="fas fa-qrcode"></i> QR Scanner
+                    <i class="fas fa-qrcode"></i> <?= $translations['nav_qr_scanner'] ?? 'QR Scanner' ?>
                 </a>
                 <a href="/business/pos" class="nav-item <?= $currentPath === '/business/pos' ? 'active' : '' ?>" style="background:linear-gradient(135deg,#1e40af,#1d4ed8);color:white;border-radius:10px;margin-top:0.5rem">
-                    <i class="fas fa-cash-register"></i> POS Systeem
+                    <i class="fas fa-cash-register"></i> <?= $translations['nav_pos_system'] ?? 'POS System' ?>
                 </a>
                 <span class="nav-item" style="background:#333333;color:#888888;border-radius:10px;margin-top:0.5rem;cursor:not-allowed;opacity:0.7">
-                    <i class="fas fa-credit-card"></i> PIN Terminals <i class="fas fa-lock" style="font-size:0.7rem;margin-left:0.25rem"></i>
+                    <i class="fas fa-credit-card"></i> <?= $translations['nav_pin_terminals'] ?? 'PIN Terminals' ?> <i class="fas fa-lock" style="font-size:0.7rem;margin-left:0.25rem"></i>
                 </span>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">Beheer</div>
+                <div class="nav-section-title"><?= $translations['nav_management'] ?? 'Management' ?></div>
                 <a href="/business/services" class="nav-item <?= $currentPath === '/business/services' ? 'active' : '' ?>">
-                    <i class="fas fa-cut"></i> Diensten
+                    <i class="fas fa-cut"></i> <?= $translations['nav_services'] ?? 'Services' ?>
                 </a>
                 <a href="/business/inventory" class="nav-item <?= $currentPath === '/business/inventory' ? 'active' : '' ?>">
-                    <i class="fas fa-boxes"></i> Voorraad
+                    <i class="fas fa-boxes"></i> <?= $translations['nav_inventory'] ?? 'Inventory' ?>
                 </a>
                 <?php if (($business['business_type'] ?? 'eenmanszaak') === 'bv'): ?>
                 <a href="/business/employees" class="nav-item <?= $currentPath === '/business/employees' ? 'active' : '' ?>">
-                    <i class="fas fa-users"></i> Medewerkers
+                    <i class="fas fa-users"></i> <?= $translations['nav_employees'] ?? 'Employees' ?>
                 </a>
                 <?php endif; ?>
                 <a href="/business/reviews" class="nav-item <?= $currentPath === '/business/reviews' ? 'active' : '' ?>">
-                    <i class="fas fa-star"></i> Reviews
+                    <i class="fas fa-star"></i> <?= $translations['nav_reviews'] ?? 'Reviews' ?>
                 </a>
                 <a href="/business/payouts" class="nav-item <?= $currentPath === '/business/payouts' ? 'active' : '' ?>">
-                    <i class="fas fa-euro-sign"></i> Uitbetalingen
+                    <i class="fas fa-euro-sign"></i> <?= $translations['nav_payouts'] ?? 'Payouts' ?>
                 </a>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">Webpagina</div>
+                <div class="nav-section-title"><?= $translations['nav_website_section'] ?? 'Website' ?></div>
                 <a href="/business/website" class="nav-item <?= $currentPath === '/business/website' ? 'active' : '' ?>">
-                    <i class="fas fa-globe"></i> Pagina Inhoud
+                    <i class="fas fa-globe"></i> <?= $translations['nav_website_content'] ?? 'Page Content' ?>
                 </a>
                 <a href="/business/photos" class="nav-item <?= $currentPath === '/business/photos' ? 'active' : '' ?>">
-                    <i class="fas fa-images"></i> Foto's
+                    <i class="fas fa-images"></i> <?= $translations['nav_photos'] ?? 'Photos' ?>
                 </a>
                 <a href="/business/theme" class="nav-item <?= $currentPath === '/business/theme' ? 'active' : '' ?>">
-                    <i class="fas fa-palette"></i> Thema & Kleuren
+                    <i class="fas fa-palette"></i> <?= $translations['nav_theme_colors'] ?? 'Theme & Colors' ?>
                 </a>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">Marketing</div>
+                <div class="nav-section-title"><?= $translations['nav_marketing'] ?? 'Marketing' ?></div>
                 <a href="/business/boost" class="nav-item <?= $currentPath === '/business/boost' ? 'active' : '' ?>" style="<?= $currentPath !== '/business/boost' ? 'background:linear-gradient(135deg,#f59e0b,#d97706);color:white;' : '' ?>">
-                    <i class="fas fa-rocket"></i> Boost je Bedrijf
+                    <i class="fas fa-rocket"></i> <?= $translations['nav_boost_business'] ?? 'Boost your Business' ?>
                 </a>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">Instellingen</div>
+                <div class="nav-section-title"><?= $translations['nav_settings'] ?? 'Settings' ?></div>
                 <a href="/business/profile" class="nav-item <?= $currentPath === '/business/profile' ? 'active' : '' ?>">
-                    <i class="fas fa-building"></i> Bedrijfsprofiel
+                    <i class="fas fa-building"></i> <?= $translations['nav_business_profile'] ?? 'Business Profile' ?>
                 </a>
                 <a href="/business/mollie/connect" class="nav-item <?= $currentPath === '/business/mollie/connect' ? 'active' : '' ?>" style="<?= empty($business['mollie_account_id']) ? 'background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;' : '' ?>">
-                    <i class="fas fa-link"></i> <?= empty($business['mollie_account_id']) ? 'Mollie Koppelen' : 'Mollie Verbonden' ?>
+                    <i class="fas fa-link"></i> <?= empty($business['mollie_account_id']) ? ($translations['nav_mollie_connect'] ?? 'Connect Mollie') : ($translations['nav_mollie_connected'] ?? 'Mollie Connected') ?>
                 </a>
             </div>
         </nav>
 
         <div class="sidebar-footer">
             <a href="/business/<?= htmlspecialchars($business['slug'] ?? '') ?>" target="_blank" class="view-page-btn">
-                <i class="fas fa-external-link-alt"></i> Bekijk Publieke Pagina
+                <i class="fas fa-external-link-alt"></i> <?= $translations['nav_view_public_page'] ?? 'View Public Page' ?>
             </a>
         </div>
     </aside>
@@ -619,7 +619,7 @@
                     <i class="fas fa-moon"></i>
                 </button>
                 <a href="/logout" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Uitloggen
+                    <i class="fas fa-sign-out-alt"></i> <?= $translations['nav_logout'] ?? 'Logout' ?>
                 </a>
             </div>
         </header>
@@ -642,23 +642,23 @@
         <nav>
             <a href="/business/dashboard" class="<?= $currentPath === '/business/dashboard' ? 'active' : '' ?>">
                 <i class="fas fa-home"></i>
-                Home
+                <?= $translations['nav_home'] ?? 'Home' ?>
             </a>
             <a href="/business/calendar" class="<?= $currentPath === '/business/calendar' ? 'active' : '' ?>">
                 <i class="fas fa-calendar-alt"></i>
-                Agenda
+                <?= $translations['nav_calendar'] ?? 'Calendar' ?>
             </a>
             <a href="/business/bookings" class="<?= $currentPath === '/business/bookings' ? 'active' : '' ?>">
                 <i class="fas fa-clipboard-list"></i>
-                Boekingen
+                <?= $translations['nav_bookings'] ?? 'Bookings' ?>
             </a>
             <a href="/business/profile" class="<?= $currentPath === '/business/profile' ? 'active' : '' ?>">
                 <i class="fas fa-cog"></i>
-                Profiel
+                <?= $translations['nav_profile'] ?? 'Profile' ?>
             </a>
             <a href="/logout" class="nav-logout">
                 <i class="fas fa-sign-out-alt"></i>
-                Uitloggen
+                <?= $translations['nav_logout'] ?? 'Logout' ?>
             </a>
         </nav>
     </div>
@@ -754,11 +754,11 @@
             <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('businessInstallDismissed','1')">&times;</button>
             <img src="/icon-192.png" alt="GS Business" width="48" height="48" style="border-radius:10px">
             <div class="install-text">
-                <strong>Installeer GS Business</strong>
-                <span>Snelle toegang tot je dashboard</span>
-                <span style="display:block;margin-top:0.25rem;color:#f59e0b;font-size:0.7rem">Binnenkort ook in de App Store!</span>
+                <strong><?= $translations['install_gs_business'] ?? 'Install GS Business' ?></strong>
+                <span><?= $translations['install_quick_access'] ?? 'Quick access to your dashboard' ?></span>
+                <span style="display:block;margin-top:0.25rem;color:#f59e0b;font-size:0.7rem"><?= $translations['install_coming_soon'] ?? 'Coming soon to the App Store!' ?></span>
             </div>
-            <button class="install-btn" id="businessInstallBtn">Installeren</button>
+            <button class="install-btn" id="businessInstallBtn"><?= $translations['install_btn'] ?? 'Install' ?></button>
         </div>
     </div>
 

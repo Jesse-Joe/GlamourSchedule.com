@@ -4,7 +4,9 @@
  */
 
 return [
+    // ═══════════════════════════════════════════════════════════════════════
     // GENERAL
+    // ═══════════════════════════════════════════════════════════════════════
     'site_name' => 'GlamourSchedule',
     'tagline' => 'Prenota il tuo appuntamento di bellezza',
     'welcome' => 'Benvenuto',
@@ -37,7 +39,9 @@ return [
     'min_chars' => 'min. :count caratteri',
     'for_business' => 'Per aziende',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // HOMEPAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'hero_title' => 'Prenota il tuo appuntamento di bellezza perfetto',
     'hero_subtitle' => 'Scopri i migliori saloni vicino a te e prenota online istantaneamente - veloce, facile e 24/7',
     'search_what' => 'Cosa cerchi? (parrucchiere, unghie, massaggio...)',
@@ -56,7 +60,9 @@ return [
     'stats_bookings' => 'Prenotazioni effettuate',
     'stats_customers' => 'Clienti soddisfatti',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // AUTHENTICATION
+    // ═══════════════════════════════════════════════════════════════════════
     'login' => 'Accedi',
     'logout' => 'Esci',
     'register' => 'Registrati',
@@ -83,7 +89,9 @@ return [
     'choose_strong_password' => 'Scegli una password sicura per il tuo account',
     'use_strong_password' => 'Usa lettere, numeri e caratteri speciali per maggiore sicurezza',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BUSINESS REGISTRATION
+    // ═══════════════════════════════════════════════════════════════════════
     'business_register' => 'Registra il tuo salone',
     'business_register_subtitle' => 'Inizia a ricevere prenotazioni online oggi',
     'business_register_btn' => 'Registrati come azienda',
@@ -120,7 +128,9 @@ return [
     'start_free' => 'Inizia gratis',
     'first_salons_offer' => 'Primi :count saloni: solo',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BOOKINGS
+    // ═══════════════════════════════════════════════════════════════════════
     'booking' => 'Prenotazione',
     'my_bookings' => 'Le mie prenotazioni',
     'new_booking' => 'Nuova prenotazione',
@@ -176,7 +186,9 @@ return [
     'booking_details' => 'Dettagli prenotazione',
     'confirm_cancel' => 'Sei sicuro di voler annullare?',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // SEARCH
+    // ═══════════════════════════════════════════════════════════════════════
     'search_placeholder' => 'Cerca salone, trattamento o posizione...',
     'filters' => 'Filtri',
     'all_categories' => 'Tutte le categorie',
@@ -196,7 +208,9 @@ return [
     'name_az' => 'Nome A-Z',
     'newest_first' => 'Più recente',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // PAYMENT
+    // ═══════════════════════════════════════════════════════════════════════
     'payment' => 'Pagamento',
     'total' => 'Totale',
     'subtotal' => 'Subtotale',
@@ -208,7 +222,9 @@ return [
     'payment_failed' => 'Pagamento fallito',
     'payment_pending' => 'Pagamento in sospeso',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // EMAIL VERIFICATION
+    // ═══════════════════════════════════════════════════════════════════════
     'verify_email' => 'Verifica la tua email',
     'verify_code' => 'Codice di verifica',
     'verify_btn' => 'Verifica',
@@ -216,7 +232,9 @@ return [
     'code_sent_to' => 'Abbiamo inviato un codice a',
     'code_valid_for' => 'Il codice è valido per 30 minuti',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // ERROR MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
     'error' => 'Errore',
     'error_required' => 'Questo campo è obbligatorio',
     'error_email' => 'Email non valida',
@@ -232,7 +250,9 @@ return [
     'error_expired' => 'Questo link è scaduto',
     'note' => 'Nota',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // SUCCESS MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
     'success' => 'Successo',
     'success_registered' => 'Account creato con successo!',
     'success_logged_in' => 'Bentornato!',
@@ -242,11 +262,15 @@ return [
     'success_updated' => 'Aggiornato con successo',
     'email_sent' => 'Email inviata!',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // FOOTER
+    // ═══════════════════════════════════════════════════════════════════════
     'copyright' => '2025 GlamourSchedule. Tutti i diritti riservati.',
     'made_with' => 'Fatto con amore nei Paesi Bassi',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // DASHBOARD
+    // ═══════════════════════════════════════════════════════════════════════
     'dashboard' => 'Dashboard',
     'my_profile' => 'Il mio profilo',
     'settings' => 'Impostazioni',
@@ -256,7 +280,9 @@ return [
     'no_bookings' => 'Nessuna prenotazione',
     'view_all' => 'Vedi tutto',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // COOKIE CONSENT
+    // ═══════════════════════════════════════════════════════════════════════
     'cookie_title' => 'Impostazioni cookie',
     'cookie_text' => 'Utilizziamo i cookie per migliorare la tua esperienza, mostrare contenuti personalizzati e analizzare il nostro traffico. Puoi scegliere quali cookie accettare.',
     'cookie_essential' => 'Essenziali',
@@ -271,7 +297,9 @@ return [
     'cookie_save' => 'Salva selezione',
     'cookie_reject' => 'Solo essenziali',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // PWA INSTALL
+    // ═══════════════════════════════════════════════════════════════════════
     'pwa_title' => 'Installa GlamourSchedule',
     'pwa_text' => 'Aggiungi la nostra app alla schermata home per un accesso rapido alle prenotazioni di bellezza!',
     'pwa_fast' => 'Caricamento più veloce',
@@ -281,7 +309,9 @@ return [
     'pwa_how' => 'Come installare:',
     'pwa_later' => 'Forse dopo',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BUSINESS PAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'services' => 'Servizi',
     'no_services' => 'Nessun servizio disponibile',
     'book' => 'Prenota',
@@ -298,7 +328,9 @@ return [
     'saturday' => 'Sabato',
     'sunday' => 'Domenica',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BUSINESS DASHBOARD
+    // ═══════════════════════════════════════════════════════════════════════
     'pending_verification' => 'Verifica in sospeso',
     'today' => 'Oggi',
     'total_bookings' => 'Totale prenotazioni',
@@ -317,7 +349,9 @@ return [
     'guest' => 'Ospite',
     'unknown' => 'Sconosciuto',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BUSINESS REGISTRATION
+    // ═══════════════════════════════════════════════════════════════════════
     'register_your_salon' => 'Registra il tuo salone',
     'start_receiving_bookings' => 'Inizia a ricevere prenotazioni online oggi',
     'spots_left_for' => 'posti rimasti a solo',
@@ -327,7 +361,9 @@ return [
     'tell_about_salon' => 'Raccontaci del tuo salone e dei tuoi servizi...',
     'per_booking_admin' => 'Spese amministrative addebitate per prenotazione',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // PAYMENT PAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'payment_success_title' => 'Pagamento riuscito!',
     'payment_success_msg' => 'La tua prenotazione è confermata. Abbiamo inviato una conferma al tuo indirizzo email.',
     'date_time' => 'Data e ora',
@@ -352,11 +388,15 @@ return [
     'customer_name' => 'Nome cliente',
     'total_amount' => 'Importo totale',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // ERRORS
+    // ═══════════════════════════════════════════════════════════════════════
     'page_not_found' => 'Pagina non trovata',
     'page_not_found_desc' => 'La pagina che stai cercando non esiste o è stata spostata.',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // CUSTOMER DASHBOARD
+    // ═══════════════════════════════════════════════════════════════════════
     'welcome_user' => 'Benvenuto',
     'view_appointments' => 'Visualizza i tuoi appuntamenti',
     'edit_details' => 'Modifica i tuoi dati',
@@ -367,7 +407,9 @@ return [
     'recent_appointments' => 'Appuntamenti recenti',
     'view' => 'Visualizza',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // NAVIGATION & LAYOUT
+    // ═══════════════════════════════════════════════════════════════════════
     'navigation' => 'Navigazione',
     'my_account' => 'Il mio account',
     'my_salon' => 'Il mio salone',
@@ -384,7 +426,9 @@ return [
     'developed_by' => 'Sviluppato da',
     'marketing' => 'Marketing',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // DOMAIN/LANGUAGE SWITCH POPUP
+    // ═══════════════════════════════════════════════════════════════════════
     'domain_popup_title' => 'Abbiamo rilevato che sei nei Paesi Bassi',
     'domain_popup_desc' => 'Vorresti passare al nostro sito olandese per contenuti e supporto locali?',
     'domain_popup_switch_nl' => 'Vai a glamourschedule.nl',
@@ -395,7 +439,9 @@ return [
     'domain_popup_stay_nl' => 'Rimani sul sito olandese',
     'domain_popup_note' => 'Puoi sempre cambiare la tua preferenza di lingua nel menu.',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // EARLY BIRD POPUP
+    // ═══════════════════════════════════════════════════════════════════════
     'early_bird_offer' => 'Offerta Early Bird',
     'start_salon_for' => 'Avvia il tuo salone a solo',
     'early_bird_subtitle' => 'Pagamento unico per le prime 100 aziende',
@@ -406,7 +452,9 @@ return [
     'register_now' => 'Registrati ora',
     'early_bird_note' => 'Dopo €99.99 per nuove aziende',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // GLOBAL SEARCH
+    // ═══════════════════════════════════════════════════════════════════════
     'salons' => 'Saloni',
     'netherlands' => 'Paesi Bassi',
     'all_salons' => 'Tutti i saloni',
@@ -416,7 +464,9 @@ return [
     'no_results_for' => 'Nessun risultato per',
     'search_all_salons' => 'Cerca tutti i saloni',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // CATEGORIES
+    // ═══════════════════════════════════════════════════════════════════════
     'categories_title' => 'Scopri i servizi',
     'categories_subtitle' => 'Dai capelli al benessere - trova esattamente quello che cerchi',
     'cat_hair' => 'Capelli',
@@ -440,7 +490,9 @@ return [
     'cat_alternative' => 'Alternativo',
     'cat_alternative_desc' => 'Yoga, reiki',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // HOMEPAGE SECTIONS
+    // ═══════════════════════════════════════════════════════════════════════
     'featured' => 'In evidenza',
     'featured_businesses' => 'Aziende in evidenza',
     'featured_businesses_desc' => 'Saloni premium che si distinguono',
@@ -451,12 +503,16 @@ return [
     'sales_partner_desc' => 'Guadagna commissioni segnalando aziende a GlamourSchedule',
     'start_now' => 'Inizia ora',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // GLAMORI CHATBOT
+    // ═══════════════════════════════════════════════════════════════════════
     'online_always_available' => 'Online - Sempre disponibile',
     'type_your_message' => 'Scrivi il tuo messaggio...',
     'glamori_welcome' => 'Ciao! Sono Glamori. Come posso aiutarti?',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // MOLLIE TERMINALS
+    // ═══════════════════════════════════════════════════════════════════════
     'terminals' => 'Terminali POS',
     'terminals_desc' => 'Gestisci i tuoi terminali di pagamento Mollie',
     'linked_terminals' => 'Terminali collegati',
@@ -489,7 +545,9 @@ return [
     'active' => 'Attivo',
     'link' => 'Collega',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // SEARCH PAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'search_salons_title' => 'Cerca saloni',
     'search_find_perfect' => 'Trova il salone perfetto vicino a te',
     'search_salon_treatment' => 'Cerca salone, trattamento...',
@@ -536,14 +594,18 @@ return [
     'no_services_added' => 'Ancora nessun servizio aggiunto.',
     'from_price' => 'Da',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BUSINESS PAGE EXTRA
+    // ═══════════════════════════════════════════════════════════════════════
     'about_us' => 'Chi siamo',
     'photos' => 'Foto',
     'our_services' => 'I nostri servizi',
     'contact_info' => 'Contatti',
     'website' => 'Sito web',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // AUTH PAGES
+    // ═══════════════════════════════════════════════════════════════════════
     'personal' => 'Personale',
     'personal_account' => 'Account cliente',
     'business_tab' => 'Azienda',
@@ -554,13 +616,17 @@ return [
     'business_data' => 'Dati aziendali',
     'important' => 'Importante',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // BOOKING EXTRA
+    // ═══════════════════════════════════════════════════════════════════════
     'choose_employee' => 'Scegli un dipendente',
     'qr_scan_required' => 'Scansione codice QR richiesta',
     'qr_scan_desc' => 'All\'arrivo in salone, devi scansionare il codice QR per confermare la prenotazione. Senza scansione, la prenotazione non sarà registrata come completata.',
     'qr_scan_booking_desc' => 'Per ogni prenotazione, il cliente deve scansionare il codice QR all\'arrivo.',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // CONTACT PAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'we_are_here' => 'Siamo qui per aiutarti!',
     'response_time' => 'Tempo di risposta',
     'within_24h' => 'Entro 24 ore',
@@ -580,7 +646,9 @@ return [
     'message_placeholder' => 'Descrivi la tua domanda o commento il più chiaramente possibile...',
     'send_btn' => 'Invia messaggio',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // ABOUT/FEATURES PAGE
+    // ═══════════════════════════════════════════════════════════════════════
     'platform_functionality' => 'Funzionalità della piattaforma',
     'platform_functionality_desc' => 'Scopri tutte le funzionalità che GlamourSchedule offre a clienti e saloni',
     'for_customers' => 'Per i clienti',
@@ -588,7 +656,9 @@ return [
     'for_salons' => 'Per i saloni',
     'toggle_theme' => 'Cambia tema',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // Verification Page
+    // ═══════════════════════════════════════════════════════════════════════
     'error_wrong_code' => 'Codice errato. Controlla la tua email e riprova.',
     'error_max_attempts' => 'Troppi tentativi. Richiedi un nuovo codice.',
     'new_code_sent' => 'Un nuovo codice è stato inviato alla tua email.',
@@ -604,7 +674,9 @@ return [
     'delete_business' => 'Elimina azienda',
     'delete_business_permanent' => 'Eliminare l\'azienda permanentemente?',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // Checkout Page
+    // ═══════════════════════════════════════════════════════════════════════
     'checkout_review_booking' => 'Rivedi la tua prenotazione',
     'checkout_review_details' => 'Rivedi i dettagli prima di pagare',
     'employee' => 'Dipendente',
@@ -612,7 +684,9 @@ return [
     'checkout_cancel_policy_text' => 'Cancellazione gratuita fino a 24 ore prima dell\'appuntamento. La cancellazione entro 24 ore comporterà una penale del 50%.',
     'checkout_total_to_pay' => 'Totale da pagare',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // Booking Create Extra
+    // ═══════════════════════════════════════════════════════════════════════
     'select_employee_first' => 'Per favore seleziona prima un dipendente',
     'no_available_dates_60' => 'Nessuna data disponibile trovata nei prossimi 60 giorni.',
     'select_date_and_service' => 'Per favore seleziona prima una data e un servizio.',
@@ -626,7 +700,9 @@ return [
     'waitlist_error' => 'Si è verificato un errore.',
     'time_at_label' => 'alle',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // Review Page
+    // ═══════════════════════════════════════════════════════════════════════
     'review_thanks' => 'Grazie per la tua recensione!',
     'review_helps' => 'Il tuo feedback aiuta',
     'review_and_others' => 'e altri clienti.',
@@ -645,7 +721,9 @@ return [
     'review_submit' => 'Invia recensione',
     'review_privacy_note' => 'La tua recensione sarà pubblicata con il tuo nome e l\'iniziale del cognome',
 
+    // ═══════════════════════════════════════════════════════════════════════
     // LOYALTY POINTS
+    // ═══════════════════════════════════════════════════════════════════════
     'loyalty_points' => 'Punti fedeltà',
     'total_points' => 'Punti totali',
     'your_points' => 'I tuoi punti',
@@ -682,4 +760,617 @@ return [
     'points_info_3' => 'I saloni impostano il max. di punti riscattabili',
     'points_info_4' => 'La commissione piattaforma (€1.75) si applica sempre',
     'view_your_points' => 'Visualizza i tuoi punti',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS DASHBOARD NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════════
+    'nav_overview' => 'Panoramica',
+    'nav_dashboard' => 'Dashboard',
+    'nav_calendar' => 'Calendario',
+    'nav_bookings' => 'Prenotazioni',
+    'nav_qr_scanner' => 'Scanner QR',
+    'nav_pos_system' => 'Sistema POS',
+    'nav_pin_terminals' => 'Terminali POS',
+    'nav_management' => 'Gestione',
+    'nav_services' => 'Servizi',
+    'nav_inventory' => 'Inventario',
+    'nav_employees' => 'Dipendenti',
+    'nav_reviews' => 'Recensioni',
+    'nav_payouts' => 'Pagamenti',
+    'nav_website_section' => 'Sito web',
+    'nav_website_content' => 'Contenuto pagina',
+    'nav_photos' => 'Foto',
+    'nav_theme_colors' => 'Tema e colori',
+    'nav_marketing' => 'Marketing',
+    'nav_boost_business' => 'Promuovi la tua attività',
+    'nav_settings' => 'Impostazioni',
+    'nav_business_profile' => 'Profilo aziendale',
+    'nav_mollie_connect' => 'Collega Mollie',
+    'nav_mollie_connected' => 'Mollie collegato',
+    'nav_logout' => 'Esci',
+    'nav_view_public_page' => 'Vedi pagina pubblica',
+    'nav_home' => 'Home',
+    'nav_profile' => 'Profilo',
+    'nav_account' => 'Account',
+    'default_business_name' => 'La mia attività',
+    'status_active' => 'Attivo',
+    'status_pending' => 'In attesa',
+    'status_in_review' => 'In revisione',
+    'status_processing' => 'In elaborazione',
+    'status_completed' => 'Completato',
+    'status_failed' => 'Fallito',
+    'status_cancelled' => 'Annullato',
+    'status_unknown' => 'Sconosciuto',
+    'status_confirmed' => 'Confermato',
+    'status_no_show' => 'Non presentato',
+    'status_awaiting' => 'In attesa',
+    'status_converted' => 'Convertito',
+    'status_paid' => 'Pagato',
+    'status_expired' => 'Scaduto',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SALES PORTAL
+    // ═══════════════════════════════════════════════════════════════════════
+    'nav_early_birds' => 'Early Birds',
+    'nav_referrals' => 'Referenze',
+    'nav_my_salons' => 'I miei saloni',
+    'nav_materials' => 'Materiali',
+    'nav_guide' => 'Guida',
+    'your_code' => 'Il tuo codice:',
+    'nav_money' => 'Guadagni',
+    'copy_link' => 'Copia link',
+    'link_copied' => 'Link copiato!',
+
+    // Sales Dashboard
+    'stat_net_earnings' => 'Guadagni netti',
+    'stat_paid_out' => 'Pagato',
+    'stat_pending_payout' => 'In attesa di pagamento',
+    'stat_converted' => 'convertiti',
+    'stat_potential' => 'Potenziale',
+    'stat_on_trial' => 'in prova',
+    'stat_total' => 'Totale',
+    'stat_conversion' => 'Conversione',
+    'share_your_link' => 'Condividi il tuo link',
+    'earn_amount' => 'Guadagna €49,99',
+    'earn_description' => 'Per ogni salone che si registra tramite il tuo codice e paga dopo il periodo di prova, ricevi €49,99 di commissione!',
+    'view_materials' => 'Visualizza materiali promozionali',
+    'early_bird_title' => 'Offerta Early Bird',
+    'badge_new' => 'NUOVO',
+    'early_bird_description' => 'Registra saloni per l\'offerta Early Bird (€0,99) e guadagna €9,99 per conversione!',
+    'register_early_bird' => 'Registra Early Bird',
+    'ongoing_trials' => 'Prove in corso',
+    'trials_active' => 'attive',
+    'trial_started' => 'Iniziato:',
+    'trial_today' => 'Oggi',
+    'trial_one_day' => '1 giorno rimasto',
+    'trial_days_left' => 'Solo',
+    'trial_days_label' => 'giorni rimasti',
+    'trial_potential_earnings' => 'Se tutti questi saloni convertono, guadagni:',
+    'recent_referrals' => 'Referenze recenti',
+    'no_referrals_message' => 'Ancora nessuna referenza. Condividi il tuo codice per iniziare a guadagnare!',
+    'promotional_materials' => 'Materiali promozionali',
+    'table_business' => 'Azienda',
+    'table_status' => 'Stato',
+    'table_commission' => 'Commissione',
+    'table_date' => 'Data',
+    'table_amount' => 'Importo',
+    'table_reference' => 'Riferimento',
+    'table_salons' => 'Saloni',
+    'table_email' => 'Email',
+    'table_registered' => 'Registrato',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAYOUTS
+    // ═══════════════════════════════════════════════════════════════════════
+    'payout_pending_balance' => 'In attesa di pagamento',
+    'payout_title' => 'Pagamenti',
+    'payout_description' => 'I pagamenti vengono elaborati ogni 14 giorni sul tuo IBAN',
+    'payout_history_title' => 'Cronologia pagamenti',
+    'payout_no_history' => 'Ancora nessun pagamento',
+    'payout_history_empty' => 'La tua cronologia pagamenti apparirà qui.',
+    'payout_add_iban_notice' => 'Aggiungi il tuo IBAN al profilo per ricevere i pagamenti.',
+    'payout_calculation_title' => 'Come vengono calcolati i pagamenti?',
+    'payout_calculation_fee' => 'Importo prenotazione - €1,75 commissione amministrativa = i tuoi guadagni',
+    'payout_calculation_frequency' => 'I pagamenti vengono elaborati ogni 14 giorni',
+    'payout_calculation_minimum' => 'Importo minimo di pagamento: €25,00',
+    'payout_calculation_timing' => 'Pagamento entro 2-3 giorni lavorativi dall\'elaborazione',
+    'support_title' => 'Domande?',
+    'support_message' => 'Contatta il nostro servizio clienti se hai domande sui pagamenti.',
+    'btn_contact' => 'Contatti',
+    'btn_add_iban' => 'Aggiungi IBAN',
+    'pending_next_payout' => 'Questo importo sarà pagato nel prossimo ciclo di pagamento',
+    'how_commissions_work' => 'Come funzionano le commissioni',
+    'commission_amount' => 'Guadagni €49,99 per salone registrato',
+    'commission_description' => 'La commissione viene pagata quando un salone si registra tramite il tuo codice di referenza, completa il periodo di prova di 14 giorni e paga la quota di registrazione.',
+    'commission_per_salon' => 'Commissione per salone',
+    'per_paying_salon' => 'Per salone pagante',
+    'payout_day' => 'Giorno di pagamento',
+    'every_wednesday' => 'Ogni mercoledì',
+    'weekly_processing' => 'Elaborazione automatica settimanale',
+    'minimum_payout' => 'Pagamento minimo',
+    'minimum_one_salon' => 'Almeno 1 salone convertito',
+    'when_receive_commission' => 'Quando ricevi la commissione?',
+    'step_register' => 'Il salone si registra',
+    'step_register_desc' => 'Un salone si registra tramite il tuo link di referenza',
+    'step_trial' => 'Periodo di prova di 14 giorni',
+    'step_trial_desc' => 'Il salone prova GlamourSchedule gratuitamente',
+    'step_payment' => 'Il salone paga la quota di registrazione',
+    'step_payment_desc' => 'Dopo il periodo di prova, il salone paga per continuare',
+    'step_commission' => 'Commissione sbloccata',
+    'step_commission_desc' => 'La tua commissione di €49,99 viene aggiunta al tuo saldo',
+    'step_payout' => 'Mercoledì: Pagamento',
+    'step_payout_desc' => 'Trasferimento automatico sul tuo IBAN',
+    'example_label' => 'Esempio:',
+    'example_text' => 'Il salone "Beauty Studio" si registra il 1° gennaio tramite il tuo link. Dopo il periodo di prova, paga la quota di registrazione il 15 gennaio. La tua commissione di €49,99 viene pagata il mercoledì successivo (22 gennaio).',
+    'important_to_know' => 'Importante da sapere',
+    'commission_after_payment' => 'La commissione viene sbloccata solo dopo il pagamento della quota di registrazione (dopo la prova)',
+    'no_commission_early_bird' => 'Nessuna commissione per le registrazioni Early Bird (sono gratuite)',
+    'no_conversion_no_commission' => 'Se un salone non converte la prova in pagamento, non ricevi commissione',
+    'commissions_held_until' => 'Le commissioni vengono trattenute fino al prossimo ciclo di pagamento',
+    'ensure_iban_correct' => 'Assicurati che il tuo IBAN sia correttamente inserito nel tuo account',
+    'no_payouts_message' => 'Ancora nessun pagamento. Quando un salone si registra tramite il tuo link e paga, riceverai la commissione.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // POS SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════
+    'pos_title' => 'Sistema POS',
+    'pos_section_customer' => 'Cliente',
+    'pos_section_service' => 'Servizio',
+    'pos_section_employee' => 'Dipendente',
+    'pos_employee_none' => '-- Nessun dipendente specifico --',
+    'pos_section_datetime' => 'Data e ora',
+    'pos_section_payment' => 'Metodo di pagamento',
+    'pos_payment_online' => 'Pagamento online',
+    'pos_payment_online_desc' => 'Il cliente paga l\'intero importo online',
+    'pos_payment_cash' => 'Contanti all\'appuntamento',
+    'pos_payment_cash_desc' => 'Il cliente paga €1,75 online + resto in contanti',
+    'pos_section_notes' => 'Note (opzionale)',
+    'pos_notes_placeholder' => 'Eventuali note...',
+    'pos_summary_title' => 'Riepilogo',
+    'pos_summary_customer' => 'Cliente',
+    'pos_summary_service' => 'Servizio',
+    'pos_summary_datetime' => 'Data e ora',
+    'pos_summary_payment' => 'Metodo di pagamento',
+    'pos_summary_online_amount' => 'Da pagare online',
+    'pos_summary_total' => 'Totale',
+    'btn_create_booking_send' => 'Crea appuntamento e invia link',
+    'pos_today' => 'Oggi',
+    'pos_bookings_count' => 'appuntamenti',
+    'pos_no_bookings' => 'Nessun appuntamento oggi',
+    'booking_payment_cash' => 'Contanti',
+    'booking_payment_online' => 'Online',
+    'booking_payment_paid' => 'Pagato',
+    'booking_payment_pending' => 'In attesa di pagamento',
+    'btn_resend_link' => 'Link',
+    'btn_mark_completed' => 'Completato',
+    'btn_cancel' => 'Annulla',
+    'pos_recent_customers' => 'Clienti recenti',
+    'pos_tips_title' => 'Suggerimenti POS',
+    'pos_tip_cash_fee' => 'Per il pagamento in contanti, il cliente paga €1,75 online come cauzione',
+    'pos_tip_resend_link' => 'Clicca "Link" per reinviare i link di pagamento',
+    'pos_tip_refund' => 'Il pagamento online viene rimborsato in caso di cancellazione',
+    'modal_booking_success' => 'Appuntamento creato',
+    'modal_booking_success_message' => 'Appuntamento creato con successo!',
+    'modal_link_sent_message' => 'Il link di pagamento è stato inviato al cliente.',
+    'qr_scan_to_pay' => 'Scansiona per pagare',
+    'qr_customer_scan_hint' => 'Il cliente può scansionare questo codice QR con il telefono',
+    'btn_copy' => 'Copia',
+    'notification_copied' => 'Copiato!',
+    'btn_send_email' => 'Invia email',
+    'btn_close' => 'Chiudi',
+    'pos_customer_search' => 'Cerca cliente per ID, nome, email o telefono...',
+    'btn_remove' => 'Rimuovi',
+    'pos_no_services' => 'Nessun servizio trovato. Aggiungi servizi',
+    'btn_new_customer' => 'Nuovo cliente',
+    'form_label_name' => 'Nome *',
+    'form_name_placeholder' => 'Nome completo',
+    'form_label_email' => 'Email',
+    'form_label_phone' => 'Telefono',
+    'form_label_notes' => 'Note',
+    'form_notes_placeholder' => 'Note opzionali...',
+    'btn_add_customer' => 'Aggiungi cliente',
+    'confirm_resend_link' => 'Reinviare il link di pagamento?',
+    'confirm_mark_completed' => 'Segnare l\'appuntamento come completato?',
+    'confirm_cancel_booking' => 'Sei sicuro di voler annullare questo appuntamento? Il pagamento online sarà rimborsato.',
+    'validation_customer_required' => 'Inserisci un nome cliente',
+    'validation_service_required' => 'Seleziona un servizio',
+    'validation_datetime_required' => 'Seleziona data e ora',
+    'btn_processing' => 'Elaborazione...',
+    'error_general' => 'Si è verificato un errore',
+    'error_send_link' => 'Impossibile inviare il link',
+    'error_send_error' => 'Si è verificato un errore durante l\'invio',
+    'error_add_customer' => 'Impossibile aggiungere il cliente',
+    'btn_enlarge_customer' => 'Ingrandisci per il cliente',
+    'qr_waiting_payment' => 'In attesa del pagamento...',
+    'qr_payment_received' => 'Pagamento ricevuto!',
+    'customer_visits' => 'visite',
+    'form_label_date' => 'Data',
+    'form_label_time' => 'Ora',
+
+    // Calendar days and months
+    'cal_sunday' => 'Domenica',
+    'cal_monday' => 'Lunedì',
+    'cal_tuesday' => 'Martedì',
+    'cal_wednesday' => 'Mercoledì',
+    'cal_thursday' => 'Giovedì',
+    'cal_friday' => 'Venerdì',
+    'cal_saturday' => 'Sabato',
+    'cal_january' => 'Gennaio',
+    'cal_february' => 'Febbraio',
+    'cal_march' => 'Marzo',
+    'cal_april' => 'Aprile',
+    'cal_may' => 'Maggio',
+    'cal_june' => 'Giugno',
+    'cal_july' => 'Luglio',
+    'cal_august' => 'Agosto',
+    'cal_september' => 'Settembre',
+    'cal_october' => 'Ottobre',
+    'cal_november' => 'Novembre',
+    'cal_december' => 'Dicembre',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS PROFILE
+    // ═══════════════════════════════════════════════════════════════════════
+    'profile_section_business' => 'Informazioni aziendali',
+    'form_company_name' => 'Nome azienda *',
+    'form_email_address' => 'Indirizzo email *',
+    'form_phone_number' => 'Numero di telefono',
+    'form_website' => 'Sito web',
+    'profile_section_address' => 'Indirizzo',
+    'form_street' => 'Via',
+    'form_house_number' => 'Numero civico',
+    'form_postal_code' => 'CAP',
+    'form_city' => 'Città',
+    'profile_section_bank' => 'Dati bancari (Pagamenti)',
+    'profile_iban_verified' => 'IBAN verificato',
+    'profile_security_period' => 'Periodo di sicurezza attivo',
+    'profile_payouts_available' => 'Pagamenti disponibili tra',
+    'profile_hours_after_change' => 'ore (72 ore dopo la modifica IBAN)',
+    'profile_iban_verified_msg' => 'Il tuo IBAN è verificato. I pagamenti saranno trasferiti su questo conto.',
+    'btn_change_iban' => 'Modifica IBAN',
+    'profile_safe_verification' => 'Verifica IBAN sicura',
+    'profile_iban_verify_desc' => 'Collega il tuo conto bancario tramite un pagamento iDEAL di €0,01. Il tuo IBAN sarà recuperato automaticamente.',
+    'btn_add_iban_ideal' => 'Aggiungi IBAN tramite iDEAL',
+    'profile_verify_note' => 'Pagamento di verifica €0,01 - il tuo IBAN sarà collegato automaticamente',
+    'profile_section_cash' => 'Pagamento in contanti',
+    'profile_enable_cash' => 'Accetta pagamenti in contanti',
+    'profile_cash_desc' => 'Consenti ai clienti di pagare in contanti all\'arrivo in salone.',
+    'profile_cash_fee' => 'Commissione piattaforma per pagamento in contanti',
+    'profile_cash_note' => 'Con i pagamenti in contanti, il cliente paga',
+    'profile_fee_amount' => '€1,75 di commissione piattaforma',
+    'profile_fee_online' => 'online durante la prenotazione.',
+    'profile_fee_deduction' => 'Questo importo sarà detratto dal tuo saldo in contanti in sospeso.',
+    'profile_cash_example' => 'Esempio: Servizio €50 → Il cliente paga €1,75 online + €48,25 in contanti all\'arrivo',
+    'profile_cash_important' => 'Informazioni importanti sui pagamenti in contanti',
+    'profile_no_shows' => 'No-show e rifiuti:',
+    'profile_no_shows_desc' => 'GlamourSchedule non si assume responsabilità per i clienti che rifiutano di pagare o non si presentano per le prenotazioni in contanti.',
+    'profile_your_costs' => 'I tuoi costi:',
+    'profile_costs_desc' => 'Paghi solo €1,75 di commissione piattaforma per prenotazione, indipendentemente dal fatto che il cliente si presenti.',
+    'profile_cancellation' => 'Politica di cancellazione:',
+    'profile_cancellation_desc' => 'Si applica la politica di cancellazione standard del 50% entro 24 ore. Non riceverai automaticamente questo importo per i no-show.',
+    'profile_tip' => 'Suggerimento:',
+    'profile_tip_online' => 'Considera di accettare solo pagamenti online per la massima sicurezza.',
+    'profile_section_registration' => 'Informazioni di registrazione',
+    'form_kvk_number' => 'Numero Camera di Commercio',
+    'form_btw_number' => 'Partita IVA',
+    'profile_account_status' => 'Stato account',
+    'profile_pending_verification' => 'In attesa di verifica',
+    'profile_section_hours' => 'Orari di apertura',
+    'profile_closed' => 'Chiuso',
+    'profile_section_public' => 'La tua pagina pubblica',
+    'profile_public_desc' => 'Questo è il link alla tua pagina aziendale pubblica:',
+    'btn_view_page' => 'Vedi pagina',
+    'profile_section_stats' => 'Statistiche',
+    'profile_reviews' => 'Recensioni',
+    'profile_avg_rating' => 'Valutazione media',
+    'profile_section_cancel' => 'Cancella attività',
+    'profile_cancel_desc' => 'Vuoi cancellare il tuo account aziendale? Questo rimuoverà permanentemente la tua attività dalla piattaforma.',
+    'btn_delete_business' => 'Elimina attività',
+    'btn_save_profile' => 'Salva profilo',
+    'modal_delete_business' => 'Eliminare l\'attività permanentemente?',
+    'modal_delete_confirm' => 'Sei sicuro di voler eliminare',
+    'modal_delete_warning' => 'Attenzione:',
+    'modal_delete_intro' => 'Questo elimina permanentemente:',
+    'modal_delete_bookings' => 'Tutte le prenotazioni e il calendario',
+    'modal_delete_services' => 'Tutti i servizi e i prezzi',
+    'modal_delete_reviews' => 'Tutte le recensioni e le foto',
+    'modal_delete_page' => 'La tua pagina aziendale pubblica',
+    'modal_type_delete' => 'Digita "ELIMINA" per confermare:',
+    'form_type_delete' => 'Digita ELIMINA',
+    'btn_delete' => 'Elimina',
+    'form_not_specified' => 'Non specificato',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SALES ACCOUNT
+    // ═══════════════════════════════════════════════════════════════════════
+    'account_section_details' => 'Dettagli account',
+    'form_first_name' => 'Nome *',
+    'form_last_name' => 'Cognome *',
+    'form_iban_payouts' => 'IBAN (per i pagamenti)',
+    'form_iban_help' => 'Il tuo IBAN viene utilizzato per i pagamenti delle commissioni',
+    'btn_save_details' => 'Salva dettagli',
+    'account_section_password' => 'Cambia password',
+    'form_current_password' => 'Password attuale *',
+    'form_new_password' => 'Nuova password *',
+    'form_min_chars' => 'Minimo 8 caratteri',
+    'form_confirm_password' => 'Conferma nuova password *',
+    'btn_change_password' => 'Cambia password',
+    'account_section_info' => 'Informazioni account',
+    'account_referral_code' => 'Codice referenza',
+    'account_status' => 'Stato account',
+    'account_created' => 'Account creato',
+    'account_updated' => 'Ultimo aggiornamento',
+    'account_section_cancel' => 'Cancella account',
+    'account_cancel_desc' => 'Se vuoi cancellare il tuo account partner vendite, puoi eliminarlo qui sotto. Attenzione: questa azione non può essere annullata e perderai l\'accesso alle tue commissioni e referenze.',
+    'account_danger_commissions' => 'Commissioni in sospeso',
+    'account_danger_commissions_desc' => 'Le commissioni non pagate saranno annullate',
+    'account_danger_referrals' => 'Referenze',
+    'account_danger_referrals_desc' => 'Il tuo codice referenza sarà invalidato',
+    'account_danger_stats' => 'Statistiche',
+    'account_danger_stats_desc' => 'Tutti i tuoi dati saranno eliminati permanentemente',
+    'btn_delete_account' => 'Elimina account',
+    'modal_delete_account' => 'Eliminare l\'account permanentemente?',
+    'modal_delete_account_warning' => 'Questa azione non può essere annullata. Tutti i tuoi dati, commissioni e referenze saranno eliminati permanentemente.',
+    'btn_permanently_delete' => 'Elimina permanentemente',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SALES GUIDE
+    // ═══════════════════════════════════════════════════════════════════════
+    'guide_step1_title' => 'Contatto',
+    'guide_step2_title' => 'Introduzione',
+    'guide_step3_title' => 'Vantaggi',
+    'guide_step4_title' => 'Obiezioni',
+    'guide_step5_title' => 'Chiusura',
+    'guide_step1_full' => 'Passo 1: Primo contatto',
+    'guide_step1_subtitle' => 'Fai una buona prima impressione',
+    'guide_goal_title' => 'Obiettivo di questo passo',
+    'guide_step1_goal' => 'Generare interesse e fissare una chiamata o una demo.',
+    'guide_step1_script' => '"Buongiorno/Buonasera, sono [NOME]. Chiamo da parte di GlamourSchedule. Aiutiamo saloni come il vostro ad avere più clienti e ridurre le assenze. Ha 2 minuti?"',
+    'guide_pro_tip' => 'Consiglio Pro',
+    'guide_step1_tip' => 'Chiama tra le 10:00-11:30 o 14:00-16:00. Evita il lunedì mattina e il venerdì pomeriggio - i saloni sono più occupati in quei momenti.',
+    'guide_checklist' => 'Checklist',
+    'guide_step1_item1' => 'Fai ricerche sul salone prima (Instagram, sito web, recensioni)',
+    'guide_step1_item2' => 'Annota il nome del proprietario',
+    'guide_step1_item3' => 'Prepara un complimento personale',
+    'guide_step1_item4' => 'Tieni pronto il tuo link di referenza',
+    'btn_next' => 'Avanti',
+    'btn_previous' => 'Indietro',
+    'guide_step2_full' => 'Passo 2: Introduzione e bisogni',
+    'guide_step2_subtitle' => 'Scopri i problemi del cliente',
+    'guide_questions_title' => 'Fai queste domande',
+    'guide_step2_q1' => '"Come prenotano attualmente i clienti i loro appuntamenti da voi?"',
+    'guide_step2_q1_desc' => 'Scopri se usano telefono, WhatsApp, o già un sistema',
+    'guide_step2_q2' => '"Quanto tempo passate ogni giorno a gestire gli appuntamenti?"',
+    'guide_step2_q2_desc' => 'Crea consapevolezza della perdita di tempo',
+    'guide_step2_q3' => '"Avete problemi con le assenze?"',
+    'guide_step2_q3_desc' => 'Questo è spesso un grande problema!',
+    'guide_step2_q4' => '"I clienti possono prenotare da voi la sera o nei weekend?"',
+    'guide_step2_q4_desc' => 'Enfatizza la disponibilità 24/7',
+    'guide_step2_script' => '"Capisco che avete [PROBLEMA]. È esattamente per questo che molti saloni passano a GlamourSchedule. Posso mostrarvi come risolviamo questo problema?"',
+    'guide_listen_tip' => 'Ascolta attivamente!',
+    'guide_listen_desc' => 'Lascia parlare il cliente. Più condivide sui suoi problemi, più facile sarà presentare la soluzione.',
+    'guide_step3_full' => 'Passo 3: Presenta i vantaggi',
+    'guide_step3_subtitle' => 'Mostra cosa offre GlamourSchedule',
+    'guide_exclusive_offer' => 'Offerta esclusiva',
+    'guide_offer_desc' => '14 giorni GRATIS + €25 di sconto benvenuto tramite il tuo link!',
+    'guide_benefits_title' => 'Vantaggi principali',
+    'guide_benefit1' => 'Prenotazioni online 24/7',
+    'guide_benefit1_desc' => 'I clienti prenotano quando fa comodo a loro',
+    'guide_benefit2' => 'Promemoria automatici',
+    'guide_benefit2_desc' => 'Fino all\'80% in meno di assenze',
+    'guide_benefit3' => 'Pagamenti iDEAL',
+    'guide_benefit3_desc' => 'Ricevi pagamenti direttamente',
+    'guide_benefit4' => 'Pagina app propria',
+    'guide_benefit4_desc' => 'Aspetto professionale',
+    'guide_benefit5' => 'Statistiche e analisi',
+    'guide_benefit5_desc' => 'Vedi cosa funziona',
+    'guide_benefit6' => 'Nessuna commissione sulle transazioni',
+    'guide_benefit6_desc' => 'Importo mensile fisso',
+    'guide_step3_script' => '"Immagina: è domenica sera, sei a casa, e nel frattempo i clienti prenotano i loro appuntamenti tramite il telefono. Lunedì mattina hai un programma pieno senza fare nulla. Questo è GlamourSchedule."',
+    'guide_focus_tip' => 'Concentrati sul loro problema',
+    'guide_focus_desc' => 'Il cliente ha problemi con le assenze? Enfatizza i promemoria automatici. Passa troppo tempo al telefono? Concentrati sulla prenotazione online 24/7.',
+    'guide_step4_full' => 'Passo 4: Gestisci le obiezioni',
+    'guide_step4_subtitle' => 'Dubbi comuni e come affrontarli',
+    'guide_obj1' => '"Non ho tempo per configurare questo"',
+    'guide_obj1_answer' => '"Capisco perfettamente! Ecco perché la configurazione richiede solo 15 minuti. E poi risparmi tempo ogni giorno perché i clienti prenotano da soli. Quanto tempo passi al telefono ogni giorno?"',
+    'guide_obj2' => '"È troppo costoso"',
+    'guide_obj2_answer' => '"Capisco che i costi sono importanti. Ma considera questo: quanto ti costa una singola assenza? Con i nostri promemoria, previeni almeno 2-3 assenze al mese. Si ripaga da solo. In più: i primi 14 giorni sono gratis!"',
+    'guide_obj3' => '"Non sono molto tecnologico"',
+    'guide_obj3_answer' => '"Nessun problema! Se sai usare uno smartphone, puoi usare GlamourSchedule. È progettato per i proprietari di saloni, non per esperti IT. E il nostro servizio clienti è felice di aiutarti."',
+    'guide_obj4' => '"I miei clienti preferiscono prenotare per telefono"',
+    'guide_obj4_answer' => '"Molti proprietari di saloni la pensano così! Ma sapevi che il 70% delle prenotazioni arriva fuori dall\'orario di lavoro? I clienti vogliono prenotare la sera. Stai perdendo potenziali clienti ora."',
+    'guide_obj5' => '"Uso già qualcos\'altro"',
+    'guide_obj5_answer' => '"Interessante! Cosa usi attualmente? [ASCOLTA] E sei completamente soddisfatto? Molti saloni cambiano perché GlamourSchedule è più facile e funziona meglio su mobile. Provalo per 14 giorni gratis accanto al tuo sistema attuale."',
+    'guide_golden_rule' => 'Regola d\'oro',
+    'guide_golden_desc' => 'Riconosci sempre prima l\'obiezione ("Capisco...") prima di confutarla. Questo evita che il cliente si senta attaccato.',
+    'guide_step5_full' => 'Passo 5: Chiudi la vendita',
+    'guide_step5_subtitle' => 'Concludi l\'affare e aiuta il cliente a iniziare',
+    'guide_your_commission' => 'La tua commissione',
+    'guide_commission_desc' => '€49,99 per ogni registrazione riuscita!',
+    'guide_closing_techniques' => 'Tecniche di chiusura',
+    'guide_close_direct' => 'Chiusura diretta:',
+    'guide_close_direct_script' => '"Proviamo? Ti invio il link adesso e in 5 minuti sei pronto."',
+    'guide_close_alternative' => 'Chiusura alternativa:',
+    'guide_close_alt_script' => '"Vuoi iniziare oggi o domani mattina è meglio? Ti invio il link via WhatsApp."',
+    'guide_close_urgency' => 'Chiusura con urgenza:',
+    'guide_close_urgency_script' => '"Lo sconto benvenuto di €25 è un\'offerta a tempo limitato. Se ti registri ora, ne approfitti."',
+    'guide_after_yes' => 'Dopo il "Sì"',
+    'guide_send_link' => 'Invia immediatamente il tuo link di referenza',
+    'guide_stay_on_line' => 'Resta in linea mentre si registrano (se possibile)',
+    'guide_confirm_welcome' => 'Conferma che hanno ricevuto l\'email di benvenuto',
+    'guide_followup' => 'Pianifica un follow-up tra 3 giorni per vedere come va',
+    'guide_if_doubtful' => 'Se in dubbio',
+    'guide_doubtful_script' => '"Cosa ti trattiene? Sono 14 giorni gratis, puoi sempre smettere. Non hai letteralmente nulla da perdere."',
+    'guide_congratulations' => 'Congratulazioni!',
+    'guide_congrats_desc' => 'Hai completato tutti i passi. Buona fortuna con la tua prossima vendita!',
+    'btn_copy_referral' => 'Copia il tuo link di referenza',
+    'btn_back_dashboard' => 'Torna alla dashboard',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SALES MATERIALS
+    // ═══════════════════════════════════════════════════════════════════════
+    'materials_section_link' => 'Il tuo link di referenza',
+    'materials_section_qr' => 'Codice QR',
+    'materials_qr_desc' => 'Fai scansionare per registrarsi direttamente con il tuo sconto partner',
+    'materials_partner_benefits' => 'I tuoi vantaggi partner',
+    'materials_customer_discount' => 'Sconto cliente',
+    'materials_on_registration' => 'sui costi di registrazione',
+    'materials_your_commission' => 'La tua commissione',
+    'materials_per_customer' => 'per cliente pagante',
+    'materials_your_code' => 'Il tuo codice partner',
+    'materials_send_email' => 'Invia un invito via email',
+    'materials_send_desc' => 'Invia un invito professionale direttamente a un salone. L\'email contiene informazioni sul periodo di prova gratuito di 14 giorni e il tuo sconto partner. Inviata da sales@glamourschedule.com.',
+    'form_salon_name' => 'Nome salone',
+    'form_salon_example' => 'Es. Salone di Bellezza Milano',
+    'form_salon_email' => 'Email del salone',
+    'form_personal_message' => 'Messaggio personale (opzionale)',
+    'form_message_example' => 'Ci siamo incontrati alla fiera della bellezza...',
+    'btn_send_email_referral' => 'Invia email con link di referenza',
+    'materials_templates' => 'Modelli di testo',
+    'materials_whatsapp' => 'WhatsApp / SMS',
+    'materials_email_template' => 'Modello email',
+    'materials_social_media' => 'Post social media',
+    'materials_pitch' => 'Pitch breve (faccia a faccia)',
+    'materials_downloads' => 'Download',
+    'materials_qr_download' => 'Codice QR (PNG)',
+    'materials_high_res' => 'Alta risoluzione per stampa',
+    'materials_view_registration' => 'Vedi pagina di registrazione',
+    'materials_as_customers_see' => 'Come la vedono i clienti',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ALL REFERRALS PAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'referrals_all' => 'Tutte le referenze',
+    'referrals_no_message' => 'Ancora nessuna referenza. Condividi il tuo codice per iniziare a guadagnare!',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PWA INSTALL PROMPTS
+    // ═══════════════════════════════════════════════════════════════════════
+    'install_gs_business' => 'Installa GS Business',
+    'install_quick_access' => 'Accesso rapido alla tua dashboard',
+    'install_coming_soon' => 'Presto disponibile sull\'App Store!',
+    'install_btn' => 'Installa',
+    'install_gs_sales' => 'Installa GS Sales',
+    'install_sales_access' => 'Accesso rapido alla tua dashboard vendite',
+    'install_tap_share' => 'Tocca su',
+    'install_add_home' => 'e poi "Aggiungi a Home"',
+    'install_understood' => 'Capito',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MISSING TEMPLATE KEYS
+    // ═══════════════════════════════════════════════════════════════════════
+    'find_nearby' => 'Trova saloni vicino a me',
+    'showing_nearby' => 'Mostrando saloni vicini',
+    'results_for' => 'Risultati per',
+    'available_salons' => 'Saloni disponibili',
+    'geolocation_not_supported' => 'La geolocalizzazione non è supportata dal tuo browser',
+    'getting_location' => 'Ottenendo la tua posizione...',
+    'location_error' => 'Impossibile determinare la tua posizione',
+    'location_denied' => 'Accesso alla posizione negato. Abilita la posizione nelle impostazioni del browser.',
+    'location_unavailable' => 'Posizione non disponibile',
+    'location_timeout' => 'Richiesta posizione scaduta',
+    'location_blocked' => 'Posizione bloccata - tocca per abilitare',
+
+    // Settings page keys
+    'settings_profile' => 'Profilo',
+    'settings_personal_info' => 'Informazioni personali',
+    'settings_email_cannot_change' => 'L\'indirizzo email non può essere modificato',
+    'settings_email_verified' => 'Verificato',
+    'settings_phone' => 'Numero di telefono',
+    'settings_member_since' => 'Membro dal',
+    'settings_notifications' => 'Notifiche',
+    'settings_manage_notifications' => 'Gestisci le impostazioni delle notifiche',
+    'settings_push_notifications' => 'Notifiche push',
+    'settings_push_receive_reminders' => 'Ricevi promemoria e aggiornamenti',
+    'settings_push_enabled' => 'Notifiche push abilitate',
+    'settings_push_enabled_toast' => 'Notifiche push abilitate!',
+    'settings_push_disabled_toast' => 'Notifiche push disabilitate',
+    'settings_push_not_supported' => 'Notifiche push non supportate dal tuo browser',
+    'settings_push_not_supported_short' => 'Non supportato',
+    'settings_push_blocked' => 'Notifiche bloccate nelle impostazioni del browser',
+    'settings_push_blocked_browser' => 'Le notifiche sono bloccate dal tuo browser',
+    'settings_push_blocked_short' => 'Bloccato dal browser',
+    'settings_push_permission_denied' => 'Permesso negato',
+    'settings_push_processing' => 'Elaborazione...',
+    'settings_push_requesting_permission' => 'Richiesta permesso...',
+    'settings_push_loading_worker' => 'Caricamento service worker...',
+    'settings_push_fetching_key' => 'Recupero chiave di crittografia...',
+    'settings_push_no_vapid_key' => 'Impossibile ottenere la chiave di crittografia',
+    'settings_push_subscribing' => 'Iscrizione...',
+    'settings_push_saving' => 'Salvataggio...',
+    'settings_push_save_failed' => 'Impossibile salvare l\'iscrizione',
+    'settings_push_error' => 'Errore notifica push',
+    'settings_push_load_error' => 'Impossibile caricare le impostazioni push',
+    'settings_push_something_wrong' => 'Qualcosa è andato storto',
+    'settings_active' => 'Attivo',
+    'settings_off' => 'Disattivato',
+    'settings_security' => 'Sicurezza',
+    'settings_protect_account' => 'Proteggi il tuo account',
+    'settings_change_password' => 'Cambia password',
+    'settings_current_password' => 'Password attuale',
+    'settings_current_password_placeholder' => 'Inserisci password attuale',
+    'settings_enter_password' => 'Inserisci password',
+    'settings_your_password' => 'La tua password',
+    'settings_choose_strong_password' => 'Scegli una password sicura',
+    'settings_min_8_chars' => 'Minimo 8 caratteri',
+    'settings_confirm_new_password' => 'Conferma nuova password',
+    'settings_repeat_new_password' => 'Ripeti nuova password',
+    'settings_show_password' => 'Mostra password',
+    'settings_pin_code' => 'PIN di sicurezza',
+    'settings_pin_desc' => 'Imposta un PIN a 4 cifre per maggiore sicurezza',
+    'settings_delete_account' => 'Elimina account',
+    'settings_delete_warning' => 'Questo eliminerà permanentemente il tuo account e tutti i dati',
+    'settings_confirm_delete' => 'Sei sicuro di voler eliminare il tuo account?',
+    'settings_type_delete_confirm' => 'Digita ELIMINA per confermare',
+    'settings_delete_keyword' => 'ELIMINA',
+    'settings_permanently_delete' => 'Elimina permanentemente',
+    'settings_cannot_be_undone' => 'Questa azione non può essere annullata',
+
+    // About page keys
+    'hero_badge' => 'Piattaforma premium di prenotazione',
+    'hairdressers' => 'Parrucchieri',
+    'nail_salons' => 'Saloni di unghie',
+    'beauty_specialists' => 'Specialisti di bellezza',
+    'massage' => 'Massaggi',
+    'quick_links' => 'Link rapidi',
+    'view_all_salons' => 'Vedi tutti i saloni',
+    'notifications' => 'Notifiche',
+    'notifications_desc' => 'Non perdere mai un appuntamento',
+    'online_booking_title' => 'Prenotazione online',
+    'online_booking_desc' => 'Prenota 24/7, ovunque',
+    'qr_checkin_title' => 'Check-in QR',
+    'qr_checkin_desc' => 'Arrivo rapido e senza contatto',
+    'secure_payment_title' => 'Pagamento sicuro',
+    'secure_payment_desc' => 'Paga in sicurezza con iDEAL',
+    'mobile_friendly' => 'Ottimizzato per mobile',
+    'mobile_friendly_desc' => 'Funziona perfettamente su qualsiasi dispositivo',
+    'ssl_security' => 'Sicurezza SSL',
+    'ssl_security_desc' => 'I tuoi dati sono sempre protetti',
+    'boost_feature' => 'Promuovi la tua attività',
+    'boost_feature_desc' => 'Ottieni più visibilità e clienti',
+    'calendar_integration' => 'Integrazione calendario',
+    'calendar_integration_desc' => 'Sincronizza con il tuo calendario',
+    'insights_analytics' => 'Statistiche e analisi',
+    'insights_analytics_desc' => 'Monitora le tue performance',
+    'customer_management' => 'Gestione clienti',
+    'customer_management_desc' => 'Gestisci il tuo database clienti',
+    'automatic_payments' => 'Pagamenti automatici',
+    'automatic_payments_desc' => 'Ricevi pagamenti automaticamente',
+    'own_salon_page' => 'La tua pagina',
+    'own_salon_page_desc' => 'Presenza online professionale',
+
+    // FAQ keys
+    'faq_cancel_question' => 'Posso cancellare il mio appuntamento?',
+    'faq_cancel_answer' => 'Sì, puoi cancellare gratuitamente fino a 24 ore prima del tuo appuntamento. Entro 24 ore, si applica una penale di cancellazione del 50%.',
+    'faq_confirmation_question' => 'Riceverò una conferma?',
+    'faq_confirmation_answer' => 'Sì! Riceverai una conferma via email immediatamente dopo la prenotazione e un promemoria 24 ore prima del tuo appuntamento.',
+    'faq_payment_question' => 'Come pago?',
+    'faq_payment_answer' => 'Puoi pagare in sicurezza tramite iDEAL o carta di credito. Il pagamento viene completato durante la prenotazione.',
+    'faq_salon_owner_question' => 'Sono proprietario di un salone, come mi registro?',
+    'faq_salon_owner_answer' => 'Ottimo! Clicca su "Per aziende" nel menu e registra il tuo salone. Puoi provarlo gratis per 14 giorni.',
+
+    // Contact page types
+    'type_bug' => 'Segnalazione bug',
+    'type_problem' => 'Problema',
+    'type_request' => 'Richiesta funzionalità',
 ];

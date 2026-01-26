@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -560,33 +560,33 @@
     <aside class="sales-sidebar" id="sidebar">
         <div class="logo">
             <i class="fas fa-chart-line"></i>
-            Sales Portal
+            <?= $translations['sales_portal'] ?? 'Sales Portal' ?>
         </div>
 
         <nav>
             <a href="/sales/dashboard" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/dashboard') !== false ? 'active' : '' ?>">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-home"></i> <?= $translations['nav_dashboard'] ?? 'Dashboard' ?>
             </a>
             <a href="/sales/early-birds" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? 'active' : '' ?>" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000">
-                <i class="fas fa-seedling"></i> Early Birds
+                <i class="fas fa-seedling"></i> <?= $translations['nav_early_birds'] ?? 'Early Birds' ?>
             </a>
             <a href="/sales/referrals" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/referrals') !== false ? 'active' : '' ?>">
-                <i class="fas fa-users"></i> Referrals
+                <i class="fas fa-users"></i> <?= $translations['nav_referrals'] ?? 'Referrals' ?>
             </a>
             <a href="/sales/mijn-salons" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/mijn-salons') !== false ? 'active' : '' ?>">
-                <i class="fas fa-store"></i> Mijn Salons
+                <i class="fas fa-store"></i> <?= $translations['nav_my_salons'] ?? 'My Salons' ?>
             </a>
             <a href="/sales/payouts" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/payouts') !== false ? 'active' : '' ?>">
-                <i class="fas fa-euro-sign"></i> Uitbetalingen
+                <i class="fas fa-euro-sign"></i> <?= $translations['nav_payouts'] ?? 'Payouts' ?>
             </a>
             <a href="/sales/materials" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/materials') !== false ? 'active' : '' ?>">
-                <i class="fas fa-bullhorn"></i> Materiaal
+                <i class="fas fa-bullhorn"></i> <?= $translations['nav_materials'] ?? 'Materials' ?>
             </a>
             <a href="/sales/guide" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/guide') !== false ? 'active' : '' ?>">
-                <i class="fas fa-clipboard-list"></i> Stappenplan
+                <i class="fas fa-clipboard-list"></i> <?= $translations['nav_guide'] ?? 'Guide' ?>
             </a>
             <a href="/sales/account" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/account') !== false ? 'active' : '' ?>">
-                <i class="fas fa-cog"></i> Account
+                <i class="fas fa-cog"></i> <?= $translations['nav_account'] ?? 'Account' ?>
             </a>
         </nav>
 
@@ -596,7 +596,7 @@
                 <p class="user-email"><?= htmlspecialchars($salesUser['email'] ?? '') ?></p>
             </div>
             <a href="/sales/logout" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Uitloggen
+                <i class="fas fa-sign-out-alt"></i> <?= $translations['nav_logout'] ?? 'Logout' ?>
             </a>
         </div>
     </aside>
@@ -606,7 +606,7 @@
         <div class="sales-header">
             <h1><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?></h1>
             <div class="referral-code-box">
-                <span>Jouw code:</span>
+                <span><?= $translations['your_code'] ?? 'Your code:' ?></span>
                 <code id="refCode"><?= htmlspecialchars($salesUser['referral_code'] ?? '') ?></code>
                 <button onclick="copyCode()" id="copyBtn">
                     <i class="fas fa-copy"></i>
@@ -630,23 +630,23 @@
         <nav>
             <a href="/sales/dashboard" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/dashboard') !== false ? 'active' : '' ?>">
                 <i class="fas fa-home"></i>
-                Home
+                <?= $translations['nav_home'] ?? 'Home' ?>
             </a>
             <a href="/sales/early-birds" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? 'active' : '' ?>" style="<?= strpos($_SERVER['REQUEST_URI'], '/sales/early-birds') !== false ? '' : 'color:#f59e0b' ?>">
                 <i class="fas fa-seedling"></i>
-                Early Birds
+                <?= $translations['nav_early_birds'] ?? 'Early Birds' ?>
             </a>
             <a href="/sales/mijn-salons" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/mijn-salons') !== false ? 'active' : '' ?>">
                 <i class="fas fa-store"></i>
-                Salons
+                <?= $translations['salons'] ?? 'Salons' ?>
             </a>
             <a href="/sales/payouts" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/payouts') !== false ? 'active' : '' ?>">
                 <i class="fas fa-euro-sign"></i>
-                Geld
+                <?= $translations['nav_money'] ?? 'Money' ?>
             </a>
             <a href="/sales/account" class="<?= strpos($_SERVER['REQUEST_URI'], '/sales/account') !== false ? 'active' : '' ?>">
                 <i class="fas fa-cog"></i>
-                Account
+                <?= $translations['nav_account'] ?? 'Account' ?>
             </a>
         </nav>
     </div>
@@ -706,11 +706,11 @@
             <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">&times;</button>
             <img src="/images/sales-icon-192.png" alt="GS Sales" width="48" height="48" style="border-radius:10px">
             <div class="install-text">
-                <strong>Installeer GS Sales</strong>
-                <span>Snelle toegang tot je sales dashboard</span>
-                <span style="display:block;margin-top:0.25rem;color:#f59e0b;font-size:0.7rem">Binnenkort ook in de App Store!</span>
+                <strong><?= $translations['install_gs_sales'] ?? 'Install GS Sales' ?></strong>
+                <span><?= $translations['install_sales_access'] ?? 'Quick access to your sales dashboard' ?></span>
+                <span style="display:block;margin-top:0.25rem;color:#f59e0b;font-size:0.7rem"><?= $translations['install_coming_soon'] ?? 'Coming soon to the App Store!' ?></span>
             </div>
-            <button class="install-btn" id="salesInstallBtn">Installeren</button>
+            <button class="install-btn" id="salesInstallBtn"><?= $translations['install_btn'] ?? 'Install' ?></button>
         </div>
     </div>
 
@@ -720,10 +720,10 @@
             <button class="install-close" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">&times;</button>
             <img src="/images/sales-icon-192.png" alt="GS Sales" width="48" height="48" style="border-radius:10px">
             <div class="install-text" style="text-align:center;width:100%">
-                <strong style="display:block;margin-bottom:0.5rem">Installeer GS Sales</strong>
-                <span>Tik op <i class="fas fa-share-square" style="color:#007aff"></i> en dan <strong>"Zet op beginscherm"</strong></span>
+                <strong style="display:block;margin-bottom:0.5rem"><?= $translations['install_gs_sales'] ?? 'Install GS Sales' ?></strong>
+                <span><?= $translations['install_tap_share'] ?? 'Tap on' ?> <i class="fas fa-share-square" style="color:#007aff"></i> <?= $translations['install_add_home'] ?? 'and then "Add to Home Screen"' ?></span>
             </div>
-            <button class="install-btn" style="width:100%;margin-top:1rem;justify-content:center" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')">Begrepen</button>
+            <button class="install-btn" style="width:100%;margin-top:1rem;justify-content:center" onclick="this.parentElement.parentElement.style.display='none';localStorage.setItem('salesInstallDismissed','1')"><?= $translations['install_understood'] ?? 'Got it' ?></button>
         </div>
     </div>
 
