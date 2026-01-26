@@ -429,6 +429,60 @@
     to { transform: translateY(-50%) rotate(360deg); }
 }
 
+/* Nearby Button - Prominent CTA */
+.nearby-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+.nearby-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+}
+.nearby-btn.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+.nearby-btn.loading i.fa-location-arrow {
+    display: none;
+}
+.nearby-btn.loading i.fa-spinner {
+    display: inline-block;
+}
+.nearby-btn i.fa-spinner {
+    display: none;
+    animation: spin 1s linear infinite;
+}
+.nearby-btn.active {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+.nearby-btn.active i.fa-location-arrow::before {
+    content: "\f00c";
+}
+@media (min-width: 768px) {
+    .nearby-btn {
+        width: auto;
+        padding: 1rem 2rem;
+    }
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+    50% { transform: scale(1.02); box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6); }
+}
+
 /* Distance Badge */
 .biz-card-distance {
     display: inline-flex;
@@ -1092,23 +1146,30 @@
     <div class="search-card">
         <div class="search-header">
             <i class="fas fa-search"></i>
-            <h1>Zoek Salons</h1>
-            <p>Vind de perfecte salon bij jou in de buurt</p>
+            <h1><?= $translations['search_salons_title'] ?? 'Search Salons' ?></h1>
+            <p><?= $translations['search_find_perfect'] ?? 'Find the perfect salon near you' ?></p>
         </div>
 
         <div class="search-body">
+            <!-- Nearby Button - Primary CTA -->
+            <button type="button" class="nearby-btn <?= !empty($userLat) ? 'active' : '' ?>" onclick="searchNearby()" id="nearby-btn">
+                <i class="fas fa-location-arrow"></i>
+                <i class="fas fa-spinner"></i>
+                <span id="nearby-btn-text"><?= !empty($userLat) ? ($translations['showing_nearby'] ?? 'Showing nearby salons') : ($translations['find_nearby'] ?? 'Find salons near me') ?></span>
+            </button>
+
             <!-- Search Bar -->
             <div class="search-bar">
-                <form method="GET" action="/search" class="search-bar-form">
+                <form method="GET" action="/search" class="search-bar-form" id="search-form">
                     <div class="search-bar-row">
                         <div class="search-bar-input">
                             <i class="fas fa-search"></i>
-                            <input type="text" name="q" placeholder="Zoek salon, behandeling..."
+                            <input type="text" name="q" placeholder="<?= $translations['search_salon_treatment'] ?? 'Search salon, treatment...' ?>"
                                    value="<?= htmlspecialchars($query) ?>">
                         </div>
                         <div class="search-bar-select">
                             <select name="category">
-                                <option value="">Alle categorieën</option>
+                                <option value=""><?= $translations['all_categories'] ?? 'All categories' ?></option>
                                 <?php foreach ($categories as $cat): ?>
                                     <option value="<?= $cat['id'] ?>" <?= $category == $cat['id'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?>
@@ -1117,9 +1178,9 @@
                             </select>
                         </div>
                         <div class="search-bar-select" style="position: relative;">
-                            <input type="text" name="location" placeholder="Stad of postcode"
+                            <input type="text" name="location" placeholder="<?= $translations['city_or_postal'] ?? 'City or postal code' ?>"
                                    value="<?= htmlspecialchars($location) ?>" id="location-input">
-                            <button type="button" class="location-btn" onclick="useMyLocation()" title="Gebruik mijn locatie">
+                            <button type="button" class="location-btn" onclick="useMyLocation()" title="<?= $translations['use_my_location'] ?? 'Use my location' ?>">
                                 <i class="fas fa-crosshairs"></i>
                             </button>
                         </div>
@@ -1128,7 +1189,7 @@
                     <input type="hidden" name="lng" id="user-lng" value="<?= htmlspecialchars($userLng ?? '') ?>">
                     <button type="submit" class="search-bar-btn">
                         <i class="fas fa-search"></i>
-                        <span>Zoeken</span>
+                        <span><?= $translations['search'] ?? 'Search' ?></span>
                     </button>
                 </form>
             </div>
@@ -1136,7 +1197,7 @@
             <!-- Advanced Filters Panel -->
             <div class="filters-panel">
                 <button class="filters-toggle" onclick="toggleFilters(this)">
-                    <span><i class="fas fa-sliders-h"></i> Uitgebreid zoeken</span>
+                    <span><i class="fas fa-sliders-h"></i> <?= $translations['advanced_search'] ?? 'Advanced search' ?></span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="filters-content" id="filters-content">
@@ -1145,15 +1206,15 @@
             <div class="filter-sections">
                 <!-- Price Filter -->
                 <div class="filter-section">
-                    <h5><i class="fas fa-euro-sign"></i> Prijs</h5>
+                    <h5><i class="fas fa-euro-sign"></i> <?= $translations['price_label'] ?? 'Price' ?></h5>
                     <div class="price-range">
                         <div class="price-input-group">
-                            <label>Min</label>
+                            <label><?= $translations['min_label'] ?? 'Min' ?></label>
                             <input type="number" id="price-min" name="price_min" placeholder="€0" min="0" value="<?= htmlspecialchars($_GET['price_min'] ?? '') ?>" onchange="applyFilters()">
                         </div>
                         <span class="price-separator">-</span>
                         <div class="price-input-group">
-                            <label>Max</label>
+                            <label><?= $translations['max_label'] ?? 'Max' ?></label>
                             <input type="number" id="price-max" name="price_max" placeholder="€500" min="0" value="<?= htmlspecialchars($_GET['price_max'] ?? '') ?>" onchange="applyFilters()">
                         </div>
                     </div>
@@ -1161,48 +1222,48 @@
 
                 <!-- Availability Filter -->
                 <div class="filter-section">
-                    <h5><i class="fas fa-calendar-alt"></i> Beschikbaarheid</h5>
+                    <h5><i class="fas fa-calendar-alt"></i> <?= $translations['availability'] ?? 'Availability' ?></h5>
                     <div class="availability-options">
                         <input type="date" id="filter-date" name="date" value="<?= htmlspecialchars($_GET['date'] ?? '') ?>" min="<?= date('Y-m-d') ?>" onchange="applyFilters()">
                         <select id="filter-time" name="time_slot" onchange="applyFilters()">
-                            <option value="">Elk tijdstip</option>
-                            <option value="morning" <?= ($_GET['time_slot'] ?? '') === 'morning' ? 'selected' : '' ?>>Ochtend (9:00-12:00)</option>
-                            <option value="afternoon" <?= ($_GET['time_slot'] ?? '') === 'afternoon' ? 'selected' : '' ?>>Middag (12:00-17:00)</option>
-                            <option value="evening" <?= ($_GET['time_slot'] ?? '') === 'evening' ? 'selected' : '' ?>>Avond (17:00-21:00)</option>
+                            <option value=""><?= $translations['any_time'] ?? 'Any time' ?></option>
+                            <option value="morning" <?= ($_GET['time_slot'] ?? '') === 'morning' ? 'selected' : '' ?>><?= $translations['morning'] ?? 'Morning (9:00-12:00)' ?></option>
+                            <option value="afternoon" <?= ($_GET['time_slot'] ?? '') === 'afternoon' ? 'selected' : '' ?>><?= $translations['afternoon'] ?? 'Afternoon (12:00-17:00)' ?></option>
+                            <option value="evening" <?= ($_GET['time_slot'] ?? '') === 'evening' ? 'selected' : '' ?>><?= $translations['evening'] ?? 'Evening (17:00-21:00)' ?></option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Opening Hours Filter -->
                 <div class="filter-section">
-                    <h5><i class="fas fa-clock"></i> Open op</h5>
+                    <h5><i class="fas fa-clock"></i> <?= $translations['open_on'] ?? 'Open on' ?></h5>
                     <div class="opening-options">
                         <label class="filter-checkbox <?= isset($_GET['open_now']) ? 'selected' : '' ?>">
                             <input type="checkbox" name="open_now" value="1" <?= isset($_GET['open_now']) ? 'checked' : '' ?>>
                             <i class="fas fa-check"></i>
-                            <span>Nu geopend</span>
+                            <span><?= $translations['open_now'] ?? 'Open now' ?></span>
                         </label>
                         <label class="filter-checkbox <?= isset($_GET['open_weekend']) ? 'selected' : '' ?>">
                             <input type="checkbox" name="open_weekend" value="1" <?= isset($_GET['open_weekend']) ? 'checked' : '' ?>>
                             <i class="fas fa-check"></i>
-                            <span>Open in weekend</span>
+                            <span><?= $translations['open_weekend'] ?? 'Open on weekends' ?></span>
                         </label>
                         <label class="filter-checkbox <?= isset($_GET['open_evening']) ? 'selected' : '' ?>">
                             <input type="checkbox" name="open_evening" value="1" <?= isset($_GET['open_evening']) ? 'checked' : '' ?>>
                             <i class="fas fa-check"></i>
-                            <span>Avondopening</span>
+                            <span><?= $translations['evening_opening'] ?? 'Evening opening' ?></span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Extra Options -->
                 <div class="filter-section">
-                    <h5><i class="fas fa-star"></i> Extra</h5>
+                    <h5><i class="fas fa-star"></i> <?= $translations['extra'] ?? 'Extra' ?></h5>
                     <div class="extra-options">
                         <label class="filter-checkbox <?= isset($_GET['high_rated']) ? 'selected' : '' ?>">
                             <input type="checkbox" name="high_rated" value="1" <?= isset($_GET['high_rated']) ? 'checked' : '' ?>>
                             <i class="fas fa-check"></i>
-                            <span>4+ sterren</span>
+                            <span><?= $translations['four_plus_stars'] ?? '4+ stars' ?></span>
                         </label>
                     </div>
                 </div>
@@ -1212,24 +1273,24 @@
 
             <!-- Search within categories -->
             <div class="filter-search">
-                <input type="text" id="cat-filter-search" placeholder="Zoek specifieke categorie..." oninput="filterCategoryList()">
+                <input type="text" id="cat-filter-search" placeholder="<?= $translations['search_specific_category'] ?? 'Search specific category...' ?>" oninput="filterCategoryList()">
             </div>
 
             <!-- Group buttons -->
             <div class="filter-groups">
                 <?php
                 $groups = [
-                    'all' => ['name' => 'Alles', 'icon' => 'th'],
-                    'haar' => ['name' => 'Haar', 'icon' => 'cut'],
-                    'nagels' => ['name' => 'Nagels', 'icon' => 'hand-sparkles'],
-                    'huid' => ['name' => 'Huid', 'icon' => 'spa'],
-                    'lichaam' => ['name' => 'Lichaam', 'icon' => 'hands'],
-                    'ontharing' => ['name' => 'Ontharing', 'icon' => 'feather'],
-                    'makeup' => ['name' => 'Make-up', 'icon' => 'paint-brush'],
-                    'wellness' => ['name' => 'Wellness', 'icon' => 'hot-tub'],
-                    'bruinen' => ['name' => 'Bruinen', 'icon' => 'sun'],
-                    'medisch' => ['name' => 'Medisch', 'icon' => 'user-md'],
-                    'alternatief' => ['name' => 'Alternatief', 'icon' => 'yin-yang'],
+                    'all' => ['name' => $translations['group_all'] ?? 'All', 'icon' => 'th'],
+                    'haar' => ['name' => $translations['group_hair'] ?? 'Hair', 'icon' => 'cut'],
+                    'nagels' => ['name' => $translations['group_nails'] ?? 'Nails', 'icon' => 'hand-sparkles'],
+                    'huid' => ['name' => $translations['group_skin'] ?? 'Skin', 'icon' => 'spa'],
+                    'lichaam' => ['name' => $translations['group_body'] ?? 'Body', 'icon' => 'hands'],
+                    'ontharing' => ['name' => $translations['group_hairremoval'] ?? 'Hair removal', 'icon' => 'feather'],
+                    'makeup' => ['name' => $translations['group_makeup'] ?? 'Make-up', 'icon' => 'paint-brush'],
+                    'wellness' => ['name' => $translations['group_wellness'] ?? 'Wellness', 'icon' => 'hot-tub'],
+                    'bruinen' => ['name' => $translations['group_tanning'] ?? 'Tanning', 'icon' => 'sun'],
+                    'medisch' => ['name' => $translations['group_medical'] ?? 'Medical', 'icon' => 'user-md'],
+                    'alternatief' => ['name' => $translations['group_alternative'] ?? 'Alternative', 'icon' => 'yin-yang'],
                 ];
                 $activeGroup = $_GET['group'] ?? 'all';
                 foreach ($groups as $slug => $grp): ?>
@@ -1287,7 +1348,7 @@
 
             <div style="margin-top:1.5rem;text-align:center">
                 <button type="button" class="search-bar-btn" onclick="applyFilters()" style="display:inline-flex">
-                    <i class="fas fa-search"></i> Filters toepassen
+                    <i class="fas fa-search"></i> <?= $translations['apply_filters'] ?? 'Apply filters' ?>
                 </button>
             </div>
         </div>
@@ -1297,18 +1358,18 @@
 
     <!-- Results Container -->
     <div class="results-container">
-        <!-- Location Permission Banner -->
-        <div class="location-banner <?= !empty($userLat) ? 'hidden' : '' ?>" id="location-banner">
+        <!-- Location Permission Banner (hidden since we have prominent nearby button) -->
+        <div class="location-banner hidden" id="location-banner">
             <div class="location-banner-icon">
                 <i class="fas fa-map-marker-alt"></i>
             </div>
             <div class="location-banner-content">
-                <h4><i class="fas fa-location-arrow"></i> Vind salons bij jou in de buurt</h4>
-                <p>Zet locatie aan om de dichtstbijzijnde salons te zien met afstand in km</p>
+                <h4><i class="fas fa-location-arrow"></i> <?= $translations['find_salons_nearby'] ?? 'Find salons near you' ?></h4>
+                <p><?= $translations['enable_location_desc'] ?? 'Enable location to see nearest salons with distance' ?></p>
             </div>
             <button class="location-banner-btn" onclick="requestLocationPermission()" id="location-banner-btn">
                 <i class="fas fa-crosshairs"></i>
-                <span>Locatie inschakelen</span>
+                <span><?= $translations['enable_location'] ?? 'Enable location' ?></span>
             </button>
             <button class="location-banner-close" onclick="dismissLocationBanner()" title="Sluiten">
                 <i class="fas fa-times"></i>
@@ -1318,13 +1379,13 @@
         <!-- Quick Category Pills -->
         <div class="category-pills">
             <a href="/search" class="category-pill <?= empty($category) && empty($_GET['group']) ? 'active' : '' ?>">
-                <i class="fas fa-th"></i> Alles
+                <i class="fas fa-th"></i> <?= $translations['group_all'] ?? 'All' ?>
             </a>
         <?php
         $quickGroups = [
-            'haar' => 'Haar', 'nagels' => 'Nagels', 'huid' => 'Huid',
-            'lichaam' => 'Lichaam', 'ontharing' => 'Ontharing', 'makeup' => 'Make-up',
-            'wellness' => 'Wellness', 'bruinen' => 'Bruinen', 'medisch' => 'Medisch', 'alternatief' => 'Alternatief'
+            'haar' => $translations['group_hair'] ?? 'Hair', 'nagels' => $translations['group_nails'] ?? 'Nails', 'huid' => $translations['group_skin'] ?? 'Skin',
+            'lichaam' => $translations['group_body'] ?? 'Body', 'ontharing' => $translations['group_hairremoval'] ?? 'Hair removal', 'makeup' => $translations['group_makeup'] ?? 'Make-up',
+            'wellness' => $translations['group_wellness'] ?? 'Wellness', 'bruinen' => $translations['group_tanning'] ?? 'Tanning', 'medisch' => $translations['group_medical'] ?? 'Medical', 'alternatief' => $translations['group_alternative'] ?? 'Alternative'
         ];
         foreach ($quickGroups as $grpSlug => $grpName): ?>
             <a href="/search?group=<?= $grpSlug ?><?= !empty($location) ? '&location=' . urlencode($location) : '' ?>"
@@ -1340,10 +1401,10 @@
             <div class="empty-state-icon">
                 <i class="fas fa-search"></i>
             </div>
-            <h3>Geen salons gevonden</h3>
-            <p>Probeer een andere zoekopdracht of locatie</p>
+            <h3><?= $translations['no_salons_found'] ?? 'No salons found' ?></h3>
+            <p><?= $translations['try_other_search'] ?? 'Try a different search or location' ?></p>
             <a href="/search" class="btn">
-                <i class="fas fa-redo"></i> Zoeken resetten
+                <i class="fas fa-redo"></i> <?= $translations['reset_search'] ?? 'Reset search' ?>
             </a>
         </div>
     <?php else: ?>
@@ -1351,7 +1412,7 @@
         <div class="results-header">
             <h2 class="results-title">
                 <i class="fas fa-store"></i>
-                <?= !empty($query) ? 'Resultaten voor "' . htmlspecialchars($query) . '"' : 'Beschikbare salons' ?>
+                <?= !empty($query) ? ($translations['results_for'] ?? 'Results for') . ' "' . htmlspecialchars($query) . '"' : ($translations['available_salons'] ?? 'Available salons') ?>
                 <span class="results-count"><?= count($businesses) ?></span>
             </h2>
             <div class="results-sort">
@@ -1400,10 +1461,10 @@
                         <div class="biz-card-badges">
                             <div>
                                 <?php if ($isNew): ?>
-                                    <span class="biz-badge biz-badge-new">Nieuw</span>
+                                    <span class="biz-badge biz-badge-new"><?= $translations['new_label'] ?? 'New' ?></span>
                                 <?php elseif ($isPopular): ?>
                                     <span class="biz-badge biz-badge-popular">
-                                        <i class="fas fa-fire"></i> Populair
+                                        <i class="fas fa-fire"></i> <?= $translations['popular_label'] ?? 'Popular' ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -1461,12 +1522,12 @@
                         <div class="biz-card-footer">
                             <?php if (!empty($biz['min_price'])): ?>
                                 <span class="biz-card-price">
-                                    Vanaf <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
+                                    <?= $translations['from_price'] ?? 'From' ?> <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
                                 </span>
                             <?php else: ?>
                                 <span class="biz-card-price"></span>
                             <?php endif; ?>
-                            <span class="biz-card-cta">Bekijk</span>
+                            <span class="biz-card-cta"><?= $translations['view_book'] ?? 'View & Book' ?></span>
                         </div>
                     </div>
                 </a>
@@ -1601,6 +1662,77 @@ function resetFilters() {
     window.location.href = '/search';
 }
 
+// Search nearby - main CTA button
+function searchNearby() {
+    const btn = document.getElementById('nearby-btn');
+    const btnText = document.getElementById('nearby-btn-text');
+    const latInput = document.getElementById('user-lat');
+    const lngInput = document.getElementById('user-lng');
+
+    // If already have location, just sort by distance
+    if (latInput.value && lngInput.value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', 'distance');
+        window.location.href = url.toString();
+        return;
+    }
+
+    if (!navigator.geolocation) {
+        alert('<?= $translations['geolocation_not_supported'] ?? 'Geolocation is not supported by your browser' ?>');
+        return;
+    }
+
+    // Show loading state
+    btn.classList.add('loading');
+    btnText.textContent = '<?= $translations['getting_location'] ?? 'Getting your location...' ?>';
+
+    navigator.geolocation.getCurrentPosition(
+        // Success
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Store in localStorage
+            localStorage.setItem('userLat', lat);
+            localStorage.setItem('userLng', lng);
+            localStorage.setItem('locationPermission', 'granted');
+
+            // Redirect with coordinates and sort by distance
+            const url = new URL(window.location.href);
+            url.searchParams.set('lat', lat);
+            url.searchParams.set('lng', lng);
+            url.searchParams.set('sort', 'distance');
+            window.location.href = url.toString();
+        },
+        // Error
+        function(error) {
+            btn.classList.remove('loading');
+            btnText.textContent = '<?= $translations['find_nearby'] ?? 'Find salons near me' ?>';
+
+            let message = '<?= $translations['location_error'] ?? 'Could not determine your location' ?>';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = '<?= $translations['location_denied'] ?? 'Location access denied. Please enable location in your browser settings.' ?>';
+                    localStorage.setItem('locationPermission', 'denied');
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = '<?= $translations['location_unavailable'] ?? 'Location not available' ?>';
+                    break;
+                case error.TIMEOUT:
+                    message = '<?= $translations['location_timeout'] ?? 'Location request timed out' ?>';
+                    break;
+            }
+            alert(message);
+        },
+        // Options
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+    );
+}
+
 // Geolocation functionality
 function useMyLocation() {
     const btn = document.querySelector('.location-btn');
@@ -1711,7 +1843,7 @@ function requestLocationPermission() {
         // Error
         function(error) {
             btn.classList.remove('loading');
-            btn.innerHTML = '<i class="fas fa-crosshairs"></i><span>Locatie inschakelen</span>';
+            btn.innerHTML = '<i class="fas fa-crosshairs"></i><span><?= $translations['enable_location'] ?? 'Enable location' ?></span>';
 
             localStorage.setItem('locationPermission', 'denied');
 
@@ -1782,11 +1914,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Update nearby button state based on current coords
+    const nearbyBtn = document.getElementById('nearby-btn');
+    const nearbyBtnText = document.getElementById('nearby-btn-text');
+    if (latInput.value && nearbyBtn) {
+        nearbyBtn.classList.add('active');
+    }
+
     // Auto-check location permission status
     if (navigator.permissions && navigator.permissions.query) {
         navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
             if (result.state === 'granted') {
-                // Permission already granted, hide banner and auto-get location
+                // Permission already granted, update button state
                 if (banner) banner.classList.add('hidden');
 
                 // If no coords yet, get them
@@ -1808,15 +1947,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
             } else if (result.state === 'denied') {
-                // Permission denied, update banner text
-                if (banner) {
-                    const content = banner.querySelector('.location-banner-content');
-                    if (content) {
-                        content.innerHTML = `
-                            <h4><i class="fas fa-exclamation-triangle"></i> Locatie geblokkeerd</h4>
-                            <p>Sta locatie toe in je browserinstellingen om salons bij jou in de buurt te zien</p>
-                        `;
-                    }
+                // Permission denied, update nearby button text
+                if (nearbyBtnText) {
+                    nearbyBtnText.textContent = '<?= $translations['location_blocked'] ?? 'Location blocked - tap to enable' ?>';
+                }
+            } else if (result.state === 'prompt') {
+                // First visit - auto-prompt for location after 2 seconds
+                const hasVisited = localStorage.getItem('searchPageVisited');
+                if (!hasVisited && !latInput.value) {
+                    localStorage.setItem('searchPageVisited', 'true');
+                    setTimeout(function() {
+                        // Flash the nearby button to draw attention
+                        if (nearbyBtn) {
+                            nearbyBtn.style.animation = 'pulse 1s ease-in-out 3';
+                        }
+                    }, 2000);
                 }
             }
             // 'prompt' state - show banner normally
