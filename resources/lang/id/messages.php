@@ -177,6 +177,7 @@ return [
     'time_booked' => 'sudah dipesan',
     'no_times_this_day' => 'Tidak ada waktu tersedia pada hari ini',
     'next_available_date' => 'Tanggal tersedia berikutnya',
+    'first_available_on' => 'Jadwal pertama yang tersedia adalah',
     'or_join_waitlist' => 'atau daftar ke daftar tunggu',
     'join_waitlist' => 'Gabung daftar tunggu',
     'waitlist_for_date' => 'Daftar tunggu untuk',

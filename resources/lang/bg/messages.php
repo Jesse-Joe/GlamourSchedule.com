@@ -177,6 +177,7 @@ return [
     'time_booked' => 'заето',
     'no_times_this_day' => 'Няма свободни часове за този ден',
     'next_available_date' => 'Следваща свободна дата',
+    'first_available_on' => 'Първата свободна среща е на',
     'or_join_waitlist' => 'или се запишете в списъка с чакащи',
     'join_waitlist' => 'Запиши се в списъка с чакащи',
     'waitlist_for_date' => 'Списък с чакащи за',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'बुक हो चुका',
     'no_times_this_day' => 'इस दिन कोई समय उपलब्ध नहीं',
     'next_available_date' => 'अगली उपलब्ध तारीख',
+    'first_available_on' => 'पहली उपलब्ध अपॉइंटमेंट है',
     'or_join_waitlist' => 'या प्रतीक्षा सूची में शामिल हों',
     'join_waitlist' => 'प्रतीक्षा सूची में शामिल हों',
     'waitlist_for_date' => 'के लिए प्रतीक्षा सूची',

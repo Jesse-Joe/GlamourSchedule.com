@@ -177,6 +177,7 @@ return [
     'time_booked' => 'imewekwa',
     'no_times_this_day' => 'Hakuna nyakati zinazopatikana siku hii',
     'next_available_date' => 'Tarehe inayofuata inayopatikana',
+    'first_available_on' => 'Miadi ya kwanza inayopatikana ni',
     'or_join_waitlist' => 'au jiandikishe kwenye orodha ya kusubiri',
     'join_waitlist' => 'Jiunge na orodha ya kusubiri',
     'waitlist_for_date' => 'Orodha ya kusubiri kwa',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'תפוס',
     'no_times_this_day' => 'אין זמנים פנויים ביום זה',
     'next_available_date' => 'התאריך הפנוי הבא',
+    'first_available_on' => 'התור הזמין הראשון הוא ב',
     'or_join_waitlist' => 'או הירשמו לרשימת המתנה',
     'join_waitlist' => 'הצטרפו לרשימת המתנה',
     'waitlist_for_date' => 'רשימת המתנה ל',

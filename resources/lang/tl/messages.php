@@ -177,6 +177,7 @@ return [
     'time_booked' => 'naka-book na',
     'no_times_this_day' => 'Walang available na oras sa araw na ito',
     'next_available_date' => 'Susunod na available na petsa',
+    'first_available_on' => 'Ang unang available na appointment ay sa',
     'or_join_waitlist' => 'o mag-sign up sa waitlist',
     'join_waitlist' => 'Sumali sa waitlist',
     'waitlist_for_date' => 'Waitlist para sa',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'opptatt',
     'no_times_this_day' => 'Ingen tider tilgjengelig denne dagen',
     'next_available_date' => 'Neste tilgjengelige dato',
+    'first_available_on' => 'Første ledige time er',
     'or_join_waitlist' => 'eller meld deg pa ventelisten',
     'join_waitlist' => 'Meld deg pa ventelisten',
     'waitlist_for_date' => 'Venteliste for',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'zasedeno',
     'no_times_this_day' => 'Na ta dan ni razpolozljivih terminov',
     'next_available_date' => 'Naslednji razpolozljivi datum',
+    'first_available_on' => 'Prvi prosti termin je',
     'or_join_waitlist' => 'ali se prijavite na cakalni seznam',
     'join_waitlist' => 'Prijavi se na cakalni seznam',
     'waitlist_for_date' => 'Cakalni seznam za',

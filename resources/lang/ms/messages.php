@@ -177,6 +177,7 @@ return [
     'time_booked' => 'ditempah',
     'no_times_this_day' => 'Tiada masa tersedia pada hari ini',
     'next_available_date' => 'Tarikh tersedia seterusnya',
+    'first_available_on' => 'Temu janji pertama yang tersedia adalah pada',
     'or_join_waitlist' => 'atau daftar untuk senarai menunggu',
     'join_waitlist' => 'Sertai senarai menunggu',
     'waitlist_for_date' => 'Senarai menunggu untuk',

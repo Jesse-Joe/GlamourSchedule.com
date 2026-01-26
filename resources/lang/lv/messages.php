@@ -177,6 +177,7 @@ return [
     'time_booked' => 'rezervēts',
     'no_times_this_day' => 'Šajā dienā nav pieejamu laiku',
     'next_available_date' => 'Nākamais pieejamais datums',
+    'first_available_on' => 'Pirmais pieejamais laiks ir',
     'or_join_waitlist' => 'vai piesakieties gaidīšanas sarakstam',
     'join_waitlist' => 'Pievienoties gaidīšanas sarakstam',
     'waitlist_for_date' => 'Gaidīšanas saraksts',

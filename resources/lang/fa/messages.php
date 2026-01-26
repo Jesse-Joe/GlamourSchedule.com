@@ -177,6 +177,7 @@ return [
     'time_booked' => 'رزرو شده',
     'no_times_this_day' => 'ساعتی در این روز موجود نیست',
     'next_available_date' => 'اولین تاریخ موجود',
+    'first_available_on' => 'اولین وقت آزاد در تاریخ',
     'or_join_waitlist' => 'یا در لیست انتظار ثبت‌نام کنید',
     'join_waitlist' => 'پیوستن به لیست انتظار',
     'waitlist_for_date' => 'لیست انتظار برای',

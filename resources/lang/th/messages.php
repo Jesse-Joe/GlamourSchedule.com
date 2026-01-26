@@ -177,6 +177,7 @@ return [
     'time_booked' => 'จองแล้ว',
     'no_times_this_day' => 'ไม่มีเวลาว่างในวันนี้',
     'next_available_date' => 'วันที่ว่างถัดไป',
+    'first_available_on' => 'นัดหมายแรกที่ว่างคือ',
     'or_join_waitlist' => 'หรือลงทะเบียนรายชื่อรอ',
     'join_waitlist' => 'เข้าร่วมรายชื่อรอ',
     'waitlist_for_date' => 'รายชื่อรอสำหรับ',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'محجوز',
     'no_times_this_day' => 'لا توجد أوقات متاحة في هذا اليوم',
     'next_available_date' => 'التاريخ المتاح التالي',
+    'first_available_on' => 'أول موعد متاح هو في',
     'or_join_waitlist' => 'أو انضم لقائمة الانتظار',
     'join_waitlist' => 'انضم لقائمة الانتظار',
     'waitlist_for_date' => 'قائمة الانتظار لـ',

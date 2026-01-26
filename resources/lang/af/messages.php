@@ -177,6 +177,7 @@ return [
     'time_booked' => 'bespreek',
     'no_times_this_day' => 'Geen tye beskikbaar op hierdie dag nie',
     'next_available_date' => 'Volgende beskikbare datum',
+    'first_available_on' => 'Die eerste beskikbare afspraak is op',
     'or_join_waitlist' => 'of skryf in vir die waglys',
     'join_waitlist' => 'Sluit aan by waglys',
     'waitlist_for_date' => 'Waglys vir',

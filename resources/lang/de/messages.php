@@ -177,6 +177,7 @@ return [
     'time_booked' => 'gebucht',
     'no_times_this_day' => 'Keine Zeiten verfügbar an diesem Tag',
     'next_available_date' => 'Nächster verfügbarer Termin',
+    'first_available_on' => 'Der erste verfügbare Termin ist am',
     'or_join_waitlist' => 'oder trage dich auf die Warteliste ein',
     'join_waitlist' => 'Auf Warteliste',
     'waitlist_for_date' => 'Warteliste für',

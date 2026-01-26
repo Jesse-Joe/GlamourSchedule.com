@@ -177,6 +177,7 @@ return [
     'time_booked' => 'varattu',
     'no_times_this_day' => 'Ei vapaita aikoja tänä päivänä',
     'next_available_date' => 'Seuraava vapaa päivämäärä',
+    'first_available_on' => 'Ensimmäinen vapaa aika on',
     'or_join_waitlist' => 'tai liity jonotuslistalle',
     'join_waitlist' => 'Liity jonotuslistalle',
     'waitlist_for_date' => 'Jonotuslista päivälle',

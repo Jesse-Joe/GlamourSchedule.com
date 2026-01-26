@@ -177,6 +177,7 @@ return [
     'time_booked' => 'foglalt',
     'no_times_this_day' => 'Ezen a napon nincs elerheto idopont',
     'next_available_date' => 'Kovetkezo elerheto datum',
+    'first_available_on' => 'Az első szabad időpont',
     'or_join_waitlist' => 'vagy iratkozz fel a varolistara',
     'join_waitlist' => 'Feliratkozas a varolistara',
     'waitlist_for_date' => 'Varolista erre:',

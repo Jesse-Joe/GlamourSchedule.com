@@ -177,6 +177,7 @@ return [
     'time_booked' => 'broneeritud',
     'no_times_this_day' => 'Sellel päeval pole vabu aegu',
     'next_available_date' => 'Järgmine vaba kuupäev',
+    'first_available_on' => 'Esimene vaba aeg on',
     'or_join_waitlist' => 'või registreeru ootenimekirja',
     'join_waitlist' => 'Liitu ootenimekirjaga',
     'waitlist_for_date' => 'Ootenimekiri',

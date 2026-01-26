@@ -177,6 +177,7 @@ return [
     'time_booked' => 'rezervat',
     'no_times_this_day' => 'Nicio ora disponibila in aceasta zi',
     'next_available_date' => 'Urmatoarea data disponibila',
+    'first_available_on' => 'Prima programare disponibilă este pe',
     'or_join_waitlist' => 'sau inscrie-te pe lista de asteptare',
     'join_waitlist' => 'Inscrie-te pe lista de asteptare',
     'waitlist_for_date' => 'Lista de asteptare pentru',

@@ -177,6 +177,7 @@ return [
     'time_booked' => 'rezervovano',
     'no_times_this_day' => 'Tento den nejsou zadne dostupne terminy',
     'next_available_date' => 'Dalsi dostupny termin',
+    'first_available_on' => 'První dostupný termín je',
     'or_join_waitlist' => 'nebo se prihlaste na cekaci listinu',
     'join_waitlist' => 'Pridat na cekaci listinu',
     'waitlist_for_date' => 'Cekaci listina pro',

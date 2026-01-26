@@ -177,6 +177,7 @@ return [
     'time_booked' => 'booket',
     'no_times_this_day' => 'Ingen ledige tider på denne dag',
     'next_available_date' => 'Næste ledige dato',
+    'first_available_on' => 'Den første ledige tid er',
     'or_join_waitlist' => 'eller tilmeld dig ventelisten',
     'join_waitlist' => 'Tilmeld venteliste',
     'waitlist_for_date' => 'Venteliste for',

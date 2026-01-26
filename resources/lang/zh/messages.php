@@ -178,6 +178,7 @@ return [
     'time_booked' => '已预约',
     'no_times_this_day' => '当天暂无可用时间',
     'next_available_date' => '下一个可用日期',
+    'first_available_on' => '最早可预约时间是',
     'or_join_waitlist' => '或加入等候名单',
     'join_waitlist' => '加入等候名单',
     'waitlist_for_date' => '等候名单 -',

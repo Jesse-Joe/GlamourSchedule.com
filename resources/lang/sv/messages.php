@@ -177,6 +177,7 @@ return [
     'time_booked' => 'bokad',
     'no_times_this_day' => 'Inga tider tillgängliga denna dag',
     'next_available_date' => 'Nästa tillgängliga datum',
+    'first_available_on' => 'Första lediga tiden är',
     'or_join_waitlist' => 'eller skriv upp dig på väntelistan',
     'join_waitlist' => 'Skriv upp mig på väntelistan',
     'waitlist_for_date' => 'Väntelista för',

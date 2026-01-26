@@ -177,6 +177,7 @@ return [
     'time_booked' => 'užimta',
     'no_times_this_day' => 'Šią dieną nėra laisvų laikų',
     'next_available_date' => 'Artimiausias laisvas laikas',
+    'first_available_on' => 'Pirmasis galimas laikas yra',
     'or_join_waitlist' => 'arba užsiregistruokite į laukiančiųjų sąrašą',
     'join_waitlist' => 'Prisijungti prie laukiančiųjų',
     'waitlist_for_date' => 'Laukiančiųjų sąrašas',

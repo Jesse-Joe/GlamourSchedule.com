@@ -177,6 +177,7 @@ return [
     'time_booked' => 'da dat',
     'no_times_this_day' => 'Khong co gio trong vao ngay nay',
     'next_available_date' => 'Ngay trong tiep theo',
+    'first_available_on' => 'Lịch hẹn đầu tiên có sẵn vào',
     'or_join_waitlist' => 'hoac dang ky danh sach cho',
     'join_waitlist' => 'Tham gia danh sach cho',
     'waitlist_for_date' => 'Danh sach cho cho',

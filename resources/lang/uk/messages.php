@@ -177,6 +177,7 @@ return [
     'time_booked' => 'заброньовано',
     'no_times_this_day' => 'Немає доступного часу в цей день',
     'next_available_date' => 'Наступна доступна дата',
+    'first_available_on' => 'Перший доступний запис',
     'or_join_waitlist' => 'або запишіться в лист очікування',
     'join_waitlist' => 'Записатися в лист очікування',
     'waitlist_for_date' => 'Лист очікування на',

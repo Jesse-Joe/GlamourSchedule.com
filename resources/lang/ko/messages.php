@@ -177,6 +177,7 @@ return [
     'time_booked' => '예약됨',
     'no_times_this_day' => '이 날짜에 예약 가능한 시간이 없습니다',
     'next_available_date' => '다음 예약 가능일',
+    'first_available_on' => '첫 번째 예약 가능한 날짜는',
     'or_join_waitlist' => '또는 대기자 명단에 등록하세요',
     'join_waitlist' => '대기자 명단 등록',
     'waitlist_for_date' => '대기자 명단',

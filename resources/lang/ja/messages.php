@@ -177,6 +177,7 @@ return [
     'time_booked' => '予約済み',
     'no_times_this_day' => 'この日は空き時間がありません',
     'next_available_date' => '次の空き日',
+    'first_available_on' => '最初に予約可能な日時は',
     'or_join_waitlist' => 'またはキャンセル待ちに登録',
     'join_waitlist' => 'キャンセル待ちに登録',
     'waitlist_for_date' => 'キャンセル待ち日程',

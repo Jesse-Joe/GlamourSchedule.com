@@ -177,6 +177,7 @@ return [
     'time_booked' => 'rezerve edildi',
     'no_times_this_day' => 'Bu gun musait saat yok',
     'next_available_date' => 'Bir sonraki musait tarih',
+    'first_available_on' => 'İlk müsait randevu tarihi',
     'or_join_waitlist' => 'veya bekleme listesine kayit olun',
     'join_waitlist' => 'Bekleme listesine katil',
     'waitlist_for_date' => 'Bekleme listesi',
