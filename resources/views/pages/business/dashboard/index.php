@@ -442,8 +442,8 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
                             <span style="color:var(--text-light)"> - <?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></span>
                             <small><?= htmlspecialchars($booking['service_name']) ?></small>
                         </div>
-                        <span class="booking-status <?= $booking['status'] === 'confirmed' ? 'status-confirmed' : 'status-pending' ?>">
-                            <?= $booking['status'] === 'confirmed' ? 'Bevestigd' : 'Wacht' ?>
+                        <span class="booking-status <?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'status-confirmed' : 'status-pending' ?>">
+                            <?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'Bevestigd' : 'Wacht' ?>
                         </span>
                     </div>
                 <?php endforeach; ?>

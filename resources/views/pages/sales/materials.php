@@ -37,7 +37,7 @@
             <div style="color:#aaaaaa;font-size:0.8rem">op registratiekosten</div>
         </div>
         <div>
-            <div style="font-size:2rem;font-weight:700;color:#ffffff">€99,99</div>
+            <div style="font-size:2rem;font-weight:700;color:#ffffff">€49,99</div>
             <div style="color:#ffffff;font-size:0.9rem">Jouw commissie</div>
             <div style="color:#aaaaaa;font-size:0.8rem">per betalende klant</div>
         </div>
@@ -245,11 +245,24 @@ Zal ik je even laten zien hoe het werkt?</p>
 
             if (data.success) {
                 result.style.display = 'block';
-                result.innerHTML = '<div style="background:#000000;border:1px solid #333333;color:#ffffff;padding:1rem;border-radius:10px"><i class="fas fa-check-circle"></i> Email succesvol verstuurd naar ' + formData.get('salon_email') + '!</div>';
+                const successDiv = document.createElement('div');
+                successDiv.style.cssText = 'background:#000000;border:1px solid #333333;color:#ffffff;padding:1rem;border-radius:10px';
+                successDiv.innerHTML = '<i class="fas fa-check-circle"></i> Email succesvol verstuurd naar ';
+                const emailSpan = document.createElement('span');
+                emailSpan.textContent = formData.get('salon_email');
+                successDiv.appendChild(emailSpan);
+                successDiv.appendChild(document.createTextNode('!'));
+                result.innerHTML = '';
+                result.appendChild(successDiv);
                 e.target.reset();
             } else {
                 result.style.display = 'block';
-                result.innerHTML = '<div style="background:#000000;border:1px solid #333333;color:#ffffff;padding:1rem;border-radius:10px"><i class="fas fa-exclamation-circle"></i> ' + (data.error || 'Er ging iets mis') + '</div>';
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'background:#000000;border:1px solid #333333;color:#ffffff;padding:1rem;border-radius:10px';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> ';
+                errorDiv.appendChild(document.createTextNode(data.error || 'Er ging iets mis'));
+                result.innerHTML = '';
+                result.appendChild(errorDiv);
             }
         } catch (err) {
             result.style.display = 'block';

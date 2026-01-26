@@ -55,7 +55,7 @@
                         <?php foreach ($payouts as $payout): ?>
                             <tr style="border-bottom:1px solid var(--border)">
                                 <td style="padding:0.75rem 0">
-                                    <?= date('d-m-Y', strtotime($payout['created_at'])) ?>
+                                    <?= !empty($payout['created_at']) ? date('d-m-Y', strtotime($payout['created_at'])) : '-' ?>
                                 </td>
                                 <td style="padding:0.75rem 0;font-weight:600">
                                     &euro;<?= number_format($payout['amount'] ?? 0, 2, ',', '.') ?>

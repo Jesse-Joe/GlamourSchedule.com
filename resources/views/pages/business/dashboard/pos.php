@@ -907,8 +907,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             </div>
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
                 <div style="padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer"
-                     onclick="quickSelectCustomer(<?= $customer['id'] ?>, '<?= htmlspecialchars(addslashes($customer['name'])) ?>', '<?= htmlspecialchars($customer['email'] ?? '') ?>', '<?= htmlspecialchars($customer['phone'] ?? '') ?>')">
-                    <strong><?= htmlspecialchars($customer['name']) ?></strong> <span style="color:var(--text-light);font-size:0.75rem">#<?= $customer['id'] ?></span>
+                     onclick="quickSelectCustomer(<?= (int)$customer['id'] ?>, <?= json_encode($customer['name'] ?? '') ?>, <?= json_encode($customer['email'] ?? '') ?>, <?= json_encode($customer['phone'] ?? '') ?>)">
+                    <strong><?= htmlspecialchars($customer['name'] ?? '') ?></strong> <span style="color:var(--text-light);font-size:0.75rem">#<?= (int)$customer['id'] ?></span>
                     <?php if (!empty($customer['email'])): ?>
                         <br><small class="text-muted"><?= htmlspecialchars($customer['email']) ?></small>
                     <?php endif; ?>
@@ -1089,13 +1089,32 @@ function searchCustomers(query) {
             data.customers.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'customer-result-item';
-                div.innerHTML = `
-                    <div>
-                        <div class="name">${escapeHtml(c.name)} <span style="color:var(--text-light);font-size:0.75rem;font-weight:normal">#${c.id}</span></div>
-                        <div class="details">${c.email || ''} ${c.phone ? '• ' + c.phone : ''}</div>
-                    </div>
-                    ${c.total_appointments > 0 ? '<span class="badge">' + c.total_appointments + ' bezoeken</span>' : ''}
-                `;
+
+                // Build content safely without innerHTML for user data
+                const infoDiv = document.createElement('div');
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'name';
+                nameDiv.textContent = c.name || '';
+                const idSpan = document.createElement('span');
+                idSpan.style.cssText = 'color:var(--text-light);font-size:0.75rem;font-weight:normal';
+                idSpan.textContent = ' #' + c.id;
+                nameDiv.appendChild(idSpan);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details';
+                detailsDiv.textContent = (c.email || '') + (c.phone ? ' • ' + c.phone : '');
+
+                infoDiv.appendChild(nameDiv);
+                infoDiv.appendChild(detailsDiv);
+                div.appendChild(infoDiv);
+
+                if (c.total_appointments > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = c.total_appointments + ' bezoeken';
+                    div.appendChild(badge);
+                }
+
                 div.onclick = () => selectCustomer(c);
                 results.appendChild(div);
             });
@@ -1114,8 +1133,15 @@ function searchCustomers(query) {
 function selectCustomer(customer) {
     selectedCustomer = customer;
     document.getElementById('selectedCustomerId').value = customer.id;
-    document.getElementById('customerAvatar').textContent = customer.name.charAt(0).toUpperCase();
-    document.getElementById('customerName').innerHTML = customer.name + ' <span style="color:var(--text-light);font-size:0.8rem;font-weight:normal">#' + customer.id + '</span>';
+    document.getElementById('customerAvatar').textContent = (customer.name || 'G').charAt(0).toUpperCase();
+    // Safe way to set customer name with ID span
+    const nameEl = document.getElementById('customerName');
+    nameEl.textContent = '';
+    nameEl.appendChild(document.createTextNode(customer.name || 'Gast'));
+    const idSpan = document.createElement('span');
+    idSpan.style.cssText = 'color:var(--text-light);font-size:0.8rem;font-weight:normal';
+    idSpan.textContent = ' #' + customer.id;
+    nameEl.appendChild(idSpan);
     document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || 'Geen contactgegevens';
 
     document.getElementById('selectedCustomerBadge').style.display = 'flex';

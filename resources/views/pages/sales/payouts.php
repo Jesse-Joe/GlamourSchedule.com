@@ -20,7 +20,7 @@
             <i class="fas fa-euro-sign"></i>
         </div>
         <div class="commission-text">
-            <strong>Je verdient &euro;99,99 per geregistreerde salon</strong>
+            <strong>Je verdient &euro;49,99 per geregistreerde salon</strong>
             <p>Commissie wordt uitgekeerd wanneer een salon via jouw referral code registreert, de 14 dagen proeftijd afrondt en de registratiefee betaalt.</p>
         </div>
     </div>
@@ -29,7 +29,7 @@
         <div class="info-box">
             <div class="info-icon"><i class="fas fa-coins"></i></div>
             <h4>Commissie per salon</h4>
-            <p class="info-value">&euro;99,99</p>
+            <p class="info-value">&euro;49,99</p>
             <span class="info-note">Per betalende salon</span>
         </div>
         <div class="info-box">
@@ -41,7 +41,7 @@
         <div class="info-box">
             <div class="info-icon"><i class="fas fa-university"></i></div>
             <h4>Minimum uitbetaling</h4>
-            <p class="info-value">&euro;99,99</p>
+            <p class="info-value">&euro;49,99</p>
             <span class="info-note">Minimaal 1 geconverteerde salon</span>
         </div>
     </div>
@@ -80,7 +80,7 @@
             <div class="step-marker success"><i class="fas fa-check"></i></div>
             <div class="step-content">
                 <strong>Commissie vrijgegeven</strong>
-                <span>Jouw &euro;99,99 commissie wordt toegevoegd aan je saldo</span>
+                <span>Jouw &euro;49,99 commissie wordt toegevoegd aan je saldo</span>
             </div>
         </div>
         <div class="timeline-connector"></div>
@@ -98,7 +98,7 @@
         <div>
             <strong>Voorbeeld:</strong> Salon "Beauty Studio" registreert op 1 januari via jouw link.
             Na de proeftijd betaalt ze op 15 januari de registratiefee.
-            Jouw &euro;99,99 commissie wordt de eerstvolgende woensdag (22 januari) uitbetaald.
+            Jouw &euro;49,99 commissie wordt de eerstvolgende woensdag (22 januari) uitbetaald.
         </div>
     </div>
 </div>
@@ -140,7 +140,7 @@
                     <?php foreach ($payouts as $payout): ?>
                         <tr style="border-bottom:1px solid #e5e7eb">
                             <td style="padding:1rem 0.5rem">
-                                <?= date('d-m-Y', strtotime($payout['created_at'])) ?>
+                                <?= !empty($payout['created_at']) ? date('d-m-Y', strtotime($payout['created_at'])) : '-' ?>
                             </td>
                             <td style="padding:1rem 0.5rem;color:#6b7280;font-family:monospace">
                                 <?= htmlspecialchars($payout['reference'] ?? '-') ?>

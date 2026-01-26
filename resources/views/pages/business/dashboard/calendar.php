@@ -356,7 +356,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
                                      data-time="<?= date('H:i', strtotime($booking['appointment_time'])) ?>"
                                      data-endtime="<?= $endTime ?>"
                                      data-price="<?= number_format($booking['total_price'] ?? 0, 2, ',', '.') ?>"
-                                     data-status="<?= $booking['status'] ?>"
+                                     data-status="<?= htmlspecialchars($booking['status'] ?? 'pending') ?>"
                                      data-notes="<?= htmlspecialchars($booking['notes'] ?? '') ?>">
                                     <div class="booking-block-title">
                                         <?= htmlspecialchars($customerName) ?>
@@ -425,12 +425,12 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
                          data-time="<?= date('H:i', strtotime($booking['appointment_time'])) ?>"
                          data-endtime="<?= $sidebarEndTime ?>"
                          data-price="<?= number_format($booking['total_price'] ?? 0, 2, ',', '.') ?>"
-                         data-status="<?= $booking['status'] ?>"
+                         data-status="<?= htmlspecialchars($booking['status'] ?? 'pending') ?>"
                          data-notes="<?= htmlspecialchars($booking['notes'] ?? '') ?>">
                         <div style="display:flex;justify-content:space-between;align-items:center">
                             <strong><?= date('H:i', strtotime($booking['appointment_time'])) ?></strong>
-                            <span style="background:<?= $booking['status'] === 'confirmed' ? 'var(--success)' : 'var(--warning)' ?>;color:white;padding:0.2rem 0.5rem;border-radius:10px;font-size:0.7rem">
-                                <?= $booking['status'] === 'confirmed' ? 'Bevestigd' : 'In afwachting' ?>
+                            <span style="background:<?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'var(--success)' : 'var(--warning)' ?>;color:white;padding:0.2rem 0.5rem;border-radius:10px;font-size:0.7rem">
+                                <?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'Bevestigd' : 'In afwachting' ?>
                             </span>
                         </div>
                         <p style="margin:0.25rem 0 0 0;font-size:0.9rem">

@@ -172,13 +172,13 @@
                                     <strong><?= htmlspecialchars(($review['first_name'] ?? 'Gast') . ' ' . substr($review['last_name'] ?? '', 0, 1) . '.') ?></strong>
                                     <div class="review-stars">
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
-                                            <i class="fas fa-star<?= $i <= $review['rating'] ? '' : '-o' ?>"></i>
+                                            <i class="fas fa-star<?= $i <= ($review['rating'] ?? 0) ? '' : '-o' ?>"></i>
                                         <?php endfor; ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="review-meta" style="text-align:right">
-                                <small class="text-muted"><?= date('d-m-Y', strtotime($review['created_at'])) ?></small>
+                                <small class="text-muted"><?= !empty($review['created_at']) ? date('d-m-Y', strtotime($review['created_at'])) : '-' ?></small>
                                 <?php if (!empty($review['service_name'])): ?>
                                     <br><small class="text-muted"><?= htmlspecialchars($review['service_name']) ?></small>
                                 <?php endif; ?>
@@ -194,7 +194,7 @@
                                 <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
                                     <i class="fas fa-reply" style="color:var(--primary)"></i>
                                     <strong style="font-size:0.85rem">Jouw reactie</strong>
-                                    <small class="text-muted"><?= $review['responded_at'] ? date('d-m-Y', strtotime($review['responded_at'])) : '' ?></small>
+                                    <small class="text-muted"><?= !empty($review['responded_at']) ? date('d-m-Y', strtotime($review['responded_at'])) : '' ?></small>
                                 </div>
                                 <p style="margin:0;font-size:0.9rem"><?= nl2br(htmlspecialchars($review['business_response'])) ?></p>
                             </div>

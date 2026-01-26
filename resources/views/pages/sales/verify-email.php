@@ -179,8 +179,8 @@
             <i class="fas fa-envelope"></i>
         </div>
 
-        <h1>Verifieer je E-mail</h1>
-        <p class="subtitle">We hebben een 6-cijferige code gestuurd naar:</p>
+        <h1><?= $translations['verify_email'] ?? 'Verify your email' ?></h1>
+        <p class="subtitle"><?= $translations['code_sent_to'] ?? 'We sent a 6-digit code to' ?>:</p>
         <div class="email-display"><?= htmlspecialchars($maskedEmail ?? '') ?></div>
 
         <?php if (!empty($error)): ?>
@@ -188,12 +188,12 @@
                 <i class="fas fa-exclamation-circle"></i>
                 <?php
                 $errors = [
-                    'csrf' => 'Beveiligingsfout. Probeer het opnieuw.',
-                    'invalid_code' => 'Voer een geldige 6-cijferige code in.',
-                    'wrong_code' => 'Onjuiste code. Controleer je e-mail.',
-                    'expired' => 'Code verlopen. Vraag een nieuwe aan.'
+                    'csrf' => $translations['error_csrf'] ?? 'Security error. Please try again.',
+                    'invalid_code' => $translations['error_invalid_code'] ?? 'Enter a valid 6-digit code.',
+                    'wrong_code' => $translations['error_wrong_code'] ?? 'Incorrect code. Check your email.',
+                    'expired' => $translations['error_expired'] ?? 'Code expired. Request a new one.'
                 ];
-                echo $errors[$error] ?? 'Er is een fout opgetreden.';
+                echo $errors[$error] ?? ($translations['error_generic'] ?? 'An error occurred.');
                 ?>
             </div>
         <?php endif; ?>
@@ -216,18 +216,18 @@
             </div>
 
             <button type="submit" class="btn-verify" id="submitBtn" disabled>
-                <i class="fas fa-check"></i> Verifieer Code
+                <i class="fas fa-check"></i> <?= $translations['verify_btn'] ?? 'Verify Code' ?>
             </button>
         </form>
 
-        <p class="timer"><i class="fas fa-clock"></i> Code geldig voor: <span id="countdown">30:00</span></p>
+        <p class="timer"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></p>
 
         <div class="resend-section">
-            <p class="resend-text">Geen code ontvangen?</p>
+            <p class="resend-text"><?= $translations['no_code_received'] ?? 'Didn\'t receive a code?' ?></p>
             <form method="POST" action="/sales/verify-email/resend" style="display:inline">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <button type="submit" class="btn-resend">
-                    <i class="fas fa-redo"></i> Stuur nieuwe code
+                    <i class="fas fa-redo"></i> <?= $translations['resend_code'] ?? 'Send new code' ?>
                 </button>
             </form>
         </div>
@@ -278,7 +278,7 @@
         }
 
         // Countdown
-        let time = 30 * 60;
+        let time = 10 * 60;
         const countdown = document.getElementById('countdown');
         setInterval(() => {
             if (time > 0) {
@@ -287,7 +287,7 @@
                 const s = time % 60;
                 countdown.textContent = m + ':' + s.toString().padStart(2, '0');
             } else {
-                countdown.textContent = 'Verlopen';
+                countdown.textContent = <?= json_encode($translations['error_expired'] ?? 'Verlopen') ?>;
                 countdown.style.color = '#333333';
             }
         }, 1000);

@@ -70,9 +70,9 @@
     </div>
 
     <div class="card" style="background:#1a1a1a;border:2px solid #333">
-        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> Verdien &euro;99,99</h3>
+        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> Verdien &euro;49,99</h3>
         <p style="margin:0;color:#a1a1a1;line-height:1.6">
-            Voor elke salon die via jouw code registreert en na de proeftijd betaalt, ontvang je &euro;99,99 commissie!
+            Voor elke salon die via jouw code registreert en na de proeftijd betaalt, ontvang je &euro;49,99 commissie!
         </p>
         <a href="/sales/materials" style="display:inline-block;margin-top:1rem;color:#fff;text-decoration:none;font-weight:600">
             <i class="fas fa-arrow-right"></i> Bekijk promotiemateriaal
@@ -118,7 +118,7 @@
             <div class="trial-item <?= $urgency ?>">
                 <div class="trial-info">
                     <strong><?= htmlspecialchars($trial['company_name']) ?></strong>
-                    <span class="trial-date">Gestart: <?= date('d-m-Y', strtotime($trial['business_created'])) ?></span>
+                    <span class="trial-date">Gestart: <?= !empty($trial['business_created']) ? date('d-m-Y', strtotime($trial['business_created'])) : '-' ?></span>
                 </div>
                 <div class="trial-countdown">
                     <span class="days-badge <?= $urgency ?>">
@@ -175,8 +175,8 @@
                     <?php foreach ($recentReferrals as $ref): ?>
                         <tr>
                             <td>
-                                <strong style="color:#333333"><?= htmlspecialchars($ref['company_name']) ?></strong><br>
-                                <small style="color:#666666"><?= date('d-m-Y', strtotime($ref['created_at'])) ?></small>
+                                <strong style="color:#333333"><?= htmlspecialchars($ref['company_name'] ?? '') ?></strong><br>
+                                <small style="color:#666666"><?= !empty($ref['created_at']) ? date('d-m-Y', strtotime($ref['created_at'])) : '-' ?></small>
                             </td>
                             <td>
                                 <?php
@@ -245,8 +245,8 @@
                         </span>
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center">
-                        <small style="color:#666666"><?= date('d-m-Y', strtotime($ref['created_at'])) ?></small>
-                        <span style="font-weight:700;color:<?= $status === 'paid' ? '#22c55e' : '#333333' ?>">&euro;<?= number_format($ref['commission'], 2, ',', '.') ?></span>
+                        <small style="color:#666666"><?= !empty($ref['created_at']) ? date('d-m-Y', strtotime($ref['created_at'])) : '-' ?></small>
+                        <span style="font-weight:700;color:<?= $status === 'paid' ? '#22c55e' : '#333333' ?>">&euro;<?= number_format($ref['commission'] ?? 0, 2, ',', '.') ?></span>
                     </div>
                 </div>
             <?php endforeach; ?>

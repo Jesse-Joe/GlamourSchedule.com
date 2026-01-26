@@ -22,22 +22,23 @@
             <tbody>
                 <?php foreach ($referrals as $ref): ?>
                     <?php
-                    $statusColors = ['pending' => '#000000', 'converted' => '#333333', 'paid' => '#404040'];
-                    $statusLabels = ['pending' => 'In afwachting', 'converted' => 'Geconverteerd', 'paid' => 'Uitbetaald'];
+                    $statusColors = ['pending' => '#000000', 'converted' => '#333333', 'paid' => '#404040', 'cancelled' => '#dc2626', 'failed' => '#dc2626', 'expired' => '#6b7280'];
+                    $statusLabels = ['pending' => 'In afwachting', 'converted' => 'Geconverteerd', 'paid' => 'Uitbetaald', 'cancelled' => 'Geannuleerd', 'failed' => 'Mislukt', 'expired' => 'Verlopen'];
+                    $status = $ref['status'] ?? 'pending';
                     ?>
                     <tr style="border-bottom:1px solid #e5e7eb">
                         <td style="padding:1rem 0.5rem">
-                            <strong><?= htmlspecialchars($ref['company_name']) ?></strong>
+                            <strong><?= htmlspecialchars($ref['company_name'] ?? '') ?></strong>
                         </td>
                         <td style="padding:1rem 0.5rem;color:#6b7280">
-                            <?= htmlspecialchars($ref['email']) ?>
+                            <?= htmlspecialchars($ref['email'] ?? '') ?>
                         </td>
                         <td style="padding:1rem 0.5rem;color:#6b7280">
-                            <?= date('d-m-Y', strtotime($ref['business_created'])) ?>
+                            <?= !empty($ref['business_created']) ? date('d-m-Y', strtotime($ref['business_created'])) : '-' ?>
                         </td>
                         <td style="padding:1rem 0.5rem;text-align:center">
-                            <span style="background:<?= $statusColors[$ref['status']] ?>20;color:<?= $statusColors[$ref['status']] ?>;padding:0.35rem 1rem;border-radius:20px;font-size:0.85rem;font-weight:500">
-                                <?= $statusLabels[$ref['status']] ?>
+                            <span style="background:<?= $statusColors[$status] ?? '#6b7280' ?>20;color:<?= $statusColors[$status] ?? '#6b7280' ?>;padding:0.35rem 1rem;border-radius:20px;font-size:0.85rem;font-weight:500">
+                                <?= $statusLabels[$status] ?? ucfirst($status) ?>
                             </span>
                         </td>
                         <td style="padding:1rem 0.5rem;text-align:right;font-weight:600;font-size:1.1rem">
