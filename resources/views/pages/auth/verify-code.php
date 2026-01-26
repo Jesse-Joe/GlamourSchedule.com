@@ -172,7 +172,7 @@
                 </div>
 
                 <div class="timer">
-                    <?= $__('code_valid_for') ?>: <span id="countdown">10:00</span>
+                    <i class="fas fa-clock"></i> <span id="countdown">10:00</span>
                 </div>
 
                 <button type="submit" class="btn-verify" id="submitBtn" disabled>
