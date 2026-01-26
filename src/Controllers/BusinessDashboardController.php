@@ -1503,7 +1503,7 @@ HTML;
         // Update status to checked_in
         $this->db->query(
             "UPDATE bookings SET status = 'checked_in', checked_in_at = NOW() WHERE uuid = ?",
-            [$uuid]
+            [$booking['uuid']]
         );
 
         // Send confirmation email to customer
