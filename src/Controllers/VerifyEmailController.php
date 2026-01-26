@@ -206,11 +206,11 @@ class VerifyEmailController extends Controller
         <!DOCTYPE html>
         <html>
         <head><meta charset='UTF-8'></head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f5f5;padding:20px;'>
+        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='500' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:10px;overflow:hidden;'>
+                        <table width='500' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
                             <tr>
                                 <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
                                     <h1 style='margin:0;font-size:24px;'>Bevestig je account</h1>
@@ -218,12 +218,12 @@ class VerifyEmailController extends Controller
                             </tr>
                             <tr>
                                 <td style='padding:40px;text-align:center;'>
-                                    <p style='font-size:16px;color:#333;'>Beste <strong>{$companyName}</strong>,</p>
-                                    <p style='font-size:16px;color:#333;'>Je verificatiecode is:</p>
+                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$companyName}</strong>,</p>
+                                    <p style='font-size:16px;color:#ffffff;'>Je verificatiecode is:</p>
                                     <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
                                     </div>
-                                    <p style='font-size:14px;color:#666;'>Deze code is 10 minuten geldig.</p>
+                                    <p style='font-size:14px;color:#cccccc;'>Deze code is 10 minuten geldig.</p>
                                 </td>
                             </tr>
                         </table>
@@ -260,11 +260,11 @@ class VerifyEmailController extends Controller
         <!DOCTYPE html>
         <html>
         <head><meta charset='UTF-8'></head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f5f5;padding:20px;'>
+        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='600' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:10px;overflow:hidden;'>
+                        <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
                             <tr>
                                 <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;'>
                                     <h1 style='margin:0;font-size:28px;'>Welkom bij GlamourSchedule!</h1>
@@ -273,14 +273,14 @@ class VerifyEmailController extends Controller
                             </tr>
                             <tr>
                                 <td style='padding:40px;'>
-                                    <p style='font-size:16px;color:#333;'>Beste <strong>{$business['company_name']}</strong>,</p>
-                                    <p style='font-size:16px;color:#333;line-height:1.6;'>
+                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$business['company_name']}</strong>,</p>
+                                    <p style='font-size:16px;color:#ffffff;line-height:1.6;'>
                                         Gefeliciteerd! Je account is geverifieerd en je kunt nu beginnen met het opzetten van je bedrijfspagina.
                                     </p>
 
                                     <div style='background:#fffbeb;border-left:4px solid #000000;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;'>
                                         <h3 style='margin:0 0 15px;color:#000000;'>Volgende stappen:</h3>
-                                        <ol style='margin:0;padding-left:20px;color:#333;'>
+                                        <ol style='margin:0;padding-left:20px;color:#ffffff;'>
                                             <li style='margin:10px 0;'>Upload je logo en cover foto</li>
                                             <li style='margin:10px 0;'>Voeg je diensten toe met prijzen en tijdsduur</li>
                                             <li style='margin:10px 0;'>Stel je openingstijden in</li>
@@ -292,13 +292,13 @@ class VerifyEmailController extends Controller
                                         <a href='{$dashboardUrl}' style='display:inline-block;background:#000000;color:#ffffff;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;'>Ga naar je Dashboard</a>
                                     </p>
 
-                                    <p style='font-size:14px;color:#666;'>
+                                    <p style='font-size:14px;color:#cccccc;'>
                                         Je bedrijfspagina: <a href='{$businessUrl}' style='color:#000000;'>{$businessUrl}</a>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style='background:#fafafa;padding:20px;text-align:center;color:#666;font-size:12px;'>
+                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#cccccc;font-size:12px;'>
                                     <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule</p>
                                 </td>
                             </tr>
@@ -466,11 +466,11 @@ class VerifyEmailController extends Controller
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 </head>
-<body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;'>
-    <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f5f5;padding:20px;'>
+<body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+    <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
         <tr>
             <td align='center'>
-                <table width='600' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);'>
+                <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);'>
                     <!-- Header -->
                     <tr>
                         <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
@@ -482,17 +482,17 @@ class VerifyEmailController extends Controller
                     <!-- Content -->
                     <tr>
                         <td style='padding:40px 30px;'>
-                            <p style='font-size:16px;color:#333;margin:0 0 20px;'>
+                            <p style='font-size:16px;color:#ffffff;margin:0 0 20px;'>
                                 Hoi <strong>{$firstName}</strong>,
                             </p>
 
-                            <p style='font-size:16px;color:#333;margin:0 0 25px;line-height:1.6;'>
+                            <p style='font-size:16px;color:#ffffff;margin:0 0 25px;line-height:1.6;'>
                                 Er is een nieuwe salon toegevoegd die perfect bij jou zou kunnen passen!
                             </p>
 
                             <!-- Business Card -->
                             <div style='background:linear-gradient(135deg,#fffbeb,#f5f3ff);border-radius:12px;padding:25px;margin:25px 0;border:2px solid #f5f5f5;'>
-                                <h2 style='margin:0 0 10px;color:#333;font-size:20px;'>{$business['company_name']}</h2>
+                                <h2 style='margin:0 0 10px;color:#ffffff;font-size:20px;'>{$business['company_name']}</h2>
 
                                 <p style='margin:0 0 8px;color:#6b7280;font-size:14px;'>
                                     <span style='color:#000000;'>📍</span> {$location}
@@ -522,7 +522,7 @@ class VerifyEmailController extends Controller
 
                     <!-- Footer -->
                     <tr>
-                        <td style='background:#fafafa;padding:25px;text-align:center;border-top:1px solid #e5e7eb;'>
+                        <td style='background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #e5e7eb;'>
                             <p style='margin:0 0 10px;color:#6b7280;font-size:12px;'>
                                 Je ontvangt deze email omdat je een account hebt bij GlamourSchedule.
                             </p>
@@ -549,17 +549,17 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
                     <div style="font-size:50px;margin-bottom:15px;">&#9888;</div>
                     <h1 style="margin:0;font-size:24px;">Actie Vereist</h1>
                     <p style="margin:10px 0 0;opacity:0.95;">Je account is nog niet volledig actief</p>
                 </td></tr>
                 <tr><td style="padding:35px;">
-                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$businessData['name']},</p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$businessData['name']},</p>
 
                     <div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:20px;margin-bottom:25px;">
                         <h3 style="margin:0 0 10px;color:#92400e;display:flex;align-items:center;gap:10px;">
@@ -571,7 +571,7 @@ HTML;
                         </p>
                     </div>
 
-                    <h3 style="color:#333;margin:0 0 15px;">Waarom is een KVK-nummer belangrijk?</h3>
+                    <h3 style="color:#ffffff;margin:0 0 15px;">Waarom is een KVK-nummer belangrijk?</h3>
                     <ul style="color:#555;line-height:1.8;padding-left:20px;margin:0 0 25px;">
                         <li><strong>Directe activatie</strong> - Met KVK wordt je account direct actief</li>
                         <li><strong>Vertrouwen</strong> - Klanten zien dat je een geregistreerd bedrijf bent</li>
@@ -594,12 +594,12 @@ HTML;
                         </a>
                     </div>
 
-                    <p style="font-size:14px;color:#666;text-align:center;margin:0;">
+                    <p style="font-size:14px;color:#cccccc;text-align:center;margin:0;">
                         Geen KVK-nummer? Geen zorgen - ons team verifieert je account binnen 24 uur.
                     </p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -645,7 +645,7 @@ HTML;
             $verifyUrl = "https://glamourschedule.nl/admin/verify-business/{$verificationToken}";
             $actionButtons = <<<HTML
                     <div style="margin-top:30px;text-align:center;">
-                        <p style="margin:0 0 20px;color:#666;font-size:14px;">Klik op een knop om het bedrijf te verifiëren of af te wijzen:</p>
+                        <p style="margin:0 0 20px;color:#cccccc;font-size:14px;">Klik op een knop om het bedrijf te verifiëren of af te wijzen:</p>
                         <a href="{$verifyUrl}?action=approve" style="display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;margin:5px;">
                             ✓ Accepteren
                         </a>
@@ -670,7 +670,7 @@ HTML;
 <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
                 <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
                     <div style="font-size:40px;margin-bottom:15px;">🏢</div>
                     <h1 style="margin:0;font-size:24px;font-weight:700;">Nieuw Bedrijf Geregistreerd</h1>

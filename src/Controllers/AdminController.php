@@ -624,7 +624,7 @@ class AdminController extends Controller
 <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
                 <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
                     <div style="width:80px;height:80px;background:#22c55e;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
                         <span style="font-size:40px;line-height:80px;">✓</span>
@@ -633,9 +633,9 @@ class AdminController extends Controller
                     <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je bedrijf is succesvol geverifieerd</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$business['name']},</p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$business['name']},</p>
 
-                    <p style="font-size:16px;color:#333;line-height:1.7;margin:0 0 25px;">
+                    <p style="font-size:16px;color:#ffffff;line-height:1.7;margin:0 0 25px;">
                         Geweldig nieuws! Ons team heeft je bedrijfsregistratie beoordeeld en goedgekeurd.
                         Je account is nu <strong>volledig actief</strong> en je kunt direct boekingen ontvangen van klanten.
                     </p>
@@ -655,7 +655,7 @@ class AdminController extends Controller
                         </a>
                     </div>
 
-                    <p style="font-size:14px;color:#666;text-align:center;margin:20px 0 0;">
+                    <p style="font-size:14px;color:#cccccc;text-align:center;margin:20px 0 0;">
                         Je bedrijfspagina: <a href="{$businessUrl}" style="color:#000000;font-weight:600;">{$businessUrl}</a>
                     </p>
                 </td></tr>
@@ -689,7 +689,7 @@ HTML;
 <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
                 <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
                     <div style="width:80px;height:80px;background:#ef4444;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
                         <span style="font-size:40px;line-height:80px;">✗</span>
@@ -698,9 +698,9 @@ HTML;
                     <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je aanvraag kon helaas niet worden goedgekeurd</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:16px;color:#333;margin:0 0 20px;">Beste {$business['name']},</p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$business['name']},</p>
 
-                    <p style="font-size:16px;color:#333;line-height:1.7;margin:0 0 25px;">
+                    <p style="font-size:16px;color:#ffffff;line-height:1.7;margin:0 0 25px;">
                         Helaas moeten we je meedelen dat je bedrijfsregistratie is afgewezen na beoordeling door ons team.
                     </p>
 
@@ -710,7 +710,7 @@ HTML;
                     </div>
 
                     <div style="background:#f9fafb;border-radius:16px;padding:25px;margin-bottom:30px;">
-                        <h3 style="margin:0 0 15px;color:#333;font-size:16px;">Wat kun je doen?</h3>
+                        <h3 style="margin:0 0 15px;color:#ffffff;font-size:16px;">Wat kun je doen?</h3>
                         <ul style="margin:0;padding-left:20px;color:#555;line-height:1.8;">
                             <li>Controleer of je gegevens correct zijn</li>
                             <li>Voeg een geldig KVK-nummer toe</li>

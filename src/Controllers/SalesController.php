@@ -324,10 +324,10 @@ class SalesController extends Controller
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e5e5;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #e5e5e5;">
                 <tr><td style="background:#000000;padding:40px;text-align:center;">
                     <h1 style="margin:0;color:#ffffff;font-size:28px;">Early Bird Aanbieding</h1>
                     <p style="margin:10px 0 0;color:#ffffff;font-size:16px;opacity:0.9;">Exclusief voor {$businessName}</p>
@@ -343,7 +343,7 @@ class SalesController extends Controller
                     <div style="background:#f9f9f9;border:2px solid #000000;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
                         <p style="margin:0 0 10px;color:#000000;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
                         <p style="margin:0;font-size:48px;font-weight:bold;color:#000000;">€0,99</p>
-                        <p style="margin:10px 0 0;color:#666;font-size:14px;"><span style="text-decoration:line-through;">Normaal €99,99</span> - <strong style="color:#000000;">Je bespaart €99!</strong></p>
+                        <p style="margin:10px 0 0;color:#cccccc;font-size:14px;"><span style="text-decoration:line-through;">Normaal €99,99</span> - <strong style="color:#000000;">Je bespaart €99!</strong></p>
                     </div>
 
                     <div style="background:#f9f9f9;border:2px solid #333333;border-radius:12px;padding:20px;text-align:center;margin:0 0 25px;">
@@ -366,12 +366,12 @@ class SalesController extends Controller
                         Registreer nu
                     </a>
 
-                    <p style="margin:25px 0 0;font-size:13px;color:#666;text-align:center;">
+                    <p style="margin:25px 0 0;font-size:13px;color:#cccccc;text-align:center;">
                         Deze aanbieding is 30 dagen geldig.
                     </p>
                 </td></tr>
-                <tr><td style="background:#f5f5f5;padding:25px;text-align:center;border-top:1px solid #e5e5e5;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                <tr><td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #e5e5e5;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -472,7 +472,7 @@ HTML;
         $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#555555;border-left:3px solid #000000;padding-left:1rem;margin-bottom:1.5rem;background:#f9f9f9;padding:1rem;border-radius:0 8px 8px 0'>\"{$personalMessage}\"</p>" : "";
 
         $htmlBody = "
-        <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#f5f5f5'>
+        <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a'>
             <div style='background:#000000;padding:2.5rem;text-align:center;border-radius:12px 12px 0 0'>
                 <p style='color:#ffffff;margin:0 0 0.5rem 0;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;opacity:0.9'>{$offerType}</p>
                 <h1 style='color:#ffffff;margin:0;font-size:1.75rem;font-weight:700'>GlamourSchedule</h1>
@@ -491,7 +491,7 @@ HTML;
                 <div style='background:#f9f9f9;border:2px solid #000000;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
                     <p style='margin:0 0 0.5rem 0;color:#000000;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>{$offerLabel}</p>
                     <p style='margin:0;font-size:3rem;font-weight:700;color:#000000'>€{$price}</p>
-                    <p style='margin:0.5rem 0 0 0;color:#666;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#000000'>Je bespaart €{$savings}!</strong></p>
+                    <p style='margin:0.5rem 0 0 0;color:#cccccc;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#000000'>Je bespaart €{$savings}!</strong></p>
                     {$urgencyText}
                 </div>
 
@@ -531,12 +531,12 @@ HTML;
                     </a>
                 </div>
 
-                <p style='color:#666;font-size:0.85rem;text-align:center;margin-bottom:0'>
+                <p style='color:#cccccc;font-size:0.85rem;text-align:center;margin-bottom:0'>
                     Of kopieer deze link: <span style='color:#000000'>{$referralLink}</span>
                 </p>
             </div>
 
-            <p style='text-align:center;color:#666;font-size:0.8rem;margin-top:1rem;padding:0 1rem'>
+            <p style='text-align:center;color:#cccccc;font-size:0.8rem;margin-top:1rem;padding:0 1rem'>
                 Deze email is verstuurd namens {$salesName} via GlamourSchedule Sales
             </p>
         </div>
@@ -768,11 +768,11 @@ HTML;
                     <div style="background:#000;border:2px solid #333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
                         <span style="font-size:36px;font-weight:bold;color:#ffffff;letter-spacing:8px;font-family:monospace;">{$code}</span>
                     </div>
-                    <p style="font-size:13px;color:#666;margin:0 0 10px 0;">Deze code is 10 minuten geldig.</p>
+                    <p style="font-size:13px;color:#cccccc;margin:0 0 10px 0;">Deze code is 10 minuten geldig.</p>
                     <p style="font-size:12px;color:#555;margin:0;">Heb jij niet geprobeerd in te loggen? Negeer deze e-mail en wijzig je wachtwoord.</p>
                 </td></tr>
                 <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2026 GlamourSchedule Sales</p>
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2026 GlamourSchedule Sales</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -982,16 +982,16 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                     <h1 style="margin:0;font-size:22px;">Wachtwoord Resetten</h1>
                 </td></tr>
                 <tr><td style="padding:35px;text-align:center;">
-                    <p style="font-size:16px;color:#333;margin:0 0 20px 0;">Hallo {$name},</p>
-                    <p style="font-size:14px;color:#666;margin:0 0 25px 0;">Je hebt een wachtwoord reset aangevraagd. Klik op de knop hieronder om een nieuw wachtwoord in te stellen:</p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px 0;">Hallo {$name},</p>
+                    <p style="font-size:14px;color:#cccccc;margin:0 0 25px 0;">Je hebt een wachtwoord reset aangevraagd. Klik op de knop hieronder om een nieuw wachtwoord in te stellen:</p>
                     <p style="margin:25px 0;">
                         <a href="{$resetUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">
                             Wachtwoord Resetten
@@ -1001,8 +1001,8 @@ HTML;
                     <p style="font-size:12px;color:#ccc;margin:0;word-break:break-all;">Of kopieer deze link:<br>{$resetUrl}</p>
                     <p style="font-size:13px;color:#999;margin:20px 0 0 0;">Heb je geen reset aangevraagd? Negeer deze e-mail.</p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -1232,7 +1232,7 @@ HTML;
             <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
                 <h1 style='color:#000000;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#fafafa;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$name},</p>
                 <p style='color:#374151;line-height:1.6'>
                     Bedankt voor je betaling! Je registratie als Sales Partner is nu compleet.
@@ -1510,35 +1510,35 @@ HTML;
         $html = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:#000000;color:#ffffff;padding:25px;text-align:center;">
                     <h1 style="margin:0;font-size:20px;">Nieuwe Sales Partner!</h1>
                 </td></tr>
                 <tr><td style="padding:25px;">
-                    <p style="margin:0 0 15px;color:#333;">Er is een nieuwe sales partner geregistreerd en heeft betaald.</p>
+                    <p style="margin:0 0 15px;color:#ffffff;">Er is een nieuwe sales partner geregistreerd en heeft betaald.</p>
 
                     <table style="width:100%;border-collapse:collapse;">
                         <tr>
-                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Naam:</td>
+                            <td style="padding:8px 0;color:#cccccc;border-bottom:1px solid #eee;">Naam:</td>
                             <td style="padding:8px 0;color:#000;font-weight:600;border-bottom:1px solid #eee;">{$user['name']}</td>
                         </tr>
                         <tr>
-                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Email:</td>
+                            <td style="padding:8px 0;color:#cccccc;border-bottom:1px solid #eee;">Email:</td>
                             <td style="padding:8px 0;color:#000;border-bottom:1px solid #eee;">{$user['email']}</td>
                         </tr>
                         <tr>
-                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Telefoon:</td>
+                            <td style="padding:8px 0;color:#cccccc;border-bottom:1px solid #eee;">Telefoon:</td>
                             <td style="padding:8px 0;color:#000;border-bottom:1px solid #eee;">{$user['phone']}</td>
                         </tr>
                         <tr>
-                            <td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Referral Code:</td>
+                            <td style="padding:8px 0;color:#cccccc;border-bottom:1px solid #eee;">Referral Code:</td>
                             <td style="padding:8px 0;color:#000;font-weight:600;font-family:monospace;letter-spacing:1px;border-bottom:1px solid #eee;">{$user['referral_code']}</td>
                         </tr>
                         <tr>
-                            <td style="padding:8px 0;color:#666;">Betaald:</td>
+                            <td style="padding:8px 0;color:#cccccc;">Betaald:</td>
                             <td style="padding:8px 0;color:#22c55e;font-weight:600;">&euro;{$amount}</td>
                         </tr>
                     </table>
@@ -1549,7 +1549,7 @@ HTML;
                         </a>
                     </p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;">
+                <tr><td style="background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;">
                     <p style="margin:0;color:#999;font-size:12px;">GlamourSchedule Sales Notificatie</p>
                 </td></tr>
             </table>
@@ -1593,23 +1593,23 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="500" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:30px;text-align:center;">
                     <h1 style="margin:0;font-size:22px;">Verificatiecode</h1>
                 </td></tr>
                 <tr><td style="padding:35px;text-align:center;">
-                    <p style="font-size:16px;color:#333;margin:0 0 20px 0;">Hallo {$name},</p>
-                    <p style="font-size:14px;color:#666;margin:0 0 25px 0;">Gebruik deze code om je e-mailadres te verifiëren:</p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px 0;">Hallo {$name},</p>
+                    <p style="font-size:14px;color:#cccccc;margin:0 0 25px 0;">Gebruik deze code om je e-mailadres te verifiëren:</p>
                     <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
-                        <span style="font-size:36px;font-weight:bold;color:#333333;letter-spacing:8px;font-family:monospace;">{$code}</span>
+                        <span style="font-size:36px;font-weight:bold;color:#ffffff333;letter-spacing:8px;font-family:monospace;">{$code}</span>
                     </div>
                     <p style="font-size:13px;color:#999;margin:0;">Deze code is 10 minuten geldig.</p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -2152,8 +2152,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
@@ -2164,13 +2164,13 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Hallo <strong>{$this->salesUser['name']}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;">Hallo <strong>{$this->salesUser['name']}</strong>,</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;">
                                 Je bankrekening is succesvol geverifieerd en gekoppeld aan je Sales Partner account.
                             </p>
 
-                            <div style="background:#f5f5f5;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#666;font-size:14px;">Gekoppelde bankrekening</p>
+                            <div style="background:#0a0a0a;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
+                                <p style="margin:0;color:#cccccc;font-size:14px;">Gekoppelde bankrekening</p>
                                 <p style="margin:10px 0 0;color:#000000;font-size:20px;font-weight:700;letter-spacing:2px;">
                                     {$maskedIban}
                                 </p>
@@ -2182,8 +2182,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">GlamourSchedule Sales Partner</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">GlamourSchedule Sales Partner</p>
                         </td>
                     </tr>
                 </table>
@@ -2217,16 +2217,16 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                 <tr><td style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:40px;text-align:center;">
                     <h1 style="margin:0;color:#ffffff;font-size:28px;">Nieuwe Aanmelding!</h1>
                     <p style="margin:10px 0 0;color:#ffffff;opacity:0.9;">Via jouw referral code</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:18px;color:#333;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
+                    <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
 
                     <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
                         Geweldig nieuws! Er is een nieuwe salon geregistreerd via jouw referral code.
@@ -2235,27 +2235,27 @@ HTML;
                     <div style="background:#f9fafb;border-radius:12px;padding:25px;margin:0 0 25px;">
                         <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Salon:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Salon:</td>
                                 <td style="padding:8px 0;color:#000;font-weight:600;text-align:right;">{$business['company_name']}</td>
                             </tr>
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Type:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Type:</td>
                                 <td style="padding:8px 0;color:#000;text-align:right;">
                                     <span style="background:#f59e0b;color:#000;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;">{$registrationType}</span>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Status:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Status:</td>
                                 <td style="padding:8px 0;color:#f59e0b;font-weight:600;text-align:right;">In proeftijd (14 dagen)</td>
                             </tr>
                             <tr style="border-top:1px solid #e5e7eb;">
-                                <td style="padding:15px 0 8px;color:#666;font-weight:600;">Potentiële commissie:</td>
+                                <td style="padding:15px 0 8px;color:#cccccc;font-weight:600;">Potentiële commissie:</td>
                                 <td style="padding:15px 0 8px;color:#22c55e;font-weight:700;font-size:24px;text-align:right;">€{$commission}</td>
                             </tr>
                         </table>
                     </div>
 
-                    <p style="font-size:14px;color:#666;line-height:1.6;margin:0 0 25px;">
+                    <p style="font-size:14px;color:#cccccc;line-height:1.6;margin:0 0 25px;">
                         De salon heeft nu 14 dagen om het platform te testen. Als ze na de proeftijd hun abonnement activeren,
                         ontvang je <strong>€{$commission}</strong> commissie!
                     </p>
@@ -2291,17 +2291,17 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                 <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:40px;text-align:center;">
                     <div style="font-size:60px;margin-bottom:10px;">🎉</div>
                     <h1 style="margin:0;color:#000;font-size:28px;">Commissie Verdiend!</h1>
                     <p style="margin:10px 0 0;color:#000;opacity:0.8;">Een salon heeft geactiveerd</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:18px;color:#333;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
+                    <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
 
                     <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
                         Fantastisch nieuws! <strong>{$business['company_name']}</strong> heeft zojuist hun abonnement geactiveerd.
@@ -2316,15 +2316,15 @@ HTML;
                     <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:0 0 25px;">
                         <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Salon:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Salon:</td>
                                 <td style="padding:8px 0;color:#000;font-weight:600;text-align:right;">{$business['company_name']}</td>
                             </tr>
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Plaats:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Plaats:</td>
                                 <td style="padding:8px 0;color:#000;text-align:right;">{$business['city']}</td>
                             </tr>
                             <tr>
-                                <td style="padding:8px 0;color:#666;">Status:</td>
+                                <td style="padding:8px 0;color:#cccccc;">Status:</td>
                                 <td style="padding:8px 0;text-align:right;">
                                     <span style="background:#22c55e;color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;">Geactiveerd</span>
                                 </td>
@@ -2332,7 +2332,7 @@ HTML;
                         </table>
                     </div>
 
-                    <p style="font-size:14px;color:#666;line-height:1.6;margin:0 0 25px;">
+                    <p style="font-size:14px;color:#cccccc;line-height:1.6;margin:0 0 25px;">
                         Dit bedrag wordt toegevoegd aan je uitstaande saldo en wordt uitbetaald zodra je de minimale uitbetalingsdrempel bereikt.
                     </p>
 

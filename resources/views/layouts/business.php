@@ -439,59 +439,6 @@
             justify-content: center;
         }
 
-        /* Mobile Bottom Navigation */
-        .mobile-bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #0a0a0a;
-            border-top: 1px solid #333;
-            padding: 0.5rem 0.25rem;
-            z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom, 0.5rem);
-        }
-        .mobile-bottom-nav nav {
-            display: flex;
-            justify-content: space-around;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .mobile-bottom-nav a {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0.5rem 0.5rem;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.6rem;
-            flex: 1;
-            text-align: center;
-            border-radius: 8px;
-            transition: all 0.2s;
-            min-height: 50px;
-            justify-content: center;
-        }
-        .mobile-bottom-nav a i {
-            font-size: 1.2rem;
-            margin-bottom: 0.2rem;
-        }
-        .mobile-bottom-nav a.active {
-            color: #fff;
-            background: #1a1a1a;
-        }
-        .mobile-bottom-nav a.nav-logout {
-            color: #ef4444;
-        }
-        @media (max-width: 1024px) {
-            .mobile-bottom-nav {
-                display: block;
-            }
-            .page-content {
-                padding-bottom: 100px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -511,8 +458,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="/" class="sidebar-brand">
-                <i class="fas fa-spa"></i>
-                GlamourSchedule
+                <span style="font-weight:900;font-size:1.5rem">GS</span>
             </a>
             <div class="sidebar-business">
                 <div class="sidebar-business-name"><?= htmlspecialchars($business['company_name'] ?? ($translations['default_business_name'] ?? 'My Business')) ?></div>
@@ -637,31 +583,6 @@
         </div>
     </div>
 
-    <!-- Mobile Bottom Navigation -->
-    <div class="mobile-bottom-nav">
-        <nav>
-            <a href="/business/dashboard" class="<?= $currentPath === '/business/dashboard' ? 'active' : '' ?>">
-                <i class="fas fa-home"></i>
-                <?= $translations['nav_home'] ?? 'Home' ?>
-            </a>
-            <a href="/business/calendar" class="<?= $currentPath === '/business/calendar' ? 'active' : '' ?>">
-                <i class="fas fa-calendar-alt"></i>
-                <?= $translations['nav_calendar'] ?? 'Calendar' ?>
-            </a>
-            <a href="/business/bookings" class="<?= $currentPath === '/business/bookings' ? 'active' : '' ?>">
-                <i class="fas fa-clipboard-list"></i>
-                <?= $translations['nav_bookings'] ?? 'Bookings' ?>
-            </a>
-            <a href="/business/profile" class="<?= $currentPath === '/business/profile' ? 'active' : '' ?>">
-                <i class="fas fa-cog"></i>
-                <?= $translations['nav_profile'] ?? 'Profile' ?>
-            </a>
-            <a href="/logout" class="nav-logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <?= $translations['nav_logout'] ?? 'Logout' ?>
-            </a>
-        </nav>
-    </div>
 
     <script>
         function toggleSidebar() {

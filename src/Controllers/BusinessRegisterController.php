@@ -384,11 +384,11 @@ class BusinessRegisterController extends Controller
         <head>
             <meta charset='UTF-8'>
         </head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f5f5;padding:20px;'>
+        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='500' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:10px;overflow:hidden;'>
+                        <table width='500' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
                             <tr>
                                 <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
                                     <h1 style='margin:0;font-size:24px;'>Bevestig je account</h1>
@@ -396,19 +396,19 @@ class BusinessRegisterController extends Controller
                             </tr>
                             <tr>
                                 <td style='padding:40px;text-align:center;'>
-                                    <p style='font-size:16px;color:#333;margin-bottom:10px;'>Beste <strong>{$companyName}</strong>,</p>
-                                    <p style='font-size:16px;color:#333;margin-bottom:30px;'>Gebruik onderstaande code om je account te bevestigen:</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:10px;'>Beste <strong>{$companyName}</strong>,</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:30px;'>Gebruik onderstaande code om je account te bevestigen:</p>
 
                                     <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
                                     </div>
 
-                                    <p style='font-size:14px;color:#666;margin-top:30px;'>Deze code is 10 minuten geldig.</p>
-                                    <p style='font-size:14px;color:#666;'>Heb je deze code niet aangevraagd? Negeer dan deze email.</p>
+                                    <p style='font-size:14px;color:#cccccc;margin-top:30px;'>Deze code is 10 minuten geldig.</p>
+                                    <p style='font-size:14px;color:#cccccc;'>Heb je deze code niet aangevraagd? Negeer dan deze email.</p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style='background:#fafafa;padding:20px;text-align:center;color:#666;font-size:12px;'>
+                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#cccccc;font-size:12px;'>
                                     <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule</p>
                                 </td>
                             </tr>
@@ -457,11 +457,11 @@ GlamourSchedule
         <head>
             <meta charset='UTF-8'>
         </head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f5f5;padding:20px;'>
+        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='500' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:10px;overflow:hidden;'>
+                        <table width='500' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
                             <tr>
                                 <td style='background:linear-gradient(135deg,#000000,#333333);color:#ffffff;padding:30px;text-align:center;'>
                                     <h1 style='margin:0;font-size:24px;'>Welkom bij GlamourSchedule!</h1>
@@ -469,32 +469,32 @@ GlamourSchedule
                             </tr>
                             <tr>
                                 <td style='padding:40px;'>
-                                    <p style='font-size:16px;color:#333;margin-bottom:20px;'>Beste <strong>{$firstName}</strong>,</p>
-                                    <p style='font-size:16px;color:#333;margin-bottom:20px;'>Bedankt voor je registratie van <strong>{$companyName}</strong>!</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:20px;'>Beste <strong>{$firstName}</strong>,</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:20px;'>Bedankt voor je registratie van <strong>{$companyName}</strong>!</p>
 
                                     <div style='background:#ecfdf5;border:2px solid #000000;border-radius:10px;padding:20px;margin:20px 0;text-align:center;'>
                                         <p style='margin:0;color:#047857;font-weight:600;font-size:18px;'>🎉 14 dagen GRATIS proberen!</p>
                                         <p style='margin:10px 0 0;color:#000000;font-size:14px;'>Geen betaling vooraf nodig</p>
                                     </div>
 
-                                    <p style='font-size:16px;color:#333;margin-bottom:20px;'>Klik op de knop hieronder om je registratie te voltooien:</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:20px;'>Klik op de knop hieronder om je registratie te voltooien:</p>
 
                                     <div style='text-align:center;margin:30px 0;'>
                                         <a href='{$verifyUrl}' style='display:inline-block;background:linear-gradient(135deg,#000000,#333333);color:#ffffff;text-decoration:none;padding:15px 40px;border-radius:10px;font-weight:600;font-size:16px;'>Registratie Voltooien</a>
                                     </div>
 
                                     <div style='background:#f8f9fa;border-radius:10px;padding:20px;margin:20px 0;'>
-                                        <p style='margin:0 0 10px;color:#333;font-weight:600;'>Je tijdelijke inloggegevens:</p>
-                                        <p style='margin:5px 0;color:#666;'>E-mail: <strong>{$email}</strong></p>
-                                        <p style='margin:5px 0;color:#666;'>Wachtwoord: <strong style='font-family:monospace;background:#e5e7eb;padding:2px 8px;border-radius:4px;'>{$tempPassword}</strong></p>
+                                        <p style='margin:0 0 10px;color:#ffffff;font-weight:600;'>Je tijdelijke inloggegevens:</p>
+                                        <p style='margin:5px 0;color:#cccccc;'>E-mail: <strong>{$email}</strong></p>
+                                        <p style='margin:5px 0;color:#cccccc;'>Wachtwoord: <strong style='font-family:monospace;background:#e5e7eb;padding:2px 8px;border-radius:4px;'>{$tempPassword}</strong></p>
                                         <p style='margin:10px 0 0;color:#999;font-size:13px;'>Je kunt je wachtwoord later wijzigen in je dashboard.</p>
                                     </div>
 
-                                    <p style='font-size:14px;color:#666;margin-top:20px;'>Of kopieer deze link in je browser:<br><a href='{$verifyUrl}' style='color:#000000;word-break:break-all;'>{$verifyUrl}</a></p>
+                                    <p style='font-size:14px;color:#cccccc;margin-top:20px;'>Of kopieer deze link in je browser:<br><a href='{$verifyUrl}' style='color:#000000;word-break:break-all;'>{$verifyUrl}</a></p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style='background:#fafafa;padding:20px;text-align:center;color:#666;font-size:12px;'>
+                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#cccccc;font-size:12px;'>
                                     <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule | KVK: 81973667</p>
                                 </td>
                             </tr>
@@ -1057,7 +1057,7 @@ GlamourSchedule
             <div style='background:linear-gradient(135deg,#000000,#1a1a1a);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
                 <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#fafafa;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$firstName},</p>
                 <p style='color:#374151;line-height:1.6'>
                     Welkom! Je registratie voor <strong>{$companyName}</strong> is bijna compleet.
@@ -1290,7 +1290,7 @@ GlamourSchedule
             <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
                 <h1 style='color:#000000;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#fafafa;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>
                     Gefeliciteerd! Je registratie voor <strong>{$companyName}</strong> is nu compleet.
                 </p>
@@ -1356,7 +1356,7 @@ GlamourSchedule
                 <h1 style='color:#fff;margin:0;font-size:24px;'>Gefeliciteerd!</h1>
             </div>
             <div style='padding:30px;background:#fff;border:1px solid #e5e7eb;'>
-                <p style='font-size:16px;color:#333;'>Hallo {$partnerName},</p>
+                <p style='font-size:16px;color:#ffffff;'>Hallo {$partnerName},</p>
 
                 <p style='color:#374151;line-height:1.6'>
                     Goed nieuws! Een salon die jij hebt aangebracht heeft zojuist de registratiefee betaald.
@@ -1370,15 +1370,15 @@ GlamourSchedule
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin:20px 0;'>
                     <table style='width:100%;font-size:14px;'>
                         <tr>
-                            <td style='padding:8px 0;color:#666;'>Salon:</td>
-                            <td style='padding:8px 0;text-align:right;font-weight:600;color:#333;'>{$businessName}</td>
+                            <td style='padding:8px 0;color:#cccccc;'>Salon:</td>
+                            <td style='padding:8px 0;text-align:right;font-weight:600;color:#ffffff;'>{$businessName}</td>
                         </tr>
                         <tr>
-                            <td style='padding:8px 0;color:#666;'>Commissie:</td>
+                            <td style='padding:8px 0;color:#cccccc;'>Commissie:</td>
                             <td style='padding:8px 0;text-align:right;font-weight:600;color:#22c55e;'>EUR {$commission}</td>
                         </tr>
                         <tr>
-                            <td style='padding:8px 0;color:#666;'>Status:</td>
+                            <td style='padding:8px 0;color:#cccccc;'>Status:</td>
                             <td style='padding:8px 0;text-align:right;'>
                                 <span style='background:#3b82f620;color:#3b82f6;padding:4px 12px;border-radius:20px;font-size:12px;'>Wacht op uitbetaling</span>
                             </td>
@@ -1401,7 +1401,7 @@ GlamourSchedule
                     Blijf salons aanbrengen en verdien EUR 49,99 per betalende salon!
                 </p>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>
                 <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Sales Partner</p>
             </div>
         </div>";

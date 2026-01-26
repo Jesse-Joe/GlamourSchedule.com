@@ -186,11 +186,11 @@ class PasswordResetController extends Controller
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
@@ -201,7 +201,7 @@ class PasswordResetController extends Controller
                     <!-- Content -->
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;margin:0 0 20px;">Hoi <strong>{$firstName}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Hoi <strong>{$firstName}</strong>,</p>
 
                             <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
                                 Je hebt een verzoek ingediend om je wachtwoord te herstellen.
@@ -214,7 +214,7 @@ class PasswordResetController extends Controller
                                 </a>
                             </p>
 
-                            <div style="background:#f5f5f5;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
+                            <div style="background:#0a0a0a;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
                                 <p style="margin:0;color:#000000;font-size:14px;">
                                     <strong>Let op:</strong> Deze link is 1 uur geldig. Heb je dit verzoek niet gedaan? Negeer dan deze email.
                                 </p>
@@ -228,8 +228,8 @@ class PasswordResetController extends Controller
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#fafafa;padding:25px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -261,11 +261,11 @@ HTML;
 <head>
     <meta charset="UTF-8">
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:35px;text-align:center;">
                             <div style="font-size:42px;margin-bottom:8px;">✓</div>
@@ -274,18 +274,18 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:35px;">
-                            <p style="font-size:16px;color:#333;line-height:1.6;">
+                            <p style="font-size:16px;color:#ffffff;line-height:1.6;">
                                 Je wachtwoord voor GlamourSchedule is succesvol gewijzigd.
                             </p>
-                            <p style="font-size:14px;color:#666;margin-top:20px;">
+                            <p style="font-size:14px;color:#cccccc;margin-top:20px;">
                                 Heb je dit niet gedaan? Neem dan direct contact met ons op via
                                 <a href="mailto:support@glamourschedule.nl" style="color:#000000;">support@glamourschedule.nl</a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

@@ -599,13 +599,13 @@ class BookingController extends Controller
 
         // Build cost breakdown
         $breakdownRows = '';
-        $breakdownRows .= "<tr><td style='padding:8px 0;color:#666;'>Origineel bedrag:</td><td style='padding:8px 0;text-align:right;'>EUR {$totalFormatted}</td></tr>";
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>Origineel bedrag:</td><td style='padding:8px 0;text-align:right;'>EUR {$totalFormatted}</td></tr>";
 
         if ($isLateCancel && $businessFee > 0) {
             $breakdownRows .= "<tr><td style='padding:8px 0;color:#dc2626;'>Naar salon (annulering binnen 24u):</td><td style='padding:8px 0;text-align:right;color:#dc2626;'>- EUR {$businessFeeFormatted}</td></tr>";
         }
 
-        $breakdownRows .= "<tr><td style='padding:8px 0;color:#666;'>Administratiekosten:</td><td style='padding:8px 0;text-align:right;color:#666;'>- EUR {$platformFeeFormatted}</td></tr>";
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>Administratiekosten:</td><td style='padding:8px 0;text-align:right;color:#cccccc;'>- EUR {$platformFeeFormatted}</td></tr>";
         $breakdownRows .= "<tr style='border-top:2px solid #e5e7eb;'><td style='padding:12px 0 0;font-weight:600;color:#22c55e;'>Terugbetaling:</td><td style='padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:1.1rem;'>EUR {$refundFormatted}</td></tr>";
 
         $cancelTypeNotice = $isLateCancel
@@ -616,8 +616,8 @@ class BookingController extends Controller
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
@@ -628,16 +628,16 @@ class BookingController extends Controller
                     </tr>
                     <tr>
                         <td style="padding:30px;">
-                            <div style="background:#fafafa;border-radius:12px;padding:20px;margin-bottom:20px;">
-                                <p style="margin:0;color:#666;font-size:0.9rem;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
-                                <p style="margin:8px 0 0;color:#666;font-size:0.9rem;"><strong>Salon:</strong> {$booking['business_name']}</p>
-                                <p style="margin:8px 0 0;color:#666;font-size:0.9rem;"><strong>Datum:</strong> {$booking['appointment_date']}</p>
+                            <div style="background:#0a0a0a;border-radius:12px;padding:20px;margin-bottom:20px;">
+                                <p style="margin:0;color:#cccccc;font-size:0.9rem;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
+                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>Salon:</strong> {$booking['business_name']}</p>
+                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>Datum:</strong> {$booking['appointment_date']}</p>
                             </div>
 
                             {$cancelTypeNotice}
 
                             <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:20px 0;">
-                                <p style="margin:0 0 15px;font-weight:600;color:#333;">Overzicht terugbetaling</p>
+                                <p style="margin:0 0 15px;font-weight:600;color:#ffffff;">Overzicht terugbetaling</p>
                                 <table style="width:100%;font-size:0.9rem;">
                                     {$breakdownRows}
                                 </table>
@@ -650,7 +650,7 @@ class BookingController extends Controller
                                 </p>
                             </div>
 
-                            <p style="color:#666;font-size:0.9rem;margin:20px 0;">
+                            <p style="color:#cccccc;font-size:0.9rem;margin:20px 0;">
                                 Je terugbetaling van <strong>EUR {$refundFormatted}</strong> wordt binnen 5-10 werkdagen op je rekening gestort.
                             </p>
 
@@ -662,7 +662,7 @@ class BookingController extends Controller
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;">
+                        <td style="background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;">
                             <p style="margin:0;color:#999;font-size:12px;">GlamourSchedule</p>
                         </td>
                     </tr>
@@ -714,8 +714,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:30px 20px;">
+<body style="margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:30px 20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
@@ -732,12 +732,12 @@ HTML;
                     <!-- Content -->
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:17px;color:#333;margin:0 0 25px;text-align:center;">
+                            <p style="font-size:17px;color:#ffffff;margin:0 0 25px;text-align:center;">
                                 Een klant heeft de volgende boeking geannuleerd
                             </p>
 
                             <!-- Booking Details -->
-                            <div style="background:#fafafa;border-radius:16px;padding:25px;margin:0 0 25px;">
+                            <div style="background:#0a0a0a;border-radius:16px;padding:25px;margin:0 0 25px;">
                                 <table width="100%" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td style="padding:8px 0;color:#6b7280;font-size:14px;">Klant</td>
@@ -765,7 +765,7 @@ HTML;
                             {$feeNotice}
 
                             <!-- Time Slot Free Notice -->
-                            <div style="background:#f5f5f5;border:2px solid #404040;border-radius:12px;padding:18px;margin:25px 0;text-align:center;">
+                            <div style="background:#0a0a0a;border:2px solid #404040;border-radius:12px;padding:18px;margin:25px 0;text-align:center;">
                                 <p style="margin:0;color:#000000;font-weight:600;font-size:15px;">
                                     🕐 Tijdslot is weer vrij
                                 </p>
@@ -784,7 +784,7 @@ HTML;
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#fafafa;padding:25px;text-align:center;border-top:1px solid #e5e7eb;">
+                        <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #e5e7eb;">
                             <p style="margin:0;color:#9ca3af;font-size:13px;">© 2025 GlamourSchedule - Beauty Booking Platform</p>
                         </td>
                     </tr>
@@ -1256,7 +1256,7 @@ HTML;
                         <a href='https://glamourschedule.nl/booking/{$data['uuid']}' class='btn'>Bekijk je boeking</a>
                     </p>
 
-                    <p style='margin-top:30px;font-size:14px;color:#666'>
+                    <p style='margin-top:30px;font-size:14px;color:#cccccc'>
                         Je kunt je afspraak bekijken, wijzigen of annuleren via bovenstaande link.
                     </p>
                 </div>
@@ -1630,11 +1630,11 @@ HTML;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
                             <h1 style="margin:0;font-size:28px;font-weight:700;">Wachtlijst Bevestiging</h1>
@@ -1643,7 +1643,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;margin:0 0 25px;">Beste <strong>{$data['name']}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;margin:0 0 25px;">Beste <strong>{$data['name']}</strong>,</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 30px;">
                                 Je staat nu op de wachtlijst voor een afspraak bij <strong>{$data['business_name']}</strong>.
                             </p>
@@ -1652,21 +1652,21 @@ HTML;
                                 <table width="100%" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                                            <span style="color:#666;font-size:14px;">Dienst</span><br>
-                                            <strong style="color:#333;font-size:16px;">{$data['service_name']}</strong>
+                                            <span style="color:#cccccc;font-size:14px;">Dienst</span><br>
+                                            <strong style="color:#ffffff;font-size:16px;">{$data['service_name']}</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="padding:12px 0;">
-                                            <span style="color:#666;font-size:14px;">Gewenste datum</span><br>
+                                            <span style="color:#cccccc;font-size:14px;">Gewenste datum</span><br>
                                             <strong style="color:#000000;font-size:18px;">{$dateFormatted}</strong>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
 
-                            <div style="background:#f5f5f5;border-left:4px solid #000000;padding:20px;border-radius:0 8px 8px 0;">
-                                <p style="margin:0;color:#333;font-size:14px;">
+                            <div style="background:#0a0a0a;border-left:4px solid #000000;padding:20px;border-radius:0 8px 8px 0;">
+                                <p style="margin:0;color:#ffffff;font-size:14px;">
                                     <strong>Wat gebeurt er nu?</strong><br><br>
                                     Zodra er een plek vrijkomt op jouw gewenste datum, sturen we je direct een e-mail.
                                     Je hebt dan 60 minuten om te boeken voordat de plek naar de volgende persoon gaat.
@@ -1679,8 +1679,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:25px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">© 2025 GlamourSchedule - Beauty & Wellness Platform</p>
+                        <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">© 2025 GlamourSchedule - Beauty & Wellness Platform</p>
                         </td>
                     </tr>
                 </table>
@@ -1712,8 +1712,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
@@ -1724,17 +1724,17 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Goed nieuws <strong>{$data['name']}</strong>!</p>
+                            <p style="font-size:18px;color:#ffffff;">Goed nieuws <strong>{$data['name']}</strong>!</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;">
                                 Er is een afspraak geannuleerd bij <strong>{$data['business_name']}</strong> en jij staat bovenaan de wachtlijst!
                             </p>
 
                             <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#666;font-size:14px;">Beschikbare plek</p>
+                                <p style="margin:0;color:#cccccc;font-size:14px;">Beschikbare plek</p>
                                 <p style="margin:10px 0 0;color:#000000;font-size:24px;font-weight:700;">
                                     {$dateFormatted} om {$timeFormatted}
                                 </p>
-                                <p style="margin:10px 0 0;color:#666;">{$data['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#cccccc;">{$data['service_name']}</p>
                             </div>
 
                             <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
@@ -1756,8 +1756,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

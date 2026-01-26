@@ -29,8 +29,8 @@
     color: var(--text);
 }
 .payment-page .btn {
-    background: var(--primary);
-    color: #fff;
+    background: #ffffff;
+    color: #000000;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;

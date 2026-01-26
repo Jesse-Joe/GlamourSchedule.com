@@ -362,7 +362,7 @@ class MollieConnectController extends Controller
                 </div>
 
                 <h3>Hoe het werkt:</h3>
-                <ol style='color:#666;line-height:1.8;'>
+                <ol style='color:#cccccc;line-height:1.8;'>
                     <li>Klant boekt en betaalt online</li>
                     <li>Klant komt langs en jij scant de QR-code</li>
                     <li>24 uur na de scan wordt het bedrag automatisch uitbetaald</li>
@@ -371,7 +371,7 @@ class MollieConnectController extends Controller
 
                 <h3>Rekenvoorbeeld:</h3>
                 <table style='width:100%;border-collapse:collapse;margin:15px 0;'>
-                    <tr style='background:#f5f5f5;'>
+                    <tr style='background:#0a0a0a;'>
                         <td style='padding:10px;'>Behandeling</td>
                         <td style='padding:10px;text-align:right;'>€50,00</td>
                     </tr>
@@ -385,11 +385,11 @@ class MollieConnectController extends Controller
                     </tr>
                 </table>
 
-                <p style='color:#666;font-size:13px;'>
+                <p style='color:#cccccc;font-size:13px;'>
                     Je kunt je uitbetalingen bekijken in je dashboard onder 'Uitbetalingen'.
                 </p>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>© " . date('Y') . " GlamourSchedule</p>
             </div>
         </div>";

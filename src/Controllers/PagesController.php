@@ -123,38 +123,38 @@ class PagesController extends Controller
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:20px;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+<body style="margin:0;padding:20px;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <div style="max-width:600px;margin:0 auto;background:#1a1a1a;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
         <div style="background:linear-gradient(135deg,#000000,#000000);color:white;padding:25px;text-align:center;">
             <h1 style="margin:0;font-size:22px;">Nieuwe Support Ticket</h1>
             <p style="margin:10px 0 0;opacity:0.9;">#{$ticket}</p>
         </div>
-        <div style="padding:30px;">
+        <div style="padding:30px;color:#ffffff;">
             <table style="width:100%;border-collapse:collapse;">
                 <tr>
-                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#666;width:120px;"><strong>Type:</strong></td>
+                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#cccccc;width:120px;"><strong>Type:</strong></td>
                     <td style="padding:10px 0;border-bottom:1px solid #eee;">{$type}</td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#666;"><strong>Naam:</strong></td>
+                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#cccccc;"><strong>Naam:</strong></td>
                     <td style="padding:10px 0;border-bottom:1px solid #eee;">{$name}</td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#666;"><strong>E-mail:</strong></td>
+                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#cccccc;"><strong>E-mail:</strong></td>
                     <td style="padding:10px 0;border-bottom:1px solid #eee;"><a href="mailto:{$email}">{$email}</a></td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#666;"><strong>Onderwerp:</strong></td>
+                    <td style="padding:10px 0;border-bottom:1px solid #eee;color:#cccccc;"><strong>Onderwerp:</strong></td>
                     <td style="padding:10px 0;border-bottom:1px solid #eee;">{$subject}</td>
                 </tr>
             </table>
 
             <div style="margin-top:20px;">
-                <strong style="color:#666;">Bericht:</strong>
-                <div style="background:#fafafa;border-radius:8px;padding:15px;margin-top:10px;white-space:pre-wrap;line-height:1.6;">{$message}</div>
+                <strong style="color:#cccccc;">Bericht:</strong>
+                <div style="background:#0a0a0a;border-radius:8px;padding:15px;margin-top:10px;white-space:pre-wrap;line-height:1.6;color:#ffffff;border:1px solid #333;">{$message}</div>
             </div>
 
-            <div style="margin-top:25px;padding-top:20px;border-top:1px solid #eee;text-align:center;">
+            <div style="margin-top:25px;padding-top:20px;border-top:1px solid #333;text-align:center;">
                 <a href="mailto:{$email}?subject=Re: [{$ticket}] {$subject}" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:white;padding:12px 25px;border-radius:25px;text-decoration:none;font-weight:600;">Beantwoorden</a>
             </div>
         </div>
@@ -179,15 +179,15 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:20px;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+<body style="margin:0;padding:20px;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <div style="max-width:600px;margin:0 auto;background:#1a1a1a;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
         <div style="background:linear-gradient(135deg,#000000,#000000);color:white;padding:25px;text-align:center;">
             <h1 style="margin:0;font-size:22px;">Bedankt voor je bericht!</h1>
         </div>
-        <div style="padding:30px;">
-            <p style="font-size:16px;color:#333;">Beste {$name},</p>
+        <div style="padding:30px;color:#ffffff;">
+            <p style="font-size:16px;color:#ffffff;">Beste {$name},</p>
 
-            <p style="color:#666;line-height:1.6;">
+            <p style="color:#cccccc;line-height:1.6;">
                 Bedankt voor het contact opnemen met GlamourSchedule. We hebben je bericht ontvangen en zullen zo snel mogelijk reageren.
             </p>
 
@@ -196,23 +196,23 @@ HTML;
                 <p style="margin:10px 0 0;font-size:24px;font-weight:700;color:#000000;">{$ticket}</p>
             </div>
 
-            <p style="color:#666;font-size:14px;line-height:1.6;">
+            <p style="color:#cccccc;font-size:14px;line-height:1.6;">
                 Bewaar dit ticketnummer voor je administratie. Je kunt dit nummer gebruiken als je contact met ons opneemt over deze melding.
             </p>
 
-            <div style="background:#fafafa;border-radius:8px;padding:15px;margin-top:20px;">
-                <p style="margin:0 0 10px;color:#666;font-size:14px;"><strong>Type:</strong> {$type}</p>
-                <p style="margin:0 0 10px;color:#666;font-size:14px;"><strong>Onderwerp:</strong> {$subject}</p>
-                <p style="margin:0;color:#666;font-size:14px;"><strong>Je bericht:</strong></p>
-                <p style="margin:10px 0 0;color:#666;font-size:14px;white-space:pre-wrap;">{$message}</p>
+            <div style="background:#0a0a0a;border-radius:8px;padding:15px;margin-top:20px;">
+                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>Type:</strong> {$type}</p>
+                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>Onderwerp:</strong> {$subject}</p>
+                <p style="margin:0;color:#cccccc;font-size:14px;"><strong>Je bericht:</strong></p>
+                <p style="margin:10px 0 0;color:#cccccc;font-size:14px;white-space:pre-wrap;">{$message}</p>
             </div>
 
-            <p style="margin-top:25px;color:#666;line-height:1.6;">
+            <p style="margin-top:25px;color:#cccccc;line-height:1.6;">
                 Met vriendelijke groet,<br>
                 <strong>Het GlamourSchedule Team</strong>
             </p>
         </div>
-        <div style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
+        <div style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
             <p style="margin:0;color:#9ca3af;font-size:12px;">&copy; 2026 GlamourSchedule - Beauty & Wellness Booking Platform</p>
         </div>
     </div>

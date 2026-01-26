@@ -1299,25 +1299,25 @@ class BusinessDashboardController extends Controller
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:linear-gradient(135deg,#000000,#404040);color:#ffffff;padding:35px;text-align:center;">
                     <div style="font-size:42px;margin-bottom:8px;">🔐</div>
                     <h1 style="margin:0;font-size:24px;">IBAN Wijzigen</h1>
                 </td></tr>
                 <tr><td style="padding:35px;">
-                    <p style="font-size:16px;color:#333;">Beste {$this->business['company_name']},</p>
+                    <p style="font-size:16px;color:#ffffff;">Beste {$this->business['company_name']},</p>
                     <p style="font-size:16px;color:#555;">Je wilt je IBAN wijzigen. Gebruik deze code om door te gaan:</p>
-                    <div style="background:#f5f5f5;border:3px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
+                    <div style="background:#0a0a0a;border:3px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
                         <p style="margin:0;font-size:42px;font-weight:bold;color:#000000;letter-spacing:8px;font-family:monospace;">{$code}</p>
                     </div>
-                    <p style="font-size:14px;color:#666;">Deze code is 15 minuten geldig.</p>
+                    <p style="font-size:14px;color:#cccccc;">Deze code is 15 minuten geldig.</p>
                     <p style="font-size:14px;color:#dc2626;margin-top:20px;"><strong>Let op:</strong> Deel deze code nooit met anderen!</p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -1358,24 +1358,24 @@ HTML;
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                 <tr><td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:35px;text-align:center;">
                     <div style="font-size:42px;margin-bottom:8px;">✓</div>
                     <h1 style="margin:0;font-size:24px;">IBAN Geverifieerd!</h1>
                 </td></tr>
                 <tr><td style="padding:35px;">
-                    <p style="font-size:16px;color:#333;">Beste {$this->business['company_name']},</p>
+                    <p style="font-size:16px;color:#ffffff;">Beste {$this->business['company_name']},</p>
                     <p style="font-size:16px;color:#555;">Je IBAN is succesvol geverifieerd en gekoppeld aan je account.</p>
                     <div style="background:#f0fdf4;border-radius:10px;padding:1rem;margin:20px 0;">
                         <p style="margin:0;font-family:monospace;font-size:1.1rem;color:#000000;">{$maskedIban}</p>
                     </div>
-                    <p style="font-size:14px;color:#666;">Uitbetalingen worden voortaan naar dit rekeningnummer overgemaakt.</p>
+                    <p style="font-size:14px;color:#cccccc;">Uitbetalingen worden voortaan naar dit rekeningnummer overgemaakt.</p>
                 </td></tr>
-                <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                    <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -1543,8 +1543,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
@@ -1556,7 +1556,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Beste {$customerName},</p>
+                            <p style="font-size:18px;color:#ffffff;">Beste {$customerName},</p>
                             <p style="color:#555;line-height:1.6;">
                                 Je aanwezigheid bij <strong>{$this->business['company_name']}</strong> is bevestigd.
                             </p>
@@ -1581,8 +1581,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -2645,7 +2645,7 @@ HTML;
         $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
 
         $cashNote = $booking['payment_method'] === 'cash'
-            ? "<p style='color:#666;font-size:14px;margin-top:15px;'><strong>Let op:</strong> Je betaalt €{$paymentAmount} online (reserveringskosten). Het resterende bedrag van €" . number_format($booking['total_price'] - $booking['service_fee'], 2, ',', '.') . " betaal je contant bij je afspraak.</p>"
+            ? "<p style='color:#cccccc;font-size:14px;margin-top:15px;'><strong>Let op:</strong> Je betaalt €{$paymentAmount} online (reserveringskosten). Het resterende bedrag van €" . number_format($booking['total_price'] - $booking['service_fee'], 2, ',', '.') . " betaal je contant bij je afspraak.</p>"
             : "";
 
         $subject = "Bevestig je afspraak bij {$booking['company_name']}";
@@ -2653,8 +2653,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
@@ -2666,16 +2666,16 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="font-size:18px;color:#ffffff;">Beste {$booking['customer_name']},</p>
                             <p style="color:#555;line-height:1.6;">
                                 {$booking['company_name']} heeft een afspraak voor je ingepland. Bevestig je afspraak door te betalen.
                             </p>
 
                             <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0 0 10px;color:#333;"><strong>Dienst:</strong> {$booking['service_name']}</p>
-                                <p style="margin:0 0 10px;color:#333;"><strong>Datum:</strong> {$appointmentDate}</p>
-                                <p style="margin:0 0 10px;color:#333;"><strong>Tijd:</strong> {$appointmentTime}</p>
-                                <p style="margin:0;color:#333;"><strong>Totaal:</strong> €{$totalAmount}</p>
+                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Dienst:</strong> {$booking['service_name']}</p>
+                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Datum:</strong> {$appointmentDate}</p>
+                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Tijd:</strong> {$appointmentTime}</p>
+                                <p style="margin:0;color:#ffffff;"><strong>Totaal:</strong> €{$totalAmount}</p>
                             </div>
 
                             {$cashNote}
@@ -2692,8 +2692,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -2912,8 +2912,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
@@ -2925,7 +2925,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="font-size:18px;color:#ffffff;">Beste {$booking['customer_name']},</p>
                             <p style="color:#555;line-height:1.6;">
                                 Je afspraak is geannuleerd en je betaling wordt teruggestort naar je rekening.
                             </p>
@@ -2942,8 +2942,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -2977,8 +2977,8 @@ HTML;
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
@@ -2990,7 +2990,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Beste {$booking['customer_name']},</p>
+                            <p style="font-size:18px;color:#ffffff;">Beste {$booking['customer_name']},</p>
                             <p style="color:#555;line-height:1.6;">
                                 Je afspraak op <strong>{$appointmentDate}</strong> om <strong>{$appointmentTime}</strong> is geannuleerd.
                             </p>
@@ -3001,8 +3001,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

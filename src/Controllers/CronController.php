@@ -1002,7 +1002,7 @@ class CronController extends Controller
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Boeking</th>
                             <th style='padding:10px;text-align:left;'>Service</th>
                             <th style='padding:10px;text-align:right;'>Bedrag</th>
@@ -1017,7 +1017,7 @@ class CronController extends Controller
                 {$statusMessage}
                 {$tipBox}
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>© " . date('Y') . " GlamourSchedule</p>
             </div>
         </div>";
@@ -1111,7 +1111,7 @@ class CronController extends Controller
         </div>
         <p>
             Na het overmaken, markeer als voltooid:<br>
-            <code style='background:#f5f5f5;padding:5px 10px;border-radius:4px;display:inline-block;margin-top:10px;font-size:12px;'>
+            <code style='background:#0a0a0a;padding:5px 10px;border-radius:4px;display:inline-block;margin-top:10px;font-size:12px;'>
                 /cron/complete-payouts?key=glamour-cron-2024-secret
             </code>
         </p>" : "";
@@ -1128,7 +1128,7 @@ class CronController extends Controller
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;font-size:13px;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Bedrijf</th>
                             <th style='padding:10px;text-align:left;'>IBAN</th>
                             <th style='padding:10px;text-align:center;'>Boekingen</th>
@@ -1144,13 +1144,13 @@ class CronController extends Controller
                 {$manualActionHtml}
 
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
-                    <p style='margin:0;font-size:13px;color:#666;'>
+                    <p style='margin:0;font-size:13px;color:#cccccc;'>
                         <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
                         <strong>Totaal verwerkt:</strong> €" . number_format($totalAmount, 2, ',', '.') . "
                     </p>
                 </div>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Wekelijkse Payout Rapport</p>
             </div>
         </div>";
@@ -1186,12 +1186,12 @@ class CronController extends Controller
 
                 <div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
                     <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</p>
-                    <p style='margin:5px 0 0;color:#666;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Payout #$payoutId</p>
+                    <p style='margin:5px 0 0;color:#cccccc;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Payout #$payoutId</p>
                 </div>
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Boeking</th>
                             <th style='padding:10px;text-align:left;'>Service</th>
                             <th style='padding:10px;text-align:right;'>Bedrag</th>
@@ -1214,14 +1214,14 @@ class CronController extends Controller
 
                 <div style='background:#f9fafb;padding:15px;border-radius:8px;margin:20px 0;'>
                     <p style='margin:0 0 5px;font-weight:600;'>Uitbetalingsdetails:</p>
-                    <p style='margin:0;color:#666;font-size:14px;'>Het bedrag is overgemaakt naar je gekoppelde Mollie account en wordt automatisch doorgeboekt naar je bankrekening.</p>
+                    <p style='margin:0;color:#cccccc;font-size:14px;'>Het bedrag is overgemaakt naar je gekoppelde Mollie account en wordt automatisch doorgeboekt naar je bankrekening.</p>
                 </div>
 
-                <p style='color:#666;font-size:13px;'>
+                <p style='color:#cccccc;font-size:13px;'>
                     Bekijk al je uitbetalingen in je <a href='https://glamourschedule.com/business/payouts' style='color:#000;'>dashboard</a>.
                 </p>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>© " . date('Y') . " GlamourSchedule</p>
             </div>
         </div>";
@@ -1291,19 +1291,19 @@ class CronController extends Controller
 
                 <div style='display:flex;gap:10px;margin:15px 0;'>
                     <div style='background:#f0fdf4;padding:10px 15px;border-radius:6px;'>
-                        <span style='color:#22c55e;font-weight:600;'>$successCount</span> <span style='color:#666;font-size:13px;'>gelukt</span>
+                        <span style='color:#22c55e;font-weight:600;'>$successCount</span> <span style='color:#cccccc;font-size:13px;'>gelukt</span>
                     </div>
                     <div style='background:#fef2f2;padding:10px 15px;border-radius:6px;'>
-                        <span style='color:#ef4444;font-weight:600;'>$failedCount</span> <span style='color:#666;font-size:13px;'>mislukt</span>
+                        <span style='color:#ef4444;font-weight:600;'>$failedCount</span> <span style='color:#cccccc;font-size:13px;'>mislukt</span>
                     </div>
                     <div style='background:#fef3c7;padding:10px 15px;border-radius:6px;'>
-                        <span style='color:#d97706;font-weight:600;'>$skippedCount</span> <span style='color:#666;font-size:13px;'>overgeslagen</span>
+                        <span style='color:#d97706;font-weight:600;'>$skippedCount</span> <span style='color:#cccccc;font-size:13px;'>overgeslagen</span>
                     </div>
                 </div>
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;font-size:13px;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Bedrijf</th>
                             <th style='padding:10px;text-align:center;'>Boekingen</th>
                             <th style='padding:10px;text-align:right;'>Omzet</th>
@@ -1317,11 +1317,11 @@ class CronController extends Controller
                     </tbody>
                 </table>
 
-                <p style='color:#666;font-size:13px;margin-top:20px;'>
+                <p style='color:#cccccc;font-size:13px;margin-top:20px;'>
                     Salons zonder Mollie Connect kunnen hun account koppelen in het dashboard.
                 </p>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Automatische Payout Notificatie</p>
             </div>
         </div>";
@@ -1351,21 +1351,21 @@ class CronController extends Controller
                 </div>
 
                 <h3>Details:</h3>
-                <ul style='color:#666;'>
+                <ul style='color:#cccccc;'>
                     <li>Aantal salons: " . count($payouts) . "</li>
                     <li>Totaal te betalen: €" . number_format($totalNeeded, 2, ',', '.') . "</li>
                     <li>Tijdstip: " . date('d-m-Y H:i:s') . "</li>
                 </ul>
 
                 <h3>Actie vereist:</h3>
-                <ol style='color:#666;'>
+                <ol style='color:#cccccc;'>
                     <li>Controleer de Bunq API key in .env</li>
                     <li>Controleer of je Bunq account actief is</li>
                     <li>Voer de cron handmatig opnieuw uit na het oplossen</li>
                 </ol>
 
                 <p style='margin-top:20px;'>
-                    <code style='background:#f5f5f5;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
+                    <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
                         curl \"https://glamourschedule.com/cron/weekly-payouts?key=glamour-cron-2024-secret\"
                     </code>
                 </p>
@@ -1415,8 +1415,8 @@ class CronController extends Controller
                         <p style='margin:0;font-size:20px;font-weight:bold;color:#d97706;'>€" . number_format($currentBalance, 2, ',', '.') . "</p>
                         <p style='margin:5px 0 0;color:#92400e;font-size:12px;'>Beschikbaar</p>
                     </div>
-                    <div style='flex:1;background:#f5f5f5;border-radius:8px;padding:15px;text-align:center;'>
-                        <p style='margin:0;font-size:20px;font-weight:bold;color:#666;'>€" . number_format($shortage, 2, ',', '.') . "</p>
+                    <div style='flex:1;background:#0a0a0a;border-radius:8px;padding:15px;text-align:center;'>
+                        <p style='margin:0;font-size:20px;font-weight:bold;color:#cccccc;'>€" . number_format($shortage, 2, ',', '.') . "</p>
                         <p style='margin:5px 0 0;color:#999;font-size:12px;'>Tekort</p>
                     </div>
                 </div>
@@ -1424,7 +1424,7 @@ class CronController extends Controller
                 <h3>Wachtende uitbetalingen:</h3>
                 <table style='width:100%;border-collapse:collapse;margin:15px 0;font-size:14px;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Salon</th>
                             <th style='padding:10px;text-align:right;'>Bedrag</th>
                         </tr>
@@ -1435,14 +1435,14 @@ class CronController extends Controller
                 </table>
 
                 <h3>Actie vereist:</h3>
-                <ol style='color:#666;'>
+                <ol style='color:#cccccc;'>
                     <li>Stort minimaal €" . number_format($shortage + 50, 2, ',', '.') . " op je Bunq rekening</li>
                     <li>Of wacht tot Mollie de volgende uitbetaling doet</li>
                     <li>Voer de cron opnieuw uit na aanvulling</li>
                 </ol>
 
                 <p style='margin-top:20px;'>
-                    <code style='background:#f5f5f5;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
+                    <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
                         curl \"https://glamourschedule.com/cron/weekly-payouts?key=glamour-cron-2024-secret\"
                     </code>
                 </p>
@@ -1781,11 +1781,11 @@ class CronController extends Controller
                 <p><strong>Bankrekening:</strong> {$partner['sales_iban']}</p>
                 {$statusMessage}
 
-                <p style='color:#666;font-size:13px;margin-top:20px;'>
+                <p style='color:#cccccc;font-size:13px;margin-top:20px;'>
                     Bekijk al je uitbetalingen in je <a href='https://glamourschedule.nl/sales/payouts' style='color:#000;'>dashboard</a>.
                 </p>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-radius:0 0 12px 12px;border:1px solid #e5e7eb;border-top:none;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-radius:0 0 12px 12px;border:1px solid #e5e7eb;border-top:none;'>
                 <p style='margin:0;color:#999;font-size:12px;'>© " . date('Y') . " GlamourSchedule Sales Partner</p>
             </div>
         </div>";
@@ -1840,10 +1840,10 @@ class CronController extends Controller
             $partnersList .= "<tr>
                 <td style='padding:10px;border-bottom:1px solid #eee;'>
                     <strong>{$p['sales_name']}</strong><br>
-                    <small style='color:#666;font-size:11px;'>{$p['sales_iban']}</small>
+                    <small style='color:#cccccc;font-size:11px;'>{$p['sales_iban']}</small>
                 </td>
                 <td style='padding:10px;border-bottom:1px solid #eee;text-align:center;'>{$salonCount}</td>
-                <td style='padding:10px;border-bottom:1px solid #eee;font-size:11px;color:#666;'>{$salonList}</td>
+                <td style='padding:10px;border-bottom:1px solid #eee;font-size:11px;color:#cccccc;'>{$salonList}</td>
                 <td style='padding:10px;border-bottom:1px solid #eee;text-align:right;font-weight:600;'>€" . number_format($p['total_commission'], 2, ',', '.') . "</td>
                 <td style='padding:10px;border-bottom:1px solid #eee;text-align:center;'>{$badge}</td>
             </tr>";
@@ -1865,15 +1865,15 @@ class CronController extends Controller
                         <p style='margin:0;font-size:24px;font-weight:bold;color:#22c55e;'>€" . number_format($totalAmount, 2, ',', '.') . "</p>
                         <p style='margin:5px 0 0;color:#166534;font-size:12px;'>Totaal uitbetaald</p>
                     </div>
-                    <div style='flex:1;background:#f5f5f5;border-radius:8px;padding:15px;text-align:center;'>
-                        <p style='margin:0;font-size:24px;font-weight:bold;color:#333;'>" . count($partners) . "</p>
-                        <p style='margin:5px 0 0;color:#666;font-size:12px;'>Sales partners</p>
+                    <div style='flex:1;background:#0a0a0a;border-radius:8px;padding:15px;text-align:center;'>
+                        <p style='margin:0;font-size:24px;font-weight:bold;color:#ffffff;'>" . count($partners) . "</p>
+                        <p style='margin:5px 0 0;color:#cccccc;font-size:12px;'>Sales partners</p>
                     </div>
                 </div>
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;font-size:13px;'>
                     <thead>
-                        <tr style='background:#f5f5f5;'>
+                        <tr style='background:#0a0a0a;'>
                             <th style='padding:10px;text-align:left;'>Partner</th>
                             <th style='padding:10px;text-align:center;'>Salons</th>
                             <th style='padding:10px;text-align:left;'>Bedrijven</th>
@@ -1887,14 +1887,14 @@ class CronController extends Controller
                 </table>
 
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
-                    <p style='margin:0;font-size:13px;color:#666;'>
+                    <p style='margin:0;font-size:13px;color:#cccccc;'>
                         <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
                         <strong>Commissie per salon:</strong> €49,99 (na betaling registratiefee)<br>
                         <strong>Minimum uitbetaling:</strong> €" . number_format(self::SALES_MINIMUM_PAYOUT, 2, ',', '.') . "
                     </p>
                 </div>
             </div>
-            <div style='background:#fafafa;padding:15px;text-align:center;border-top:1px solid #eee;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>
                 <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Sales Partner Payout Rapport</p>
             </div>
         </div>";
@@ -1923,12 +1923,12 @@ class CronController extends Controller
                     <p style='margin:10px 0 0;color:#991b1b;'>Sales partner uitbetalingen zijn GESTOPT.</p>
                 </div>
                 <p><strong>Details:</strong></p>
-                <ul style='color:#666;'>
+                <ul style='color:#cccccc;'>
                     <li>Aantal partners: " . count($partners) . "</li>
                     <li>Totaal te betalen: €" . number_format($totalNeeded, 2, ',', '.') . "</li>
                 </ul>
                 <p style='margin-top:20px;'>
-                    <code style='background:#f5f5f5;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
+                    <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
                         curl \"https://glamourschedule.com/cron/sales-payouts?key=glamour-cron-2024-secret\"
                     </code>
                 </p>
@@ -1971,7 +1971,7 @@ class CronController extends Controller
                 </div>
                 <p><strong>" . count($partners) . " sales partner(s)</strong> wachten op uitbetaling.</p>
                 <p style='margin-top:20px;'>
-                    <code style='background:#f5f5f5;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
+                    <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
                         curl \"https://glamourschedule.com/cron/sales-payouts?key=glamour-cron-2024-secret\"
                     </code>
                 </p>
@@ -2109,8 +2109,8 @@ class CronController extends Controller
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
@@ -2121,17 +2121,17 @@ class CronController extends Controller
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#333;">Hallo <strong>{$data['name']}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;">Hallo <strong>{$data['name']}</strong>,</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;">
                                 De vorige persoon op de wachtlijst heeft niet gereageerd en jij bent nu aan de beurt voor een afspraak bij <strong>{$data['business_name']}</strong>!
                             </p>
 
                             <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#666;font-size:14px;">Beschikbare plek</p>
+                                <p style="margin:0;color:#cccccc;font-size:14px;">Beschikbare plek</p>
                                 <p style="margin:10px 0 0;color:#000000;font-size:24px;font-weight:700;">
                                     {$dateFormatted} om {$timeFormatted}
                                 </p>
-                                <p style="margin:10px 0 0;color:#666;">{$data['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#cccccc;">{$data['service_name']}</p>
                             </div>
 
                             <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
@@ -2153,8 +2153,8 @@ class CronController extends Controller
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
-                            <p style="margin:0;color:#666;font-size:13px;">GlamourSchedule</p>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#cccccc;font-size:13px;">GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
