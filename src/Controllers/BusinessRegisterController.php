@@ -173,7 +173,7 @@ class BusinessRegisterController extends Controller
             $isPromo = $promoInfo['is_promo'];
 
             // Validate language
-            $validLangs = ['nl', 'en', 'de', 'fr'];
+            $validLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
             if (!in_array($detectedLanguage, $validLangs)) {
                 $detectedLanguage = 'nl';
             }
@@ -767,7 +767,7 @@ GlamourSchedule
             // Detect language from IP
             $location = $this->geoIP->lookup();
             $detectedLanguage = $location['language'] ?? 'nl';
-            $validLangs = ['nl', 'en', 'de', 'fr'];
+            $validLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
             if (!in_array($detectedLanguage, $validLangs)) {
                 $detectedLanguage = 'nl';
             }
@@ -905,6 +905,16 @@ GlamourSchedule
             return $this->redirect('/partner/register?error=notfound');
         }
 
+        // If session data is missing, get from database
+        if (empty($email)) {
+            $email = $business['email'];
+        }
+        if (empty($firstName)) {
+            $stmt = $this->db->query("SELECT first_name FROM users WHERE id = ?", [$userId]);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $firstName = $user['first_name'] ?? '';
+        }
+
         try {
             $mollie = new \Mollie\Api\MollieApiClient();
             $mollie->setApiKey($_ENV['MOLLIE_API_KEY']);
@@ -949,7 +959,9 @@ GlamourSchedule
 
                 return $this->view('pages/business/payment-success', [
                     'pageTitle' => 'Betaling Geslaagd',
-                    'email' => $email
+                    'email' => $email,
+                    'firstName' => $firstName,
+                    'companyName' => $business['company_name']
                 ]);
             } else {
                 return $this->view('pages/business/payment-failed', [

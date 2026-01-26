@@ -11,7 +11,7 @@ class ApiController extends Controller
      */
     public function translations(string $lang): string
     {
-        $availableLangs = ['nl', 'en', 'de', 'fr'];
+        $availableLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
         if (!in_array($lang, $availableLangs)) {
             $lang = 'nl';
         }

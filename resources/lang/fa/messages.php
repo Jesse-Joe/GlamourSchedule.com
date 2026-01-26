@@ -380,6 +380,8 @@ return [
     'payment_failed_canceled' => 'شما پرداخت را لغو کردید.',
     'payment_failed_expired' => 'پرداخت منقضی شده است. لطفا دوباره تلاش کنید.',
     'payment_failed_generic' => 'مشکلی در پرداخت پیش آمد.',
+    'payment_canceled' => 'پرداخت لغو شد',
+    'payment_not_completed' => 'پرداخت تکمیل نشد',
     'booking_not_confirmed' => 'رزرو شما هنوز تایید نشده است. می‌توانید دوباره تلاش کنید.',
     'try_again_btn' => 'تلاش مجدد',
     'back_to_booking' => 'بازگشت به رزرو',

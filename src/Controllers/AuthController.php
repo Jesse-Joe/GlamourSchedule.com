@@ -363,7 +363,7 @@ class AuthController extends Controller
         $userLanguage = $location['language'] ?? 'nl';
 
         // Validate language
-        $validLangs = ['nl', 'en', 'de', 'fr'];
+        $validLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
         if (!in_array($userLanguage, $validLangs)) {
             $userLanguage = 'nl';
         }

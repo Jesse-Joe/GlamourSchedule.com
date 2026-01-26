@@ -105,7 +105,14 @@
         </div>
 
         <h1>Betaling Geslaagd!</h1>
-        <p>Bedankt voor je betaling. We hebben een e-mail gestuurd met instructies om je registratie af te ronden.</p>
+        <p>Bedankt voor je betaling<?= !empty($firstName) ? ', ' . htmlspecialchars($firstName) : '' ?>. We hebben een e-mail gestuurd met instructies om je registratie af te ronden.</p>
+
+        <?php if (!empty($companyName)): ?>
+        <div class="email-box">
+            <div class="label">Bedrijf:</div>
+            <div class="email"><?= htmlspecialchars($companyName) ?></div>
+        </div>
+        <?php endif; ?>
 
         <div class="email-box">
             <div class="label">E-mail verstuurd naar:</div>

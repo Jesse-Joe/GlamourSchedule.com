@@ -369,7 +369,8 @@ class BookingController extends Controller
 
         // Get current platform language for email personalization
         $bookingLanguage = $_SESSION['lang'] ?? 'nl';
-        if (!in_array($bookingLanguage, ['nl', 'en', 'de', 'fr'])) {
+        $validLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
+        if (!in_array($bookingLanguage, $validLangs)) {
             $bookingLanguage = 'nl';
         }
 
