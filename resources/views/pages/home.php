@@ -325,11 +325,11 @@
                 </div>
                 <?php if (!empty($biz['min_price'])): ?>
                 <div class="boosted-card-price">
-                    Vanaf <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
+                    <?= $translations['from_price'] ?? 'From' ?> <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
                 </div>
                 <?php endif; ?>
                 <span class="boosted-card-btn">
-                    Bekijk & Boek <i class="fas fa-arrow-right"></i>
+                    <?= $translations['view_book'] ?? 'View & Book' ?> <i class="fas fa-arrow-right"></i>
                 </span>
             </div>
         </a>

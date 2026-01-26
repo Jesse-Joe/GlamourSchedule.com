@@ -1,6 +1,17 @@
 <?php ob_start(); ?>
+<?php
+$primaryColor = $settings['primary_color'] ?? '#000000';
+$secondaryColor = $settings['secondary_color'] ?? '#333333';
+$accentColor = $settings['accent_color'] ?? '#000000';
+?>
 
 <style>
+/* Business Theme Colors */
+:root {
+    --business-primary: <?= htmlspecialchars($primaryColor) ?>;
+    --business-secondary: <?= htmlspecialchars($secondaryColor) ?>;
+    --business-accent: <?= htmlspecialchars($accentColor) ?>;
+}
 /* ============================================
    THEME VARIABLES - Dark Mode (Default)
    ============================================ */
@@ -17,8 +28,8 @@
     --service-hover: #222222;
     --service-border: #333333;
     --divider: #333333;
-    --btn-primary-bg: #ffffff;
-    --btn-primary-text: #000000;
+    --btn-primary-bg: var(--business-primary);
+    --btn-primary-text: #ffffff;
 }
 
 /* ============================================
@@ -37,7 +48,7 @@
     --service-hover: #f3f4f6;
     --service-border: #e5e7eb;
     --divider: #e5e7eb;
-    --btn-primary-bg: #000000;
+    --btn-primary-bg: var(--business-primary);
     --btn-primary-text: #ffffff;
 }
 
@@ -146,7 +157,7 @@
     background: var(--service-hover);
 }
 .service-option:has(input:checked) {
-    border-color: var(--primary) !important;
+    border-color: var(--business-primary) !important;
     background: rgba(0,0,0,0.05) !important;
 }
 .service-radio {
@@ -154,7 +165,7 @@
     margin-top: 0.2rem;
     width: 20px;
     height: 20px;
-    accent-color: var(--primary);
+    accent-color: var(--business-primary);
     flex-shrink: 0;
 }
 .service-details {
@@ -175,7 +186,7 @@
     gap: 0.35rem;
 }
 .service-price {
-    color: var(--primary);
+    color: var(--business-primary);
     font-size: 1.1rem;
     font-weight: 700;
     white-space: nowrap;
@@ -200,17 +211,17 @@
     gap: 1rem;
 }
 .employee-option:hover {
-    border-color: var(--primary);
+    border-color: var(--business-primary);
     background: rgba(0,0,0,0.02);
 }
 .employee-option:has(input:checked) {
-    border-color: var(--primary) !important;
+    border-color: var(--business-primary) !important;
     background: rgba(0,0,0,0.05) !important;
 }
 .employee-radio {
     width: 20px;
     height: 20px;
-    accent-color: var(--primary);
+    accent-color: var(--business-primary);
     flex-shrink: 0;
 }
 .employee-avatar {
@@ -749,7 +760,7 @@ select.form-input {
             <?php if (!empty($employees)): ?>
             <!-- Employee Selection (BV businesses only) -->
             <div class="form-group" style="margin-top:1.25rem">
-                <label class="form-label"><i class="fas fa-user"></i> Kies een medewerker</label>
+                <label class="form-label"><i class="fas fa-user"></i> <?= $translations['choose_employee'] ?? 'Choose an employee' ?></label>
                 <div class="employee-list">
                     <?php foreach ($employees as $employee): ?>
                         <label class="employee-option">
@@ -849,8 +860,8 @@ select.form-input {
                     <i class="fas fa-qrcode"></i>
                 </div>
                 <div class="qr-notice-content">
-                    <h4><i class="fas fa-info-circle"></i> QR-Code Scannen Verplicht</h4>
-                    <p>Bij aankomst in de salon moet je de QR-code scannen om je boeking te bevestigen. Zonder scan wordt de boeking niet als voltooid geregistreerd.</p>
+                    <h4><i class="fas fa-info-circle"></i> <?= $translations['qr_scan_required'] ?? 'QR Code Scan Required' ?></h4>
+                    <p><?= $translations['qr_scan_desc'] ?? 'Upon arrival at the salon, you must scan the QR code to confirm your booking. Without scanning, the booking will not be registered as completed.' ?></p>
                 </div>
             </div>
 
@@ -878,10 +889,21 @@ const translations = {
     selectTimeSlot: '<?= addslashes($__('select_time_slot')) ?>',
     timeBooked: '<?= addslashes($__('time_booked')) ?>',
     noTimesThisDay: '<?= addslashes($__('no_times_this_day')) ?>',
-    selectEmployeeFirst: 'Selecteer eerst een medewerker',
+    selectEmployeeFirst: '<?= addslashes($translations['select_employee_first'] ?? 'Please select an employee first') ?>',
     nextAvailableDate: '<?= addslashes($__('next_available_date')) ?>',
     joinWaitlist: '<?= addslashes($__('join_waitlist')) ?>',
-    waitlistForDate: '<?= addslashes($__('waitlist_for_date')) ?>'
+    waitlistForDate: '<?= addslashes($__('waitlist_for_date')) ?>',
+    noAvailableDates60: '<?= addslashes($translations['no_available_dates_60'] ?? 'No available dates found in the next 60 days.') ?>',
+    selectDateAndService: '<?= addslashes($translations['select_date_and_service'] ?? 'Please select a date and service first.') ?>',
+    waitlistNameLabel: '<?= addslashes($translations['waitlist_name_label'] ?? 'Name *') ?>',
+    waitlistEmailLabel: '<?= addslashes($translations['waitlist_email_label'] ?? 'Email *') ?>',
+    waitlistPhoneLabel: '<?= addslashes($translations['waitlist_phone_label'] ?? 'Phone') ?>',
+    waitlistNotesLabel: '<?= addslashes($translations['waitlist_notes_label'] ?? 'Notes') ?>',
+    waitlistNotesPlaceholder: '<?= addslashes($translations['waitlist_notes_placeholder'] ?? 'E.g. preferred time or other wishes...') ?>',
+    waitlistSubmitBtn: '<?= addslashes($translations['waitlist_submit_btn'] ?? 'Sign up for waitlist') ?>',
+    waitlistSuccess: '<?= addslashes($translations['waitlist_success'] ?? 'Success!') ?>',
+    waitlistError: '<?= addslashes($translations['waitlist_error'] ?? 'An error occurred.') ?>',
+    timeAtLabel: '<?= addslashes($translations['time_at_label'] ?? 'at') ?>'
 };
 
 const noTimesInfo = document.getElementById('noTimesInfo');
@@ -941,8 +963,19 @@ function loadAvailableTimes() {
             if (!hasAvailable) {
                 html = `<option value="">${translations.noTimesThisDay}</option>`;
 
-                // Show next available date info
+                // Show next available date info and auto-jump to next available date
                 noTimesInfo.style.display = 'block';
+
+                // Auto-jump to next available date if found
+                if (data.nextAvailable && data.nextAvailable.date) {
+                    dateInput.value = data.nextAvailable.date;
+                    // Reload times for the new date (with a small delay to prevent infinite loop)
+                    setTimeout(() => {
+                        noTimesInfo.style.display = 'none';
+                        loadAvailableTimes();
+                    }, 100);
+                    return;
+                }
 
                 if (data.nextAvailable) {
                     const nextDate = new Date(data.nextAvailable.date);
@@ -952,7 +985,7 @@ function loadAvailableTimes() {
                     nextAvailableDateEl.innerHTML = `
                         <p><strong>${translations.nextAvailableDate}:</strong></p>
                         <a href="#" class="next-date-link" data-date="${data.nextAvailable.date}" data-time="${data.nextAvailable.time}">
-                            <i class="fas fa-calendar-check"></i> ${formattedDate} om ${data.nextAvailable.time}
+                            <i class="fas fa-calendar-check"></i> ${formattedDate} ${translations.timeAtLabel} ${data.nextAvailable.time}
                         </a>
                     `;
 
@@ -963,7 +996,7 @@ function loadAvailableTimes() {
                         loadAvailableTimes();
                     });
                 } else {
-                    nextAvailableDateEl.innerHTML = '<p class="no-next-date">Geen beschikbare data gevonden in de komende 60 dagen.</p>';
+                    nextAvailableDateEl.innerHTML = `<p class="no-next-date">${translations.noAvailableDates60}</p>`;
                 }
 
                 // Store current date for waitlist
@@ -974,6 +1007,14 @@ function loadAvailableTimes() {
 
             timeSelect.innerHTML = html;
             timeSelect.disabled = !hasAvailable;
+
+            // Auto-select first available time slot
+            if (hasAvailable) {
+                const firstAvailableOption = timeSelect.querySelector('option:not([disabled]):not([value=""])');
+                if (firstAvailableOption) {
+                    timeSelect.value = firstAvailableOption.value;
+                }
+            }
         })
         .catch(error => {
             timeLoading.style.display = 'none';
@@ -986,12 +1027,25 @@ dateInput.addEventListener('change', loadAvailableTimes);
 serviceInputs.forEach(input => input.addEventListener('change', loadAvailableTimes));
 employeeInputs.forEach(input => input.addEventListener('change', loadAvailableTimes));
 
-// Load times if date and service are already selected
-if (dateInput.value && document.querySelector('input[name="service_id"]:checked')) {
-    if (!hasEmployees || document.querySelector('input[name="employee_id"]:checked')) {
-        loadAvailableTimes();
-    }
+// Auto-select first service if none selected
+const firstService = document.querySelector('input[name="service_id"]');
+if (firstService && !document.querySelector('input[name="service_id"]:checked')) {
+    firstService.checked = true;
 }
+
+// Auto-select first employee if available and none selected
+const firstEmployee = document.querySelector('input[name="employee_id"]');
+if (firstEmployee && !document.querySelector('input[name="employee_id"]:checked')) {
+    firstEmployee.checked = true;
+}
+
+// Auto-set today's date if not set
+if (!dateInput.value) {
+    dateInput.value = '<?= date('Y-m-d') ?>';
+}
+
+// Load times automatically on page load
+loadAvailableTimes();
 
 // Waitlist button handler
 waitlistBtn.addEventListener('click', function() {
@@ -1000,7 +1054,7 @@ waitlistBtn.addEventListener('click', function() {
     const serviceId = serviceInput ? serviceInput.value : '';
 
     if (!date || !serviceId) {
-        alert('Selecteer eerst een datum en dienst.');
+        alert(translations.selectDateAndService);
         return;
     }
 
@@ -1022,23 +1076,23 @@ function showWaitlistModal(date, serviceId) {
                 <input type="hidden" name="date" value="${date}">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <div class="form-group">
-                    <label class="form-label">Naam *</label>
+                    <label class="form-label">${translations.waitlistNameLabel}</label>
                     <input type="text" name="name" class="form-input" required value="<?= isset($user) ? htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) : '' ?>">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">E-mail *</label>
+                    <label class="form-label">${translations.waitlistEmailLabel}</label>
                     <input type="email" name="email" class="form-input" required value="<?= isset($user) ? htmlspecialchars($user['email']) : '' ?>">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telefoon</label>
+                    <label class="form-label">${translations.waitlistPhoneLabel}</label>
                     <input type="tel" name="phone" class="form-input" value="<?= isset($user) ? htmlspecialchars($user['phone'] ?? '') : '' ?>">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Opmerkingen</label>
-                    <textarea name="notes" class="form-input" rows="2" placeholder="Bijv. voorkeurstijd of andere wensen..."></textarea>
+                    <label class="form-label">${translations.waitlistNotesLabel}</label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="${translations.waitlistNotesPlaceholder}"></textarea>
                 </div>
                 <button type="submit" class="submit-btn waitlist-submit">
-                    <i class="fas fa-check"></i> Aanmelden op wachtlijst
+                    <i class="fas fa-check"></i> ${translations.waitlistSubmitBtn}
                 </button>
             </form>
         </div>
@@ -1062,18 +1116,18 @@ function showWaitlistModal(date, serviceId) {
                         <button class="waitlist-modal-close" onclick="this.closest('.waitlist-modal').remove()">&times;</button>
                         <div class="waitlist-success">
                             <i class="fas fa-check-circle"></i>
-                            <h3>Gelukt!</h3>
+                            <h3>${translations.waitlistSuccess}</h3>
                             <p>${data.message}</p>
                         </div>
                     </div>
                 `;
             } else {
-                alert(data.error || 'Er is een fout opgetreden.');
+                alert(data.error || translations.waitlistError);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Er is een fout opgetreden.');
+            alert(translations.waitlistError);
         });
     });
 }

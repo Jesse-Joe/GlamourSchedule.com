@@ -106,7 +106,7 @@ class PaymentController extends Controller
     private function getBooking(string $uuid): ?array
     {
         $stmt = $this->db->query(
-            "SELECT b.*, biz.company_name as business_name, s.name as service_name
+            "SELECT b.*, biz.company_name as business_name, s.name as service_name, s.duration_minutes as duration
              FROM bookings b
              JOIN businesses biz ON b.business_id = biz.id
              JOIN services s ON b.service_id = s.id

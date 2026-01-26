@@ -12,8 +12,8 @@
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #000000, #333333);
-        border: none;
+        background: #000000;
+        border: 2px solid #ffffff;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -24,7 +24,12 @@
 
     .glamori-toggle:hover {
         transform: scale(1.1);
+        background: #ffffff;
         box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .glamori-toggle:hover .glamori-icon {
+        color: #000000;
     }
 
     .glamori-toggle img {
@@ -284,11 +289,14 @@
     }
 
     .glamori-suggestion {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         padding: 8px 14px;
-        background: #262626;
-        border: 1px solid #333333;
+        background: #000000;
+        border: 1px solid #ffffff;
         border-radius: 20px;
-        font-size: 16px;
+        font-size: 14px;
         color: #ffffff;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -296,10 +304,19 @@
         -webkit-tap-highlight-color: transparent;
     }
 
+    .glamori-suggestion i {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
     .glamori-suggestion:hover {
         background: #ffffff;
         color: #000000;
         border-color: #ffffff;
+    }
+
+    .glamori-suggestion:hover i {
+        opacity: 1;
     }
 
     .glamori-input-area {
@@ -473,7 +490,7 @@
 
 <div class="glamori-widget" id="glamoriWidget">
     <button class="glamori-toggle" onclick="toggleGlamori()" aria-label="Open chat">
-        <img src="/images/gs-logo-white.svg" alt="GS" class="chat-icon" style="width:32px;height:32px;">
+        <i class="fas fa-comment glamori-icon chat-icon"></i>
         <i class="fas fa-times glamori-icon close-icon"></i>
         <span class="glamori-badge" id="glamoriBadge">1</span>
     </button>
@@ -635,7 +652,11 @@ function updateSuggestions(suggestions) {
     suggestions.forEach(s => {
         const btn = document.createElement('button');
         btn.className = 'glamori-suggestion';
-        btn.textContent = s.text;
+        if (s.icon) {
+            btn.innerHTML = '<i class="fas ' + s.icon + '"></i> ' + s.text;
+        } else {
+            btn.textContent = s.text;
+        }
         btn.onclick = () => {
             document.getElementById('glamoriInput').value = s.value;
             sendGlamoriMessage();

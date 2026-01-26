@@ -309,15 +309,15 @@
             <button type="button" class="account-tab active" onclick="switchTab('personal')" id="tabPersonal">
                 <i class="fas fa-user"></i>
                 <span class="account-tab-label">
-                    Persoonlijk
-                    <small>Klant account</small>
+                    <?= $translations['personal'] ?? 'Personal' ?>
+                    <small><?= $translations['personal_account'] ?? 'Customer account' ?></small>
                 </span>
             </button>
             <button type="button" class="account-tab" onclick="switchTab('business')" id="tabBusiness">
                 <i class="fas fa-store"></i>
                 <span class="account-tab-label">
-                    Bedrijf
-                    <small>Salon / Onderneming</small>
+                    <?= $translations['business_tab'] ?? 'Business' ?>
+                    <small><?= $translations['salon_business'] ?? 'Salon / Business' ?></small>
                 </span>
             </button>
         </div>
@@ -341,7 +341,7 @@
             <div class="tab-content active" id="contentPersonal">
                 <div class="account-info">
                     <i class="fas fa-info-circle"></i>
-                    <span>Log in met je persoonlijke account om afspraken te boeken en beheren.</span>
+                    <span><?= $translations['login_personal_info'] ?? 'Log in with your personal account to book and manage appointments.' ?></span>
                 </div>
 
                 <form method="POST" action="/login" id="formPersonal">
@@ -349,9 +349,9 @@
                     <input type="hidden" name="account_type" value="personal">
 
                     <div class="form-group">
-                        <label for="emailPersonal"><i class="fas fa-envelope"></i> E-mailadres</label>
+                        <label for="emailPersonal"><i class="fas fa-envelope"></i> <?= $translations['email'] ?? 'Email address' ?></label>
                         <input type="email" id="emailPersonal" name="email" class="form-control"
-                               placeholder="jouw@email.nl"
+                               placeholder="<?= $translations['email_placeholder'] ?? 'your@email.com' ?>"
                                value="<?= htmlspecialchars($email ?? '') ?>" required>
                         <?php if (isset($errors['email'])): ?>
                             <small style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['email'] ?></small>
@@ -359,10 +359,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="passwordPersonal"><i class="fas fa-lock"></i> Wachtwoord</label>
+                        <label for="passwordPersonal"><i class="fas fa-lock"></i> <?= $translations['password'] ?? 'Password' ?></label>
                         <div class="password-wrapper">
-                            <input type="password" id="passwordPersonal" name="password" class="form-control" placeholder="Je wachtwoord" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('passwordPersonal', this)" aria-label="Wachtwoord tonen">
+                            <input type="password" id="passwordPersonal" name="password" class="form-control" placeholder="<?= $translations['your_password'] ?? 'Your password' ?>" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('passwordPersonal', this)" aria-label="<?= $translations['show_password'] ?? 'Show password' ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -370,18 +370,18 @@
                             <small style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:0.25rem;display:block"><?= $errors['password'] ?></small>
                         <?php endif; ?>
                         <a href="/forgot-password" class="forgot-link">
-                            <i class="fas fa-key"></i> Wachtwoord vergeten?
+                            <i class="fas fa-key"></i> <?= $translations['forgot_password'] ?? 'Forgot password?' ?>
                         </a>
                     </div>
 
                     <button type="submit" class="btn-login">
-                        <i class="fas fa-sign-in-alt"></i> Inloggen
+                        <i class="fas fa-sign-in-alt"></i> <?= $translations['login'] ?? 'Login' ?>
                     </button>
                 </form>
 
                 <div class="login-footer">
                     <p>
-                        Nog geen account? <a href="/register">Gratis registreren</a>
+                        <?= $translations['no_account_yet'] ?? 'No account yet?' ?> <a href="/register"><?= $translations['register_free'] ?? 'Register for free' ?></a>
                     </p>
                 </div>
             </div>
@@ -390,7 +390,7 @@
             <div class="tab-content" id="contentBusiness">
                 <div class="account-info business">
                     <i class="fas fa-building"></i>
-                    <span>Log in met je bedrijfsaccount om je salon en boekingen te beheren.</span>
+                    <span><?= $translations['login_business_info'] ?? 'Log in with your business account to manage your salon and bookings.' ?></span>
                 </div>
 
                 <form method="POST" action="/login" id="formBusiness">
@@ -398,33 +398,33 @@
                     <input type="hidden" name="account_type" value="business">
 
                     <div class="form-group">
-                        <label for="emailBusiness"><i class="fas fa-envelope"></i> Bedrijfs E-mail</label>
+                        <label for="emailBusiness"><i class="fas fa-envelope"></i> <?= $translations['business_email'] ?? 'Business Email' ?></label>
                         <input type="email" id="emailBusiness" name="email" class="form-control"
-                               placeholder="info@jouwbedrijf.nl"
+                               placeholder="<?= $translations['business_email_placeholder'] ?? 'info@yourbusiness.com' ?>"
                                value="<?= htmlspecialchars($email ?? '') ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="passwordBusiness"><i class="fas fa-lock"></i> Wachtwoord</label>
+                        <label for="passwordBusiness"><i class="fas fa-lock"></i> <?= $translations['password'] ?? 'Password' ?></label>
                         <div class="password-wrapper">
-                            <input type="password" id="passwordBusiness" name="password" class="form-control" placeholder="Je wachtwoord" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('passwordBusiness', this)" aria-label="Wachtwoord tonen">
+                            <input type="password" id="passwordBusiness" name="password" class="form-control" placeholder="<?= $translations['your_password'] ?? 'Your password' ?>" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('passwordBusiness', this)" aria-label="<?= $translations['show_password'] ?? 'Show password' ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                         <a href="/forgot-password" class="forgot-link">
-                            <i class="fas fa-key"></i> Wachtwoord vergeten?
+                            <i class="fas fa-key"></i> <?= $translations['forgot_password'] ?? 'Forgot password?' ?>
                         </a>
                     </div>
 
                     <button type="submit" class="btn-login business">
-                        <i class="fas fa-sign-in-alt"></i> Inloggen als Bedrijf
+                        <i class="fas fa-sign-in-alt"></i> <?= $translations['login_as_business'] ?? 'Login as Business' ?>
                     </button>
                 </form>
 
                 <div class="login-footer">
                     <p>
-                        Nog geen bedrijfsaccount? <a href="/business/register">Registreer je bedrijf</a>
+                        <?= $translations['no_business_account'] ?? 'No business account yet?' ?> <a href="/business/register"><?= $translations['register_business'] ?? 'Register your business' ?></a>
                     </p>
                 </div>
             </div>

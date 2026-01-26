@@ -177,7 +177,7 @@ class VerifyEmailController extends Controller
 
         // Generate new code
         $newCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        $expiresAt = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
         // Invalidate old codes
         $this->db->query(
@@ -223,7 +223,7 @@ class VerifyEmailController extends Controller
                                     <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
                                     </div>
-                                    <p style='font-size:14px;color:#666;'>Deze code is 30 minuten geldig.</p>
+                                    <p style='font-size:14px;color:#666;'>Deze code is 10 minuten geldig.</p>
                                 </td>
                             </tr>
                         </table>

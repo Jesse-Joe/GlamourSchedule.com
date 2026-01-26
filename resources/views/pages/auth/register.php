@@ -452,8 +452,8 @@
     <div class="register-card">
         <div class="register-header">
             <i class="fas fa-user-plus"></i>
-            <h1>Account Aanmaken</h1>
-            <p>Registreer je gratis als klant of bedrijf</p>
+            <h1><?= $translations['create_account'] ?? 'Create Account' ?></h1>
+            <p><?= $translations['register_free_subtitle'] ?? 'Register for free as customer or business' ?></p>
         </div>
 
         <!-- Account Type Tabs -->
@@ -461,15 +461,15 @@
             <button type="button" class="account-tab active" onclick="switchTab('personal')" id="tabPersonal">
                 <i class="fas fa-user"></i>
                 <span class="account-tab-label">
-                    Klant
-                    <small>Boek afspraken</small>
+                    <?= $translations['personal'] ?? 'Personal' ?>
+                    <small><?= $translations['personal_account'] ?? 'Customer account' ?></small>
                 </span>
             </button>
             <button type="button" class="account-tab" onclick="switchTab('business')" id="tabBusiness">
                 <i class="fas fa-store"></i>
                 <span class="account-tab-label">
-                    Bedrijf
-                    <small>Ontvang boekingen</small>
+                    <?= $translations['business_tab'] ?? 'Business' ?>
+                    <small><?= $translations['salon_business'] ?? 'Salon / Business' ?></small>
                 </span>
             </button>
         </div>
@@ -483,7 +483,7 @@
             <div class="tab-content active" id="contentPersonal">
                 <div class="account-info">
                     <i class="fas fa-info-circle"></i>
-                    <span>Maak een persoonlijk account aan om afspraken te boeken bij salons.</span>
+                    <span><?= $translations['create_personal_account'] ?? 'Create a personal account to book appointments and save your favorites.' ?></span>
                 </div>
 
                 <form method="POST" action="/register" id="formPersonal">
@@ -492,39 +492,39 @@
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label><i class="fas fa-user"></i> Voornaam *</label>
-                            <input type="text" name="first_name" class="form-control" placeholder="Je voornaam" value="<?= htmlspecialchars($data['first_name'] ?? '') ?>" required>
+                            <label><i class="fas fa-user"></i> <?= $translations['first_name'] ?? 'First name' ?> *</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="<?= $translations['first_name_placeholder'] ?? 'Your first name' ?>" value="<?= htmlspecialchars($data['first_name'] ?? '') ?>" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-user"></i> Achternaam *</label>
-                            <input type="text" name="last_name" class="form-control" placeholder="Je achternaam" value="<?= htmlspecialchars($data['last_name'] ?? '') ?>" required>
+                            <label><i class="fas fa-user"></i> <?= $translations['last_name'] ?? 'Last name' ?> *</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="<?= $translations['last_name_placeholder'] ?? 'Your last name' ?>" value="<?= htmlspecialchars($data['last_name'] ?? '') ?>" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> E-mailadres *</label>
-                        <input type="email" name="email" class="form-control" placeholder="jouw@email.nl" value="<?= htmlspecialchars($data['email'] ?? '') ?>" required>
+                        <label><i class="fas fa-envelope"></i> <?= $translations['email'] ?? 'Email address' ?> *</label>
+                        <input type="email" name="email" class="form-control" placeholder="<?= $translations['email_placeholder'] ?? 'your@email.com' ?>" value="<?= htmlspecialchars($data['email'] ?? '') ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-phone"></i> Telefoon <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
-                        <input type="tel" name="phone" class="form-control" placeholder="06-12345678" value="<?= htmlspecialchars($data['phone'] ?? '') ?>">
+                        <label><i class="fas fa-phone"></i> <?= $translations['phone'] ?? 'Phone' ?> <span style="font-weight:400;color:rgba(255,255,255,0.5)">(<?= $translations['optional'] ?? 'optional' ?>)</span></label>
+                        <input type="tel" name="phone" class="form-control" placeholder="<?= $translations['phone_placeholder'] ?? '06-12345678' ?>" value="<?= htmlspecialchars($data['phone'] ?? '') ?>">
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Wachtwoord *</label>
+                            <label><i class="fas fa-lock"></i> <?= $translations['password'] ?? 'Password' ?> *</label>
                             <div class="password-wrapper">
-                                <input type="password" name="password" id="passwordPersonal" class="form-control" placeholder="Minimaal 8 tekens" minlength="8" required>
+                                <input type="password" name="password" id="passwordPersonal" class="form-control" placeholder="<?= $translations['min_8_chars'] ?? 'Minimum 8 characters' ?>" minlength="8" required>
                                 <button type="button" class="password-toggle" onclick="togglePassword('passwordPersonal', this)">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Bevestig wachtwoord *</label>
+                            <label><i class="fas fa-lock"></i> <?= $translations['confirm_password'] ?? 'Confirm password' ?> *</label>
                             <div class="password-wrapper">
-                                <input type="password" name="password_confirm" id="passwordConfirmPersonal" class="form-control" placeholder="Herhaal wachtwoord" required>
+                                <input type="password" name="password_confirm" id="passwordConfirmPersonal" class="form-control" placeholder="<?= $translations['repeat_password'] ?? 'Repeat password' ?>" required>
                                 <button type="button" class="password-toggle" onclick="togglePassword('passwordConfirmPersonal', this)">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -535,17 +535,17 @@
                     <div class="terms-box">
                         <label>
                             <input type="checkbox" name="accept_terms" required>
-                            <span>Ik ga akkoord met de <a href="/terms" target="_blank">Algemene Voorwaarden</a> en het <a href="/privacy" target="_blank">Privacybeleid</a> *</span>
+                            <span><?= $translations['agree_terms'] ?? 'I agree to the' ?> <a href="/terms" target="_blank"><?= $translations['terms_conditions'] ?? 'Terms and Conditions' ?></a> <?= $translations['and_the'] ?? 'and the' ?> <a href="/privacy" target="_blank"><?= $translations['privacy_policy'] ?? 'Privacy Policy' ?></a> *</span>
                         </label>
                     </div>
 
                     <button type="submit" class="btn-register">
-                        <i class="fas fa-user-plus"></i> Account Aanmaken
+                        <i class="fas fa-user-plus"></i> <?= $translations['create_account'] ?? 'Create Account' ?>
                     </button>
                 </form>
 
                 <div class="register-footer">
-                    <p>Al een account? <a href="/login">Inloggen</a></p>
+                    <p><?= $translations['already_account'] ?? 'Already have an account?' ?> <a href="/login"><?= $translations['login'] ?? 'Login' ?></a></p>
                 </div>
             </div>
 
@@ -553,7 +553,7 @@
             <div class="tab-content" id="contentBusiness">
                 <div class="account-info">
                     <i class="fas fa-store"></i>
-                    <span>Registreer je salon of bedrijf en ontvang boekingen van klanten.</span>
+                    <span><?= $translations['register_business_info'] ?? 'Register your salon or business and receive bookings from customers.' ?></span>
                 </div>
 
                 <form method="POST" action="/business/register" id="formBusiness">
@@ -562,39 +562,39 @@
                     <!-- Bedrijfsgegevens -->
                     <div class="section-header">
                         <i class="fas fa-building"></i>
-                        <h4>Bedrijfsgegevens</h4>
+                        <h4><?= $translations['business_data'] ?? 'Business details' ?></h4>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-store"></i> Bedrijfsnaam *</label>
-                        <input type="text" name="name" class="form-control" placeholder="Naam van je salon" required>
+                        <label><i class="fas fa-store"></i> <?= $translations['business_name'] ?? 'Business name' ?> *</label>
+                        <input type="text" name="name" class="form-control" placeholder="<?= $translations['business_name_placeholder'] ?? 'Name of your salon' ?>" required>
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> E-mailadres *</label>
-                            <input type="email" name="email" class="form-control" placeholder="info@jouwsalon.nl" required>
+                            <label><i class="fas fa-envelope"></i> <?= $translations['email'] ?? 'Email address' ?> *</label>
+                            <input type="email" name="email" class="form-control" placeholder="<?= $translations['business_email_placeholder'] ?? 'info@yourbusiness.com' ?>" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Telefoon</label>
-                            <input type="tel" name="phone" class="form-control" placeholder="06 12345678">
+                            <label><i class="fas fa-phone"></i> <?= $translations['phone'] ?? 'Phone' ?></label>
+                            <input type="tel" name="phone" class="form-control" placeholder="<?= $translations['phone_placeholder'] ?? '06-12345678' ?>">
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Wachtwoord * <span style="font-weight:400;color:rgba(255,255,255,0.5)">(min. 8 tekens)</span></label>
+                            <label><i class="fas fa-lock"></i> <?= $translations['password'] ?? 'Password' ?> * <span style="font-weight:400;color:rgba(255,255,255,0.5)">(<?= $translations['min_8_chars_short'] ?? 'min. 8 chars' ?>)</span></label>
                             <div class="password-wrapper">
-                                <input type="password" name="password" id="passwordBusiness" class="form-control" placeholder="Kies een sterk wachtwoord" minlength="8" required>
+                                <input type="password" name="password" id="passwordBusiness" class="form-control" placeholder="<?= $translations['choose_strong_password'] ?? 'Choose a strong password' ?>" minlength="8" required>
                                 <button type="button" class="password-toggle" onclick="togglePassword('passwordBusiness', this)">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Bevestig wachtwoord *</label>
+                            <label><i class="fas fa-lock"></i> <?= $translations['confirm_password'] ?? 'Confirm password' ?> *</label>
                             <div class="password-wrapper">
-                                <input type="password" name="password_confirm" id="passwordConfirmBusiness" class="form-control" placeholder="Herhaal wachtwoord" minlength="8" required>
+                                <input type="password" name="password_confirm" id="passwordConfirmBusiness" class="form-control" placeholder="<?= $translations['repeat_password'] ?? 'Repeat password' ?>" minlength="8" required>
                                 <button type="button" class="password-toggle" onclick="togglePassword('passwordConfirmBusiness', this)">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -603,9 +603,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-tags"></i> Categorie</label>
+                        <label><i class="fas fa-tags"></i> <?= $translations['category'] ?? 'Category' ?></label>
                         <select name="category_id" class="form-control">
-                            <option value="">Selecteer een categorie</option>
+                            <option value=""><?= $translations['select_category'] ?? 'Select a category' ?></option>
                             <?php if (isset($categories)): ?>
                                 <?php foreach ($categories as $cat): ?>
                                     <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?></option>
@@ -617,65 +617,65 @@
                     <!-- Locatie -->
                     <div class="section-header" style="margin-top:2rem">
                         <i class="fas fa-map-marker-alt"></i>
-                        <h4>Locatie</h4>
+                        <h4><?= $translations['location'] ?? 'Location' ?></h4>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-road"></i> Adres *</label>
-                        <input type="text" name="address" class="form-control" placeholder="Straatnaam 123" required>
+                        <label><i class="fas fa-road"></i> <?= $translations['address'] ?? 'Address' ?> *</label>
+                        <input type="text" name="address" class="form-control" placeholder="<?= $translations['address_placeholder'] ?? 'Street name 123' ?>" required>
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label><i class="fas fa-mail-bulk"></i> Postcode *</label>
-                            <input type="text" name="postal_code" class="form-control" placeholder="1234 AB" required>
+                            <label><i class="fas fa-mail-bulk"></i> <?= $translations['postal_code'] ?? 'Postal code' ?> *</label>
+                            <input type="text" name="postal_code" class="form-control" placeholder="<?= $translations['postal_code_placeholder'] ?? '1234 AB' ?>" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-city"></i> Plaats *</label>
-                            <input type="text" name="city" class="form-control" placeholder="Amsterdam" required>
+                            <label><i class="fas fa-city"></i> <?= $translations['city'] ?? 'City' ?> *</label>
+                            <input type="text" name="city" class="form-control" placeholder="<?= $translations['city_placeholder'] ?? 'Amsterdam' ?>" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-file-contract"></i> KVK-nummer <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
+                        <label><i class="fas fa-file-contract"></i> <?= $translations['kvk_number'] ?? 'Chamber of Commerce number' ?> <span style="font-weight:400;color:rgba(255,255,255,0.5)">(<?= $translations['optional'] ?? 'optional' ?>)</span></label>
                         <input type="text" name="kvk_number" class="form-control" placeholder="12345678">
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-align-left"></i> Beschrijving <span style="font-weight:400;color:rgba(255,255,255,0.5)">(optioneel)</span></label>
-                        <textarea name="description" class="form-control" rows="3" placeholder="Vertel iets over je salon..."></textarea>
+                        <label><i class="fas fa-align-left"></i> <?= $translations['description'] ?? 'Description' ?> <span style="font-weight:400;color:rgba(255,255,255,0.5)">(<?= $translations['optional'] ?? 'optional' ?>)</span></label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="<?= $translations['description_placeholder'] ?? 'Tell something about your salon...' ?>"></textarea>
                     </div>
 
                     <!-- Pricing -->
                     <div class="pricing-card">
                         <div class="early-bird-badge" style="background:#fbbf24;color:#000;padding:0.5rem 1rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:600;margin-bottom:1rem">
-                            <i class="fas fa-star"></i> Early Bird - Eerste 100 bedrijven
+                            <i class="fas fa-star"></i> <?= $translations['early_bird'] ?? 'Early Bird - First 100 businesses' ?>
                         </div>
                         <div class="price-display">
                             <span class="price-amount">&euro;0,99</span>
-                            <span class="price-period">eenmalig</span>
+                            <span class="price-period"><?= $translations['one_time'] ?? 'one-time' ?></span>
                         </div>
                         <div class="price-note" style="margin-bottom:0.5rem">
                             <i class="fas fa-clock"></i>
-                            <span>Na 14 dagen gratis proeftijd</span>
+                            <span><?= $translations['after_free_trial'] ?? 'After 14 days free trial' ?></span>
                         </div>
                         <div class="price-note" style="margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.05);border-radius:8px">
                             <i class="fas fa-info-circle"></i>
-                            <span>Daarna &euro;99,99 eenmalig voor nieuwe bedrijven</span>
+                            <span><?= $translations['after_price_new_business'] ?? 'Then &euro;99.99 one-time for new businesses' ?></span>
                         </div>
                         <div class="price-note">
                             <i class="fas fa-receipt"></i>
-                            <span>&euro;1,75 per succesvolle boeking</span>
+                            <span><?= $translations['per_booking_fee'] ?? '&euro;1.75 per successful booking' ?></span>
                         </div>
 
                         <div class="benefits-list">
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> 14 dagen gratis proeftijd</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Onbeperkt boekingen</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Eigen profielpagina</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> E-mail notificaties</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Dashboard & statistieken</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Klantenbeheer</div>
-                            <div class="benefit-item"><i class="fas fa-check-circle"></i> Online betalingen</div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_free_trial'] ?? '14 days free trial' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_unlimited_bookings'] ?? 'Unlimited bookings' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_profile_page'] ?? 'Own profile page' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_email_notifications'] ?? 'Email notifications' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_dashboard'] ?? 'Dashboard & statistics' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_customer_management'] ?? 'Customer management' ?></div>
+                            <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $translations['benefit_online_payments'] ?? 'Online payments' ?></div>
                         </div>
                     </div>
 
@@ -683,7 +683,7 @@
                     <div class="terms-box">
                         <label>
                             <input type="checkbox" name="terms" required>
-                            <span>Ik ga akkoord met de <a href="/terms" target="_blank">Algemene Voorwaarden</a> en het <a href="/privacy" target="_blank">Privacybeleid</a> *</span>
+                            <span><?= $translations['agree_terms'] ?? 'I agree to the' ?> <a href="/terms" target="_blank"><?= $translations['terms_conditions'] ?? 'Terms and Conditions' ?></a> <?= $translations['and_the'] ?? 'and the' ?> <a href="/privacy" target="_blank"><?= $translations['privacy_policy'] ?? 'Privacy Policy' ?></a> *</span>
                         </label>
                     </div>
 
@@ -693,18 +693,18 @@
                             <i class="fas fa-qrcode"></i>
                         </div>
                         <div class="qr-warning-content">
-                            <h4><i class="fas fa-exclamation-triangle"></i> Belangrijk: QR-Code Scannen</h4>
-                            <p>Bij elke boeking moet de klant de QR-code scannen bij aankomst. Zonder gescande QR-code wordt de boeking <strong>niet goedgekeurd</strong> en vindt er <strong>geen uitbetaling</strong> plaats.</p>
+                            <h4><i class="fas fa-exclamation-triangle"></i> <?= $translations['important'] ?? 'Important' ?>: <?= $translations['qr_scan_required'] ?? 'QR Code Scan Required' ?></h4>
+                            <p><?= $translations['qr_scan_booking_desc'] ?? 'For each booking, the customer must scan the QR code upon arrival.' ?></p>
                         </div>
                     </div>
 
                     <button type="submit" class="btn-register">
-                        <i class="fas fa-rocket"></i> Mijn Salon Registreren
+                        <i class="fas fa-rocket"></i> <?= $translations['register_my_salon'] ?? 'Register My Salon' ?>
                     </button>
                 </form>
 
                 <div class="register-footer">
-                    <p>Al een account? <a href="/login">Inloggen</a></p>
+                    <p><?= $translations['already_account'] ?? 'Already have an account?' ?> <a href="/login"><?= $translations['login'] ?? 'Login' ?></a></p>
                 </div>
             </div>
         </div>

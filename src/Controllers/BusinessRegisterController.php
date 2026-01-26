@@ -308,7 +308,7 @@ class BusinessRegisterController extends Controller
 
             // Generate 6-digit verification code
             $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $expiresAt = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            $expiresAt = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
             // Store verification code
             $this->db->query(
@@ -403,7 +403,7 @@ class BusinessRegisterController extends Controller
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
                                     </div>
 
-                                    <p style='font-size:14px;color:#666;margin-top:30px;'>Deze code is 30 minuten geldig.</p>
+                                    <p style='font-size:14px;color:#666;margin-top:30px;'>Deze code is 10 minuten geldig.</p>
                                     <p style='font-size:14px;color:#666;'>Heb je deze code niet aangevraagd? Negeer dan deze email.</p>
                                 </td>
                             </tr>
@@ -429,7 +429,7 @@ Gebruik onderstaande code om je account te bevestigen:
 
 {$code}
 
-Deze code is 30 minuten geldig.
+Deze code is 10 minuten geldig.
 
 Heb je deze code niet aangevraagd? Negeer dan deze email.
 

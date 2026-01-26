@@ -97,6 +97,65 @@ class SalesController extends Controller
     }
 
     /**
+     * Show salons registered via this sales partner
+     */
+    public function mijnSalons(): string
+    {
+        if (!$this->requireAuth()) {
+            return $this->redirect('/sales/login');
+        }
+
+        $salons = $this->getRegisteredSalons();
+        $stats = $this->getSalonStats();
+
+        return $this->view('pages/sales/mijn-salons', [
+            'pageTitle' => 'Mijn Salons',
+            'salesUser' => $this->salesUser,
+            'salons' => $salons,
+            'stats' => $stats,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Get all salons registered via this sales partner
+     */
+    private function getRegisteredSalons(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT b.id, b.company_name, b.email, b.phone, b.city, b.status,
+                    b.subscription_status, b.created_at, b.trial_ends_at,
+                    sr.commission, sr.status as referral_status
+             FROM businesses b
+             JOIN sales_referrals sr ON sr.business_id = b.id
+             WHERE sr.sales_user_id = ?
+             ORDER BY b.created_at DESC",
+            [$this->salesUser['id']]
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get salon statistics for this sales partner
+     */
+    private function getSalonStats(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN b.status = 'active' THEN 1 ELSE 0 END) as active,
+                SUM(CASE WHEN b.subscription_status = 'trial' THEN 1 ELSE 0 END) as in_trial,
+                SUM(CASE WHEN b.status = 'pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN b.status = 'inactive' OR b.status = 'suspended' THEN 1 ELSE 0 END) as inactive
+             FROM businesses b
+             JOIN sales_referrals sr ON sr.business_id = b.id
+             WHERE sr.sales_user_id = ?",
+            [$this->salesUser['id']]
+        );
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: ['total' => 0, 'active' => 0, 'in_trial' => 0, 'pending' => 0, 'inactive' => 0];
+    }
+
+    /**
      * Show early birds page
      */
     public function earlyBirds(): string
@@ -1514,7 +1573,7 @@ HTML;
     private function sendVerificationCode(string $email): void
     {
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+        $expires = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
         $this->db->query(
             "UPDATE sales_users SET verification_code = ?, verification_code_expires = ? WHERE email = ?",
@@ -1547,7 +1606,7 @@ HTML;
                     <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
                         <span style="font-size:36px;font-weight:bold;color:#333333;letter-spacing:8px;font-family:monospace;">{$code}</span>
                     </div>
-                    <p style="font-size:13px;color:#999;margin:0;">Deze code is 30 minuten geldig.</p>
+                    <p style="font-size:13px;color:#999;margin:0;">Deze code is 10 minuten geldig.</p>
                 </td></tr>
                 <tr><td style="background:#fafafa;padding:20px;text-align:center;border-top:1px solid #eee;">
                     <p style="margin:0;color:#666;font-size:12px;">&copy; 2025 GlamourSchedule</p>
@@ -2140,6 +2199,161 @@ HTML;
             $mailer->send($this->salesUser['email'], "Bankrekening Geverifieerd - GlamourSchedule", $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send sales IBAN verified email: " . $e->getMessage());
+        }
+    }
+
+    // ============================================================
+    // STATIC NOTIFICATION METHODS (called from other controllers)
+    // ============================================================
+
+    /**
+     * Notify sales partner when a business registers via their referral
+     */
+    public static function notifySalesPartnerNewRegistration(array $salesUser, array $business, float $commission): void
+    {
+        $isEarlyBird = !empty($business['is_early_adopter']);
+        $registrationType = $isEarlyBird ? 'Early Bird' : 'Standaard';
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <tr><td style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:40px;text-align:center;">
+                    <h1 style="margin:0;color:#ffffff;font-size:28px;">Nieuwe Aanmelding!</h1>
+                    <p style="margin:10px 0 0;color:#ffffff;opacity:0.9;">Via jouw referral code</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <p style="font-size:18px;color:#333;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
+
+                    <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
+                        Geweldig nieuws! Er is een nieuwe salon geregistreerd via jouw referral code.
+                    </p>
+
+                    <div style="background:#f9fafb;border-radius:12px;padding:25px;margin:0 0 25px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Salon:</td>
+                                <td style="padding:8px 0;color:#000;font-weight:600;text-align:right;">{$business['company_name']}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Type:</td>
+                                <td style="padding:8px 0;color:#000;text-align:right;">
+                                    <span style="background:#f59e0b;color:#000;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;">{$registrationType}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Status:</td>
+                                <td style="padding:8px 0;color:#f59e0b;font-weight:600;text-align:right;">In proeftijd (14 dagen)</td>
+                            </tr>
+                            <tr style="border-top:1px solid #e5e7eb;">
+                                <td style="padding:15px 0 8px;color:#666;font-weight:600;">Potentiële commissie:</td>
+                                <td style="padding:15px 0 8px;color:#22c55e;font-weight:700;font-size:24px;text-align:right;">€{$commission}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p style="font-size:14px;color:#666;line-height:1.6;margin:0 0 25px;">
+                        De salon heeft nu 14 dagen om het platform te testen. Als ze na de proeftijd hun abonnement activeren,
+                        ontvang je <strong>€{$commission}</strong> commissie!
+                    </p>
+
+                    <a href="https://glamourschedule.nl/sales/mijn-salons" style="display:block;background:#000;color:#fff;text-decoration:none;padding:16px 30px;border-radius:10px;font-weight:600;text-align:center;">
+                        Bekijk in Dashboard
+                    </a>
+                </td></tr>
+                <tr><td style="background:#f9fafb;padding:25px;text-align:center;border-top:1px solid #e5e5e5;">
+                    <p style="margin:0;color:#999;font-size:12px;">© 2026 GlamourSchedule Sales</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($salesUser['email'], "Nieuwe aanmelding via jouw code - {$business['company_name']}", $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send sales new registration notification: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Notify sales partner when a business activates their subscription (commission earned!)
+     */
+    public static function notifySalesPartnerActivation(array $salesUser, array $business, float $commission): void
+    {
+        $isEarlyBird = !empty($business['is_early_adopter']);
+
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:40px;text-align:center;">
+                    <div style="font-size:60px;margin-bottom:10px;">🎉</div>
+                    <h1 style="margin:0;color:#000;font-size:28px;">Commissie Verdiend!</h1>
+                    <p style="margin:10px 0 0;color:#000;opacity:0.8;">Een salon heeft geactiveerd</p>
+                </td></tr>
+                <tr><td style="padding:40px;">
+                    <p style="font-size:18px;color:#333;margin:0 0 20px;">Hoi {$salesUser['name']},</p>
+
+                    <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
+                        Fantastisch nieuws! <strong>{$business['company_name']}</strong> heeft zojuist hun abonnement geactiveerd.
+                        Je hebt commissie verdiend!
+                    </p>
+
+                    <div style="background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px;padding:30px;text-align:center;margin:0 0 25px;">
+                        <p style="margin:0 0 5px;color:#fff;opacity:0.9;font-size:14px;">Jouw commissie</p>
+                        <p style="margin:0;color:#fff;font-size:48px;font-weight:800;">€{$commission}</p>
+                    </div>
+
+                    <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:0 0 25px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Salon:</td>
+                                <td style="padding:8px 0;color:#000;font-weight:600;text-align:right;">{$business['company_name']}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Plaats:</td>
+                                <td style="padding:8px 0;color:#000;text-align:right;">{$business['city']}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px 0;color:#666;">Status:</td>
+                                <td style="padding:8px 0;text-align:right;">
+                                    <span style="background:#22c55e;color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;">Geactiveerd</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p style="font-size:14px;color:#666;line-height:1.6;margin:0 0 25px;">
+                        Dit bedrag wordt toegevoegd aan je uitstaande saldo en wordt uitbetaald zodra je de minimale uitbetalingsdrempel bereikt.
+                    </p>
+
+                    <a href="https://glamourschedule.nl/sales/payouts" style="display:block;background:#000;color:#fff;text-decoration:none;padding:16px 30px;border-radius:10px;font-weight:600;text-align:center;">
+                        Bekijk Uitbetalingen
+                    </a>
+                </td></tr>
+                <tr><td style="background:#f9fafb;padding:25px;text-align:center;border-top:1px solid #e5e5e5;">
+                    <p style="margin:0;color:#999;font-size:12px;">© 2026 GlamourSchedule Sales</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body></html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($salesUser['email'], "Commissie verdiend! {$business['company_name']} heeft geactiveerd", $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send sales activation notification: " . $e->getMessage());
         }
     }
 }

@@ -343,7 +343,7 @@
 
 <div class="container settings-container">
     <h2 style="margin:0 0 1.5rem;display:flex;align-items:center;gap:0.75rem">
-        <i class="fas fa-cog" style="color:var(--primary)"></i> Instellingen
+        <i class="fas fa-cog" style="color:var(--primary)"></i> <?= $translations['settings'] ?? 'Settings' ?>
     </h2>
 
     <?php if ($message): ?>
@@ -360,8 +360,8 @@
                 <i class="fas fa-user"></i>
             </div>
             <div>
-                <h3>Profiel</h3>
-                <p>Je persoonlijke gegevens</p>
+                <h3><?= $translations['settings_profile'] ?? 'Profile' ?></h3>
+                <p><?= $translations['settings_personal_info'] ?? 'Your personal information' ?></p>
             </div>
         </div>
 
@@ -371,28 +371,28 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Voornaam *</label>
+                    <label class="form-label"><?= $translations['first_name'] ?? 'First name' ?> *</label>
                     <input type="text" name="first_name" class="form-control" value="<?= htmlspecialchars($user['first_name'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Achternaam</label>
+                    <label class="form-label"><?= $translations['last_name'] ?? 'Last name' ?></label>
                     <input type="text" name="last_name" class="form-control" value="<?= htmlspecialchars($user['last_name'] ?? '') ?>">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">E-mailadres</label>
+                <label class="form-label"><?= $translations['email'] ?? 'Email address' ?></label>
                 <input type="email" class="form-control" value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled style="opacity:0.7">
-                <small style="color:var(--text-light);font-size:0.8rem">E-mailadres kan niet worden gewijzigd</small>
+                <small style="color:var(--text-light);font-size:0.8rem"><?= $translations['settings_email_cannot_change'] ?? 'Email address cannot be changed' ?></small>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Telefoonnummer</label>
+                <label class="form-label"><?= $translations['settings_phone'] ?? 'Phone number' ?></label>
                 <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" placeholder="+31 6 12345678">
             </div>
 
             <div class="form-group">
-                <label class="form-label">Taal</label>
+                <label class="form-label"><?= $translations['language'] ?? 'Language' ?></label>
                 <select name="language" class="form-control form-select">
                     <option value="nl" <?= ($user['language'] ?? 'nl') === 'nl' ? 'selected' : '' ?>>Nederlands</option>
                     <option value="en" <?= ($user['language'] ?? '') === 'en' ? 'selected' : '' ?>>English</option>
@@ -402,7 +402,7 @@
             </div>
 
             <button type="submit" class="btn btn-block">
-                <i class="fas fa-save"></i> Opslaan
+                <i class="fas fa-save"></i> <?= $translations['save'] ?? 'Save' ?>
             </button>
         </form>
     </div>
@@ -414,8 +414,8 @@
                 <i class="fas fa-shield-alt"></i>
             </div>
             <div>
-                <h3>Beveiliging</h3>
-                <p>Bescherm je account</p>
+                <h3><?= $translations['settings_security'] ?? 'Security' ?></h3>
+                <p><?= $translations['settings_protect_account'] ?? 'Protect your account' ?></p>
             </div>
         </div>
 
@@ -425,15 +425,15 @@
                     <i class="fas fa-lock"></i>
                 </div>
                 <div>
-                    <h4>PIN Code</h4>
-                    <p>Beveilig app toegang met 6-cijferige code</p>
+                    <h4><?= $translations['settings_pin_code'] ?? 'PIN Code' ?></h4>
+                    <p><?= $translations['settings_pin_desc'] ?? 'Secure app access with 6-digit code' ?></p>
                 </div>
             </div>
             <div style="display:flex;align-items:center;gap:0.75rem">
                 <?php if (!empty($user['pin_enabled'])): ?>
-                    <span class="info-badge info-badge-success"><i class="fas fa-check"></i> Actief</span>
+                    <span class="info-badge info-badge-success"><i class="fas fa-check"></i> <?= $translations['settings_active'] ?? 'Active' ?></span>
                 <?php else: ?>
-                    <span class="info-badge info-badge-warning"><i class="fas fa-times"></i> Uit</span>
+                    <span class="info-badge info-badge-warning"><i class="fas fa-times"></i> <?= $translations['settings_off'] ?? 'Off' ?></span>
                 <?php endif; ?>
                 <i class="fas fa-chevron-right"></i>
             </div>
@@ -447,8 +447,8 @@
                 <i class="fas fa-bell"></i>
             </div>
             <div>
-                <h3>Meldingen</h3>
-                <p>Beheer je notificatie voorkeuren</p>
+                <h3><?= $translations['settings_notifications'] ?? 'Notifications' ?></h3>
+                <p><?= $translations['settings_manage_notifications'] ?? 'Manage your notification preferences' ?></p>
             </div>
         </div>
 
@@ -458,8 +458,8 @@
                     <i class="fas fa-mobile-alt"></i>
                 </div>
                 <div>
-                    <h4>Push Meldingen</h4>
-                    <p id="pushStatusText">Ontvang herinneringen voor afspraken</p>
+                    <h4><?= $translations['settings_push_notifications'] ?? 'Push Notifications' ?></h4>
+                    <p id="pushStatusText"><?= $translations['settings_push_receive_reminders'] ?? 'Receive reminders for appointments' ?></p>
                 </div>
             </div>
             <label class="toggle-switch">
@@ -471,14 +471,14 @@
         <div id="pushNotSupported" style="display:none;padding:1rem;background:rgba(239,68,68,0.1);border-radius:12px;margin-top:0.75rem">
             <p style="margin:0;font-size:0.85rem;color:#333333">
                 <i class="fas fa-exclamation-triangle"></i>
-                Push meldingen worden niet ondersteund op dit apparaat of in deze browser.
+                <?= $translations['settings_push_not_supported'] ?? 'Push notifications are not supported on this device or in this browser.' ?>
             </p>
         </div>
 
         <div id="pushBlocked" style="display:none;padding:1rem;background:rgba(245,158,11,0.1);border-radius:12px;margin-top:0.75rem">
             <p style="margin:0;font-size:0.85rem;color:#404040">
                 <i class="fas fa-ban"></i>
-                Push meldingen zijn geblokkeerd. Ga naar je browser/apparaat instellingen om dit te wijzigen.
+                <?= $translations['settings_push_blocked'] ?? 'Push notifications are blocked. Go to your browser/device settings to change this.' ?>
             </p>
         </div>
     </div>
@@ -490,8 +490,8 @@
                 <i class="fas fa-key"></i>
             </div>
             <div>
-                <h3>Wachtwoord wijzigen</h3>
-                <p>Kies een sterk wachtwoord</p>
+                <h3><?= $translations['settings_change_password'] ?? 'Change password' ?></h3>
+                <p><?= $translations['settings_choose_strong_password'] ?? 'Choose a strong password' ?></p>
             </div>
         </div>
 
@@ -500,37 +500,37 @@
             <input type="hidden" name="action" value="change_password">
 
             <div class="form-group">
-                <label class="form-label">Huidig wachtwoord</label>
+                <label class="form-label"><?= $translations['settings_current_password'] ?? 'Current password' ?></label>
                 <div class="password-wrapper">
-                    <input type="password" name="current_password" id="current_password" class="form-control" placeholder="Je huidige wachtwoord" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('current_password', this)" aria-label="Wachtwoord tonen">
+                    <input type="password" name="current_password" id="current_password" class="form-control" placeholder="<?= $translations['settings_current_password_placeholder'] ?? 'Your current password' ?>" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('current_password', this)" aria-label="<?= $translations['settings_show_password'] ?? 'Show password' ?>">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Nieuw wachtwoord</label>
+                <label class="form-label"><?= $translations['new_password'] ?? 'New password' ?></label>
                 <div class="password-wrapper">
-                    <input type="password" name="new_password" id="new_password" class="form-control" placeholder="Minimaal 8 tekens" minlength="8" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('new_password', this)" aria-label="Wachtwoord tonen">
+                    <input type="password" name="new_password" id="new_password" class="form-control" placeholder="<?= $translations['settings_min_8_chars'] ?? 'Minimum 8 characters' ?>" minlength="8" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('new_password', this)" aria-label="<?= $translations['settings_show_password'] ?? 'Show password' ?>">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Bevestig nieuw wachtwoord</label>
+                <label class="form-label"><?= $translations['settings_confirm_new_password'] ?? 'Confirm new password' ?></label>
                 <div class="password-wrapper">
-                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Herhaal nieuw wachtwoord" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)" aria-label="Wachtwoord tonen">
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="<?= $translations['settings_repeat_new_password'] ?? 'Repeat new password' ?>" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)" aria-label="<?= $translations['settings_show_password'] ?? 'Show password' ?>">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
             <button type="submit" class="btn btn-block" style="background:linear-gradient(135deg,#000000,#404040)">
-                <i class="fas fa-key"></i> Wachtwoord wijzigen
+                <i class="fas fa-key"></i> <?= $translations['settings_change_password'] ?? 'Change password' ?>
             </button>
         </form>
     </div>
@@ -542,18 +542,17 @@
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div>
-                <h3>Account verwijderen</h3>
-                <p>Dit kan niet ongedaan worden gemaakt</p>
+                <h3><?= $translations['settings_delete_account'] ?? 'Delete account' ?></h3>
+                <p><?= $translations['settings_cannot_be_undone'] ?? 'This cannot be undone' ?></p>
             </div>
         </div>
 
         <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem;line-height:1.6">
-            Als je je account verwijdert, worden al je gegevens permanent verwijderd.
-            Lopende boekingen worden geannuleerd. Deze actie kan niet ongedaan worden gemaakt.
+            <?= $translations['settings_delete_warning'] ?? 'If you delete your account, all your data will be permanently removed. Pending bookings will be cancelled. This action cannot be undone.' ?>
         </p>
 
         <button type="button" class="btn btn-danger-outline btn-block" onclick="toggleDeleteConfirm()">
-            <i class="fas fa-trash-alt"></i> Account verwijderen
+            <i class="fas fa-trash-alt"></i> <?= $translations['settings_delete_account'] ?? 'Delete account' ?>
         </button>
 
         <div class="delete-confirm-box" id="deleteConfirmBox">
@@ -563,30 +562,30 @@
 
                 <p style="color:#dc2626;font-weight:600;margin-bottom:1rem">
                     <i class="fas fa-exclamation-triangle"></i>
-                    Weet je zeker dat je je account wilt verwijderen?
+                    <?= $translations['settings_confirm_delete'] ?? 'Are you sure you want to delete your account?' ?>
                 </p>
 
                 <div class="form-group">
-                    <label class="form-label">Je wachtwoord</label>
+                    <label class="form-label"><?= $translations['settings_your_password'] ?? 'Your password' ?></label>
                     <div class="password-wrapper">
-                        <input type="password" name="delete_password" id="delete_password" class="form-control" placeholder="Voer je wachtwoord in" required>
-                        <button type="button" class="password-toggle" onclick="togglePassword('delete_password', this)" aria-label="Wachtwoord tonen">
+                        <input type="password" name="delete_password" id="delete_password" class="form-control" placeholder="<?= $translations['settings_enter_password'] ?? 'Enter your password' ?>" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('delete_password', this)" aria-label="<?= $translations['settings_show_password'] ?? 'Show password' ?>">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Type "VERWIJDER" ter bevestiging</label>
-                    <input type="text" name="delete_confirmation" class="form-control" placeholder="VERWIJDER" required>
+                    <label class="form-label"><?= $translations['settings_type_delete_confirm'] ?? 'Type "DELETE" to confirm' ?></label>
+                    <input type="text" name="delete_confirmation" class="form-control" placeholder="<?= $translations['settings_delete_keyword'] ?? 'DELETE' ?>" required>
                 </div>
 
                 <div style="display:flex;gap:0.75rem">
                     <button type="button" class="btn btn-secondary" style="flex:1" onclick="toggleDeleteConfirm()">
-                        Annuleren
+                        <?= $translations['cancel'] ?? 'Cancel' ?>
                     </button>
                     <button type="submit" class="btn btn-danger" style="flex:1">
-                        <i class="fas fa-trash-alt"></i> Definitief verwijderen
+                        <i class="fas fa-trash-alt"></i> <?= $translations['settings_permanently_delete'] ?? 'Permanently delete' ?>
                     </button>
                 </div>
             </form>
@@ -605,15 +604,37 @@
             </div>
         </div>
         <div style="font-size:0.8rem;color:var(--text-light)">
-            <p style="margin:0"><i class="fas fa-calendar-alt"></i> Lid sinds <?= date('d-m-Y', strtotime($user['created_at'] ?? 'now')) ?></p>
+            <p style="margin:0"><i class="fas fa-calendar-alt"></i> <?= $translations['settings_member_since'] ?? 'Member since' ?> <?= date('d-m-Y', strtotime($user['created_at'] ?? 'now')) ?></p>
             <?php if (!empty($user['email_verified'])): ?>
-                <p style="margin:0.25rem 0 0;color:#333333"><i class="fas fa-check-circle"></i> E-mail geverifieerd</p>
+                <p style="margin:0.25rem 0 0;color:#333333"><i class="fas fa-check-circle"></i> <?= $translations['settings_email_verified'] ?? 'Email verified' ?></p>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
 <script>
+const jsTranslations = {
+    pushNotSupported: '<?= addslashes($translations['settings_push_not_supported_short'] ?? 'Not supported') ?>',
+    pushBlocked: '<?= addslashes($translations['settings_push_blocked_short'] ?? 'Blocked') ?>',
+    pushEnabled: '<?= addslashes($translations['settings_push_enabled'] ?? 'Notifications are enabled') ?>',
+    pushReceiveReminders: '<?= addslashes($translations['settings_push_receive_reminders'] ?? 'Receive reminders for appointments') ?>',
+    pushLoadError: '<?= addslashes($translations['settings_push_load_error'] ?? 'Error loading: ') ?>',
+    pushProcessing: '<?= addslashes($translations['settings_push_processing'] ?? 'Processing...') ?>',
+    pushRequestingPermission: '<?= addslashes($translations['settings_push_requesting_permission'] ?? 'Requesting permission...') ?>',
+    pushLoadingWorker: '<?= addslashes($translations['settings_push_loading_worker'] ?? 'Loading service worker...') ?>',
+    pushFetchingKey: '<?= addslashes($translations['settings_push_fetching_key'] ?? 'Fetching key...') ?>',
+    pushNoVapidKey: '<?= addslashes($translations['settings_push_no_vapid_key'] ?? 'No VAPID key') ?>',
+    pushSubscribing: '<?= addslashes($translations['settings_push_subscribing'] ?? 'Subscribing...') ?>',
+    pushSaving: '<?= addslashes($translations['settings_push_saving'] ?? 'Saving...') ?>',
+    pushSaveFailed: '<?= addslashes($translations['settings_push_save_failed'] ?? 'Save failed') ?>',
+    pushEnabledToast: '<?= addslashes($translations['settings_push_enabled_toast'] ?? 'Push notifications enabled!') ?>',
+    pushBlockedByBrowser: '<?= addslashes($translations['settings_push_blocked_browser'] ?? 'Blocked by browser') ?>',
+    pushPermissionDenied: '<?= addslashes($translations['settings_push_permission_denied'] ?? 'Permission denied') ?>',
+    pushError: '<?= addslashes($translations['settings_push_error'] ?? 'Error: ') ?>',
+    pushDisabledToast: '<?= addslashes($translations['settings_push_disabled_toast'] ?? 'Push notifications disabled') ?>',
+    pushSomethingWrong: '<?= addslashes($translations['settings_push_something_wrong'] ?? 'Something went wrong') ?>'
+};
+
 function toggleDeleteConfirm() {
     const box = document.getElementById('deleteConfirmBox');
     box.classList.toggle('show');
@@ -647,7 +668,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         toggle.disabled = true;
         notSupported.style.display = 'block';
-        statusText.textContent = 'Niet ondersteund';
+        statusText.textContent = jsTranslations.pushNotSupported;
         return;
     }
 
@@ -655,7 +676,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (Notification.permission === 'denied') {
         toggle.disabled = true;
         blocked.style.display = 'block';
-        statusText.textContent = 'Geblokkeerd';
+        statusText.textContent = jsTranslations.pushBlocked;
         return;
     }
 
@@ -667,14 +688,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (subscription) {
             toggle.checked = true;
-            statusText.textContent = 'Meldingen zijn ingeschakeld';
+            statusText.textContent = jsTranslations.pushEnabled;
         } else {
             toggle.checked = false;
-            statusText.textContent = 'Ontvang herinneringen voor afspraken';
+            statusText.textContent = jsTranslations.pushReceiveReminders;
         }
     } catch (error) {
         console.error('Error checking subscription:', error);
-        statusText.textContent = 'Fout bij laden: ' + error.message;
+        statusText.textContent = jsTranslations.pushLoadError + error.message;
     }
 });
 
@@ -683,7 +704,7 @@ async function togglePushNotifications(checkbox) {
     const blocked = document.getElementById('pushBlocked');
 
     checkbox.disabled = true;
-    statusText.textContent = 'Bezig...';
+    statusText.textContent = jsTranslations.pushProcessing;
 
     if (checkbox.checked) {
         // Enable push notifications

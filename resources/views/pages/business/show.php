@@ -1367,7 +1367,7 @@ $coverImage = $business['cover_image'] ?? null;
                 <!-- Welcome Message / About -->
                 <?php if (!empty($settings['welcome_message']) || !empty($settings['about_text'])): ?>
                     <div class="biz-card">
-                        <h3><i class="fas fa-info-circle"></i> <?= htmlspecialchars($settings['about_title'] ?? 'Over Ons') ?></h3>
+                        <h3><i class="fas fa-info-circle"></i> <?= htmlspecialchars($settings['about_title'] ?? ($translations['about_us'] ?? 'About Us')) ?></h3>
                         <?php if (!empty($settings['welcome_message'])): ?>
                             <p class="welcome-msg"><?= htmlspecialchars($settings['welcome_message']) ?></p>
                         <?php endif; ?>
@@ -1379,7 +1379,7 @@ $coverImage = $business['cover_image'] ?? null;
                     </div>
                 <?php elseif (!empty($business['description'])): ?>
                     <div class="biz-card">
-                        <h3><i class="fas fa-info-circle"></i> Over Ons</h3>
+                        <h3><i class="fas fa-info-circle"></i> <?= $translations['about_us'] ?? 'About Us' ?></h3>
                         <p class="about-text"><?= nl2br(htmlspecialchars($business['description'])) ?></p>
                     </div>
                 <?php endif; ?>
@@ -1395,7 +1395,7 @@ $coverImage = $business['cover_image'] ?? null;
                     $hiddenCount = $imageCount - $maxShow;
                 ?>
                     <div class="biz-card">
-                        <h3><i class="fas fa-images"></i> Foto's (<?= $imageCount ?>)</h3>
+                        <h3><i class="fas fa-images"></i> <?= $translations['photos'] ?? 'Photos' ?> (<?= $imageCount ?>)</h3>
                         <div class="gallery-collage <?= $collageClass ?>">
                             <?php foreach (array_slice($images, 0, $maxShow) as $index => $image): ?>
                                 <div class="gallery-item" onclick="openLightbox(<?= $index ?>)">
@@ -1406,7 +1406,7 @@ $coverImage = $business['cover_image'] ?? null;
                                     <?php if ($index == $maxShow - 1 && $hiddenCount > 0): ?>
                                         <div class="gallery-more">
                                             <span class="gallery-more-count">+<?= $hiddenCount ?></span>
-                                            <span class="gallery-more-text">meer foto's</span>
+                                            <span class="gallery-more-text"><?= $translations['more_photos'] ?? 'more photos' ?></span>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -1422,9 +1422,9 @@ $coverImage = $business['cover_image'] ?? null;
 
                 <!-- Services -->
                 <div class="biz-card">
-                    <h3><i class="fas fa-cut"></i> Onze Diensten</h3>
+                    <h3><i class="fas fa-cut"></i> <?= $translations['our_services'] ?? 'Our Services' ?></h3>
                     <?php if (empty($services)): ?>
-                        <p class="empty-text">Nog geen diensten toegevoegd.</p>
+                        <p class="empty-text"><?= $translations['no_services_added'] ?? 'No services added yet.' ?></p>
                     <?php else: ?>
                         <?php foreach ($services as $service): ?>
                             <div class="service-item">
@@ -1445,7 +1445,7 @@ $coverImage = $business['cover_image'] ?? null;
                                     <?php endif; ?>
                                 </div>
                                 <a href="/book/<?= htmlspecialchars($business['slug']) ?>?service=<?= $service['id'] ?>" class="service-book-btn">
-                                    <i class="fas fa-calendar-plus"></i> Boeken
+                                    <i class="fas fa-calendar-plus"></i> <?= $translations['view_book'] ?? 'View & Book' ?>
                                 </a>
                             </div>
                         <?php endforeach; ?>
@@ -1491,7 +1491,7 @@ $coverImage = $business['cover_image'] ?? null;
                         <?php if (empty($reviews)): ?>
                             <div class="empty-reviews">
                                 <i class="fas fa-star"></i>
-                                <p>Nog geen reviews</p>
+                                <p><?= $translations['no_reviews_yet'] ?? 'No reviews yet' ?></p>
                             </div>
                         <?php else: ?>
                             <?php foreach ($reviews as $review): ?>
@@ -1534,11 +1534,19 @@ $coverImage = $business['cover_image'] ?? null;
             <!-- Sidebar -->
             <div class="business-sidebar">
                 <div class="biz-card sticky-sidebar">
-                    <h3><i class="fas fa-clock"></i> Openingstijden</h3>
+                    <h3><i class="fas fa-clock"></i> <?= $translations['opening_hours'] ?? 'Opening hours' ?></h3>
                     <ul class="hours-list">
                         <?php
                         $dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                        $dayNames = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
+                        $dayNames = [
+                            $translations['monday'] ?? 'Monday',
+                            $translations['tuesday'] ?? 'Tuesday',
+                            $translations['wednesday'] ?? 'Wednesday',
+                            $translations['thursday'] ?? 'Thursday',
+                            $translations['friday'] ?? 'Friday',
+                            $translations['saturday'] ?? 'Saturday',
+                            $translations['sunday'] ?? 'Sunday'
+                        ];
                         foreach ($dayKeys as $i => $dayKey):
                             $h = $hours[$i] ?? null;
                             $isToday = date('N') - 1 == $i;
@@ -1549,7 +1557,7 @@ $coverImage = $business['cover_image'] ?? null;
                                     <?php if ($h && !$h['closed']): ?>
                                         <?= substr($h['open'], 0, 5) ?> - <?= substr($h['close'], 0, 5) ?>
                                     <?php else: ?>
-                                        Gesloten
+                                        <?= $translations['closed'] ?? 'Closed' ?>
                                     <?php endif; ?>
                                 </span>
                             </li>
@@ -1558,7 +1566,7 @@ $coverImage = $business['cover_image'] ?? null;
 
                     <!-- Contact Info -->
                     <div class="contact-section">
-                        <h4><i class="fas fa-address-card"></i> Contact</h4>
+                        <h4><i class="fas fa-address-card"></i> <?= $translations['contact_info'] ?? 'Contact' ?></h4>
                         <?php if (!empty($business['phone'])): ?>
                             <a href="tel:<?= htmlspecialchars($business['phone']) ?>" class="contact-item">
                                 <i class="fas fa-phone"></i>
@@ -1608,7 +1616,7 @@ $coverImage = $business['cover_image'] ?? null;
                     <?php endif; ?>
 
                     <a href="/book/<?= htmlspecialchars($business['slug']) ?>" class="sidebar-book-btn">
-                        <i class="fas fa-calendar-alt"></i> Maak een Afspraak
+                        <i class="fas fa-calendar-alt"></i> <?= $translations['make_appointment'] ?? 'Make an appointment' ?>
                     </a>
                 </div>
             </div>

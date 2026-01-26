@@ -342,16 +342,16 @@
     <!-- Hero -->
     <section class="func-hero">
         <div class="func-hero-content">
-            <h1>Platform Functionaliteit</h1>
-            <p>Ontdek alle features die GlamourSchedule te bieden heeft voor klanten en salons</p>
+            <h1><?= $translations['platform_functionality'] ?? 'Platform Features' ?></h1>
+            <p><?= $translations['platform_functionality_desc'] ?? 'Discover all features GlamourSchedule has to offer for customers and salons' ?></p>
         </div>
     </section>
 
     <!-- For Customers -->
     <section class="func-section">
         <div class="func-section-header">
-            <h2>Voor Klanten</h2>
-            <p>Eenvoudig zoeken, boeken en betalen - allemaal online</p>
+            <h2><?= $translations['for_customers'] ?? 'For Customers' ?></h2>
+            <p><?= $translations['for_customers_desc'] ?? 'Easy searching, booking and paying - all online' ?></p>
         </div>
 
         <div class="func-grid">
@@ -359,13 +359,13 @@
                 <div class="func-card-icon">
                     <i class="fas fa-search"></i>
                 </div>
-                <h3>Geavanceerd Zoeken</h3>
-                <p>Vind snel de perfecte salon met onze uitgebreide zoekfunctie.</p>
+                <h3><?= $translations['advanced_search_title'] ?? 'Advanced Search' ?></h3>
+                <p><?= $translations['advanced_search_desc'] ?? 'Quickly find the perfect salon with our comprehensive search feature.' ?></p>
                 <ul class="func-card-features">
-                    <li><i class="fas fa-check"></i> Zoeken op locatie en postcode</li>
-                    <li><i class="fas fa-check"></i> Filteren op categorie</li>
-                    <li><i class="fas fa-check"></i> Prijsfilters (min/max)</li>
-                    <li><i class="fas fa-check"></i> Sorteren op beoordeling</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['search_by_location'] ?? 'Search by location and postal code' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['filter_by_category'] ?? 'Filter by category' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['price_filters'] ?? 'Price filters (min/max)' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['sort_by_rating'] ?? 'Sort by rating' ?></li>
                 </ul>
             </div>
 
@@ -373,13 +373,13 @@
                 <div class="func-card-icon">
                     <i class="fas fa-clock"></i>
                 </div>
-                <h3>Beschikbaarheidsfilters</h3>
-                <p>Vind salons die open zijn wanneer jij beschikbaar bent.</p>
+                <h3><?= $translations['availability_filters_title'] ?? 'Availability Filters' ?></h3>
+                <p><?= $translations['availability_filters_desc'] ?? 'Find salons that are open when you are available.' ?></p>
                 <ul class="func-card-features">
-                    <li><i class="fas fa-check"></i> Nu geopend filter</li>
-                    <li><i class="fas fa-check"></i> Open in weekend</li>
-                    <li><i class="fas fa-check"></i> Avondopening</li>
-                    <li><i class="fas fa-check"></i> 4+ sterren filter</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['open_now_filter'] ?? 'Open now filter' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['open_weekend'] ?? 'Open on weekends' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['evening_opening'] ?? 'Evening opening' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['four_plus_stars_filter'] ?? '4+ stars filter' ?></li>
                 </ul>
             </div>
 
@@ -387,13 +387,13 @@
                 <div class="func-card-icon">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-                <h3>Online Boeken</h3>
-                <p>Boek direct online zonder te bellen, 24/7 beschikbaar.</p>
+                <h3><?= $translations['online_booking_title'] ?? 'Online Booking' ?></h3>
+                <p><?= $translations['online_booking_desc'] ?? 'Book directly online without calling, available 24/7.' ?></p>
                 <ul class="func-card-features">
-                    <li><i class="fas fa-check"></i> Real-time beschikbaarheid</li>
-                    <li><i class="fas fa-check"></i> Direct bevestiging</li>
-                    <li><i class="fas fa-check"></i> E-mail herinneringen</li>
-                    <li><i class="fas fa-check"></i> Makkelijk wijzigen/annuleren</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['realtime_availability'] ?? 'Real-time availability' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['instant_confirmation'] ?? 'Instant confirmation' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['email_reminders'] ?? 'Email reminders' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['easy_modify_cancel'] ?? 'Easy to modify/cancel' ?></li>
                 </ul>
             </div>
 
@@ -401,11 +401,11 @@
                 <div class="func-card-icon">
                     <i class="fas fa-credit-card"></i>
                 </div>
-                <h3>Veilig Betalen</h3>
-                <p>Betaal online met je favoriete betaalmethode via Mollie.</p>
+                <h3><?= $translations['secure_payment_title'] ?? 'Secure Payment' ?></h3>
+                <p><?= $translations['secure_payment_desc'] ?? 'Pay online with your favorite payment method via Mollie.' ?></p>
                 <ul class="func-card-features">
                     <li><i class="fas fa-check"></i> iDEAL</li>
-                    <li><i class="fas fa-check"></i> Creditcard</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['credit_card'] ?? 'Credit card' ?></li>
                     <li><i class="fas fa-check"></i> Apple Pay / Google Pay</li>
                     <li><i class="fas fa-check"></i> Bancontact</li>
                 </ul>
@@ -415,13 +415,13 @@
                 <div class="func-card-icon">
                     <i class="fas fa-qrcode"></i>
                 </div>
-                <h3>QR-Code Check-in</h3>
-                <p>Ontvang een QR-code per e-mail voor snelle check-in bij de salon.</p>
+                <h3><?= $translations['qr_checkin_title'] ?? 'QR-Code Check-in' ?></h3>
+                <p><?= $translations['qr_checkin_desc'] ?? 'Receive a QR code by email for quick check-in at the salon.' ?></p>
                 <ul class="func-card-features">
-                    <li><i class="fas fa-check"></i> Automatische e-mail met QR</li>
-                    <li><i class="fas fa-check"></i> Snelle check-in</li>
-                    <li><i class="fas fa-check"></i> Geen wachttijd</li>
-                    <li><i class="fas fa-check"></i> Digitaal bewijs</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['automatic_qr_email'] ?? 'Automatic email with QR' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['quick_checkin'] ?? 'Quick check-in' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['no_waiting'] ?? 'No waiting time' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['digital_proof'] ?? 'Digital proof' ?></li>
                 </ul>
             </div>
 
@@ -429,13 +429,13 @@
                 <div class="func-card-icon">
                     <i class="fas fa-star"></i>
                 </div>
-                <h3>Reviews & Ratings</h3>
-                <p>Lees beoordelingen van andere klanten en deel je eigen ervaring.</p>
+                <h3><?= $translations['reviews_ratings_title'] ?? 'Reviews & Ratings' ?></h3>
+                <p><?= $translations['reviews_ratings_desc'] ?? 'Read reviews from other customers and share your own experience.' ?></p>
                 <ul class="func-card-features">
-                    <li><i class="fas fa-check"></i> Geverifieerde reviews</li>
-                    <li><i class="fas fa-check"></i> Sterrenbeoordelingen</li>
-                    <li><i class="fas fa-check"></i> Foto reviews</li>
-                    <li><i class="fas fa-check"></i> Salon reacties</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['verified_reviews'] ?? 'Verified reviews' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['star_ratings'] ?? 'Star ratings' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['photo_reviews'] ?? 'Photo reviews' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['salon_responses'] ?? 'Salon responses' ?></li>
                 </ul>
             </div>
         </div>
@@ -446,19 +446,19 @@
         <div class="func-stats">
             <div class="func-stat">
                 <span class="func-stat-number">50+</span>
-                <span class="func-stat-label">Categorien</span>
+                <span class="func-stat-label"><?= $translations['categories'] ?? 'Categories' ?></span>
             </div>
             <div class="func-stat">
                 <span class="func-stat-number">24/7</span>
-                <span class="func-stat-label">Online Boeken</span>
+                <span class="func-stat-label"><?= $translations['online_booking_title'] ?? 'Online Booking' ?></span>
             </div>
             <div class="func-stat">
                 <span class="func-stat-number">100%</span>
-                <span class="func-stat-label">Veilig Betalen</span>
+                <span class="func-stat-label"><?= $translations['secure_payment_title'] ?? 'Secure Payment' ?></span>
             </div>
             <div class="func-stat">
                 <span class="func-stat-number">NL</span>
-                <span class="func-stat-label">Support</span>
+                <span class="func-stat-label"><?= $translations['support'] ?? 'Support' ?></span>
             </div>
         </div>
     </section>
@@ -466,20 +466,20 @@
     <!-- For Business -->
     <section class="func-section">
         <div class="func-section-header">
-            <h2>Voor Salons</h2>
-            <p>Alles wat je nodig hebt om je salon professioneel te runnen</p>
+            <h2><?= $translations['for_salons'] ?? 'For Salons' ?></h2>
+            <p><?= $translations['for_salons_desc'] ?? 'Everything you need to run your salon professionally' ?></p>
         </div>
 
         <!-- Highlight 1: Dashboard -->
         <div class="func-highlight">
             <div class="func-highlight-content">
-                <h3>Compleet Dashboard</h3>
-                <p>Beheer je hele salon vanuit een overzichtelijk dashboard. Van afspraken tot statistieken - alles op een plek.</p>
+                <h3><?= $translations['complete_dashboard_title'] ?? 'Complete Dashboard' ?></h3>
+                <p><?= $translations['complete_dashboard_desc'] ?? 'Manage your entire salon from a clear dashboard. From appointments to statistics - all in one place.' ?></p>
                 <ul class="func-highlight-list">
-                    <li><i class="fas fa-check"></i> Overzicht van alle boekingen</li>
-                    <li><i class="fas fa-check"></i> Omzet en statistieken</li>
-                    <li><i class="fas fa-check"></i> Klantenoverzicht</li>
-                    <li><i class="fas fa-check"></i> Agenda integratie</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['overview_all_bookings'] ?? 'Overview of all bookings' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['revenue_statistics'] ?? 'Revenue and statistics' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['customer_overview'] ?? 'Customer overview' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['calendar_integration'] ?? 'Calendar integration' ?></li>
                 </ul>
             </div>
             <div class="func-highlight-visual">
@@ -490,13 +490,13 @@
         <!-- Highlight 2: Services -->
         <div class="func-highlight reverse">
             <div class="func-highlight-content">
-                <h3>Diensten Beheer</h3>
-                <p>Voeg eenvoudig je diensten toe met prijzen, duur en beschrijvingen. Organiseer ze in categorien.</p>
+                <h3><?= $translations['services_management_title'] ?? 'Services Management' ?></h3>
+                <p><?= $translations['services_management_desc'] ?? 'Easily add your services with prices, duration and descriptions. Organize them in categories.' ?></p>
                 <ul class="func-highlight-list">
-                    <li><i class="fas fa-check"></i> Onbeperkt diensten toevoegen</li>
-                    <li><i class="fas fa-check"></i> Prijzen en duur instellen</li>
-                    <li><i class="fas fa-check"></i> Categorieen organiseren</li>
-                    <li><i class="fas fa-check"></i> Actief/inactief zetten</li>
+                    <li><i class="fas fa-check"></i> <?= $translations['unlimited_services'] ?? 'Unlimited services' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['set_prices_duration'] ?? 'Set prices and duration' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['organize_categories'] ?? 'Organize categories' ?></li>
+                    <li><i class="fas fa-check"></i> <?= $translations['active_inactive_toggle'] ?? 'Set active/inactive' ?></li>
                 </ul>
             </div>
             <div class="func-highlight-visual">
@@ -509,99 +509,99 @@
             <div class="business-feature">
                 <i class="fas fa-globe"></i>
                 <div>
-                    <h4>Eigen Salonpagina</h4>
-                    <p>Professionele pagina met foto's, diensten en reviews</p>
+                    <h4><?= $translations['own_salon_page'] ?? 'Own Salon Page' ?></h4>
+                    <p><?= $translations['own_salon_page_desc'] ?? 'Professional page with photos, services and reviews' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-calendar-alt"></i>
                 <div>
-                    <h4>Openingstijden</h4>
-                    <p>Stel je openingstijden per dag in</p>
+                    <h4><?= $translations['opening_hours'] ?? 'Opening Hours' ?></h4>
+                    <p><?= $translations['opening_hours_desc'] ?? 'Set your opening hours per day' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-qrcode"></i>
                 <div>
-                    <h4>QR Scanner</h4>
-                    <p>Scan QR-codes voor snelle check-in</p>
+                    <h4><?= $translations['qr_scanner'] ?? 'QR Scanner' ?></h4>
+                    <p><?= $translations['qr_scanner_desc'] ?? 'Scan QR codes for quick check-in' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-euro-sign"></i>
                 <div>
-                    <h4>Automatische Betalingen</h4>
-                    <p>Ontvang betalingen direct via Mollie</p>
+                    <h4><?= $translations['automatic_payments'] ?? 'Automatic Payments' ?></h4>
+                    <p><?= $translations['automatic_payments_desc'] ?? 'Receive payments directly via Mollie' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-bell"></i>
                 <div>
-                    <h4>Notificaties</h4>
-                    <p>E-mail alerts voor nieuwe boekingen</p>
+                    <h4><?= $translations['notifications'] ?? 'Notifications' ?></h4>
+                    <p><?= $translations['notifications_desc'] ?? 'Email alerts for new bookings' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-images"></i>
                 <div>
-                    <h4>Foto Galerij</h4>
-                    <p>Toon je werk met foto's en portfolio</p>
+                    <h4><?= $translations['photo_gallery'] ?? 'Photo Gallery' ?></h4>
+                    <p><?= $translations['photo_gallery_desc'] ?? 'Show your work with photos and portfolio' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-users"></i>
                 <div>
-                    <h4>Klantenbeheer</h4>
-                    <p>Houd klantgegevens en historie bij</p>
+                    <h4><?= $translations['customer_management'] ?? 'Customer Management' ?></h4>
+                    <p><?= $translations['customer_management_desc'] ?? 'Keep track of customer data and history' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-chart-line"></i>
                 <div>
-                    <h4>Inzichten & Analytics</h4>
-                    <p>Bekijk statistieken en groei</p>
+                    <h4><?= $translations['insights_analytics'] ?? 'Insights & Analytics' ?></h4>
+                    <p><?= $translations['insights_analytics_desc'] ?? 'View statistics and growth' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-rocket"></i>
                 <div>
-                    <h4>Boost Functie</h4>
-                    <p>Verhoog je zichtbaarheid in zoekresultaten</p>
+                    <h4><?= $translations['boost_feature'] ?? 'Boost Feature' ?></h4>
+                    <p><?= $translations['boost_feature_desc'] ?? 'Increase your visibility in search results' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-mobile-alt"></i>
                 <div>
-                    <h4>Mobielvriendelijk</h4>
-                    <p>Werkt perfect op alle apparaten</p>
+                    <h4><?= $translations['mobile_friendly'] ?? 'Mobile Friendly' ?></h4>
+                    <p><?= $translations['mobile_friendly_desc'] ?? 'Works perfectly on all devices' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-shield-alt"></i>
                 <div>
-                    <h4>SSL Beveiliging</h4>
-                    <p>Veilige verbinding en data</p>
+                    <h4><?= $translations['ssl_security'] ?? 'SSL Security' ?></h4>
+                    <p><?= $translations['ssl_security_desc'] ?? 'Secure connection and data' ?></p>
                 </div>
             </div>
             <div class="business-feature">
                 <i class="fas fa-headset"></i>
                 <div>
-                    <h4>Nederlandse Support</h4>
-                    <p>Hulp wanneer je het nodig hebt</p>
+                    <h4><?= $translations['local_support'] ?? 'Local Support' ?></h4>
+                    <p><?= $translations['local_support_desc'] ?? 'Help when you need it' ?></p>
                 </div>
             </div>
         </div>
 
         <!-- CTA -->
         <div class="func-cta">
-            <h3>Start vandaag nog met je salon</h3>
-            <p>Meld je salon aan voor slechts &euro;0,99 en profiteer van alle functionaliteiten.</p>
+            <h3><?= $translations['cta_start_salon'] ?? 'Start with your salon today' ?></h3>
+            <p><?= $translations['cta_start_salon_desc'] ?? 'Register your salon for only &euro;0.99 and enjoy all features.' ?></p>
             <div class="func-cta-btns">
                 <a href="/register?type=business" class="func-cta-btn func-cta-btn-white">
-                    <i class="fas fa-store"></i> Salon Aanmelden
+                    <i class="fas fa-store"></i> <?= $translations['register_salon'] ?? 'Register Salon' ?>
                 </a>
                 <a href="/search" class="func-cta-btn func-cta-btn-outline">
-                    <i class="fas fa-search"></i> Bekijk Salons
+                    <i class="fas fa-search"></i> <?= $translations['view_salons'] ?? 'View Salons' ?>
                 </a>
             </div>
         </div>

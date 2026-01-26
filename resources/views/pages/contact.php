@@ -218,7 +218,7 @@
     <div class="contact-card">
         <div class="contact-header">
             <h1><i class="fas fa-envelope"></i> <?= $translations['contact'] ?? 'Contact' ?></h1>
-            <p><?= $lang === 'nl' ? 'Wij staan voor u klaar!' : 'We are here to help!' ?></p>
+            <p><?= $translations['we_are_here'] ?? 'We are here to help!' ?></p>
         </div>
 
         <div class="contact-body">
@@ -230,13 +230,13 @@
                 </div>
                 <div class="info-card">
                     <i class="fas fa-clock"></i>
-                    <h3><?= $lang === 'nl' ? 'Reactietijd' : 'Response time' ?></h3>
-                    <p><?= $lang === 'nl' ? 'Binnen 24 uur' : 'Within 24 hours' ?></p>
+                    <h3><?= $translations['response_time'] ?? 'Response time' ?></h3>
+                    <p><?= $translations['within_24h'] ?? 'Within 24 hours' ?></p>
                 </div>
                 <div class="info-card">
                     <i class="fas fa-map-marker-alt"></i>
-                    <h3><?= $lang === 'nl' ? 'Locatie' : 'Location' ?></h3>
-                    <p>Nederland</p>
+                    <h3><?= $translations['location'] ?? 'Location' ?></h3>
+                    <p><?= $translations['netherlands'] ?? 'Netherlands' ?></p>
                 </div>
             </div>
 
@@ -255,7 +255,7 @@
             <div class="contact-form-section" style="margin-bottom:2rem;">
                 <h2 style="color:#374151;font-size:1.3rem;margin-bottom:1rem;">
                     <i class="fas fa-paper-plane" style="color:#000000;margin-right:0.5rem"></i>
-                    <?= $lang === 'nl' ? 'Stuur ons een bericht' : 'Send us a message' ?>
+                    <?= $translations['send_message'] ?? 'Send us a message' ?>
                 </h2>
 
                 <form method="POST" action="/contact" class="contact-form">
@@ -271,7 +271,7 @@
                     <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
                         <div class="form-group">
                             <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
-                                <?= $lang === 'nl' ? 'Naam' : 'Name' ?> *
+                                <?= $translations['your_name'] ?? 'Name' ?> *
                             </label>
                             <input type="text" name="name" required
                                    value="<?= htmlspecialchars($formData['name'] ?? '') ?>"
@@ -279,7 +279,7 @@
                         </div>
                         <div class="form-group">
                             <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
-                                <?= $lang === 'nl' ? 'E-mail' : 'Email' ?> *
+                                <?= $translations['your_email'] ?? 'Email' ?> *
                             </label>
                             <input type="email" name="email" required
                                    value="<?= htmlspecialchars($formData['email'] ?? '') ?>"
@@ -289,28 +289,28 @@
 
                     <div class="form-group" style="margin-bottom:1rem;">
                         <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
-                            <?= $lang === 'nl' ? 'Type melding' : 'Type of message' ?> *
+                            <?= $translations['message_type'] ?? 'Type of message' ?> *
                         </label>
                         <select name="type" required style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;background:#ffffff;">
-                            <option value=""><?= $lang === 'nl' ? 'Selecteer...' : 'Select...' ?></option>
+                            <option value=""><?= $translations['select_option'] ?? 'Select...' ?></option>
                             <option value="bug" <?= ($formData['type'] ?? '') === 'bug' ? 'selected' : '' ?>>
-                                <?= $lang === 'nl' ? 'Bug / Fout melden' : 'Bug / Report error' ?>
+                                <?= $translations['type_bug'] ?? 'Bug / Report error' ?>
                             </option>
                             <option value="request" <?= ($formData['type'] ?? '') === 'request' ? 'selected' : '' ?>>
-                                <?= $lang === 'nl' ? 'Verzoek / Feature aanvraag' : 'Request / Feature request' ?>
+                                <?= $translations['type_request'] ?? 'Request / Feature request' ?>
                             </option>
                             <option value="problem" <?= ($formData['type'] ?? '') === 'problem' ? 'selected' : '' ?>>
-                                <?= $lang === 'nl' ? 'Probleem / Hulp nodig' : 'Problem / Need help' ?>
+                                <?= $translations['type_problem'] ?? 'Problem / Need help' ?>
                             </option>
                             <option value="other" <?= ($formData['type'] ?? '') === 'other' ? 'selected' : '' ?>>
-                                <?= $lang === 'nl' ? 'Overig' : 'Other' ?>
+                                <?= $translations['type_other'] ?? 'Other' ?>
                             </option>
                         </select>
                     </div>
 
                     <div class="form-group" style="margin-bottom:1rem;">
                         <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
-                            <?= $lang === 'nl' ? 'Onderwerp' : 'Subject' ?> *
+                            <?= $translations['subject'] ?? 'Subject' ?> *
                         </label>
                         <input type="text" name="subject" required
                                value="<?= htmlspecialchars($formData['subject'] ?? '') ?>"
@@ -319,105 +319,62 @@
 
                     <div class="form-group" style="margin-bottom:1.5rem;">
                         <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
-                            <?= $lang === 'nl' ? 'Bericht' : 'Message' ?> *
+                            <?= $translations['message'] ?? 'Message' ?> *
                         </label>
                         <textarea name="message" required rows="5"
-                                  placeholder="<?= $lang === 'nl' ? 'Beschrijf je vraag, probleem of verzoek zo duidelijk mogelijk...' : 'Describe your question, problem or request as clearly as possible...' ?>"
+                                  placeholder="<?= $translations['message_placeholder'] ?? 'Describe your question, problem or request as clearly as possible...' ?>"
                                   style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;resize:vertical;"><?= htmlspecialchars($formData['message'] ?? '') ?></textarea>
                     </div>
 
                     <button type="submit" style="width:100%;padding:1rem;background:linear-gradient(135deg,#000000,#000000);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;">
                         <i class="fas fa-paper-plane"></i>
-                        <?= $lang === 'nl' ? 'Verstuur bericht' : 'Send message' ?>
+                        <?= $translations['send_btn'] ?? 'Send message' ?>
                     </button>
                 </form>
             </div>
 
             <div class="faq-section">
-                <h2><i class="fas fa-question-circle" style="color:#000000;margin-right:0.5rem"></i><?= $translations['faq'] ?? 'Veelgestelde vragen' ?></h2>
+                <h2><i class="fas fa-question-circle" style="color:#000000;margin-right:0.5rem"></i><?= $translations['faq'] ?? 'FAQ' ?></h2>
 
-                <?php if ($lang === 'nl'): ?>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        Hoe kan ik een afspraak annuleren?
+                        <?= $translations['faq_cancel_question'] ?? 'How can I cancel an appointment?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Je kunt je afspraak annuleren via de link in je bevestigingsmail of door in te loggen op je account. Gratis annuleren kan tot 24 uur voor aanvang.
+                        <?= $translations['faq_cancel_answer'] ?? 'You can cancel your appointment via the link in your confirmation email or by logging into your account. Free cancellation is possible up to 24 hours before the appointment.' ?>
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        Hoe ontvang ik mijn bevestiging?
+                        <?= $translations['faq_confirmation_question'] ?? 'How do I receive my confirmation?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Na het voltooien van je boeking ontvang je direct een bevestigingsmail met alle details en een QR-code die je kunt tonen bij aankomst.
+                        <?= $translations['faq_confirmation_answer'] ?? 'After completing your booking, you will immediately receive a confirmation email with all details and a QR code that you can show upon arrival.' ?>
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        Welke betaalmethoden worden geaccepteerd?
+                        <?= $translations['faq_payment_question'] ?? 'Which payment methods are accepted?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Wij accepteren iDEAL, creditcard (Visa, Mastercard), Bancontact en diverse andere betaalmethoden via onze beveiligde betaalpartner Mollie.
+                        <?= $translations['faq_payment_answer'] ?? 'We accept iDEAL, credit card (Visa, Mastercard), Bancontact and various other payment methods via our secure payment partner Mollie.' ?>
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        Ik ben salon eigenaar, hoe kan ik mij aanmelden?
+                        <?= $translations['faq_salon_owner_question'] ?? 'I am a salon owner, how can I register?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Geweldig! Je kunt je salon registreren via onze <a href="/business/register" style="color:#000000">bedrijfsregistratie pagina</a>. Na registratie kun je direct beginnen met het ontvangen van boekingen.
+                        <?= $translations['faq_salon_owner_answer'] ?? 'Great! You can register your salon via our <a href="/business/register" style="color:#000000">business registration page</a>. After registration, you can immediately start receiving bookings.' ?>
                     </div>
                 </div>
-
-                <?php else: ?>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        How can I cancel an appointment?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        You can cancel your appointment via the link in your confirmation email or by logging into your account. Free cancellation is possible up to 24 hours before the appointment.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        How do I receive my confirmation?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        After completing your booking, you will immediately receive a confirmation email with all details and a QR code that you can show upon arrival.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Which payment methods are accepted?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        We accept iDEAL, credit card (Visa, Mastercard), Bancontact and various other payment methods via our secure payment partner Mollie.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        I am a salon owner, how can I register?
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        Great! You can register your salon via our <a href="/business/register" style="color:#000000">business registration page</a>. After registration, you can immediately start receiving bookings.
-                    </div>
-                </div>
-                <?php endif; ?>
             </div>
 
             <div class="social-links">

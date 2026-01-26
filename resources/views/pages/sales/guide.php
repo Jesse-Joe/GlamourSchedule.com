@@ -520,7 +520,7 @@
 
         <div class="highlight-box">
             <h3><i class="fas fa-gift"></i> Jouw Commissie</h3>
-            <p>€99,99 voor elke succesvolle aanmelding!</p>
+            <p>€49,99 voor elke succesvolle aanmelding!</p>
         </div>
 
         <h4><i class="fas fa-handshake" style="color:#333333"></i> Afsluit Technieken</h4>

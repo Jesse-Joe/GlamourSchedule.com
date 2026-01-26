@@ -223,7 +223,7 @@
         <div class="benefits-list">
             <div class="benefit-item">
                 <i class="fas fa-check"></i>
-                <span><strong>&euro;99,99</strong> commissie per aanmelding</span>
+                <span><strong>&euro;49,99</strong> commissie per aanmelding</span>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-check"></i>

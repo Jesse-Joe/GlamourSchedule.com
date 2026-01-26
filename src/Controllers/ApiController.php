@@ -59,16 +59,17 @@ class ApiController extends Controller
     public function globalSearch(): string
     {
         $query = trim($_GET['q'] ?? '');
+        $lang = $_GET['lang'] ?? 'nl';
 
         if (strlen($query) < 2) {
-            return $this->json(['salons' => [], 'services' => []]);
+            return $this->json(['salons' => [], 'services' => [], 'categories' => [], 'locations' => []]);
         }
 
         $searchTerm = '%' . $query . '%';
 
         // Search salons
         $stmt = $this->db->query(
-            "SELECT id, company_name, slug, city, photos
+            "SELECT id, company_name, slug, city, cover_image, logo
              FROM businesses
              WHERE status = 'active'
                AND (company_name LIKE ? OR city LIKE ? OR description LIKE ?)
@@ -82,20 +83,53 @@ class ApiController extends Controller
 
         // Search services
         $stmt = $this->db->query(
-            "SELECT s.id, s.name, b.slug as business_slug, b.company_name as business_name
+            "SELECT s.id, s.name, s.price, b.slug as business_slug, b.company_name as business_name
              FROM services s
              JOIN businesses b ON s.business_id = b.id
              WHERE s.is_active = 1 AND b.status = 'active'
-               AND s.name LIKE ?
-             ORDER BY s.name
+               AND (s.name LIKE ? OR s.description LIKE ?)
+             ORDER BY
+                CASE WHEN s.name LIKE ? THEN 1 ELSE 2 END,
+                s.name
              LIMIT 5",
-            [$searchTerm]
+            [$searchTerm, $searchTerm, $searchTerm]
         );
         $services = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        // Search categories
+        $stmt = $this->db->query(
+            "SELECT c.id, c.slug, c.icon, COALESCE(ct.name, c.slug) as name,
+                    (SELECT COUNT(DISTINCT bc.business_id) FROM business_categories bc
+                     JOIN businesses b2 ON bc.business_id = b2.id
+                     WHERE bc.category_id = c.id AND b2.status = 'active') as salon_count
+             FROM categories c
+             LEFT JOIN category_translations ct ON c.id = ct.category_id AND ct.language = ?
+             WHERE c.is_active = 1
+               AND (c.slug LIKE ? OR ct.name LIKE ?)
+             ORDER BY c.sort_order
+             LIMIT 5",
+            [$lang, $searchTerm, $searchTerm]
+        );
+        $categories = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Search locations (unique cities with salon count)
+        $stmt = $this->db->query(
+            "SELECT city, COUNT(*) as salon_count
+             FROM businesses
+             WHERE status = 'active' AND city IS NOT NULL AND city != ''
+               AND city LIKE ?
+             GROUP BY city
+             ORDER BY salon_count DESC
+             LIMIT 5",
+            [$searchTerm]
+        );
+        $locations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         return $this->json([
             'salons' => $salons,
-            'services' => $services
+            'services' => $services,
+            'categories' => $categories,
+            'locations' => $locations
         ]);
     }
 
