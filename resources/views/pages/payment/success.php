@@ -4,29 +4,29 @@
 /* Payment page - follows theme */
 .payment-page {
     min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--theme-bg, #000000);
+    color: var(--theme-text, #ffffff);
     padding: 2rem 1rem;
 }
 .payment-page .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
+    background: var(--card-bg, #0a0a0a);
+    border: 1px solid var(--card-border, #333);
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
 }
 .payment-page h1 {
-    color: var(--success);
+    color: var(--success, #22c55e);
 }
 .payment-page h3 {
-    color: var(--text);
+    color: var(--theme-text, #ffffff);
     margin-bottom: 1rem;
 }
 .payment-page .text-light {
-    color: var(--text-light) !important;
+    color: var(--theme-text-muted, #999) !important;
 }
 .payment-page table td {
-    color: var(--text);
+    color: var(--theme-text, #ffffff);
 }
 .payment-page .btn {
     background: #ffffff;
@@ -47,12 +47,12 @@
 }
 .payment-page .btn-secondary {
     background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
+    color: var(--theme-text, #ffffff);
+    border: 1px solid var(--card-border, #333);
 }
 .payment-page .btn-secondary:hover {
-    background: var(--secondary);
-    border-color: var(--border);
+    background: var(--card-bg, #1a1a1a);
+    border-color: var(--card-border, #333);
 }
 .success-icon {
     width: 100px;
@@ -145,40 +145,40 @@
 
             <table style="width:100%;margin-top:1rem">
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('booking_number') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:var(--text)"><?= htmlspecialchars($booking['booking_number']) ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('booking_number') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:700;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['booking_number']) ?></td>
                 </tr>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('customer_name') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)"><?= htmlspecialchars($booking['guest_name'] ?? $booking['customer_name'] ?? '') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('customer_name') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['guest_name'] ?? $booking['customer_name'] ?? '') ?></td>
                 </tr>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('email') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)"><?= htmlspecialchars($booking['guest_email'] ?? $booking['customer_email'] ?? '') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('email') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['guest_email'] ?? $booking['customer_email'] ?? '') ?></td>
                 </tr>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('salon') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)"><?= htmlspecialchars($booking['business_name']) ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('salon') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['business_name']) ?></td>
                 </tr>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('service') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)"><?= htmlspecialchars($booking['service_name']) ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('service') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['service_name']) ?></td>
                 </tr>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('date_time') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)">
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('date_time') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)">
                         <?= !empty($booking['appointment_date']) ? date('d-m-Y', strtotime($booking['appointment_date'])) : '-' ?> <?= $__('at') ?> <?= !empty($booking['appointment_time']) ? date('H:i', strtotime($booking['appointment_time'])) : '-' ?>
                     </td>
                 </tr>
                 <?php if (!empty($booking['duration'])): ?>
                 <tr>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('duration') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)"><?= htmlspecialchars($booking['duration']) ?> <?= $__('minutes') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('duration') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['duration']) ?> <?= $__('minutes') ?></td>
                 </tr>
                 <?php endif; ?>
                 <tr>
-                    <td style="padding:0.75rem 0;color:var(--text-light)"><?= $__('paid') ?></td>
-                    <td style="padding:0.75rem 0;text-align:right;font-weight:700;color:var(--success);font-size:1.2rem">&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?></td>
+                    <td style="padding:0.75rem 0;color:var(--theme-text-muted, #999)"><?= $__('paid') ?></td>
+                    <td style="padding:0.75rem 0;text-align:right;font-weight:700;color:var(--success, #22c55e);font-size:1.2rem">&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?></td>
                 </tr>
             </table>
         </div>
