@@ -79,10 +79,15 @@ return [
     ],
     
     // ═══════════════════════════════════════════════════════════════════════
-    // MULTILANGUAGE SETTINGS
+    // MULTILANGUAGE SETTINGS - Global Support (40 languages)
     // ═══════════════════════════════════════════════════════════════════════
     'languages' => [
-        'available' => ['nl', 'en', 'de', 'fr'],
+        'available' => [
+            'nl', 'en', 'de', 'fr', 'es', 'pt', 'it', 'ru', 'ja', 'ko',
+            'zh', 'ar', 'hi', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el',
+            'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt',
+            'uk', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'
+        ],
         'default' => 'nl',
         'fallback' => 'en',
         'detect_from_ip' => true,
@@ -92,13 +97,87 @@ return [
             'en' => 'English',
             'de' => 'Deutsch',
             'fr' => 'Français',
+            'es' => 'Español',
+            'pt' => 'Português',
+            'it' => 'Italiano',
+            'ru' => 'Русский',
+            'ja' => '日本語',
+            'ko' => '한국어',
+            'zh' => '中文',
+            'ar' => 'العربية',
+            'hi' => 'हिन्दी',
+            'tr' => 'Türkçe',
+            'pl' => 'Polski',
+            'sv' => 'Svenska',
+            'no' => 'Norsk',
+            'da' => 'Dansk',
+            'fi' => 'Suomi',
+            'el' => 'Ελληνικά',
+            'cs' => 'Čeština',
+            'hu' => 'Magyar',
+            'ro' => 'Română',
+            'bg' => 'Български',
+            'hr' => 'Hrvatski',
+            'sk' => 'Slovenčina',
+            'sl' => 'Slovenščina',
+            'et' => 'Eesti',
+            'lv' => 'Latviešu',
+            'lt' => 'Lietuvių',
+            'uk' => 'Українська',
+            'th' => 'ไทย',
+            'vi' => 'Tiếng Việt',
+            'id' => 'Bahasa Indonesia',
+            'ms' => 'Bahasa Melayu',
+            'tl' => 'Tagalog',
+            'he' => 'עברית',
+            'fa' => 'فارسی',
+            'sw' => 'Kiswahili',
+            'af' => 'Afrikaans',
         ],
         'flags' => [
             'nl' => '🇳🇱',
             'en' => '🇬🇧',
             'de' => '🇩🇪',
             'fr' => '🇫🇷',
+            'es' => '🇪🇸',
+            'pt' => '🇵🇹',
+            'it' => '🇮🇹',
+            'ru' => '🇷🇺',
+            'ja' => '🇯🇵',
+            'ko' => '🇰🇷',
+            'zh' => '🇨🇳',
+            'ar' => '🇸🇦',
+            'hi' => '🇮🇳',
+            'tr' => '🇹🇷',
+            'pl' => '🇵🇱',
+            'sv' => '🇸🇪',
+            'no' => '🇳🇴',
+            'da' => '🇩🇰',
+            'fi' => '🇫🇮',
+            'el' => '🇬🇷',
+            'cs' => '🇨🇿',
+            'hu' => '🇭🇺',
+            'ro' => '🇷🇴',
+            'bg' => '🇧🇬',
+            'hr' => '🇭🇷',
+            'sk' => '🇸🇰',
+            'sl' => '🇸🇮',
+            'et' => '🇪🇪',
+            'lv' => '🇱🇻',
+            'lt' => '🇱🇹',
+            'uk' => '🇺🇦',
+            'th' => '🇹🇭',
+            'vi' => '🇻🇳',
+            'id' => '🇮🇩',
+            'ms' => '🇲🇾',
+            'tl' => '🇵🇭',
+            'he' => '🇮🇱',
+            'fa' => '🇮🇷',
+            'sw' => '🇰🇪',
+            'af' => '🇿🇦',
         ],
+        // RTL (Right-to-Left) languages
+        'rtl' => ['ar', 'he', 'fa'],
     ],
     
     // ═══════════════════════════════════════════════════════════════════════
@@ -178,22 +257,248 @@ return [
     ],
     
     // ═══════════════════════════════════════════════════════════════════════
-    // GEOIP SETTINGS (voor taaldetectie)
+    // GEOIP SETTINGS (voor taaldetectie) - Complete World Coverage
     // ═══════════════════════════════════════════════════════════════════════
     'geoip' => [
         'enabled' => true,
-        'provider' => 'ip-api', // Gratis service
+        'provider' => 'ip-api',
         'country_language_map' => [
-            'NL' => 'nl',
-            'BE' => 'nl', // België - Nederlands
-            'DE' => 'de',
-            'AT' => 'de', // Oostenrijk
-            'CH' => 'de', // Zwitserland
-            'FR' => 'fr',
-            'GB' => 'en',
-            'US' => 'en',
-            'CA' => 'en',
-            'AU' => 'en',
+            // Europe - Western
+            'NL' => 'nl', // Netherlands
+            'BE' => 'nl', // Belgium
+            'SR' => 'nl', // Suriname
+            'DE' => 'de', // Germany
+            'AT' => 'de', // Austria
+            'CH' => 'de', // Switzerland
+            'LI' => 'de', // Liechtenstein
+            'LU' => 'de', // Luxembourg
+            'FR' => 'fr', // France
+            'MC' => 'fr', // Monaco
+            'GB' => 'en', // United Kingdom
+            'IE' => 'en', // Ireland
+            'IT' => 'it', // Italy
+            'SM' => 'it', // San Marino
+            'VA' => 'it', // Vatican
+            'ES' => 'es', // Spain
+            'AD' => 'es', // Andorra
+            'PT' => 'pt', // Portugal
+
+            // Europe - Northern (Scandinavia)
+            'SE' => 'sv', // Sweden
+            'NO' => 'no', // Norway
+            'DK' => 'da', // Denmark
+            'FI' => 'fi', // Finland
+            'IS' => 'en', // Iceland (fallback to English)
+
+            // Europe - Eastern
+            'PL' => 'pl', // Poland
+            'CZ' => 'cs', // Czech Republic
+            'SK' => 'sk', // Slovakia
+            'HU' => 'hu', // Hungary
+            'RO' => 'ro', // Romania
+            'MD' => 'ro', // Moldova
+            'BG' => 'bg', // Bulgaria
+            'SI' => 'sl', // Slovenia
+            'HR' => 'hr', // Croatia
+            'BA' => 'hr', // Bosnia
+            'RS' => 'hr', // Serbia (similar)
+            'ME' => 'hr', // Montenegro
+            'MK' => 'bg', // North Macedonia
+            'AL' => 'en', // Albania
+            'XK' => 'en', // Kosovo
+
+            // Europe - Baltic
+            'EE' => 'et', // Estonia
+            'LV' => 'lv', // Latvia
+            'LT' => 'lt', // Lithuania
+
+            // Europe - Eastern Slavic
+            'RU' => 'ru', // Russia
+            'UA' => 'uk', // Ukraine
+            'BY' => 'ru', // Belarus
+
+            // Europe - Southern
+            'GR' => 'el', // Greece
+            'CY' => 'el', // Cyprus
+            'TR' => 'tr', // Turkey
+            'MT' => 'en', // Malta
+
+            // Americas - North
+            'US' => 'en', // United States
+            'CA' => 'en', // Canada
+            'MX' => 'es', // Mexico
+
+            // Americas - Central
+            'GT' => 'es', // Guatemala
+            'BZ' => 'en', // Belize
+            'SV' => 'es', // El Salvador
+            'HN' => 'es', // Honduras
+            'NI' => 'es', // Nicaragua
+            'CR' => 'es', // Costa Rica
+            'PA' => 'es', // Panama
+
+            // Americas - Caribbean
+            'CU' => 'es', // Cuba
+            'DO' => 'es', // Dominican Republic
+            'PR' => 'es', // Puerto Rico
+            'JM' => 'en', // Jamaica
+            'HT' => 'fr', // Haiti
+            'TT' => 'en', // Trinidad and Tobago
+            'BB' => 'en', // Barbados
+            'BS' => 'en', // Bahamas
+            'AW' => 'nl', // Aruba
+            'CW' => 'nl', // Curaçao
+            'SX' => 'nl', // Sint Maarten
+
+            // Americas - South
+            'BR' => 'pt', // Brazil
+            'AR' => 'es', // Argentina
+            'CL' => 'es', // Chile
+            'CO' => 'es', // Colombia
+            'PE' => 'es', // Peru
+            'VE' => 'es', // Venezuela
+            'EC' => 'es', // Ecuador
+            'BO' => 'es', // Bolivia
+            'PY' => 'es', // Paraguay
+            'UY' => 'es', // Uruguay
+            'GY' => 'en', // Guyana
+            'GF' => 'fr', // French Guiana
+
+            // Asia - East
+            'JP' => 'ja', // Japan
+            'KR' => 'ko', // South Korea
+            'CN' => 'zh', // China
+            'TW' => 'zh', // Taiwan
+            'HK' => 'zh', // Hong Kong
+            'MO' => 'zh', // Macau
+            'MN' => 'ru', // Mongolia (Russian common)
+
+            // Asia - Southeast
+            'TH' => 'th', // Thailand
+            'VN' => 'vi', // Vietnam
+            'ID' => 'id', // Indonesia
+            'MY' => 'ms', // Malaysia
+            'SG' => 'en', // Singapore
+            'PH' => 'tl', // Philippines
+            'MM' => 'en', // Myanmar
+            'KH' => 'en', // Cambodia
+            'LA' => 'en', // Laos
+            'BN' => 'ms', // Brunei
+            'TL' => 'pt', // Timor-Leste
+
+            // Asia - South
+            'IN' => 'hi', // India
+            'PK' => 'en', // Pakistan
+            'BD' => 'en', // Bangladesh
+            'LK' => 'en', // Sri Lanka
+            'NP' => 'hi', // Nepal
+            'BT' => 'en', // Bhutan
+            'MV' => 'en', // Maldives
+
+            // Asia - Central
+            'KZ' => 'ru', // Kazakhstan
+            'UZ' => 'ru', // Uzbekistan
+            'TM' => 'ru', // Turkmenistan
+            'KG' => 'ru', // Kyrgyzstan
+            'TJ' => 'ru', // Tajikistan
+            'AF' => 'fa', // Afghanistan
+
+            // Asia - West (Middle East)
+            'IR' => 'fa', // Iran
+            'IQ' => 'ar', // Iraq
+            'SA' => 'ar', // Saudi Arabia
+            'AE' => 'ar', // UAE
+            'KW' => 'ar', // Kuwait
+            'QA' => 'ar', // Qatar
+            'BH' => 'ar', // Bahrain
+            'OM' => 'ar', // Oman
+            'YE' => 'ar', // Yemen
+            'JO' => 'ar', // Jordan
+            'LB' => 'ar', // Lebanon
+            'SY' => 'ar', // Syria
+            'IL' => 'he', // Israel
+            'PS' => 'ar', // Palestine
+
+            // Asia - Caucasus
+            'GE' => 'en', // Georgia
+            'AM' => 'en', // Armenia
+            'AZ' => 'tr', // Azerbaijan (Turkic)
+
+            // Africa - North
+            'EG' => 'ar', // Egypt
+            'LY' => 'ar', // Libya
+            'TN' => 'ar', // Tunisia
+            'DZ' => 'ar', // Algeria
+            'MA' => 'ar', // Morocco
+            'SD' => 'ar', // Sudan
+
+            // Africa - West
+            'NG' => 'en', // Nigeria
+            'GH' => 'en', // Ghana
+            'SN' => 'fr', // Senegal
+            'CI' => 'fr', // Ivory Coast
+            'ML' => 'fr', // Mali
+            'BF' => 'fr', // Burkina Faso
+            'NE' => 'fr', // Niger
+            'GN' => 'fr', // Guinea
+            'BJ' => 'fr', // Benin
+            'TG' => 'fr', // Togo
+            'SL' => 'en', // Sierra Leone
+            'LR' => 'en', // Liberia
+            'GM' => 'en', // Gambia
+            'GW' => 'pt', // Guinea-Bissau
+            'CV' => 'pt', // Cape Verde
+            'MR' => 'ar', // Mauritania
+
+            // Africa - East
+            'KE' => 'sw', // Kenya
+            'TZ' => 'sw', // Tanzania
+            'UG' => 'en', // Uganda
+            'RW' => 'en', // Rwanda
+            'BI' => 'fr', // Burundi
+            'ET' => 'en', // Ethiopia
+            'ER' => 'en', // Eritrea
+            'SO' => 'ar', // Somalia
+            'DJ' => 'fr', // Djibouti
+            'MG' => 'fr', // Madagascar
+            'MU' => 'en', // Mauritius
+            'SC' => 'en', // Seychelles
+            'KM' => 'ar', // Comoros
+
+            // Africa - Central
+            'CD' => 'fr', // DR Congo
+            'CG' => 'fr', // Congo
+            'CF' => 'fr', // Central African Republic
+            'CM' => 'fr', // Cameroon
+            'TD' => 'fr', // Chad
+            'GA' => 'fr', // Gabon
+            'GQ' => 'es', // Equatorial Guinea
+            'ST' => 'pt', // São Tomé and Príncipe
+            'AO' => 'pt', // Angola
+
+            // Africa - Southern
+            'ZA' => 'af', // South Africa
+            'NA' => 'en', // Namibia
+            'BW' => 'en', // Botswana
+            'ZW' => 'en', // Zimbabwe
+            'ZM' => 'en', // Zambia
+            'MW' => 'en', // Malawi
+            'MZ' => 'pt', // Mozambique
+            'SZ' => 'en', // Eswatini
+            'LS' => 'en', // Lesotho
+
+            // Oceania
+            'AU' => 'en', // Australia
+            'NZ' => 'en', // New Zealand
+            'PG' => 'en', // Papua New Guinea
+            'FJ' => 'en', // Fiji
+            'SB' => 'en', // Solomon Islands
+            'VU' => 'en', // Vanuatu
+            'WS' => 'en', // Samoa
+            'TO' => 'en', // Tonga
+            'NC' => 'fr', // New Caledonia
+            'PF' => 'fr', // French Polynesia
+            'GU' => 'en', // Guam
         ],
     ],
     
