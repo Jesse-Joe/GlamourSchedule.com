@@ -722,6 +722,22 @@ select.form-input {
 .waitlist-success p {
     color: var(--text-secondary);
 }
+
+/* First Available Notice */
+.first-available-notice {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+.first-available-notice i {
+    font-size: 1.25rem;
+}
 </style>
 
 <div class="booking-container">
@@ -783,6 +799,12 @@ select.form-input {
                 </div>
             </div>
             <?php endif; ?>
+
+            <!-- First Available Notice -->
+            <div id="firstAvailableNotice" class="first-available-notice" style="display:none;">
+                <i class="fas fa-calendar-check"></i>
+                <span id="firstAvailableText"></span>
+            </div>
 
             <!-- Date & Time -->
             <div class="datetime-grid">
@@ -903,8 +925,12 @@ const translations = {
     waitlistSubmitBtn: '<?= addslashes($translations['waitlist_submit_btn'] ?? 'Sign up for waitlist') ?>',
     waitlistSuccess: '<?= addslashes($translations['waitlist_success'] ?? 'Success!') ?>',
     waitlistError: '<?= addslashes($translations['waitlist_error'] ?? 'An error occurred.') ?>',
-    timeAtLabel: '<?= addslashes($translations['time_at_label'] ?? 'at') ?>'
+    timeAtLabel: '<?= addslashes($translations['time_at_label'] ?? 'at') ?>',
+    firstAvailableOn: '<?= addslashes($translations['first_available_on'] ?? 'De eerst mogelijke afspraak is op') ?>'
 };
+
+const firstAvailableNotice = document.getElementById('firstAvailableNotice');
+const firstAvailableText = document.getElementById('firstAvailableText');
 
 const noTimesInfo = document.getElementById('noTimesInfo');
 const nextAvailableDateEl = document.getElementById('nextAvailableDate');
@@ -1008,12 +1034,21 @@ function loadAvailableTimes() {
             timeSelect.innerHTML = html;
             timeSelect.disabled = !hasAvailable;
 
-            // Auto-select first available time slot
+            // Auto-select first available time slot and show notice
             if (hasAvailable) {
                 const firstAvailableOption = timeSelect.querySelector('option:not([disabled]):not([value=""])');
                 if (firstAvailableOption) {
                     timeSelect.value = firstAvailableOption.value;
+
+                    // Show "first available" notice
+                    const selectedDate = new Date(date);
+                    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                    const formattedDate = selectedDate.toLocaleDateString('<?= $lang ?? 'nl' ?>', options);
+                    firstAvailableText.textContent = `${translations.firstAvailableOn} ${formattedDate} om ${firstAvailableOption.value}`;
+                    firstAvailableNotice.style.display = 'flex';
                 }
+            } else {
+                firstAvailableNotice.style.display = 'none';
             }
         })
         .catch(error => {

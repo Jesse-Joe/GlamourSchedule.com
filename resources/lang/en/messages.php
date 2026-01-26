@@ -177,6 +177,7 @@ return [
     'time_booked' => 'booked',
     'no_times_this_day' => 'No times available on this day',
     'next_available_date' => 'Next available date',
+    'first_available_on' => 'The first available appointment is on',
     'or_join_waitlist' => 'or sign up for the waitlist',
     'join_waitlist' => 'Join waitlist',
     'waitlist_for_date' => 'Waitlist for',

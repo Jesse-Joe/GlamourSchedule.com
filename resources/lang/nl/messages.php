@@ -177,6 +177,7 @@ return [
     'time_booked' => 'bezet',
     'no_times_this_day' => 'Geen tijden beschikbaar op deze dag',
     'next_available_date' => 'Volgende beschikbare datum',
+    'first_available_on' => 'De eerst mogelijke afspraak is op',
     'or_join_waitlist' => 'of meld je aan op de wachtlijst',
     'join_waitlist' => 'Op wachtlijst',
     'waitlist_for_date' => 'Wachtlijst voor',
