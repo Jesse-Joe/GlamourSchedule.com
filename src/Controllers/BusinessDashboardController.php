@@ -1311,7 +1311,7 @@ class BusinessDashboardController extends Controller
                     <p style="font-size:16px;color:#ffffff;">Beste {$this->business['company_name']},</p>
                     <p style="font-size:16px;color:#555;">Je wilt je IBAN wijzigen. Gebruik deze code om door te gaan:</p>
                     <div style="background:#0a0a0a;border:3px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                        <p style="margin:0;font-size:42px;font-weight:bold;color:#000000;letter-spacing:8px;font-family:monospace;">{$code}</p>
+                        <p style="margin:0;font-size:42px;font-weight:bold;color:#ffffff;letter-spacing:8px;font-family:monospace;">{$code}</p>
                     </div>
                     <p style="font-size:14px;color:#cccccc;">Deze code is 15 minuten geldig.</p>
                     <p style="font-size:14px;color:#dc2626;margin-top:20px;"><strong>Let op:</strong> Deel deze code nooit met anderen!</p>
@@ -1370,7 +1370,7 @@ HTML;
                     <p style="font-size:16px;color:#ffffff;">Beste {$this->business['company_name']},</p>
                     <p style="font-size:16px;color:#555;">Je IBAN is succesvol geverifieerd en gekoppeld aan je account.</p>
                     <div style="background:#f0fdf4;border-radius:10px;padding:1rem;margin:20px 0;">
-                        <p style="margin:0;font-family:monospace;font-size:1.1rem;color:#000000;">{$maskedIban}</p>
+                        <p style="margin:0;font-family:monospace;font-size:1.1rem;color:#ffffff;">{$maskedIban}</p>
                     </div>
                     <p style="font-size:14px;color:#cccccc;">Uitbetalingen worden voortaan naar dit rekeningnummer overgemaakt.</p>
                 </td></tr>
@@ -1547,7 +1547,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:linear-gradient(135deg,#333333,#000000);padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">✓</div>
@@ -1561,16 +1561,16 @@ HTML;
                                 Je aanwezigheid bij <strong>{$this->business['company_name']}</strong> is bevestigd.
                             </p>
                             <div style="background:#f0fdf4;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0;color:#000000;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
-                                <p style="margin:10px 0 0;color:#000000;"><strong>Dienst:</strong> {$booking['service_name']}</p>
-                                <p style="margin:10px 0 0;color:#000000;"><strong>Tijd:</strong> {$booking['appointment_time']}</p>
+                                <p style="margin:0;color:#ffffff;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
+                                <p style="margin:10px 0 0;color:#ffffff;"><strong>Dienst:</strong> {$booking['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#ffffff;"><strong>Tijd:</strong> {$booking['appointment_time']}</p>
                             </div>
                             <p style="color:#555;">Veel plezier met je afspraak!</p>
 
                             <!-- Review Request Section -->
                             <div style="background:linear-gradient(135deg,#f5f5f5,#f5f5f5);border-radius:12px;padding:25px;margin:30px 0;text-align:center;">
                                 <div style="font-size:32px;margin-bottom:10px;">⭐</div>
-                                <h3 style="margin:0 0 10px;color:#000000;font-size:18px;">Wat vond je van je bezoek?</h3>
+                                <h3 style="margin:0 0 10px;color:#ffffff;font-size:18px;">Wat vond je van je bezoek?</h3>
                                 <p style="color:#78350f;margin:0 0 20px;font-size:14px;line-height:1.5;">
                                     Help andere klanten door je ervaring te delen met {$this->business['company_name']}
                                 </p>
@@ -2657,7 +2657,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#333333);padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">📅</div>
@@ -2916,7 +2916,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">💸</div>
@@ -2981,7 +2981,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">❌</div>

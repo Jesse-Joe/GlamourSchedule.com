@@ -400,7 +400,7 @@ class BusinessRegisterController extends Controller
                                     <p style='font-size:16px;color:#ffffff;margin-bottom:30px;'>Gebruik onderstaande code om je account te bevestigen:</p>
 
                                     <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
-                                        <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
+                                        <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
                                     </div>
 
                                     <p style='font-size:14px;color:#cccccc;margin-top:30px;'>Deze code is 10 minuten geldig.</p>
@@ -474,7 +474,7 @@ GlamourSchedule
 
                                     <div style='background:#ecfdf5;border:2px solid #000000;border-radius:10px;padding:20px;margin:20px 0;text-align:center;'>
                                         <p style='margin:0;color:#047857;font-weight:600;font-size:18px;'>🎉 14 dagen GRATIS proberen!</p>
-                                        <p style='margin:10px 0 0;color:#000000;font-size:14px;'>Geen betaling vooraf nodig</p>
+                                        <p style='margin:10px 0 0;color:#ffffff;font-size:14px;'>Geen betaling vooraf nodig</p>
                                     </div>
 
                                     <p style='font-size:16px;color:#ffffff;margin-bottom:20px;'>Klik op de knop hieronder om je registratie te voltooien:</p>
@@ -490,7 +490,7 @@ GlamourSchedule
                                         <p style='margin:10px 0 0;color:#999;font-size:13px;'>Je kunt je wachtwoord later wijzigen in je dashboard.</p>
                                     </div>
 
-                                    <p style='font-size:14px;color:#cccccc;margin-top:20px;'>Of kopieer deze link in je browser:<br><a href='{$verifyUrl}' style='color:#000000;word-break:break-all;'>{$verifyUrl}</a></p>
+                                    <p style='font-size:14px;color:#cccccc;margin-top:20px;'>Of kopieer deze link in je browser:<br><a href='{$verifyUrl}' style='color:#ffffff;word-break:break-all;'>{$verifyUrl}</a></p>
                                 </td>
                             </tr>
                             <tr>
@@ -1057,7 +1057,7 @@ GlamourSchedule
             <div style='background:linear-gradient(135deg,#000000,#1a1a1a);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
                 <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$firstName},</p>
                 <p style='color:#374151;line-height:1.6'>
                     Welkom! Je registratie voor <strong>{$companyName}</strong> is bijna compleet.
@@ -1073,7 +1073,7 @@ GlamourSchedule
                 </div>
 
                 <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0 0 1rem 0;color:#000000;font-weight:600'>Voltooi nu je registratie:</p>
+                    <p style='margin:0 0 1rem 0;color:#ffffff;font-weight:600'>Voltooi nu je registratie:</p>
                     <p style='margin:0;color:#374151;font-size:0.95rem'>
                         Klik op de knop hieronder om je wachtwoord in te stellen en je bedrijfsgegevens aan te vullen.
                     </p>
@@ -1086,7 +1086,7 @@ GlamourSchedule
                 </div>
 
                 <p style='color:#6b7280;font-size:0.9rem'>
-                    Of kopieer deze link: <span style='color:#000000'>{$completionUrl}</span>
+                    Of kopieer deze link: <span style='color:#ffffff'>{$completionUrl}</span>
                 </p>
 
                 <div style='border-top:1px solid #e5e7eb;margin-top:1.5rem;padding-top:1.5rem'>
@@ -1288,15 +1288,15 @@ GlamourSchedule
         $html = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto'>
             <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
-                <h1 style='color:#000000;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
+                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>
                     Gefeliciteerd! Je registratie voor <strong>{$companyName}</strong> is nu compleet.
                 </p>
 
                 <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0;color:#000000;font-weight:600'>Je proefperiode van 14 dagen is gestart!</p>
+                    <p style='margin:0;color:#ffffff;font-weight:600'>Je proefperiode van 14 dagen is gestart!</p>
                 </div>
 
                 <p style='color:#374151;line-height:1.6'>
@@ -1355,7 +1355,7 @@ GlamourSchedule
             <div style='background:#22c55e;padding:30px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:24px;'>Gefeliciteerd!</h1>
             </div>
-            <div style='padding:30px;background:#fff;border:1px solid #e5e7eb;'>
+            <div style='padding:30px;background:#1a1a1a;border:1px solid #333;'>
                 <p style='font-size:16px;color:#ffffff;'>Hallo {$partnerName},</p>
 
                 <p style='color:#374151;line-height:1.6'>
@@ -1401,7 +1401,7 @@ GlamourSchedule
                     Blijf salons aanbrengen en verdien EUR 49,99 per betalende salon!
                 </p>
             </div>
-            <div style='background:#0a0a0a;padding:15px;text-align:center;border:1px solid #e5e7eb;border-top:none;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border:1px solid #333;border-top:none;'>
                 <p style='margin:0;color:#999;font-size:12px;'>GlamourSchedule Sales Partner</p>
             </div>
         </div>";

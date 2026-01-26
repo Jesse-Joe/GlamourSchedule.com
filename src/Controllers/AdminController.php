@@ -656,7 +656,7 @@ class AdminController extends Controller
                     </div>
 
                     <p style="font-size:14px;color:#cccccc;text-align:center;margin:20px 0 0;">
-                        Je bedrijfspagina: <a href="{$businessUrl}" style="color:#000000;font-weight:600;">{$businessUrl}</a>
+                        Je bedrijfspagina: <a href="{$businessUrl}" style="color:#ffffff;font-weight:600;">{$businessUrl}</a>
                     </p>
                 </td></tr>
                 <tr><td style="background:#000000;padding:25px;text-align:center;">
@@ -723,7 +723,7 @@ HTML;
                         <a href="{$registerUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;margin:5px;">
                             Opnieuw Registreren
                         </a>
-                        <a href="{$contactUrl}" style="display:inline-block;background:#ffffff;color:#000000;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;border:2px solid #000000;margin:5px;">
+                        <a href="{$contactUrl}" style="display:inline-block;background:#ffffff;color:#000000;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;border:2px solid #333;margin:5px;">
                             Contact Opnemen
                         </a>
                     </div>

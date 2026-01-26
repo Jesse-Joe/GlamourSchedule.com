@@ -193,7 +193,7 @@ HTML;
 
             <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:20px;margin:25px 0;text-align:center;">
                 <p style="margin:0;color:#166534;font-weight:600;">Je ticketnummer:</p>
-                <p style="margin:10px 0 0;font-size:24px;font-weight:700;color:#000000;">{$ticket}</p>
+                <p style="margin:10px 0 0;font-size:24px;font-weight:700;color:#ffffff;">{$ticket}</p>
             </div>
 
             <p style="color:#cccccc;font-size:14px;line-height:1.6;">

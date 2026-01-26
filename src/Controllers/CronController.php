@@ -995,7 +995,7 @@ class CronController extends Controller
             <div style='background:{$headerBg};padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>{$headerText}</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <p>Beste {$payout['company_name']},</p>
 
                 {$statusBox}
@@ -1121,7 +1121,7 @@ class CronController extends Controller
             <div style='background:{$headerBg};padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>{$headerText}</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <p>Overzicht van de wekelijkse uitbetalingen.</p>
 
                 {$statsHtml}
@@ -1180,7 +1180,7 @@ class CronController extends Controller
             <div style='background:#000;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Uitbetaling Voltooid</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <p>Beste {$payout['company_name']},</p>
                 <p>Geweldig nieuws! Je uitbetaling is automatisch verwerkt via Mollie Connect.</p>
 
@@ -1273,7 +1273,7 @@ class CronController extends Controller
             <div style='background:#000;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Automatische Uitbetalingen</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <p>De automatische uitbetalingen via Mollie Connect zijn verwerkt.</p>
 
                 $statusBanner
@@ -1344,7 +1344,7 @@ class CronController extends Controller
             <div style='background:#dc2626;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Kritieke Fout: Bunq API</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:20px;margin-bottom:20px;'>
                     <p style='margin:0;color:#991b1b;font-weight:600;'>Het Bunq saldo kon niet worden opgehaald.</p>
                     <p style='margin:10px 0 0;color:#991b1b;'>Alle automatische uitbetalingen zijn GESTOPT ter bescherming.</p>
@@ -1400,7 +1400,7 @@ class CronController extends Controller
             <div style='background:#f59e0b;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Onvoldoende Saldo</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <div style='background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:20px;margin-bottom:20px;'>
                     <p style='margin:0;color:#92400e;font-weight:600;'>Er is onvoldoende saldo op de Bunq rekening.</p>
                     <p style='margin:10px 0 0;color:#92400e;'>Uitbetalingen zijn uitgesteld ter bescherming.</p>
@@ -1751,7 +1751,7 @@ class CronController extends Controller
             <div style='background:{$headerBg};padding:25px;text-align:center;border-radius:12px 12px 0 0;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Commissie Uitbetaling</h1>
             </div>
-            <div style='padding:25px;background:#fff;border:1px solid #e5e7eb;border-top:none;'>
+            <div style='padding:25px;background:#1a1a1a;border:1px solid #333;border-top:none;'>
                 <p>Hallo {$partner['sales_name']},</p>
                 <p>Goed nieuws! Je commissie is verwerkt.</p>
 
@@ -1785,7 +1785,7 @@ class CronController extends Controller
                     Bekijk al je uitbetalingen in je <a href='https://glamourschedule.nl/sales/payouts' style='color:#000;'>dashboard</a>.
                 </p>
             </div>
-            <div style='background:#0a0a0a;padding:15px;text-align:center;border-radius:0 0 12px 12px;border:1px solid #e5e7eb;border-top:none;'>
+            <div style='background:#0a0a0a;padding:15px;text-align:center;border-radius:0 0 12px 12px;border:1px solid #333;border-top:none;'>
                 <p style='margin:0;color:#999;font-size:12px;'>© " . date('Y') . " GlamourSchedule Sales Partner</p>
             </div>
         </div>";
@@ -1859,7 +1859,7 @@ class CronController extends Controller
             <div style='background:#000;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Sales Partner Uitbetalingen</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <div style='display:flex;gap:15px;margin-bottom:20px;'>
                     <div style='flex:1;background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;text-align:center;'>
                         <p style='margin:0;font-size:24px;font-weight:bold;color:#22c55e;'>€" . number_format($totalAmount, 2, ',', '.') . "</p>
@@ -1917,7 +1917,7 @@ class CronController extends Controller
             <div style='background:#dc2626;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Sales Payout Fout</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:20px;margin-bottom:20px;'>
                     <p style='margin:0;color:#991b1b;font-weight:600;'>Bunq saldo kon niet worden opgehaald.</p>
                     <p style='margin:10px 0 0;color:#991b1b;'>Sales partner uitbetalingen zijn GESTOPT.</p>
@@ -1955,7 +1955,7 @@ class CronController extends Controller
             <div style='background:#f59e0b;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Onvoldoende Saldo</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <div style='background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:20px;margin-bottom:20px;'>
                     <p style='margin:0;color:#92400e;font-weight:600;'>Sales partner uitbetalingen uitgesteld.</p>
                 </div>
@@ -2113,7 +2113,7 @@ class CronController extends Controller
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);padding:40px;text-align:center;color:#fff;">
                             <h1 style="margin:0;font-size:24px;">Je bent aan de beurt!</h1>
@@ -2128,7 +2128,7 @@ class CronController extends Controller
 
                             <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
                                 <p style="margin:0;color:#cccccc;font-size:14px;">Beschikbare plek</p>
-                                <p style="margin:10px 0 0;color:#000000;font-size:24px;font-weight:700;">
+                                <p style="margin:10px 0 0;color:#ffffff;font-size:24px;font-weight:700;">
                                     {$dateFormatted} om {$timeFormatted}
                                 </p>
                                 <p style="margin:10px 0 0;color:#cccccc;">{$data['service_name']}</p>

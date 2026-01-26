@@ -163,7 +163,7 @@ class WebhookController extends Controller
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#333333);padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">✓</div>

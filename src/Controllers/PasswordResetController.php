@@ -215,14 +215,14 @@ class PasswordResetController extends Controller
                             </p>
 
                             <div style="background:#0a0a0a;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
-                                <p style="margin:0;color:#000000;font-size:14px;">
+                                <p style="margin:0;color:#ffffff;font-size:14px;">
                                     <strong>Let op:</strong> Deze link is 1 uur geldig. Heb je dit verzoek niet gedaan? Negeer dan deze email.
                                 </p>
                             </div>
 
                             <p style="font-size:13px;color:#999;margin:25px 0 0;">
                                 Werkt de knop niet? Kopieer dan deze link:<br>
-                                <a href="{$resetUrl}" style="color:#000000;word-break:break-all;">{$resetUrl}</a>
+                                <a href="{$resetUrl}" style="color:#ffffff;word-break:break-all;">{$resetUrl}</a>
                             </p>
                         </td>
                     </tr>
@@ -279,7 +279,7 @@ HTML;
                             </p>
                             <p style="font-size:14px;color:#cccccc;margin-top:20px;">
                                 Heb je dit niet gedaan? Neem dan direct contact met ons op via
-                                <a href="mailto:support@glamourschedule.nl" style="color:#000000;">support@glamourschedule.nl</a>
+                                <a href="mailto:support@glamourschedule.nl" style="color:#ffffff;">support@glamourschedule.nl</a>
                             </p>
                         </td>
                     </tr>

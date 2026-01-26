@@ -620,7 +620,7 @@ class BookingController extends Controller
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:#000;padding:30px;text-align:center;color:#fff;">
                             <h1 style="margin:0;font-size:22px;">Boeking geannuleerd</h1>
@@ -643,7 +643,7 @@ class BookingController extends Controller
                                 </table>
                             </div>
 
-                            <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:15px;margin:20px 0;">
+                            <div style="background:#1a1a1a;border:1px solid #f59e0b;border-radius:8px;padding:15px;margin:20px 0;">
                                 <p style="margin:0;color:#92400e;font-size:0.85rem;">
                                     <strong>Waarom administratiekosten?</strong><br>
                                     De administratiekosten van EUR {$platformFeeFormatted} dekken de verwerking van je annulering en terugbetaling. We raden aan om goed na te denken voordat je boekt, zodat je deze kosten in de toekomst kunt vermijden.
@@ -699,11 +699,11 @@ HTML;
         if ($isLateCancel && $businessFee > 0) {
             $feeNotice = <<<HTML
 <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
-    <p style="margin:0;color:#000000;font-weight:600;font-size:16px;">
+    <p style="margin:0;color:#ffffff;font-weight:600;font-size:16px;">
         💰 Late annulering vergoeding
     </p>
-    <p style="margin:10px 0 0;color:#000000;font-size:1.75rem;font-weight:700;">€{$feeFormatted}</p>
-    <p style="margin:10px 0 0;color:#000000;font-size:0.9rem;">
+    <p style="margin:10px 0 0;color:#ffffff;font-size:1.75rem;font-weight:700;">€{$feeFormatted}</p>
+    <p style="margin:10px 0 0;color:#ffffff;font-size:0.9rem;">
         Dit bedrag wordt aan uw uitbetaling toegevoegd
     </p>
 </div>
@@ -718,7 +718,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:30px 20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="background:linear-gradient(135deg,#333333,#dc2626);padding:40px;text-align:center;color:#fff;">
@@ -757,7 +757,7 @@ HTML;
                                     </tr>
                                     <tr>
                                         <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">Bedrag</td>
-                                        <td style="padding:8px 0;text-align:right;font-weight:700;color:#000000;font-size:16px;border-top:1px solid #e5e7eb;">€{$priceFormatted}</td>
+                                        <td style="padding:8px 0;text-align:right;font-weight:700;color:#ffffff;font-size:16px;border-top:1px solid #e5e7eb;">€{$priceFormatted}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -766,10 +766,10 @@ HTML;
 
                             <!-- Time Slot Free Notice -->
                             <div style="background:#0a0a0a;border:2px solid #404040;border-radius:12px;padding:18px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#000000;font-weight:600;font-size:15px;">
+                                <p style="margin:0;color:#ffffff;font-weight:600;font-size:15px;">
                                     🕐 Tijdslot is weer vrij
                                 </p>
-                                <p style="margin:8px 0 0;color:#000000;font-size:14px;">
+                                <p style="margin:8px 0 0;color:#ffffff;font-size:14px;">
                                     {$appointmentDate} om {$appointmentTime} is nu weer beschikbaar voor nieuwe boekingen
                                 </p>
                             </div>
@@ -1659,7 +1659,7 @@ HTML;
                                     <tr>
                                         <td style="padding:12px 0;">
                                             <span style="color:#cccccc;font-size:14px;">Gewenste datum</span><br>
-                                            <strong style="color:#000000;font-size:18px;">{$dateFormatted}</strong>
+                                            <strong style="color:#ffffff;font-size:18px;">{$dateFormatted}</strong>
                                         </td>
                                     </tr>
                                 </table>
@@ -1716,7 +1716,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);padding:40px;text-align:center;color:#fff;">
                             <h1 style="margin:0;font-size:24px;">Er is een plek vrijgekomen!</h1>
@@ -1731,7 +1731,7 @@ HTML;
 
                             <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
                                 <p style="margin:0;color:#cccccc;font-size:14px;">Beschikbare plek</p>
-                                <p style="margin:10px 0 0;color:#000000;font-size:24px;font-weight:700;">
+                                <p style="margin:10px 0 0;color:#ffffff;font-size:24px;font-weight:700;">
                                     {$dateFormatted} om {$timeFormatted}
                                 </p>
                                 <p style="margin:10px 0 0;color:#cccccc;">{$data['service_name']}</p>

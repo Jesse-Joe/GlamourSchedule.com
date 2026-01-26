@@ -327,38 +327,38 @@ class SalesController extends Controller
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #e5e5e5;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #333;">
                 <tr><td style="background:#000000;padding:40px;text-align:center;">
                     <h1 style="margin:0;color:#ffffff;font-size:28px;">Early Bird Aanbieding</h1>
                     <p style="margin:10px 0 0;color:#ffffff;font-size:16px;opacity:0.9;">Exclusief voor {$businessName}</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:18px;color:#000000;margin:0 0 20px;">Beste {$name},</p>
+                    <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Beste {$name},</p>
 
-                    <p style="font-size:16px;color:#555555;line-height:1.6;margin:0 0 25px;">
+                    <p style="font-size:16px;color:#cccccc;line-height:1.6;margin:0 0 25px;">
                         Via {$salesName} heb je een exclusieve Early Bird uitnodiging ontvangen voor GlamourSchedule -
                         het slimste online boekingssysteem voor salons.
                     </p>
 
-                    <div style="background:#f9f9f9;border:2px solid #000000;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
-                        <p style="margin:0 0 10px;color:#000000;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
-                        <p style="margin:0;font-size:48px;font-weight:bold;color:#000000;">€0,99</p>
-                        <p style="margin:10px 0 0;color:#cccccc;font-size:14px;"><span style="text-decoration:line-through;">Normaal €99,99</span> - <strong style="color:#000000;">Je bespaart €99!</strong></p>
+                    <div style="background:#0a0a0a;border:2px solid #000000;border-radius:12px;padding:25px;text-align:center;margin:0 0 25px;">
+                        <p style="margin:0 0 10px;color:#ffffff;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Early Bird Prijs</p>
+                        <p style="margin:0;font-size:48px;font-weight:bold;color:#ffffff;">€0,99</p>
+                        <p style="margin:10px 0 0;color:#cccccc;font-size:14px;"><span style="text-decoration:line-through;">Normaal €99,99</span> - <strong style="color:#ffffff;">Je bespaart €99!</strong></p>
                     </div>
 
-                    <div style="background:#f9f9f9;border:2px solid #333333;border-radius:12px;padding:20px;text-align:center;margin:0 0 25px;">
-                        <p style="margin:0;color:#000000;font-size:18px;font-weight:bold;">Eerste 14 dagen GRATIS proberen!</p>
-                        <p style="margin:8px 0 0;color:#555555;font-size:14px;">Daarna betaal je eenmalig de aanmeldkosten van €0,99</p>
+                    <div style="background:#0a0a0a;border:2px solid #333333;border-radius:12px;padding:20px;text-align:center;margin:0 0 25px;">
+                        <p style="margin:0;color:#ffffff;font-size:18px;font-weight:bold;">Eerste 14 dagen GRATIS proberen!</p>
+                        <p style="margin:8px 0 0;color:#cccccc;font-size:14px;">Daarna betaal je eenmalig de aanmeldkosten van €0,99</p>
                     </div>
 
                     <div style="margin:0 0 25px;">
-                        <p style="color:#000000;font-weight:600;margin:0 0 15px;">Wat krijg je?</p>
+                        <p style="color:#ffffff;font-weight:600;margin:0 0 15px;">Wat krijg je?</p>
                         <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr><td style="padding:8px 0;color:#555555;font-size:14px;">- Online boekingssysteem</td></tr>
-                            <tr><td style="padding:8px 0;color:#555555;font-size:14px;">- Automatische herinneringen</td></tr>
-                            <tr><td style="padding:8px 0;color:#555555;font-size:14px;">- Online betalingen</td></tr>
-                            <tr><td style="padding:8px 0;color:#555555;font-size:14px;">- Eigen salon pagina</td></tr>
-                            <tr><td style="padding:8px 0;color:#555555;font-size:14px;">- Gratis trial periode</td></tr>
+                            <tr><td style="padding:8px 0;color:#cccccc;font-size:14px;">- Online boekingssysteem</td></tr>
+                            <tr><td style="padding:8px 0;color:#cccccc;font-size:14px;">- Automatische herinneringen</td></tr>
+                            <tr><td style="padding:8px 0;color:#cccccc;font-size:14px;">- Online betalingen</td></tr>
+                            <tr><td style="padding:8px 0;color:#cccccc;font-size:14px;">- Eigen salon pagina</td></tr>
+                            <tr><td style="padding:8px 0;color:#cccccc;font-size:14px;">- Gratis trial periode</td></tr>
                         </table>
                     </div>
 
@@ -457,7 +457,7 @@ HTML;
             $offerType = 'Early Bird';
             $offerLabel = 'Exclusieve Early Bird Prijs';
             $inviteText = "een exclusieve <strong>Early Bird uitnodiging</strong>";
-            $urgencyText = "<p style='margin:1rem 0 0 0;color:#000000;font-size:0.85rem;font-weight:600'>Nog maar {$spotsLeft} plekken beschikbaar!</p>";
+            $urgencyText = "<p style='margin:1rem 0 0 0;color:#ffffff;font-size:0.85rem;font-weight:600'>Nog maar {$spotsLeft} plekken beschikbaar!</p>";
         } else {
             $partnerPrice = self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT;
             $price = number_format($partnerPrice, 2, ',', '.');
@@ -469,7 +469,7 @@ HTML;
             $urgencyText = "";
         }
 
-        $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#555555;border-left:3px solid #000000;padding-left:1rem;margin-bottom:1.5rem;background:#f9f9f9;padding:1rem;border-radius:0 8px 8px 0'>\"{$personalMessage}\"</p>" : "";
+        $personalLine = !empty($personalMessage) ? "<p style='font-style:italic;color:#cccccc;border-left:3px solid #000000;padding-left:1rem;margin-bottom:1.5rem;background:#0a0a0a;padding:1rem;border-radius:0 8px 8px 0'>\"{$personalMessage}\"</p>" : "";
 
         $htmlBody = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a'>
@@ -479,44 +479,44 @@ HTML;
                 <p style='color:#ffffff;margin:0.5rem 0 0 0;opacity:0.8'>Het slimste boekingssysteem voor salons</p>
             </div>
 
-            <div style='background:#ffffff;padding:2rem;border:1px solid #e5e5e5;border-top:none;border-radius:0 0 12px 12px'>
-                <p style='color:#000000;font-size:1.1rem;margin-top:0'>Beste {$salonName},</p>
+            <div style='background:#1a1a1a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
+                <p style='color:#ffffff;font-size:1.1rem;margin-top:0'>Beste {$salonName},</p>
 
                 {$personalLine}
 
-                <p style='color:#555555;line-height:1.7'>
-                    Via <strong style='color:#000000'>{$salesName}</strong> heb je {$inviteText} ontvangen!
+                <p style='color:#cccccc;line-height:1.7'>
+                    Via <strong style='color:#ffffff'>{$salesName}</strong> heb je {$inviteText} ontvangen!
                 </p>
 
-                <div style='background:#f9f9f9;border:2px solid #000000;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
-                    <p style='margin:0 0 0.5rem 0;color:#000000;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>{$offerLabel}</p>
-                    <p style='margin:0;font-size:3rem;font-weight:700;color:#000000'>€{$price}</p>
-                    <p style='margin:0.5rem 0 0 0;color:#cccccc;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#000000'>Je bespaart €{$savings}!</strong></p>
+                <div style='background:#0a0a0a;border:2px solid #333;border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center'>
+                    <p style='margin:0 0 0.5rem 0;color:#ffffff;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:600'>{$offerLabel}</p>
+                    <p style='margin:0;font-size:3rem;font-weight:700;color:#ffffff'>€{$price}</p>
+                    <p style='margin:0.5rem 0 0 0;color:#888888;font-size:0.95rem'><span style='text-decoration:line-through'>Normaal €99,99</span> - <strong style='color:#22c55e'>Je bespaart €{$savings}!</strong></p>
                     {$urgencyText}
                 </div>
 
-                <div style='background:#f9f9f9;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center'>
-                    <p style='margin:0;color:#000000;font-size:1.1rem;font-weight:700'>Eerste 14 dagen GRATIS proberen!</p>
-                    <p style='margin:0.5rem 0 0 0;color:#555555;font-size:0.9rem'>Daarna betaal je eenmalig de aanmeldkosten van €{$price}</p>
+                <div style='background:#0a0a0a;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center'>
+                    <p style='margin:0;color:#ffffff;font-size:1.1rem;font-weight:700'>Eerste 14 dagen GRATIS proberen!</p>
+                    <p style='margin:0.5rem 0 0 0;color:#cccccc;font-size:0.9rem'>Daarna betaal je eenmalig de aanmeldkosten van €{$price}</p>
                 </div>
 
-                <div style='background:#f9f9f9;border-left:4px solid #000000;border-radius:0 8px 8px 0;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0 0 0.75rem 0;color:#000000;font-weight:700;font-size:1.1rem'>Waarom GlamourSchedule anders is</p>
-                    <p style='color:#555555;line-height:1.7;margin:0 0 0.75rem 0'>
-                        Bij GlamourSchedule betaal je <strong style='color:#000000'>geen maandelijks abonnement</strong> en <strong style='color:#000000'>geen vaste kosten</strong>.
+                <div style='background:#0a0a0a;border-left:4px solid #000000;border-radius:0 8px 8px 0;padding:1.5rem;margin:1.5rem 0'>
+                    <p style='margin:0 0 0.75rem 0;color:#ffffff;font-weight:700;font-size:1.1rem'>Waarom GlamourSchedule anders is</p>
+                    <p style='color:#cccccc;line-height:1.7;margin:0 0 0.75rem 0'>
+                        Bij GlamourSchedule betaal je <strong style='color:#ffffff'>geen maandelijks abonnement</strong> en <strong style='color:#ffffff'>geen vaste kosten</strong>.
                     </p>
-                    <p style='color:#555555;line-height:1.7;margin:0 0 0.75rem 0'>
+                    <p style='color:#cccccc;line-height:1.7;margin:0 0 0.75rem 0'>
                         Heb je een rustige periode, een dip in boekingen of ga je op vakantie?<br>
-                        <strong style='color:#000000'>Dan betaal je helemaal niets.</strong>
+                        <strong style='color:#ffffff'>Dan betaal je helemaal niets.</strong>
                     </p>
-                    <p style='color:#555555;line-height:1.7;margin:0'>
-                        Je betaalt alleen <strong style='color:#000000'>€1,75 per boeking</strong>, wanneer je echt klanten ontvangt.<br>
+                    <p style='color:#cccccc;line-height:1.7;margin:0'>
+                        Je betaalt alleen <strong style='color:#ffffff'>€1,75 per boeking</strong>, wanneer je echt klanten ontvangt.<br>
                         Dat maakt GlamourSchedule eerlijk, flexibel en risicoloos.
                     </p>
                 </div>
 
-                <p style='color:#000000;font-weight:600;margin-bottom:0.75rem'>Wat krijg je?</p>
-                <table style='width:100%;color:#555555;font-size:0.95rem'>
+                <p style='color:#ffffff;font-weight:600;margin-bottom:0.75rem'>Wat krijg je?</p>
+                <table style='width:100%;color:#cccccc;font-size:0.95rem'>
                     <tr><td style='padding:8px 0'>- Online boekingen 24/7</td></tr>
                     <tr><td style='padding:8px 0'>- Automatische herinneringen aan klanten</td></tr>
                     <tr><td style='padding:8px 0'>- Betalingen via iDEAL</td></tr>
@@ -532,7 +532,7 @@ HTML;
                 </div>
 
                 <p style='color:#cccccc;font-size:0.85rem;text-align:center;margin-bottom:0'>
-                    Of kopieer deze link: <span style='color:#000000'>{$referralLink}</span>
+                    Of kopieer deze link: <span style='color:#ffffff'>{$referralLink}</span>
                 </p>
             </div>
 
@@ -1230,15 +1230,15 @@ HTML;
         $html = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto'>
             <div style='background:linear-gradient(135deg,#000000,#000000);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
-                <h1 style='color:#000000;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
+                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
             </div>
-            <div style='background:#0a0a0a;padding:2rem;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px'>
+            <div style='background:#0a0a0a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
                 <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$name},</p>
                 <p style='color:#374151;line-height:1.6'>
                     Bedankt voor je betaling! Je registratie als Sales Partner is nu compleet.
                 </p>
                 <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0 0 1rem 0;color:#000000;font-weight:600'>Je kunt nu inloggen en je account verder afronden:</p>
+                    <p style='margin:0 0 1rem 0;color:#ffffff;font-weight:600'>Je kunt nu inloggen en je account verder afronden:</p>
                     <p style='margin:0;color:#374151'>
                         <strong>E-mail:</strong> {$salesUser['email']}<br>
                         <strong>Tijdelijk wachtwoord:</strong> {$tempPassword}
@@ -1253,7 +1253,7 @@ HTML;
                     </a>
                 </div>
                 <p style='color:#6b7280;font-size:0.9rem;margin-bottom:0'>
-                    Je referral code: <strong style='color:#000000'>{$salesUser['referral_code']}</strong>
+                    Je referral code: <strong style='color:#ffffff'>{$salesUser['referral_code']}</strong>
                 </p>
             </div>
         </div>
@@ -2156,7 +2156,7 @@ HTML;
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
                             <h1 style="margin:0;font-size:24px;">Bankrekening Geverifieerd</h1>
@@ -2171,7 +2171,7 @@ HTML;
 
                             <div style="background:#0a0a0a;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
                                 <p style="margin:0;color:#cccccc;font-size:14px;">Gekoppelde bankrekening</p>
-                                <p style="margin:10px 0 0;color:#000000;font-size:20px;font-weight:700;letter-spacing:2px;">
+                                <p style="margin:10px 0 0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:2px;">
                                     {$maskedIban}
                                 </p>
                             </div>

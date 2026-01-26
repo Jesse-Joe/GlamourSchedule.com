@@ -221,7 +221,7 @@ class VerifyEmailController extends Controller
                                     <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$companyName}</strong>,</p>
                                     <p style='font-size:16px;color:#ffffff;'>Je verificatiecode is:</p>
                                     <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
-                                        <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
+                                        <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
                                     </div>
                                     <p style='font-size:14px;color:#cccccc;'>Deze code is 10 minuten geldig.</p>
                                 </td>
@@ -278,8 +278,8 @@ class VerifyEmailController extends Controller
                                         Gefeliciteerd! Je account is geverifieerd en je kunt nu beginnen met het opzetten van je bedrijfspagina.
                                     </p>
 
-                                    <div style='background:#fffbeb;border-left:4px solid #000000;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;'>
-                                        <h3 style='margin:0 0 15px;color:#000000;'>Volgende stappen:</h3>
+                                    <div style='background:#1a1a1a;border-left:4px solid #000000;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;'>
+                                        <h3 style='margin:0 0 15px;color:#ffffff;'>Volgende stappen:</h3>
                                         <ol style='margin:0;padding-left:20px;color:#ffffff;'>
                                             <li style='margin:10px 0;'>Upload je logo en cover foto</li>
                                             <li style='margin:10px 0;'>Voeg je diensten toe met prijzen en tijdsduur</li>
@@ -293,7 +293,7 @@ class VerifyEmailController extends Controller
                                     </p>
 
                                     <p style='font-size:14px;color:#cccccc;'>
-                                        Je bedrijfspagina: <a href='{$businessUrl}' style='color:#000000;'>{$businessUrl}</a>
+                                        Je bedrijfspagina: <a href='{$businessUrl}' style='color:#ffffff;'>{$businessUrl}</a>
                                     </p>
                                 </td>
                             </tr>
@@ -495,11 +495,11 @@ class VerifyEmailController extends Controller
                                 <h2 style='margin:0 0 10px;color:#ffffff;font-size:20px;'>{$business['company_name']}</h2>
 
                                 <p style='margin:0 0 8px;color:#6b7280;font-size:14px;'>
-                                    <span style='color:#000000;'>📍</span> {$location}
+                                    <span style='color:#ffffff;'>📍</span> {$location}
                                 </p>
 
                                 <p style='margin:0 0 8px;color:#6b7280;font-size:14px;'>
-                                    <span style='color:#000000;'>💅</span> {$categoryName}
+                                    <span style='color:#ffffff;'>💅</span> {$categoryName}
                                 </p>
 
                                 <p style='margin:15px 0 0;color:#4b5563;font-size:14px;line-height:1.5;'>
@@ -527,7 +527,7 @@ class VerifyEmailController extends Controller
                                 Je ontvangt deze email omdat je een account hebt bij GlamourSchedule.
                             </p>
                             <p style='margin:0;color:#9ca3af;font-size:12px;'>
-                                &copy; 2026 GlamourSchedule - <a href='https://glamourschedule.nl' style='color:#000000;text-decoration:none;'>glamourschedule.nl</a>
+                                &copy; 2026 GlamourSchedule - <a href='https://glamourschedule.nl' style='color:#ffffff;text-decoration:none;'>glamourschedule.nl</a>
                             </p>
                         </td>
                     </tr>
@@ -649,7 +649,7 @@ HTML;
                         <a href="{$verifyUrl}?action=approve" style="display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;margin:5px;">
                             ✓ Accepteren
                         </a>
-                        <a href="{$verifyUrl}?action=reject" style="display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;border:2px solid #000000;margin:5px;">
+                        <a href="{$verifyUrl}?action=reject" style="display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;border:2px solid #333;margin:5px;">
                             ✗ Weigeren
                         </a>
                     </div>
@@ -681,7 +681,7 @@ HTML;
                         {$verificationStatus}
                     </div>
 
-                    <h2 style="margin:0 0 25px 0;color:#000000;font-size:28px;">{$businessData['name']}</h2>
+                    <h2 style="margin:0 0 25px 0;color:#ffffff;font-size:28px;">{$businessData['name']}</h2>
 
                     <table style="width:100%;border-collapse:collapse;background:#f9fafb;border-radius:12px;overflow:hidden;">
                         <tr>

@@ -349,7 +349,7 @@ class MollieConnectController extends Controller
             <div style='background:#000;padding:25px;text-align:center;'>
                 <h1 style='color:#fff;margin:0;font-size:20px;'>Mollie Account Gekoppeld</h1>
             </div>
-            <div style='padding:25px;background:#fff;'>
+            <div style='padding:25px;background:#1a1a1a;'>
                 <p>Beste {$business['company_name']},</p>
 
                 <p>Geweldig nieuws! Je Mollie account is succesvol gekoppeld aan GlamourSchedule.</p>
