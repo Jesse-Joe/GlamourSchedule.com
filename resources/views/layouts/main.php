@@ -203,7 +203,43 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 'en' => ['code' => 'EN', 'color' => '#003399', 'name' => 'English'],
                 'nl' => ['code' => 'NL', 'color' => '#FF6B00', 'name' => 'Nederlands'],
                 'de' => ['code' => 'DE', 'color' => '#DD0000', 'name' => 'Deutsch'],
-                'fr' => ['code' => 'FR', 'color' => '#0055A4', 'name' => 'Français']
+                'fr' => ['code' => 'FR', 'color' => '#0055A4', 'name' => 'Français'],
+                'es' => ['code' => 'ES', 'color' => '#AA151B', 'name' => 'Español'],
+                'it' => ['code' => 'IT', 'color' => '#009246', 'name' => 'Italiano'],
+                'pt' => ['code' => 'PT', 'color' => '#006600', 'name' => 'Português'],
+                'ru' => ['code' => 'RU', 'color' => '#0039A6', 'name' => 'Русский'],
+                'ja' => ['code' => 'JA', 'color' => '#BC002D', 'name' => '日本語'],
+                'ko' => ['code' => 'KO', 'color' => '#003478', 'name' => '한국어'],
+                'zh' => ['code' => 'ZH', 'color' => '#DE2910', 'name' => '中文'],
+                'ar' => ['code' => 'AR', 'color' => '#006C35', 'name' => 'العربية'],
+                'tr' => ['code' => 'TR', 'color' => '#E30A17', 'name' => 'Türkçe'],
+                'pl' => ['code' => 'PL', 'color' => '#DC143C', 'name' => 'Polski'],
+                'sv' => ['code' => 'SV', 'color' => '#006AA7', 'name' => 'Svenska'],
+                'no' => ['code' => 'NO', 'color' => '#BA0C2F', 'name' => 'Norsk'],
+                'da' => ['code' => 'DA', 'color' => '#C8102E', 'name' => 'Dansk'],
+                'fi' => ['code' => 'FI', 'color' => '#003580', 'name' => 'Suomi'],
+                'el' => ['code' => 'EL', 'color' => '#0D5EAF', 'name' => 'Ελληνικά'],
+                'cs' => ['code' => 'CS', 'color' => '#11457E', 'name' => 'Čeština'],
+                'hu' => ['code' => 'HU', 'color' => '#436F4D', 'name' => 'Magyar'],
+                'ro' => ['code' => 'RO', 'color' => '#002B7F', 'name' => 'Română'],
+                'bg' => ['code' => 'BG', 'color' => '#00966E', 'name' => 'Български'],
+                'hr' => ['code' => 'HR', 'color' => '#FF0000', 'name' => 'Hrvatski'],
+                'sk' => ['code' => 'SK', 'color' => '#0B4EA2', 'name' => 'Slovenčina'],
+                'sl' => ['code' => 'SL', 'color' => '#005DA4', 'name' => 'Slovenščina'],
+                'et' => ['code' => 'ET', 'color' => '#0072CE', 'name' => 'Eesti'],
+                'lv' => ['code' => 'LV', 'color' => '#9E3039', 'name' => 'Latviešu'],
+                'lt' => ['code' => 'LT', 'color' => '#006A44', 'name' => 'Lietuvių'],
+                'uk' => ['code' => 'UK', 'color' => '#005BBB', 'name' => 'Українська'],
+                'hi' => ['code' => 'HI', 'color' => '#FF9933', 'name' => 'हिन्दी'],
+                'th' => ['code' => 'TH', 'color' => '#2D2A4A', 'name' => 'ไทย'],
+                'vi' => ['code' => 'VI', 'color' => '#DA251D', 'name' => 'Tiếng Việt'],
+                'id' => ['code' => 'ID', 'color' => '#FF0000', 'name' => 'Bahasa Indonesia'],
+                'ms' => ['code' => 'MS', 'color' => '#010066', 'name' => 'Bahasa Melayu'],
+                'tl' => ['code' => 'TL', 'color' => '#0038A8', 'name' => 'Tagalog'],
+                'he' => ['code' => 'HE', 'color' => '#0038B8', 'name' => 'עברית'],
+                'fa' => ['code' => 'FA', 'color' => '#239F40', 'name' => 'فارسی'],
+                'sw' => ['code' => 'SW', 'color' => '#006600', 'name' => 'Kiswahili'],
+                'af' => ['code' => 'AF', 'color' => '#007A4D', 'name' => 'Afrikaans']
             ];
             $currentLangMobile = $lang ?? 'en';
 
@@ -281,15 +317,15 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <!-- Language Selector Dropdown -->
             <?php
             // Build language URLs that preserve current query parameters
-            $langFlags = [
-                'en' => ['code' => 'EN', 'color' => '#003399'],
-                'nl' => ['code' => 'NL', 'color' => '#FF6B00'],
-                'de' => ['code' => 'DE', 'color' => '#DD0000'],
-                'fr' => ['code' => 'FR', 'color' => '#0055A4']
-            ];
+            // Reuse mobileLangFlags for consistency
+            $langFlags = [];
+            $langNames = [];
+            foreach ($mobileLangFlags as $code => $data) {
+                $langFlags[$code] = ['code' => $data['code'], 'color' => $data['color']];
+                $langNames[$code] = $data['name'];
+            }
             $currentLang = $lang ?? 'en';
             $currentFlag = $langFlags[$currentLang] ?? $langFlags['en'];
-            $langNames = ['en' => 'English', 'nl' => 'Nederlands', 'de' => 'Deutsch', 'fr' => 'Français'];
 
             // Function to build lang URL preserving other query params
             $buildLangUrl = function($newLang) {
