@@ -98,20 +98,88 @@ abstract class Controller
             return $_SESSION[$cacheKey];
         }
 
-        // Country to language mapping
+        // Country to language mapping (ISO 3166-1 alpha-2 to language code)
         $countryToLang = [
-            'NL' => 'nl', // Netherlands
-            'BE' => 'nl', // Belgium (Dutch)
-            'DE' => 'de', // Germany
-            'AT' => 'de', // Austria
-            'CH' => 'de', // Switzerland (German default)
-            'FR' => 'fr', // France
-            'LU' => 'fr', // Luxembourg (French default)
-            'GB' => 'en', // United Kingdom
-            'US' => 'en', // United States
-            'CA' => 'en', // Canada
-            'AU' => 'en', // Australia
-            'IE' => 'en', // Ireland
+            // English
+            'GB' => 'en', 'US' => 'en', 'CA' => 'en', 'AU' => 'en', 'NZ' => 'en', 'IE' => 'en',
+            // Dutch
+            'NL' => 'nl', 'BE' => 'nl', 'SR' => 'nl',
+            // German
+            'DE' => 'de', 'AT' => 'de', 'CH' => 'de', 'LI' => 'de',
+            // French
+            'FR' => 'fr', 'LU' => 'fr', 'MC' => 'fr', 'SN' => 'fr', 'CI' => 'fr',
+            // Spanish
+            'ES' => 'es', 'MX' => 'es', 'AR' => 'es', 'CO' => 'es', 'CL' => 'es', 'PE' => 'es', 'VE' => 'es', 'EC' => 'es', 'GT' => 'es', 'CU' => 'es', 'BO' => 'es', 'DO' => 'es', 'HN' => 'es', 'PY' => 'es', 'SV' => 'es', 'NI' => 'es', 'CR' => 'es', 'PA' => 'es', 'UY' => 'es',
+            // Italian
+            'IT' => 'it', 'SM' => 'it', 'VA' => 'it',
+            // Portuguese
+            'PT' => 'pt', 'BR' => 'pt', 'AO' => 'pt', 'MZ' => 'pt',
+            // Russian
+            'RU' => 'ru', 'BY' => 'ru', 'KZ' => 'ru', 'KG' => 'ru',
+            // Japanese
+            'JP' => 'ja',
+            // Korean
+            'KR' => 'ko', 'KP' => 'ko',
+            // Chinese
+            'CN' => 'zh', 'TW' => 'zh', 'HK' => 'zh', 'MO' => 'zh', 'SG' => 'zh',
+            // Arabic
+            'SA' => 'ar', 'AE' => 'ar', 'EG' => 'ar', 'DZ' => 'ar', 'MA' => 'ar', 'IQ' => 'ar', 'SD' => 'ar', 'SY' => 'ar', 'YE' => 'ar', 'TN' => 'ar', 'JO' => 'ar', 'LY' => 'ar', 'LB' => 'ar', 'OM' => 'ar', 'KW' => 'ar', 'QA' => 'ar', 'BH' => 'ar',
+            // Turkish
+            'TR' => 'tr', 'CY' => 'tr',
+            // Polish
+            'PL' => 'pl',
+            // Swedish
+            'SE' => 'sv',
+            // Norwegian
+            'NO' => 'no',
+            // Danish
+            'DK' => 'da',
+            // Finnish
+            'FI' => 'fi',
+            // Greek
+            'GR' => 'el',
+            // Czech
+            'CZ' => 'cs',
+            // Hungarian
+            'HU' => 'hu',
+            // Romanian
+            'RO' => 'ro', 'MD' => 'ro',
+            // Bulgarian
+            'BG' => 'bg',
+            // Croatian
+            'HR' => 'hr', 'BA' => 'hr',
+            // Slovak
+            'SK' => 'sk',
+            // Slovenian
+            'SI' => 'sl',
+            // Estonian
+            'EE' => 'et',
+            // Latvian
+            'LV' => 'lv',
+            // Lithuanian
+            'LT' => 'lt',
+            // Ukrainian
+            'UA' => 'uk',
+            // Hindi
+            'IN' => 'hi',
+            // Thai
+            'TH' => 'th',
+            // Vietnamese
+            'VN' => 'vi',
+            // Indonesian
+            'ID' => 'id',
+            // Malay
+            'MY' => 'ms', 'BN' => 'ms',
+            // Tagalog/Filipino
+            'PH' => 'tl',
+            // Hebrew
+            'IL' => 'he',
+            // Persian/Farsi
+            'IR' => 'fa', 'AF' => 'fa',
+            // Swahili
+            'KE' => 'sw', 'TZ' => 'sw', 'UG' => 'sw',
+            // Afrikaans
+            'ZA' => 'af', 'NA' => 'af',
         ];
 
         try {

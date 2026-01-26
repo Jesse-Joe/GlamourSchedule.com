@@ -253,12 +253,21 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             ?>
             <div class="sidebar-lang-selector">
                 <span class="sidebar-lang-label"><?= $translations['language'] ?? 'Language' ?></span>
-                <div class="sidebar-lang-options">
-                    <?php foreach ($mobileLangFlags as $lCode => $lData): ?>
-                    <a href="<?= htmlspecialchars($buildMobileLangUrl($lCode)) ?>" class="sidebar-lang-btn <?= $currentLangMobile === $lCode ? 'active' : '' ?>" title="<?= $lData['name'] ?>">
-                        <span class="lang-flag-badge" style="background: <?= $lData['color'] ?>"><?= $lData['code'] ?></span>
-                    </a>
-                    <?php endforeach; ?>
+                <div class="sidebar-lang-dropdown">
+                    <button type="button" class="sidebar-lang-toggle" onclick="toggleMobileLangDropdown()">
+                        <span class="lang-flag-badge" style="background: <?= $mobileLangFlags[$currentLangMobile]['color'] ?? '#003399' ?>"><?= $mobileLangFlags[$currentLangMobile]['code'] ?? 'EN' ?></span>
+                        <span class="sidebar-lang-name"><?= $mobileLangFlags[$currentLangMobile]['name'] ?? 'English' ?></span>
+                        <i class="fas fa-chevron-down sidebar-lang-arrow"></i>
+                    </button>
+                    <div class="sidebar-lang-menu" id="mobileLangMenu">
+                        <?php foreach ($mobileLangFlags as $lCode => $lData): ?>
+                        <a href="<?= htmlspecialchars($buildMobileLangUrl($lCode)) ?>" class="sidebar-lang-item <?= $currentLangMobile === $lCode ? 'active' : '' ?>">
+                            <span class="lang-flag-badge" style="background: <?= $lData['color'] ?>"><?= $lData['code'] ?></span>
+                            <span class="sidebar-lang-item-name"><?= $lData['name'] ?></span>
+                            <?php if ($currentLangMobile === $lCode): ?><i class="fas fa-check"></i><?php endif; ?>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
 
@@ -912,11 +921,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         font-size: 0.8rem;
     }
 
-    /* Mobile Sidebar Language Selector */
+    /* Mobile Sidebar Language Selector Dropdown */
     .sidebar-lang-selector {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0.5rem;
         padding: 1rem 0;
         border-bottom: 1px solid #222;
         margin-bottom: 1rem;
@@ -927,24 +936,77 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    .sidebar-lang-options {
+    .sidebar-lang-dropdown {
+        position: relative;
+    }
+    .sidebar-lang-toggle {
         display: flex;
-        gap: 0.5rem;
-    }
-    .sidebar-lang-btn {
-        padding: 0.5rem;
-        border-radius: 8px;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.75rem 1rem;
         background: rgba(255,255,255,0.05);
-        border: 1px solid transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
         transition: all 0.2s;
+    }
+    .sidebar-lang-toggle:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    .sidebar-lang-name {
+        flex: 1;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+    .sidebar-lang-arrow {
+        font-size: 0.75rem;
+        transition: transform 0.2s;
+    }
+    .sidebar-lang-dropdown.open .sidebar-lang-arrow {
+        transform: rotate(180deg);
+    }
+    .sidebar-lang-menu {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        max-height: 300px;
+        overflow-y: auto;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+    }
+    .sidebar-lang-dropdown.open .sidebar-lang-menu {
+        display: block;
+    }
+    .sidebar-lang-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #fff;
         text-decoration: none;
+        transition: background 0.2s;
     }
-    .sidebar-lang-btn:hover {
+    .sidebar-lang-item:hover {
         background: rgba(255,255,255,0.1);
     }
-    .sidebar-lang-btn.active {
-        border-color: #fff;
-        background: rgba(255,255,255,0.1);
+    .sidebar-lang-item.active {
+        background: rgba(255,255,255,0.05);
+    }
+    .sidebar-lang-item-name {
+        flex: 1;
+        font-size: 0.9rem;
+    }
+    .sidebar-lang-item .fa-check {
+        color: #22c55e;
+        font-size: 0.8rem;
     }
 
     @media (max-width: 768px) {
@@ -969,6 +1031,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         document.getElementById('accountDropdownMenu')?.classList.remove('active');
     }
 
+    function toggleMobileLangDropdown() {
+        const dropdown = document.querySelector('.sidebar-lang-dropdown');
+        dropdown.classList.toggle('open');
+    }
+
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         const accountDropdown = document.querySelector('.account-dropdown');
@@ -980,6 +1047,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         const langDropdown = document.querySelector('.lang-dropdown');
         if (langDropdown && !langDropdown.contains(e.target)) {
             langDropdown.classList.remove('open');
+        }
+
+        const mobileLangDropdown = document.querySelector('.sidebar-lang-dropdown');
+        if (mobileLangDropdown && !mobileLangDropdown.contains(e.target)) {
+            mobileLangDropdown.classList.remove('open');
         }
     });
     </script>
