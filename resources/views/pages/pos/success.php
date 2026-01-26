@@ -259,15 +259,15 @@
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Datum</span>
-                    <span class="summary-value"><?= date('l d F Y', strtotime($booking['appointment_date'])) ?></span>
+                    <span class="summary-value"><?= !empty($booking['appointment_date']) ? date('l d F Y', strtotime($booking['appointment_date'])) : '-' ?></span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Tijd</span>
-                    <span class="summary-value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></span>
+                    <span class="summary-value"><?= !empty($booking['appointment_time']) ? date('H:i', strtotime($booking['appointment_time'])) : '-' ?></span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Duur</span>
-                    <span class="summary-value"><?= $booking['duration_minutes'] ?> minuten</span>
+                    <span class="summary-value"><?= $booking['duration_minutes'] ?? 0 ?> minuten</span>
                 </div>
             </div>
 

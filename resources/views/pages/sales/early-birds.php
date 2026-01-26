@@ -67,18 +67,20 @@
                             <h4><?= htmlspecialchars($bird['business_name']) ?></h4>
                             <p><?= htmlspecialchars($bird['contact_name']) ?></p>
                         </div>
-                        <span class="status-badge status-<?= $bird['status'] ?>">
-                            <?php
-                            $statusLabels = [
-                                'pending' => 'Uitgenodigd',
-                                'registered' => 'Geregistreerd',
-                                'trial' => 'In Trial',
-                                'converted' => 'Geconverteerd',
-                                'expired' => 'Verlopen',
-                                'cancelled' => 'Geannuleerd'
-                            ];
-                            echo $statusLabels[$bird['status']] ?? $bird['status'];
-                            ?>
+                        <?php
+                        $statusLabels = [
+                            'pending' => 'Uitgenodigd',
+                            'registered' => 'Geregistreerd',
+                            'trial' => 'In Trial',
+                            'converted' => 'Geconverteerd',
+                            'expired' => 'Verlopen',
+                            'cancelled' => 'Geannuleerd'
+                        ];
+                        $birdStatus = $bird['status'] ?? 'pending';
+                        $safeStatus = in_array($birdStatus, array_keys($statusLabels)) ? $birdStatus : 'pending';
+                        ?>
+                        <span class="status-badge status-<?= $safeStatus ?>">
+                            <?= $statusLabels[$birdStatus] ?? 'Onbekend' ?>
                         </span>
                     </div>
                     <div class="early-bird-details">
@@ -86,7 +88,7 @@
                             <i class="fas fa-envelope"></i>
                             <span><?= htmlspecialchars($bird['contact_email']) ?></span>
                         </div>
-                        <?php if ($bird['contact_phone']): ?>
+                        <?php if (!empty($bird['contact_phone'])): ?>
                             <div class="detail">
                                 <i class="fas fa-phone"></i>
                                 <span><?= htmlspecialchars($bird['contact_phone']) ?></span>
@@ -94,7 +96,7 @@
                         <?php endif; ?>
                         <div class="detail">
                             <i class="fas fa-calendar"></i>
-                            <span><?= date('d-m-Y', strtotime($bird['created_at'])) ?></span>
+                            <span><?= !empty($bird['created_at']) ? date('d-m-Y', strtotime($bird['created_at'])) : '-' ?></span>
                         </div>
                     </div>
                     <div class="early-bird-footer">

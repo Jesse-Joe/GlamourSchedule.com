@@ -1047,15 +1047,10 @@ class BusinessDashboardController extends Controller
      */
     public function addIban(): string
     {
-        file_put_contents('/tmp/iban_debug.log', date('Y-m-d H:i:s') . " - addIban() called for business ID: " . $this->business['id'] . "\n", FILE_APPEND);
-
         if (!$this->verifyCsrf()) {
-            file_put_contents('/tmp/iban_debug.log', date('Y-m-d H:i:s') . " - CSRF failed\n", FILE_APPEND);
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
             return $this->redirect('/business/profile');
         }
-
-        file_put_contents('/tmp/iban_debug.log', date('Y-m-d H:i:s') . " - CSRF OK, creating Mollie payment...\n", FILE_APPEND);
 
         // Directly create Mollie payment - IBAN will be retrieved from payment details
         return $this->createIbanMolliePayment();
@@ -1067,27 +1062,20 @@ class BusinessDashboardController extends Controller
      */
     private function createIbanMolliePayment(): string
     {
-        $log = function($msg) { file_put_contents('/tmp/iban_debug.log', date('Y-m-d H:i:s') . " - " . $msg . "\n", FILE_APPEND); };
-
         $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
-        $log("API key present: " . (!empty($mollieApiKey) ? 'yes (' . substr($mollieApiKey, 0, 10) . '...)' : 'no'));
 
         if (empty($mollieApiKey)) {
-            $log("No API key configured - aborting");
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betalingssysteem niet geconfigureerd'];
             return $this->redirect('/business/profile');
         }
 
         try {
-            $log("Creating Mollie client...");
             $mollie = new \Mollie\Api\MollieApiClient();
             $mollie->setApiKey($mollieApiKey);
 
             // Create unique payment reference
             $reference = 'IBAN-' . $this->business['id'] . '-' . time();
-            $log("Reference: " . $reference);
 
-            $log("Creating payment...");
             $payment = $mollie->payments->create([
                 'amount' => [
                     'currency' => 'EUR',
@@ -1104,8 +1092,6 @@ class BusinessDashboardController extends Controller
                 ]
             ]);
 
-            $log("Payment created: " . $payment->id);
-
             // Store payment reference (IBAN will be filled after payment)
             $this->db->query(
                 "INSERT INTO iban_verifications (business_id, verification_code, mollie_payment_id, status, expires_at)
@@ -1114,13 +1100,12 @@ class BusinessDashboardController extends Controller
             );
 
             $checkoutUrl = $payment->getCheckoutUrl();
-            $log("Redirecting to: " . $checkoutUrl);
 
             // Redirect to Mollie iDEAL
             return $this->redirect($checkoutUrl);
 
         } catch (\Exception $e) {
-            $log("ERROR: " . $e->getMessage() . " | File: " . $e->getFile() . ":" . $e->getLine());
+            error_log("IBAN verification error: " . $e->getMessage());
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling kon niet worden gestart. Probeer later opnieuw.'];
             return $this->redirect('/business/profile');
         }

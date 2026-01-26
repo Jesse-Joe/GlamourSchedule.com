@@ -298,7 +298,7 @@
                         'expire' => $translations['points_expired'] ?? 'Punten verlopen',
                         'adjustment' => $translations['adjustment'] ?? 'Aanpassing'
                     ];
-                    echo $typeLabels[$tx['transaction_type']] ?? $tx['transaction_type'];
+                    echo htmlspecialchars($typeLabels[$tx['transaction_type'] ?? ''] ?? ($translations['unknown'] ?? 'Onbekend'));
                     ?>
                 </div>
                 <div class="transaction-meta">
@@ -306,10 +306,10 @@
                     <?php if (!empty($tx['booking_number'])): ?>
                         &middot; #<?= htmlspecialchars($tx['booking_number']) ?>
                     <?php endif; ?>
-                    &middot; <?= date('d-m-Y H:i', strtotime($tx['created_at'])) ?>
+                    &middot; <?= !empty($tx['created_at']) ? date('d-m-Y H:i', strtotime($tx['created_at'])) : '-' ?>
                 </div>
             </div>
-            <div class="transaction-points <?= $tx['points'] > 0 ? 'positive' : 'negative' ?>">
+            <div class="transaction-points <?= ($tx['points'] ?? 0) > 0 ? 'positive' : 'negative' ?>">
                 <?= $tx['points'] > 0 ? '+' : '' ?><?= number_format($tx['points']) ?>
             </div>
         </div>

@@ -1127,6 +1127,11 @@ function searchCustomers(query) {
             results.appendChild(addNew);
 
             results.classList.add('show');
+        })
+        .catch(err => {
+            console.error('Customer search error:', err);
+            const results = document.getElementById('customerResults');
+            if (results) results.classList.remove('show');
         });
 }
 
@@ -1349,6 +1354,10 @@ function sendPaymentLinkManual() {
         } else {
             alert(data.error || 'Kon link niet versturen');
         }
+    })
+    .catch(err => {
+        console.error('Send payment link error:', err);
+        alert('Er is een fout opgetreden bij het versturen');
     });
 }
 
@@ -1403,6 +1412,10 @@ function addNewCustomer() {
         } else {
             alert(data.error || 'Kon klant niet toevoegen');
         }
+    })
+    .catch(err => {
+        console.error('Add customer error:', err);
+        alert('Er is een fout opgetreden');
     });
 }
 
@@ -1421,6 +1434,10 @@ function resendPaymentLink(uuid) {
     .then(r => r.json())
     .then(data => {
         alert(data.success ? data.message : (data.error || 'Er ging iets mis'));
+    })
+    .catch(err => {
+        console.error('Resend payment link error:', err);
+        alert('Er is een fout opgetreden');
     });
 }
 
@@ -1439,6 +1456,10 @@ function markCompleted(uuid) {
     .then(data => {
         if (data.success) location.reload();
         else alert(data.error || 'Er ging iets mis');
+    })
+    .catch(err => {
+        console.error('Mark completed error:', err);
+        alert('Er is een fout opgetreden');
     });
 }
 
@@ -1457,6 +1478,10 @@ function cancelBooking(uuid) {
     .then(data => {
         if (data.success) location.reload();
         else alert(data.error || 'Er ging iets mis');
+    })
+    .catch(err => {
+        console.error('Cancel booking error:', err);
+        alert('Er is een fout opgetreden');
     });
 }
 
