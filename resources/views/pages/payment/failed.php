@@ -162,11 +162,11 @@ body, main {
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid #333;color:rgba(255,255,255,0.6)"><?= $__('customer_name') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid #333;text-align:right;font-weight:500;color:#fff"><?= htmlspecialchars($booking['customer_name'] ?? ($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid #333;text-align:right;font-weight:500;color:#fff"><?= htmlspecialchars($booking['guest_name'] ?? $booking['customer_name'] ?? '') ?></td>
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid #333;color:rgba(255,255,255,0.6)"><?= $__('email') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid #333;text-align:right;font-weight:500;color:#fff"><?= htmlspecialchars($booking['customer_email'] ?? $booking['email'] ?? '') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid #333;text-align:right;font-weight:500;color:#fff"><?= htmlspecialchars($booking['guest_email'] ?? $booking['customer_email'] ?? '') ?></td>
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid #333;color:rgba(255,255,255,0.6)"><?= $__('salon') ?></td>
