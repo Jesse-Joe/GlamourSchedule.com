@@ -485,13 +485,9 @@ $accentColor = $settings['accent_color'] ?? '#000000';
                         <span style="color:var(--text-light);"><?= $translations['service_price'] ?? 'Dienstprijs' ?></span>
                         <span>&euro;<?= number_format($bookingData['service_price'], 2, ',', '.') ?></span>
                     </div>
-                    <div id="loyalty_discount_row" style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#16a34a;">
+                    <div id="loyalty_discount_row" style="display:flex;justify-content:space-between;color:#16a34a;">
                         <span><?= $translations['loyalty_discount'] ?? 'Puntkorting' ?></span>
                         <span id="loyalty_discount_amount">-&euro;0,00</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;padding-top:0.5rem;border-top:1px dashed var(--border);">
-                        <span style="color:var(--text-light);"><?= $translations['platform_fee'] ?? 'Platformkosten' ?></span>
-                        <span>&euro;1,75</span>
                     </div>
                 </div>
                 <div class="total-box">
@@ -523,7 +519,6 @@ $accentColor = $settings['accent_color'] ?? '#000000';
 <script>
 (function() {
     const servicePrice = <?= $bookingData['service_price'] ?>;
-    const platformFee = 1.75;
     const pointsPerPercent = <?= $loyaltyData['points_per_percent'] ?>;
 
     const checkbox = document.getElementById('use_loyalty_points');
@@ -549,7 +544,7 @@ $accentColor = $settings['accent_color'] ?? '#000000';
     function updateDisplay() {
         const points = parseInt(slider.value) || 0;
         const discount = calculateDiscount(points);
-        const newTotal = Math.max(0, servicePrice - discount) + platformFee;
+        const newTotal = Math.max(0, servicePrice - discount); // Geen platformfee voor klant
 
         pointsSelected.textContent = points.toLocaleString() + ' <?= $translations['points'] ?? 'punten' ?>';
         discountPreview.textContent = '-' + formatCurrency(discount);
@@ -571,7 +566,7 @@ $accentColor = $settings['accent_color'] ?? '#000000';
             slider.value = 0;
             loyaltyInput.value = 0;
             priceBreakdown.style.display = 'none';
-            totalAmount.textContent = formatCurrency(servicePrice + platformFee);
+            totalAmount.textContent = formatCurrency(servicePrice); // Geen platformfee voor klant
         }
     });
 

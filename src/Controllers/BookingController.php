@@ -351,11 +351,13 @@ class BookingController extends Controller
             }
         }
 
-        // Calculate final price (service price - loyalty discount, platform fee always applies)
+        // Calculate final price (service price - loyalty discount)
+        // Platform fee wordt van bedrijf afgetrokken, NIET van klant
         $servicePrice = $bookingData['service_price'];
         $finalServicePrice = max(0, $servicePrice - $loyaltyDiscount);
-        $adminFee = 1.75; // Platform fee ALWAYS applies
-        $totalPrice = $finalServicePrice + $adminFee;
+        $platformFee = 1.75; // Platform fee wordt van bedrijf afgetrokken
+        $totalPrice = $finalServicePrice; // Klant betaalt alleen serviceprijs (minus korting)
+        $businessPayout = max(0, $finalServicePrice - $platformFee); // Bedrijf ontvangt dit na aftrek platform fee
 
         // Create the booking
         $uuid = $this->generateUuid();
@@ -377,14 +379,16 @@ class BookingController extends Controller
         $this->db->query(
             "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
-             duration_minutes, service_price, admin_fee, total_price, qr_code_hash, verification_code, customer_notes,
+             duration_minutes, service_price, admin_fee, total_price, platform_fee, business_payout,
+             qr_code_hash, verification_code, customer_notes,
              language, terms_accepted_at, terms_version, status, loyalty_discount, loyalty_points_redeemed)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
             [
                 $uuid, $bookingNumber, $business['id'], $bookingData['employee_id'], $bookingData['user_id'], $bookingData['service_id'],
                 $bookingData['guest_name'] ?: null, $bookingData['guest_email'] ?: null, $bookingData['guest_phone'] ?: null,
                 $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'],
-                $servicePrice, $adminFee, $totalPrice, $qrCodeHash, $verificationCode, $bookingData['notes'] ?: null,
+                $servicePrice, 0.00, $totalPrice, $platformFee, $businessPayout,
+                $qrCodeHash, $verificationCode, $bookingData['notes'] ?: null,
                 $bookingLanguage, $loyaltyDiscount, $loyaltyPointsRedeemed
             ]
         );

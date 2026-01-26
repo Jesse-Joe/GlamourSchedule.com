@@ -171,7 +171,7 @@ class BusinessDashboardController extends Controller
         $todayBookings = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
 
         $stmt = $this->db->query(
-            "SELECT COALESCE(SUM(total_price - admin_fee), 0) as revenue FROM bookings WHERE business_id = ? AND status = 'completed'",
+            "SELECT COALESCE(SUM(COALESCE(business_payout, total_price - platform_fee)), 0) as revenue FROM bookings WHERE business_id = ? AND status = 'completed'",
             [$businessId]
         );
         $totalRevenue = $stmt->fetch(\PDO::FETCH_ASSOC)['revenue'];
@@ -306,7 +306,7 @@ class BusinessDashboardController extends Controller
     private function getPendingAmount(): float
     {
         $stmt = $this->db->query(
-            "SELECT COALESCE(SUM(total_price - admin_fee), 0) as pending
+            "SELECT COALESCE(SUM(COALESCE(business_payout, total_price - platform_fee)), 0) as pending
              FROM bookings
              WHERE business_id = ? AND status = 'completed' AND payout_status = 'pending'",
             [$this->business['id']]
