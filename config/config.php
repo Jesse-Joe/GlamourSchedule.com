@@ -48,6 +48,7 @@ return [
         'pass' => '+AtQ3Vs2Vd6FYcyTPMRX7UhLsG0B6MLX9q05Cg8l32E=',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
+        'timezone' => 'Europe/Amsterdam',
     ],
     
     // ═══════════════════════════════════════════════════════════════════════

@@ -39,6 +39,11 @@ class Database
                         PDO::ATTR_EMULATE_PREPARES => false,
                     ]
                 );
+
+                // Set MySQL session timezone to match PHP timezone (Europe/Amsterdam)
+                // This ensures NOW() returns the same time as PHP DateTime
+                $timezone = $this->config['timezone'] ?? 'Europe/Amsterdam';
+                self::$instance->exec("SET time_zone = '{$timezone}'");
             } catch (PDOException $e) {
                 throw new \Exception('Database connection failed: ' . $e->getMessage());
             }
