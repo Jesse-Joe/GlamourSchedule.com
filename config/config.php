@@ -245,6 +245,15 @@ return [
     ],
     
     // ═══════════════════════════════════════════════════════════════════════
+    // SMS SETTINGS (MessageBird)
+    // ═══════════════════════════════════════════════════════════════════════
+    'sms' => [
+        'enabled' => !empty(getenv('MESSAGEBIRD_API_KEY')),
+        'api_key' => getenv('MESSAGEBIRD_API_KEY') ?: '',
+        'originator' => getenv('MESSAGEBIRD_ORIGINATOR') ?: 'GlamourSched',
+    ],
+
+    // ═══════════════════════════════════════════════════════════════════════
     // GOOGLE MAPS SETTINGS
     // ═══════════════════════════════════════════════════════════════════════
     'google_maps' => [

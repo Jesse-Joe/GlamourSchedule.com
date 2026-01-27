@@ -2195,20 +2195,22 @@ HTML;
 
         try {
             $pushService = new \GlamourSchedule\Core\PushNotification();
+            $smsService = new \GlamourSchedule\Core\SmsService();
             $sent24h = 0;
             $sent1h = 0;
             $pushSent = 0;
+            $smsSent = 0;
 
             // Get pending reminders that are due (scheduled_for <= NOW())
             $stmt = $this->db->query(
                 "SELECT r.*,
                         b.uuid, b.booking_number, b.appointment_date, b.appointment_time,
-                        b.guest_name, b.guest_email, b.user_id, b.status as booking_status,
+                        b.guest_name, b.guest_email, b.guest_phone, b.user_id, b.status as booking_status,
                         b.payment_status, b.language,
                         s.name as service_name,
                         biz.company_name as business_name,
                         biz.street as address, biz.city,
-                        u.email as user_email, u.first_name, u.last_name
+                        u.email as user_email, u.phone as user_phone, u.first_name, u.last_name
                  FROM booking_reminders r
                  JOIN bookings b ON r.booking_id = b.id
                  JOIN services s ON b.service_id = s.id
@@ -2306,6 +2308,31 @@ HTML;
                     }
                 }
 
+                // Send SMS reminder (if phone number available and SMS configured)
+                $smsSuccess = false;
+                $customerPhone = $reminder['guest_phone'] ?: ($reminder['user_phone'] ?? '');
+                if ($customerPhone && $smsService->isEnabled()) {
+                    try {
+                        $smsData = [
+                            'customer_phone' => $customerPhone,
+                            'business_name' => $reminder['business_name'],
+                            'service_name' => $reminder['service_name'],
+                            'time' => $reminder['appointment_time'],
+                            'uuid' => $reminder['uuid'],
+                            'language' => $bookingLang,
+                        ];
+
+                        if ($reminder['reminder_type'] === '24h') {
+                            $smsSuccess = $smsService->sendBookingReminder($smsData);
+                        } elseif ($reminder['reminder_type'] === '1h') {
+                            $smsSuccess = $smsService->sendBookingReminder1Hour($smsData);
+                        }
+                        if ($smsSuccess) $smsSent++;
+                    } catch (\Exception $e) {
+                        $this->logReminder("Failed to send SMS for booking {$reminder['booking_number']}: " . $e->getMessage());
+                    }
+                }
+
                 // Update reminder status (success if at least email was sent)
                 $newStatus = $emailSuccess ? 'sent' : 'failed';
                 $this->db->query(
@@ -2313,15 +2340,16 @@ HTML;
                     [$newStatus, $reminder['id']]
                 );
 
-                if ($emailSuccess || $pushSuccess) {
+                if ($emailSuccess || $pushSuccess || $smsSuccess) {
                     $methods = [];
                     if ($emailSuccess) $methods[] = 'email';
                     if ($pushSuccess) $methods[] = 'push';
+                    if ($smsSuccess) $methods[] = 'sms';
                     $this->logReminder("Sent {$reminder['reminder_type']} reminder (" . implode('+', $methods) . ") for booking #{$reminder['booking_number']} to {$customerEmail}");
                 }
             }
 
-            $this->logReminder("Reminder processing complete. Email: 24h={$sent24h}, 1h={$sent1h}. Push: {$pushSent}");
+            $this->logReminder("Reminder processing complete. Email: 24h={$sent24h}, 1h={$sent1h}. Push: {$pushSent}. SMS: {$smsSent}");
 
             return json_encode([
                 'success' => true,
@@ -2329,6 +2357,7 @@ HTML;
                 'email_sent_24h' => $sent24h,
                 'email_sent_1h' => $sent1h,
                 'push_sent' => $pushSent,
+                'sms_sent' => $smsSent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
 
