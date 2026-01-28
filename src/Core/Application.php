@@ -253,6 +253,7 @@ class Application
         $this->router->get('/api/services/{businessId}', 'ApiController@services');
         $this->router->get('/api/availability/{businessId}', 'ApiController@availability');
         $this->router->get('/api/available-times/{businessSlug}', 'BookingController@getAvailableTimes');
+        $this->router->get('/api/salons/map', 'SearchController@mapData');
         $this->router->get('/api/global-search', 'ApiController@globalSearch');
         $this->router->get('/api/categories', 'ApiController@categories');
         $this->router->get('/api/category-groups', 'ApiController@categoryGroups');

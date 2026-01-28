@@ -1426,9 +1426,9 @@ HTML;
         // Try to find booking by UUID (from QR URL), booking number, or verification code
         $booking = null;
 
-        // Check if it's a URL with UUID
-        if (preg_match('/checkin\/([a-f0-9\-]+)/i', $qrData, $matches)) {
-            $uuid = $matches[1];
+        // Check if it's a URL with UUID (supports both /checkin/ and /booking/ URLs)
+        if (preg_match('/(checkin|booking)\/([a-f0-9\-]+)/i', $qrData, $matches)) {
+            $uuid = $matches[2];
             $stmt = $this->db->query(
                 "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
@@ -1465,7 +1465,7 @@ HTML;
             $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         // Check if it's a booking number (e.g., GS12345678)
-        else {
+        elseif (preg_match('/^GS[A-F0-9]{8}$/i', $qrData)) {
             $bookingNumber = strtoupper($qrData);
             $stmt = $this->db->query(
                 "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
@@ -1476,6 +1476,10 @@ HTML;
                 [$bookingNumber, $this->business['id']]
             );
             $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        // Unrecognized input format
+        else {
+            return json_encode(['success' => false, 'error' => 'Onherkenbaar formaat. Gebruik een QR-code, boekingsnummer (GS...) of verificatiecode (XXXX-XXXX-XXXX).']);
         }
 
         if (!$booking) {
@@ -2451,28 +2455,71 @@ HTML;
             return json_encode(['customers' => []]);
         }
 
-        // Check if query is a numeric ID
+        $likeQuery = "%$query%";
+
+        // Search pos_customers
         if (is_numeric($query)) {
             $stmt = $this->db->query(
-                "SELECT * FROM pos_customers
+                "SELECT id, name, email, phone, total_appointments, 'pos' as source
+                 FROM pos_customers
                  WHERE business_id = ? AND (id = ? OR name LIKE ? OR email LIKE ? OR phone LIKE ?)
                  ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, name LIMIT 10",
-                [$this->business['id'], $query, "%$query%", "%$query%", "%$query%", $query]
+                [$this->business['id'], $query, $likeQuery, $likeQuery, $likeQuery, $query]
             );
         } else {
             if (strlen($query) < 2) {
                 return json_encode(['customers' => []]);
             }
             $stmt = $this->db->query(
-                "SELECT * FROM pos_customers
+                "SELECT id, name, email, phone, total_appointments, 'pos' as source
+                 FROM pos_customers
                  WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)
                  ORDER BY name LIMIT 10",
-                [$this->business['id'], "%$query%", "%$query%", "%$query%"]
+                [$this->business['id'], $likeQuery, $likeQuery, $likeQuery]
             );
         }
-        $customers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $posCustomers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        return json_encode(['customers' => $customers]);
+        // Also search the main users table
+        if (strlen($query) >= 2 || is_numeric($query)) {
+            $stmt = $this->db->query(
+                "SELECT id, CONCAT(first_name, ' ', last_name) as name, email, phone, 0 as total_appointments, 'main' as source
+                 FROM users
+                 WHERE (CONCAT(first_name, ' ', last_name) LIKE ? OR email LIKE ? OR phone LIKE ? OR first_name LIKE ? OR last_name LIKE ?)
+                 ORDER BY first_name, last_name LIMIT 10",
+                [$likeQuery, $likeQuery, $likeQuery, $likeQuery, $likeQuery]
+            );
+            $mainUsers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } else {
+            $mainUsers = [];
+        }
+
+        // Merge and deduplicate by email
+        $seen = [];
+        $merged = [];
+
+        // POS customers first (they are business-specific)
+        foreach ($posCustomers as $c) {
+            $key = !empty($c['email']) ? strtolower($c['email']) : 'pos_' . $c['id'];
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $merged[] = $c;
+            }
+        }
+
+        // Then main users (skip duplicates by email)
+        foreach ($mainUsers as $u) {
+            $key = !empty($u['email']) ? strtolower($u['email']) : 'main_' . $u['id'];
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $merged[] = $u;
+            }
+        }
+
+        // Limit total results
+        $merged = array_slice($merged, 0, 15);
+
+        return json_encode(['customers' => $merged]);
     }
 
     /**

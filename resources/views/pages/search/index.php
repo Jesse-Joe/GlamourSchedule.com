@@ -1035,6 +1035,28 @@
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
 
+/* Route Button */
+.biz-card-route {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: 50%;
+    color: #60a5fa;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.biz-card-route:hover {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
 /* Empty State */
 .empty-state {
     text-align: center;
@@ -1082,6 +1104,97 @@
 .empty-state .btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+/* Salon Map */
+.salon-map-section {
+    max-width: 1400px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+@media (min-width: 1024px) {
+    .salon-map-section {
+        max-width: 1600px;
+        padding: 0 2rem;
+    }
+}
+.salon-map-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.salon-map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+.salon-map-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+.salon-map-title i {
+    color: #60a5fa;
+}
+.country-filter-btns {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+.country-filter-btn {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.country-filter-btn:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+}
+.country-filter-btn.active {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+#salon-map {
+    height: 450px;
+    background: #111111;
+}
+@media (min-width: 1024px) {
+    #salon-map {
+        height: 550px;
+    }
+}
+@media (max-width: 768px) {
+    .salon-map-section {
+        padding: 0;
+    }
+    .salon-map-card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    #salon-map {
+        height: 350px;
+    }
+    .salon-map-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 /* Mobile Adjustments */
@@ -1185,8 +1298,8 @@
                             </button>
                         </div>
                     </div>
-                    <input type="hidden" name="lat" id="user-lat" value="<?= htmlspecialchars($userLat ?? '') ?>">
-                    <input type="hidden" name="lng" id="user-lng" value="<?= htmlspecialchars($userLng ?? '') ?>">
+                    <input type="hidden" name="lat" id="user-lat" value="<?= htmlspecialchars($userLat ?? '') ?>" data-source="<?= htmlspecialchars($locationSource ?? 'none') ?>">
+                    <input type="hidden" name="lng" id="user-lng" value="<?= htmlspecialchars($userLng ?? '') ?>" data-source="<?= htmlspecialchars($locationSource ?? 'none') ?>">
                     <button type="submit" class="search-bar-btn">
                         <i class="fas fa-search"></i>
                         <span><?= $translations['search'] ?? 'Search' ?></span>
@@ -1527,13 +1640,39 @@
                             <?php else: ?>
                                 <span class="biz-card-price"></span>
                             <?php endif; ?>
-                            <span class="biz-card-cta"><?= $translations['view_book'] ?? 'View & Book' ?></span>
+                            <span style="display:flex;align-items:center;gap:0.5rem;">
+                                <?php if (!empty($biz['latitude']) && !empty($biz['longitude'])): ?>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=<?= $biz['latitude'] ?>,<?= $biz['longitude'] ?>"
+                                       target="_blank" rel="noopener" class="biz-card-route" title="<?= $translations['route'] ?? 'Route' ?>"
+                                       onclick="event.stopPropagation()">
+                                        <i class="fas fa-route"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <span class="biz-card-cta"><?= $translations['view_book'] ?? 'View & Book' ?></span>
+                            </span>
                         </div>
                     </div>
                 </a>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+    </div>
+</div>
+
+<!-- Salon World Map -->
+<div class="salon-map-section" id="salon-map-section">
+    <div class="salon-map-card">
+        <div class="salon-map-header">
+            <h3 class="salon-map-title"><i class="fas fa-globe-europe"></i> <?= $translations['salon_map_title'] ?? 'Salons on the Map' ?></h3>
+            <div class="country-filter-btns">
+                <button class="country-filter-btn active" data-country="" onclick="filterMapCountry(this)"><?= $translations['all'] ?? 'All' ?></button>
+                <button class="country-filter-btn" data-country="NL" onclick="filterMapCountry(this)">NL</button>
+                <button class="country-filter-btn" data-country="BE" onclick="filterMapCountry(this)">BE</button>
+                <button class="country-filter-btn" data-country="DE" onclick="filterMapCountry(this)">DE</button>
+                <button class="country-filter-btn" data-country="FR" onclick="filterMapCountry(this)">FR</button>
+            </div>
+        </div>
+        <div id="salon-map"></div>
     </div>
 </div>
 
@@ -1669,8 +1808,8 @@ function searchNearby() {
     const latInput = document.getElementById('user-lat');
     const lngInput = document.getElementById('user-lng');
 
-    // If already have location, just sort by distance
-    if (latInput.value && lngInput.value) {
+    // Only skip GPS request if we already have GPS-based coordinates
+    if (latInput.value && lngInput.value && latInput.dataset.source === 'gps') {
         const url = new URL(window.location.href);
         url.searchParams.set('sort', 'distance');
         window.location.href = url.toString();
@@ -1968,6 +2107,129 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// === Salon Map (Leaflet + MarkerCluster, lazy loaded) ===
+let salonMap = null;
+let salonMarkers = null;
+let allSalonData = [];
+const detectedLang = '<?= $lang ?? 'nl' ?>';
+const langCountryDefaults = { nl: 'NL', de: 'DE', fr: 'FR', en: '' };
+
+function filterMapCountry(btn) {
+    document.querySelectorAll('.country-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const country = btn.dataset.country;
+    loadMapMarkers(country);
+}
+
+function loadMapMarkers(country) {
+    if (!salonMap || !salonMarkers) return;
+    const url = '/api/salons/map' + (country ? '?country=' + country : '');
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            allSalonData = data;
+            salonMarkers.clearLayers();
+            data.forEach(s => {
+                const stars = '\u2605'.repeat(Math.round(s.rating)) + '\u2606'.repeat(5 - Math.round(s.rating));
+                const marker = L.marker([s.lat, s.lng]);
+                marker.bindPopup(
+                    '<div style="min-width:180px">' +
+                    '<strong style="font-size:1.05em">' + s.name.replace(/</g,'&lt;') + '</strong><br>' +
+                    '<span style="color:#666">' + (s.city || '').replace(/</g,'&lt;') + '</span><br>' +
+                    '<span style="color:#f59e0b">' + stars + '</span> ' +
+                    '<small>(' + s.reviews + ')</small><br>' +
+                    '<div style="margin-top:8px;display:flex;gap:6px">' +
+                    '<a href="/business/' + encodeURIComponent(s.slug) + '" style="padding:5px 12px;background:#000;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">' + (detectedLang === 'nl' ? 'Bekijk' : 'View') + '</a>' +
+                    '<a href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '" target="_blank" rel="noopener" style="padding:5px 12px;background:#3b82f6;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">Route</a>' +
+                    '</div></div>'
+                );
+                salonMarkers.addLayer(marker);
+            });
+            salonMap.addLayer(salonMarkers);
+            if (data.length > 0) {
+                const bounds = salonMarkers.getBounds();
+                if (bounds.isValid()) salonMap.fitBounds(bounds, { padding: [30, 30] });
+            }
+        })
+        .catch(() => {});
+}
+
+function initSalonMap() {
+    if (salonMap) return;
+    salonMap = L.map('salon-map', { scrollWheelZoom: false }).setView([51.5, 5.5], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 18
+    }).addTo(salonMap);
+    salonMarkers = L.markerClusterGroup();
+
+    // Auto-select country filter based on detected language
+    const defaultCountry = langCountryDefaults[detectedLang] || '';
+    if (defaultCountry) {
+        const btn = document.querySelector('.country-filter-btn[data-country="' + defaultCountry + '"]');
+        if (btn) {
+            document.querySelectorAll('.country-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    }
+    loadMapMarkers(defaultCountry);
+}
+
+// Lazy load Leaflet CSS/JS when map section is visible
+(function() {
+    const mapSection = document.getElementById('salon-map-section');
+    if (!mapSection) return;
+
+    let leafletLoaded = false;
+    function loadLeaflet() {
+        if (leafletLoaded) return;
+        leafletLoaded = true;
+
+        // Leaflet CSS
+        const css1 = document.createElement('link');
+        css1.rel = 'stylesheet';
+        css1.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(css1);
+
+        // MarkerCluster CSS
+        const css2 = document.createElement('link');
+        css2.rel = 'stylesheet';
+        css2.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css';
+        document.head.appendChild(css2);
+        const css3 = document.createElement('link');
+        css3.rel = 'stylesheet';
+        css3.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css';
+        document.head.appendChild(css3);
+
+        // Leaflet JS
+        const js1 = document.createElement('script');
+        js1.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        js1.onload = function() {
+            // MarkerCluster JS
+            const js2 = document.createElement('script');
+            js2.src = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';
+            js2.onload = function() {
+                initSalonMap();
+            };
+            document.head.appendChild(js2);
+        };
+        document.head.appendChild(js1);
+    }
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                loadLeaflet();
+                observer.disconnect();
+            }
+        }, { rootMargin: '200px' });
+        observer.observe(mapSection);
+    } else {
+        // Fallback: load after delay
+        setTimeout(loadLeaflet, 3000);
+    }
+})();
 </script>
 
 <?php $content = ob_get_clean(); ?>

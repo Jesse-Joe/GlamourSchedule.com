@@ -12,20 +12,28 @@ class SearchController extends Controller
         $location = trim($_GET['location'] ?? '');
         $sort = $_GET['sort'] ?? 'rating';
 
-        // User location for distance calculation
+        // GPS coordinates from URL params (user granted browser GPS)
         $userLat = !empty($_GET['lat']) ? (float)$_GET['lat'] : null;
         $userLng = !empty($_GET['lng']) ? (float)$_GET['lng'] : null;
 
-        // If no GPS coordinates, try IP-based geolocation
-        if (!$userLat || !$userLng) {
+        // Determine location source for the view
+        $locationSource = ($userLat && $userLng) ? 'gps' : 'none';
+
+        // Server-side coordinates for distance calculation (GPS or IP fallback)
+        $calcLat = $userLat;
+        $calcLng = $userLng;
+        if (!$calcLat || !$calcLng) {
             $ipLocation = $this->getLocationFromIP();
             if ($ipLocation) {
-                $userLat = $userLat ?: $ipLocation['lat'];
-                $userLng = $userLng ?: $ipLocation['lng'];
+                $calcLat = $ipLocation['lat'];
+                $calcLng = $ipLocation['lng'];
+                if ($locationSource === 'none') {
+                    $locationSource = 'ip';
+                }
             }
         }
 
-        // New filter parameters
+        // New filter parameters (use calc coordinates for distance sorting)
         $filters = [
             'price_min' => !empty($_GET['price_min']) ? (float)$_GET['price_min'] : null,
             'price_max' => !empty($_GET['price_max']) ? (float)$_GET['price_max'] : null,
@@ -33,8 +41,8 @@ class SearchController extends Controller
             'open_now' => isset($_GET['open_now']) && $_GET['open_now'] === '1',
             'open_weekend' => isset($_GET['open_weekend']) && $_GET['open_weekend'] === '1',
             'open_evening' => isset($_GET['open_evening']) && $_GET['open_evening'] === '1',
-            'user_lat' => $userLat,
-            'user_lng' => $userLng,
+            'user_lat' => $calcLat,
+            'user_lng' => $calcLng,
         ];
 
         $businesses = [];
@@ -64,7 +72,8 @@ class SearchController extends Controller
             'sort' => $sort,
             'filters' => $filters,
             'userLat' => $userLat,
-            'userLng' => $userLng
+            'userLng' => $userLng,
+            'locationSource' => $locationSource
         ]);
     }
 
@@ -435,6 +444,49 @@ class SearchController extends Controller
         }
 
         return $businesses;
+    }
+
+    /**
+     * Return compact JSON with salon map data for Leaflet markers
+     */
+    public function mapData(): string
+    {
+        $country = trim($_GET['country'] ?? '');
+
+        $sql = "SELECT b.id, b.company_name as name, b.slug, b.city, b.latitude as lat, b.longitude as lng, b.country,
+                       COALESCE(AVG(r.rating), 0) as rating,
+                       COUNT(DISTINCT r.id) as reviews
+                FROM businesses b
+                LEFT JOIN reviews r ON b.id = r.business_id
+                WHERE b.status = 'active'
+                  AND b.latitude IS NOT NULL
+                  AND b.longitude IS NOT NULL
+                  AND b.latitude != 0
+                  AND b.longitude != 0";
+
+        $params = [];
+
+        if ($country) {
+            $sql .= " AND UPPER(b.country) = ?";
+            $params[] = strtoupper($country);
+        }
+
+        $sql .= " GROUP BY b.id ORDER BY rating DESC LIMIT 500";
+
+        $stmt = $this->db->query($sql, $params);
+        $salons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Cast numeric fields
+        foreach ($salons as &$s) {
+            $s['lat'] = (float)$s['lat'];
+            $s['lng'] = (float)$s['lng'];
+            $s['rating'] = round((float)$s['rating'], 1);
+            $s['reviews'] = (int)$s['reviews'];
+        }
+
+        header('Content-Type: application/json');
+        header('Cache-Control: public, max-age=300');
+        return json_encode($salons);
     }
 
     private function getCategories(): array

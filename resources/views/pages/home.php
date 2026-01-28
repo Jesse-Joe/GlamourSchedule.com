@@ -438,6 +438,63 @@
 </section>
 <?php endif; ?>
 
+<!-- Salon World Map -->
+<section class="section" id="home-map-section">
+    <style>
+        .home-map-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg, #111111);
+            border: 2px solid var(--border, #333333);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .home-map-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border, #333333);
+        }
+        .home-map-header h3 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary, #ffffff);
+        }
+        .home-map-header i {
+            color: #60a5fa;
+        }
+        #home-map {
+            height: 400px;
+            background: #111111;
+        }
+        @media (min-width: 1024px) {
+            #home-map { height: 500px; }
+        }
+        @media (max-width: 768px) {
+            .home-map-card {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+            #home-map { height: 300px; }
+        }
+    </style>
+    <div class="section-header">
+        <div class="section-tag"><i class="fas fa-map-marked-alt"></i> <?= $translations['map_label'] ?? 'Map' ?></div>
+        <h2 class="section-title"><?= $translations['discover_salons_map'] ?? 'Discover Salons Near You' ?></h2>
+        <p class="section-subtitle"><?= $translations['discover_salons_map_desc'] ?? 'Explore our partner salons across the Benelux and beyond' ?></p>
+    </div>
+    <div class="home-map-card">
+        <div class="home-map-header">
+            <i class="fas fa-globe-europe"></i>
+            <h3><?= $translations['salon_locations'] ?? 'Salon Locations' ?></h3>
+        </div>
+        <div id="home-map"></div>
+    </div>
+</section>
+
 <!-- CTA for Businesses -->
 <section class="section section-light">
     <div class="container" style="max-width: 1100px; margin: 0 auto;">
@@ -578,6 +635,91 @@ class LiveStats {
 document.addEventListener('DOMContentLoaded', () => {
     new LiveStats();
 });
+
+// === Home Page Salon Map (lazy loaded) ===
+(function() {
+    const mapSection = document.getElementById('home-map-section');
+    if (!mapSection) return;
+
+    let leafletLoaded = false;
+    function initHomeMap() {
+        const map = L.map('home-map', { scrollWheelZoom: false }).setView([51.5, 5.5], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap',
+            maxZoom: 18
+        }).addTo(map);
+        const markers = L.markerClusterGroup();
+
+        fetch('/api/salons/map')
+            .then(r => r.json())
+            .then(data => {
+                data.forEach(s => {
+                    const stars = '\u2605'.repeat(Math.round(s.rating)) + '\u2606'.repeat(5 - Math.round(s.rating));
+                    const marker = L.marker([s.lat, s.lng]);
+                    marker.bindPopup(
+                        '<div style="min-width:180px">' +
+                        '<strong style="font-size:1.05em">' + s.name.replace(/</g,'&lt;') + '</strong><br>' +
+                        '<span style="color:#666">' + (s.city || '').replace(/</g,'&lt;') + '</span><br>' +
+                        '<span style="color:#f59e0b">' + stars + '</span> ' +
+                        '<small>(' + s.reviews + ')</small><br>' +
+                        '<div style="margin-top:8px;display:flex;gap:6px">' +
+                        '<a href="/business/' + encodeURIComponent(s.slug) + '" style="padding:5px 12px;background:#000;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600"><?= $translations['view'] ?? 'View' ?></a>' +
+                        '<a href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '" target="_blank" rel="noopener" style="padding:5px 12px;background:#3b82f6;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">Route</a>' +
+                        '</div></div>'
+                    );
+                    markers.addLayer(marker);
+                });
+                map.addLayer(markers);
+                if (data.length > 0) {
+                    const bounds = markers.getBounds();
+                    if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30] });
+                }
+            })
+            .catch(() => {});
+    }
+
+    function loadLeaflet() {
+        if (leafletLoaded) return;
+        leafletLoaded = true;
+
+        const css1 = document.createElement('link');
+        css1.rel = 'stylesheet';
+        css1.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(css1);
+
+        const css2 = document.createElement('link');
+        css2.rel = 'stylesheet';
+        css2.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css';
+        document.head.appendChild(css2);
+
+        const css3 = document.createElement('link');
+        css3.rel = 'stylesheet';
+        css3.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css';
+        document.head.appendChild(css3);
+
+        const js1 = document.createElement('script');
+        js1.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        js1.onload = function() {
+            const js2 = document.createElement('script');
+            js2.src = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';
+            js2.onload = initHomeMap;
+            document.head.appendChild(js2);
+        };
+        document.head.appendChild(js1);
+    }
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                loadLeaflet();
+                observer.disconnect();
+            }
+        }, { rootMargin: '200px' });
+        observer.observe(mapSection);
+    } else {
+        setTimeout(loadLeaflet, 3000);
+    }
+})();
 </script>
 
 <style>
