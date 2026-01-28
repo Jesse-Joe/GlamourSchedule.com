@@ -1,0 +1,59 @@
+=== CLAUDE WIJZIGINGEN LOG ===
+Dit bestand houdt bij wat er gevraagd en gedaan is per sessie.
+
+────────────────────────────────────────
+[2026-01-28 08:30] SESSIE START
+────────────────────────────────────────
+
+[08:30] VRAAG: Ga naar glamourschedule map
+  > Actie: Genavigeerd naar /var/www/glamourschedule
+
+[08:31] VRAAG: Zet de laatst gemaakte backup terug want de navigatie bij zoeken is weg
+  > Actie: Backup van 26 jan (glamourschedule_20260126_092143) search.php teruggezet naar /resources/views/pages/search/index.php
+  > Reden: De navigatie (zoekformulier, categorie tabs, category cards, pagination) ontbrak op de zoekpagina
+
+[08:35] VRAAG: De originele was veel uitgebreider
+  > Actie: Exacte kopie van backup /root/backups/glamourschedule_20260126_092143/resources/views/pages/search.php teruggezet
+  > Bestand: /var/www/glamourschedule/resources/views/pages/search/index.php
+
+[08:36] VRAAG: Test de zoekpagina even
+  > Actie: Getest met curl - HTTP 200 OK
+  > Resultaat: Alle onderdelen aanwezig (search-hero, search-form, category-tabs, category-cards, results-grid, salon-cards, pagination)
+  > Salons gevonden: JJT-Services, Test Kapsalon Glamour
+  > API category-groups: 12 categorien laden correct
+
+[08:40] VRAAG: Kan je de backup van vandaag ophalen op de vps in de ochtend
+  > Actie: Geen backup van vandaag (28 jan) gevonden. Laatste backup is van 26 jan.
+
+[08:42] VRAAG: Verbeter zoek op locatie met vraag om toestemming tot de locatie, vermeld afstand in km/mi (EU vs non-EU), en zet Google Maps link erin
+  > Actie: Plan gemaakt maar nog NIET uitgevoerd
+  > Plan bevat: geolocation permission banner, distance display op kaartjes, km/miles conversie, Google Maps route link, sort op afstand
+
+[08:50] VRAAG: Bekijk de logs terug van de afgelopen dagen
+  > Actie: Git log en server logs bekeken van 25-28 jan
+  > Bevinding: 29 commits in 3 dagen, alle cron jobs draaien stabiel, nieuwe registraties op 28 jan
+
+[08:55] VRAAG: Log alles wat ik zeg vanaf nu zodat dit gezeik niet meer voorkomt
+  > Actie: Dit logbestand aangemaakt: /var/www/glamourschedule/storage/logs/claude-changes.log
+
+[09:00] VRAAG: Log alles wat ik zeg vanaf nu
+  > Actie: Logbestand aangemaakt
+
+[09:05] VRAAG: Ga verder (met locatie verbeteringen)
+  > Actie: Zoekpagina uitgebreid met locatie features
+  > Bestand: /var/www/glamourschedule/resources/views/pages/search/index.php
+  > Wijzigingen:
+    1. Geolocation banner toegevoegd - vraagt toestemming voor locatie met "Gebruik mijn locatie" knop
+    2. Afstand weergave op salon kaartjes (km default, automatisch miles voor US/UK)
+    3. Google Maps route link op elk salon kaartje (fa-directions icoon + "Route" tekst)
+    4. Sort optie "Afstand" toegevoegd aan dropdown (alleen zichtbaar als locatie beschikbaar)
+    5. Location source badge ("In de buurt" / "bij benadering") bij resultaten header
+    6. km/miles conversie: EU landen = km, US/UK/LR/MM = miles (detectie via IP land + browser taal)
+    7. Image handling gefixt (werkt met zowel logo als logo_url)
+    8. Foutafhandeling: denied, unavailable, timeout met Nederlandse fallback teksten
+  > Getest: HTTP 200, alle elementen aanwezig, Google Maps links werken
+
+────────────────────────────────────────
+OPENSTAAND / NOG TE DOEN:
+────────────────────────────────────────
+- [ ] Wijzigingen committen naar git
