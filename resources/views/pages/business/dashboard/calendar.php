@@ -31,20 +31,20 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .calendar-nav-btn {
         padding: 0.75rem 1rem;
-        border: 2px solid var(--border);
-        background: var(--bg-card);
+        border: 2px solid var(--b-border);
+        background: var(--b-bg-card);
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.2s;
         text-decoration: none;
-        color: var(--text-primary);
+        color: var(--b-text);
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
     .calendar-nav-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
+        border-color: var(--b-accent);
+        color: var(--b-accent);
     }
     @media (max-width: 480px) {
         .calendar-nav-btn span {
@@ -64,7 +64,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .calendar-date p {
         margin: 0.25rem 0 0 0;
-        color: var(--text-light);
+        color: var(--b-text-muted);
         font-size: 0.9rem;
     }
     @media (max-width: 480px) {
@@ -83,7 +83,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: grid;
         grid-template-columns: 60px 1fr;
         min-height: 60px;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid var(--b-border);
     }
     @media (max-width: 480px) {
         .time-slot {
@@ -94,8 +94,8 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     .time-label {
         padding: 0.75rem 0.5rem;
         font-size: 0.8rem;
-        color: var(--text-light);
-        border-right: 1px solid var(--border);
+        color: var(--b-text-muted);
+        border-right: 1px solid var(--b-border);
         text-align: center;
         font-weight: 600;
     }
@@ -104,7 +104,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         position: relative;
     }
     .booking-block {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        background: linear-gradient(135deg, #333333, #111111);
         color: white;
         border-radius: 10px;
         padding: 0.75rem;
@@ -154,7 +154,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .appointment-list-item {
         padding: 1rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid var(--b-border);
         display: flex;
         gap: 1rem;
         align-items: flex-start;
@@ -163,7 +163,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         border-bottom: none;
     }
     .appointment-time-badge {
-        background: var(--primary);
+        background: var(--b-bg-surface);
         color: white;
         padding: 0.5rem 0.75rem;
         border-radius: 8px;
@@ -180,7 +180,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .appointment-service {
         font-size: 0.85rem;
-        color: var(--text-light);
+        color: var(--b-text-muted);
     }
     .status-badge {
         padding: 0.25rem 0.75rem;
@@ -188,9 +188,9 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         font-size: 0.75rem;
         font-weight: 500;
     }
-    .status-confirmed { background: #f5f5f5; color: #166534; }
-    .status-checked_in { background: #f5f5f5; color: #000000; }
-    .status-pending { background: #ffffff; color: #000000; }
+    .status-confirmed { background: #1a3a2a; color: #22c55e; }
+    .status-checked_in { background: var(--b-bg-surface); color: var(--b-text); }
+    .status-pending { background: var(--b-bg-surface); color: var(--b-warning); }
 
     /* Booking Details Modal */
     .booking-modal-overlay {
@@ -212,7 +212,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg-card);
+        background: var(--b-bg-card);
         border-radius: 24px 24px 0 0;
         max-height: 85vh;
         overflow-y: auto;
@@ -229,10 +229,10 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         justify-content: space-between;
         align-items: center;
         padding: 1.25rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid var(--b-border);
         position: sticky;
         top: 0;
-        background: var(--bg-card);
+        background: var(--b-bg-card);
         z-index: 10;
     }
     .booking-modal-header h3 {
@@ -240,7 +240,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         font-size: 1.1rem;
     }
     .booking-modal-close {
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border: none;
         width: 36px;
         height: 36px;
@@ -249,7 +249,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--text-primary);
+        color: var(--b-text);
     }
     .booking-modal-content {
         padding: 1.25rem;
@@ -258,13 +258,13 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid var(--b-border);
     }
     .booking-detail-row:last-child {
         border-bottom: none;
     }
     .booking-detail-label {
-        color: var(--text-light);
+        color: var(--b-text-muted);
         font-size: 0.9rem;
     }
     .booking-detail-value {
@@ -275,7 +275,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: flex;
         gap: 0.75rem;
         padding: 1.25rem;
-        border-top: 1px solid var(--border);
+        border-top: 1px solid var(--b-border);
         flex-wrap: wrap;
     }
     .booking-modal-actions .btn {
@@ -415,7 +415,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
                         ? date('H:i', strtotime($booking['appointment_time'] . ' +' . $booking['duration_minutes'] . ' minutes'))
                         : '';
                 ?>
-                    <div style="padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showBookingDetails(this)"
+                    <div style="padding:0.75rem 0;border-bottom:1px solid var(--b-border);cursor:pointer" onclick="showBookingDetails(this)"
                          data-id="<?= $booking['id'] ?>"
                          data-number="<?= htmlspecialchars($booking['booking_number'] ?? '') ?>"
                          data-customer="<?= htmlspecialchars($sidebarCustomerName) ?>"
@@ -442,7 +442,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
             <?php endif; ?>
         </div>
 
-        <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
+        <div class="card" style="background:linear-gradient(135deg,#333333,#111111);color:white">
             <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> Agenda Tips</h4>
             <p style="font-size:0.85rem;opacity:0.9">Houd je agenda up-to-date zodat klanten alleen beschikbare tijden zien bij het boeken.</p>
         </div>
@@ -565,12 +565,12 @@ function showBookingDetails(element) {
 
     // Status color
     const statusColors = {
-        'pending': '#000000',
-        'confirmed': '#166534',
-        'checked_in': '#000000',
-        'completed': '#166534',
-        'cancelled': '#000000',
-        'no_show': '#000000'
+        'pending': '#f59e0b',
+        'confirmed': '#22c55e',
+        'checked_in': '#e2e8f0',
+        'completed': '#22c55e',
+        'cancelled': '#ef4444',
+        'no_show': '#ef4444'
     };
     statusEl.style.color = statusColors[data.status] || 'inherit';
 

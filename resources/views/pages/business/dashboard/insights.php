@@ -9,7 +9,7 @@
     }
 
     .insight-card {
-        background: var(--white);
+        background: var(--b-bg-card);
         border-radius: 16px;
         padding: 1.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -48,7 +48,7 @@
     .stat-item {
         text-align: center;
         padding: 1rem;
-        background: rgba(0,0,0,0.03);
+        background: rgba(255,255,255,0.05);
         border-radius: 12px;
     }
 
@@ -100,24 +100,24 @@
         align-items: flex-start;
         gap: 0.75rem;
         padding: 1rem;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 12px;
         border-left: 4px solid;
     }
 
     .tip-item.high {
         border-color: #ef4444;
-        background: #fef2f2;
+        background: rgba(239,68,68,0.1);
     }
 
     .tip-item.medium {
         border-color: #f59e0b;
-        background: #fffbeb;
+        background: rgba(245,158,11,0.1);
     }
 
     .tip-item.low {
         border-color: #10b981;
-        background: #f0fdf4;
+        background: rgba(16,185,129,0.1);
     }
 
     .tip-icon {
@@ -131,17 +131,17 @@
     }
 
     .tip-item.high .tip-icon {
-        background: #fee2e2;
+        background: rgba(239,68,68,0.2);
         color: #dc2626;
     }
 
     .tip-item.medium .tip-icon {
-        background: #fef3c7;
+        background: rgba(245,158,11,0.2);
         color: #d97706;
     }
 
     .tip-item.low .tip-icon {
-        background: #dcfce7;
+        background: rgba(16,185,129,0.2);
         color: #16a34a;
     }
 
@@ -151,12 +151,12 @@
 
     .tip-message {
         font-size: 0.9rem;
-        color: var(--text);
+        color: var(--b-text);
     }
 
     .tip-action {
         font-size: 0.8rem;
-        color: var(--primary);
+        color: var(--b-accent);
         text-decoration: none;
         margin-top: 0.5rem;
         display: inline-block;
@@ -175,20 +175,20 @@
         align-items: flex-start;
         gap: 0.75rem;
         padding: 0.75rem;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 8px;
     }
 
     .notification-item.unread {
-        background: #eff6ff;
-        border-left: 3px solid var(--primary);
+        background: rgba(59,130,246,0.1);
+        border-left: 3px solid var(--b-accent);
     }
 
     .notification-icon {
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: var(--primary);
+        background: var(--b-accent);
         color: white;
         display: flex;
         align-items: center;
@@ -204,12 +204,12 @@
 
     .notification-message {
         font-size: 0.85rem;
-        color: var(--text);
+        color: var(--b-text);
     }
 
     .notification-time {
         font-size: 0.75rem;
-        color: var(--text-light);
+        color: var(--b-text-muted);
         margin-top: 0.25rem;
     }
 
@@ -224,7 +224,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 8px;
     }
 
@@ -240,11 +240,11 @@
 
     .service-count {
         font-weight: 600;
-        color: var(--primary);
+        color: var(--b-accent);
     }
 
     .service-revenue {
-        color: var(--text-light);
+        color: var(--b-text-muted);
     }
 
     .customers-grid {
@@ -256,26 +256,26 @@
 
     .customer-stat {
         padding: 1rem;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 12px;
     }
 
     .customer-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--primary);
+        color: var(--b-accent);
     }
 
     .customer-label {
         font-size: 0.75rem;
-        color: var(--text-light);
+        color: var(--b-text-muted);
         margin-top: 0.25rem;
     }
 
     .empty-state {
         text-align: center;
         padding: 2rem;
-        color: var(--text-light);
+        color: var(--b-text-muted);
     }
 
     .empty-state i {
@@ -296,10 +296,10 @@
 
 <div class="page-header" style="margin-bottom:1.5rem">
     <h1 style="font-size:1.5rem;margin:0;display:flex;align-items:center;gap:0.5rem">
-        <i class="fas fa-chart-line" style="color:var(--primary)"></i>
+        <i class="fas fa-chart-line" style="color:var(--b-accent)"></i>
         Inzichten & Statistieken
     </h1>
-    <p style="color:var(--text-light);margin:0.5rem 0 0 0">Bekijk hoe je salon presteert</p>
+    <p style="color:var(--b-text-muted);margin:0.5rem 0 0 0">Bekijk hoe je salon presteert</p>
 </div>
 
 <!-- Overzicht Stats -->
@@ -452,9 +452,9 @@
             </div>
         </div>
         <?php if (($stats['customers']['retention_rate'] ?? 0) > 0): ?>
-            <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--secondary);border-radius:8px">
-                <span style="font-size:0.85rem;color:var(--text-light)">Retentie:</span>
-                <span style="font-weight:600;color:var(--primary)"><?= $stats['customers']['retention_rate'] ?>%</span>
+            <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--b-bg-surface);border-radius:8px">
+                <span style="font-size:0.85rem;color:var(--b-text-muted)">Retentie:</span>
+                <span style="font-weight:600;color:var(--b-accent)"><?= $stats['customers']['retention_rate'] ?>%</span>
             </div>
         <?php endif; ?>
     </div>
@@ -482,9 +482,9 @@
                 <?php endforeach; ?>
             </div>
             <?php if (($stats['services']['average_booking_value'] ?? 0) > 0): ?>
-                <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--secondary);border-radius:8px">
-                    <span style="font-size:0.85rem;color:var(--text-light)">Gem. boeking:</span>
-                    <span style="font-weight:600;color:var(--primary)">&euro;<?= number_format($stats['services']['average_booking_value'], 2, ',', '.') ?></span>
+                <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--b-bg-surface);border-radius:8px">
+                    <span style="font-size:0.85rem;color:var(--b-text-muted)">Gem. boeking:</span>
+                    <span style="font-weight:600;color:var(--b-accent)">&euro;<?= number_format($stats['services']['average_booking_value'], 2, ',', '.') ?></span>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
@@ -533,7 +533,7 @@
 <div class="insight-card" style="margin-top:1.5rem">
     <div class="insight-header">
         <h3 class="insight-title"><i class="fas fa-star"></i> Reviews</h3>
-        <a href="/business/reviews" style="font-size:0.85rem;color:var(--primary);text-decoration:none">Bekijk alle <i class="fas fa-arrow-right"></i></a>
+        <a href="/business/reviews" style="font-size:0.85rem;color:var(--b-accent);text-decoration:none">Bekijk alle <i class="fas fa-arrow-right"></i></a>
     </div>
     <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="stat-item">

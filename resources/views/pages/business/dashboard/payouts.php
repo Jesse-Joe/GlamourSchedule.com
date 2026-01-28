@@ -17,8 +17,8 @@
     <!-- Info Card -->
     <div class="card">
         <div style="display:flex;align-items:center;gap:1rem">
-            <div style="width:60px;height:60px;background:var(--secondary);border-radius:15px;display:flex;align-items:center;justify-content:center">
-                <i class="fas fa-info-circle" style="font-size:1.5rem;color:var(--primary)"></i>
+            <div style="width:60px;height:60px;background:var(--b-bg-surface);border-radius:15px;display:flex;align-items:center;justify-content:center">
+                <i class="fas fa-info-circle" style="font-size:1.5rem;color:var(--b-accent)"></i>
             </div>
             <div>
                 <h4 style="margin:0">Uitbetalingen</h4>
@@ -37,7 +37,7 @@
 
         <?php if (empty($payouts)): ?>
             <div class="text-center" style="padding:3rem">
-                <i class="fas fa-money-bill-wave" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
+                <i class="fas fa-money-bill-wave" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
                 <h4>Nog geen uitbetalingen</h4>
                 <p class="text-muted">Je uitbetalingsgeschiedenis verschijnt hier.</p>
             </div>
@@ -45,7 +45,7 @@
             <div style="overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse">
                     <thead>
-                        <tr style="border-bottom:2px solid var(--border)">
+                        <tr style="border-bottom:2px solid var(--b-border)">
                             <th style="text-align:left;padding:0.75rem 0;font-weight:600">Datum</th>
                             <th style="text-align:left;padding:0.75rem 0;font-weight:600">Bedrag</th>
                             <th style="text-align:left;padding:0.75rem 0;font-weight:600">Status</th>
@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                         <?php foreach ($payouts as $payout): ?>
-                            <tr style="border-bottom:1px solid var(--border)">
+                            <tr style="border-bottom:1px solid var(--b-border)">
                                 <td style="padding:0.75rem 0">
                                     <?= !empty($payout['created_at']) ? date('d-m-Y', strtotime($payout['created_at'])) : '-' ?>
                                 </td>
@@ -85,7 +85,7 @@
                 <h3 class="card-title"><i class="fas fa-university"></i> Bankgegevens</h3>
             </div>
 
-            <div style="padding:1rem;background:var(--secondary);border-radius:10px">
+            <div style="padding:1rem;background:var(--b-bg-surface);border-radius:10px">
                 <p class="text-muted" style="font-size:0.85rem;margin:0">IBAN</p>
                 <p style="font-family:monospace;font-size:1.1rem;margin:0.25rem 0 0 0">
                     <?= htmlspecialchars($business['iban'] ?? 'Niet opgegeven') ?>
@@ -108,7 +108,7 @@
                 <h3 class="card-title"><i class="fas fa-calculator"></i> Hoe worden uitbetalingen berekend?</h3>
             </div>
 
-            <ul style="padding-left:1.25rem;color:var(--text-light);line-height:2;font-size:0.9rem">
+            <ul style="padding-left:1.25rem;color:var(--b-text-muted);line-height:2;font-size:0.9rem">
                 <li>Boekingsbedrag - &euro;1,75 administratiekosten = jouw verdiensten</li>
                 <li>Uitbetalingen worden elke 14 dagen verwerkt</li>
                 <li>Minimaal uitbetalingsbedrag: &euro;25,00</li>
@@ -116,10 +116,10 @@
             </ul>
         </div>
 
-        <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
+        <div class="card" style="background:linear-gradient(135deg,#333333,#111111);color:white">
             <h4 style="margin-bottom:0.5rem"><i class="fas fa-question-circle"></i> Vragen?</h4>
             <p style="font-size:0.9rem;opacity:0.9">Neem contact op met onze klantenservice als je vragen hebt over uitbetalingen.</p>
-            <a href="/contact" class="btn" style="background:#ffffff;color:var(--primary);margin-top:0.5rem">
+            <a href="/contact" class="btn" style="background:var(--b-bg-card);color:var(--b-accent);margin-top:0.5rem">
                 <i class="fas fa-envelope"></i> Contact
             </a>
         </div>

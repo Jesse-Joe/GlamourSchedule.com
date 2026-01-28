@@ -34,7 +34,7 @@
     .rating-bar-track {
         flex: 1;
         height: 8px;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 4px;
         overflow: hidden;
     }
@@ -46,12 +46,12 @@
     .rating-bar-count {
         width: 30px;
         font-size: 0.85rem;
-        color: var(--text-light);
+        color: var(--b-text-muted);
         text-align: right;
     }
     .review-item {
         padding: 1.25rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid var(--b-border);
     }
     .review-item:last-child {
         border-bottom: none;
@@ -86,7 +86,7 @@
         width: 45px;
         height: 45px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        background: linear-gradient(135deg, #333333, #111111);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -108,9 +108,9 @@
     .review-response {
         margin-top: 1rem;
         padding: 1rem;
-        background: var(--secondary);
+        background: var(--b-bg-surface);
         border-radius: 10px;
-        border-left: 3px solid var(--primary);
+        border-left: 3px solid var(--b-accent);
     }
     .response-form {
         margin-top: 1rem;
@@ -156,7 +156,7 @@
 
             <?php if (empty($reviews)): ?>
                 <div class="text-center" style="padding:3rem">
-                    <i class="fas fa-star" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
+                    <i class="fas fa-star" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
                     <h4>Nog geen reviews</h4>
                     <p class="text-muted">Wanneer klanten reviews achterlaten, verschijnen ze hier.</p>
                 </div>
@@ -192,7 +192,7 @@
                         <?php if (!empty($review['business_response'])): ?>
                             <div class="review-response">
                                 <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
-                                    <i class="fas fa-reply" style="color:var(--primary)"></i>
+                                    <i class="fas fa-reply" style="color:var(--b-accent)"></i>
                                     <strong style="font-size:0.85rem">Jouw reactie</strong>
                                     <small class="text-muted"><?= !empty($review['responded_at']) ? date('d-m-Y', strtotime($review['responded_at'])) : '' ?></small>
                                 </div>
@@ -268,7 +268,7 @@
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-lightbulb"></i> Tips</h3>
             </div>
-            <ul style="padding-left:1.25rem;color:var(--text-light);line-height:1.8;font-size:0.9rem">
+            <ul style="padding-left:1.25rem;color:var(--b-text-muted);line-height:1.8;font-size:0.9rem">
                 <li>Reageer snel op reviews om betrokkenheid te tonen</li>
                 <li>Bedank klanten voor positieve feedback</li>
                 <li>Bij negatieve reviews: blijf professioneel en bied oplossingen</li>
@@ -276,7 +276,7 @@
             </ul>
         </div>
 
-        <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
+        <div class="card" style="background:linear-gradient(135deg,#333333,#111111);color:white">
             <h4 style="margin-bottom:0.5rem"><i class="fas fa-star"></i> Waarom Reviews Belangrijk Zijn</h4>
             <p style="font-size:0.85rem;opacity:0.9">Bedrijven met veel positieve reviews krijgen tot 70% meer boekingen!</p>
         </div>

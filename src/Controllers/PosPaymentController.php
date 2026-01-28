@@ -269,11 +269,11 @@ class PosPaymentController extends Controller
                     <tr>
                         <td style="padding:40px;">
                             <p style="font-size:18px;color:#ffffff;">Beste {$fullBooking['customer_name']},</p>
-                            <p style="color:#555;line-height:1.6;">
+                            <p style="color:#cccccc;line-height:1.6;">
                                 Je afspraak bij <strong>{$fullBooking['company_name']}</strong> is bevestigd. Hieronder vind je de details:
                             </p>
 
-                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
+                            <div style="background:#1a1a1a;border-radius:12px;padding:20px;margin:25px 0;">
                                 <p style="margin:0 0 10px;color:#ffffff;"><strong>Dienst:</strong> {$fullBooking['service_name']}</p>
                                 <p style="margin:0 0 10px;color:#ffffff;"><strong>Datum:</strong> {$appointmentDate}</p>
                                 <p style="margin:0 0 10px;color:#ffffff;"><strong>Tijd:</strong> {$appointmentTime}</p>
@@ -281,9 +281,9 @@ class PosPaymentController extends Controller
                                 <p style="margin:0;color:#ffffff;"><strong>Totaal:</strong> €{$totalPrice}</p>
                             </div>
 
-                            <div style="background:#f0f0f0;border-radius:12px;padding:20px;margin:25px 0;">
+                            <div style="background:#1a1a1a;border-radius:12px;padding:20px;margin:25px 0;">
                                 <p style="margin:0 0 5px;color:#ffffff;font-weight:600;"><i>📍</i> Locatie</p>
-                                <p style="margin:0;color:#555;">{$fullBooking['company_name']}<br>{$address}</p>
+                                <p style="margin:0;color:#cccccc;">{$fullBooking['company_name']}<br>{$address}</p>
                             </div>
 
                             {$cashNote}

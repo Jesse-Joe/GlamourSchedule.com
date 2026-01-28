@@ -119,7 +119,7 @@ $boostPrice = 299.99;
     gap: 1.5rem;
 }
 .benefit-card {
-    background: var(--white);
+    background: var(--b-bg-card);
     border-radius: 16px;
     padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -150,7 +150,7 @@ $boostPrice = 299.99;
 }
 .benefit-card p {
     margin: 0;
-    color: var(--text-light);
+    color: var(--b-text-muted);
     font-size: 0.95rem;
     line-height: 1.5;
 }
@@ -160,7 +160,7 @@ $boostPrice = 299.99;
     margin-bottom: 2rem;
 }
 .pricing-card {
-    background: var(--white);
+    background: var(--b-bg-card);
     border-radius: 20px;
     padding: 2.5rem;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
@@ -187,7 +187,7 @@ $boostPrice = 299.99;
     margin-bottom: 0.5rem;
 }
 .pricing-card .subtitle {
-    color: var(--text-light);
+    color: var(--b-text-muted);
     margin-bottom: 1.5rem;
 }
 .pricing-amount {
@@ -205,7 +205,7 @@ $boostPrice = 299.99;
 }
 .pricing-amount .period {
     display: block;
-    color: var(--text-light);
+    color: var(--b-text-muted);
     font-size: 1rem;
     margin-top: 0.5rem;
 }
@@ -218,7 +218,7 @@ $boostPrice = 299.99;
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--b-border);
 }
 .pricing-feature:last-child {
     border-bottom: none;
@@ -228,7 +228,7 @@ $boostPrice = 299.99;
     font-size: 1rem;
 }
 .pricing-feature span {
-    color: var(--text);
+    color: var(--b-text);
 }
 
 .boost-btn {
@@ -288,7 +288,7 @@ $boostPrice = 299.99;
     gap: 1rem;
 }
 .faq-item {
-    background: var(--white);
+    background: var(--b-bg-card);
     border-radius: 12px;
     padding: 1.25rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -296,18 +296,18 @@ $boostPrice = 299.99;
 .faq-item h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
-    color: var(--text);
+    color: var(--b-text);
 }
 .faq-item p {
     margin: 0;
-    color: var(--text-light);
+    color: var(--b-text-muted);
     font-size: 0.9rem;
     line-height: 1.5;
 }
 
 /* Stats Preview */
 .stats-preview {
-    background: var(--white);
+    background: var(--b-bg-card);
     border-radius: 16px;
     padding: 2rem;
     margin-top: 2rem;
@@ -337,7 +337,7 @@ $boostPrice = 299.99;
     line-height: 1;
 }
 .stat-item .label {
-    color: var(--text-light);
+    color: var(--b-text-muted);
     font-size: 0.9rem;
     margin-top: 0.5rem;
 }
@@ -473,7 +473,7 @@ $boostPrice = 299.99;
                     Verlengen met 30 dagen
                 </button>
             </form>
-            <p style="margin-top:1rem;color:var(--text-light);font-size:0.9rem">
+            <p style="margin-top:1rem;color:var(--b-text-muted);font-size:0.9rem">
                 Huidige boost verloopt op: <strong><?= date('d-m-Y', $boostExpiresAt) ?></strong>
             </p>
         <?php else: ?>

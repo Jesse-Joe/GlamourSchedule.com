@@ -112,25 +112,25 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     $isInCoolingPeriod = $hoursRemaining > 0;
                     ?>
                     <!-- IBAN Geverifieerd -->
-                    <div style="padding:1rem;background:#ffffff;border-radius:10px;border:1px solid #333333;margin-bottom:1rem">
+                    <div style="padding:1rem;background:var(--b-bg-card);border-radius:10px;border:1px solid #333333;margin-bottom:1rem">
                         <div style="display:flex;align-items:center;gap:0.75rem">
                             <i class="fas fa-check-circle" style="color:#333333;font-size:1.5rem"></i>
                             <div>
-                                <p style="margin:0;font-weight:600;color:#000000">IBAN Geverifieerd</p>
-                                <p style="margin:0.25rem 0 0 0;font-family:monospace;color:#000000"><?= htmlspecialchars($business['iban']) ?></p>
-                                <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#000000"><?= htmlspecialchars($business['account_holder'] ?? '') ?></p>
+                                <p style="margin:0;font-weight:600;color:var(--b-text)">IBAN Geverifieerd</p>
+                                <p style="margin:0.25rem 0 0 0;font-family:monospace;color:var(--b-text)"><?= htmlspecialchars($business['iban']) ?></p>
+                                <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:var(--b-text)"><?= htmlspecialchars($business['account_holder'] ?? '') ?></p>
                             </div>
                         </div>
                     </div>
 
                     <?php if ($isInCoolingPeriod): ?>
                         <!-- 72-hour security delay warning -->
-                        <div style="padding:1rem;background:#ffffff;border-radius:10px;border:1px solid #000000;margin-bottom:1rem">
+                        <div style="padding:1rem;background:var(--b-bg-card);border-radius:10px;border:1px solid var(--b-border);margin-bottom:1rem">
                             <div style="display:flex;align-items:center;gap:0.75rem">
                                 <i class="fas fa-shield-alt" style="color:#404040;font-size:1.25rem"></i>
                                 <div>
-                                    <p style="margin:0;font-weight:600;color:#000000">Beveiligingsperiode actief</p>
-                                    <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#000000">
+                                    <p style="margin:0;font-weight:600;color:var(--b-text)">Beveiligingsperiode actief</p>
+                                    <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:var(--b-text)">
                                         Uitbetalingen beschikbaar over <?= $hoursRemaining ?> uur (72 uur na IBAN wijziging)
                                     </p>
                                 </div>
@@ -148,9 +148,9 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
                 <?php else: ?>
                     <!-- IBAN Toevoegen -->
-                    <div style="background:linear-gradient(135deg,#ffffff,#ffffff);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
-                        <h4 style="margin:0 0 0.5rem 0;color:#000000"><i class="fas fa-shield-alt"></i> Veilige IBAN Verificatie</h4>
-                        <p style="margin:0;color:#000000;font-size:0.9rem">
+                    <div style="background:var(--b-bg-card);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
+                        <h4 style="margin:0 0 0.5rem 0;color:var(--b-text)"><i class="fas fa-shield-alt"></i> Veilige IBAN Verificatie</h4>
+                        <p style="margin:0;color:var(--b-text);font-size:0.9rem">
                             Koppel je bankrekening via een €0,01 iDEAL betaling. Je IBAN wordt automatisch opgehaald.
                         </p>
                     </div>
@@ -171,14 +171,14 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     <h3 class="card-title"><i class="fas fa-money-bill-wave"></i> Cash Betaling</h3>
                 </div>
 
-                <div style="padding:1rem;background:#f8fafc;border-radius:12px;margin-bottom:1rem">
+                <div style="padding:1rem;background:var(--b-bg-surface);border-radius:12px;margin-bottom:1rem">
                     <div style="display:flex;align-items:flex-start;gap:1rem">
                         <label class="switch" style="flex-shrink:0;margin-top:0.25rem">
                             <input type="checkbox" name="cash_payment_enabled" value="1" <?= !empty($business['cash_payment_enabled']) ? 'checked' : '' ?>>
                             <span class="slider"></span>
                         </label>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#000000">Cash betalingen accepteren</p>
+                            <p style="margin:0;font-weight:600;color:var(--b-text)">Cash betalingen accepteren</p>
                             <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#4b5563">
                                 Sta klanten toe om contant te betalen bij aankomst in uw salon.
                             </p>
@@ -186,16 +186,16 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     </div>
                 </div>
 
-                <div style="padding:1rem;background:#ffffff;border-radius:12px;border:1px solid #000000">
+                <div style="padding:1rem;background:var(--b-bg-card);border-radius:12px;border:1px solid var(--b-border)">
                     <div style="display:flex;align-items:flex-start;gap:0.75rem">
-                        <i class="fas fa-info-circle" style="color:#000000;font-size:1.25rem;margin-top:0.125rem"></i>
+                        <i class="fas fa-info-circle" style="color:var(--b-text);font-size:1.25rem;margin-top:0.125rem"></i>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#000000">Platform Fee bij Cash Betaling</p>
-                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#000000">
+                            <p style="margin:0;font-weight:600;color:var(--b-text)">Platform Fee bij Cash Betaling</p>
+                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:var(--b-text)">
                                 Bij cash betalingen betaalt de klant <strong>€1,75 platform fee</strong> online tijdens het boeken.
                                 Dit bedrag wordt afgetrokken van uw openstaande cash saldo.
                             </p>
-                            <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#000000">
+                            <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:var(--b-text)">
                                 <i class="fas fa-calculator"></i> Voorbeeld: Dienst €50 → Klant betaalt €1,75 online + €48,25 cash bij aankomst
                             </p>
                         </div>
@@ -237,9 +237,9 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     </div>
                 </div>
 
-                <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+                <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--b-border)">
                     <p class="text-muted" style="font-size:0.85rem">Account Status</p>
-                    <span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:<?= $business['status'] === 'active' ? '#ffffff' : '#ffffff' ?>;color:<?= $business['status'] === 'active' ? '#000000' : '#000000' ?>;border-radius:20px;font-size:0.85rem;font-weight:500">
+                    <span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:<?= $business['status'] === 'active' ? 'var(--b-bg-card)' : 'var(--b-bg-card)' ?>;color:<?= $business['status'] === 'active' ? 'var(--b-text)' : 'var(--b-text)' ?>;border-radius:20px;font-size:0.85rem;font-weight:500">
                         <i class="fas fa-<?= $business['status'] === 'active' ? 'check-circle' : 'clock' ?>"></i>
                         <?= $business['status'] === 'active' ? 'Actief' : 'In afwachting van verificatie' ?>
                     </span>
@@ -260,7 +260,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     $openTime = substr($dayHours['open_time'] ?? '09:00', 0, 5);
                     $closeTime = substr($dayHours['close_time'] ?? '18:00', 0, 5);
                 ?>
-                    <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--border)">
+                    <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--b-border)">
                         <div style="width:100px;font-weight:500"><?= $days[$i] ?></div>
                         <div style="flex:1;display:flex;align-items:center;gap:0.5rem">
                             <input type="text" name="hours[<?= $i ?>][open]" class="form-control time-input"
@@ -300,8 +300,8 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
                 <p class="text-muted" style="margin-bottom:1rem">Dit is de link naar je publieke bedrijfspagina:</p>
 
-                <div style="display:flex;align-items:center;gap:0.5rem;padding:1rem;background:var(--secondary);border-radius:10px">
-                    <i class="fas fa-globe" style="color:var(--primary)"></i>
+                <div style="display:flex;align-items:center;gap:0.5rem;padding:1rem;background:var(--b-bg-surface);border-radius:10px">
+                    <i class="fas fa-globe" style="color:var(--b-accent)"></i>
                     <code style="flex:1;word-break:break-all">https://glamourschedule.nl/business/<?= htmlspecialchars($business['slug'] ?? '') ?></code>
                     <button type="button" onclick="copyLink()" class="btn btn-secondary btn-sm">
                         <i class="fas fa-copy"></i>
@@ -313,7 +313,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                 </a>
             </div>
 
-            <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
+            <div class="card" style="background:linear-gradient(135deg,#333333,#111111);color:white">
                 <h4 style="margin-bottom:0.5rem"><i class="fas fa-chart-line"></i> Statistieken</h4>
                 <div class="grid grid-2" style="margin-top:1rem">
                     <div>
@@ -330,7 +330,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
             <!-- Bedrijf Opzeggen -->
             <div class="card" style="border-color:#dc2626;background:rgba(220,38,38,0.1)">
                 <h4 style="color:#ef4444;margin-bottom:0.75rem"><i class="fas fa-exclamation-triangle"></i> Bedrijf Opzeggen</h4>
-                <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem">
+                <p style="color:var(--b-text-muted);font-size:0.9rem;margin-bottom:1rem">
                     Wil je je bedrijfsaccount opzeggen? Dit verwijdert je bedrijf permanent van het platform.
                 </p>
                 <button type="button" onclick="showBusinessDeleteModal()" class="btn" style="width:100%;background:#dc2626;color:white;border:none;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer">
@@ -340,7 +340,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
         </div>
     </div>
 
-    <div style="position:sticky;bottom:0;background:var(--secondary);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--border)">
+    <div style="position:sticky;bottom:0;background:var(--b-bg-surface);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--b-border)">
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Profiel Opslaan
         </button>
@@ -349,13 +349,13 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
 <!-- Delete Business Modal -->
 <div id="businessDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:450px;width:100%">
+    <div style="background:var(--b-bg-card);border:1px solid var(--b-border);border-radius:16px;padding:2rem;max-width:450px;width:100%">
         <div style="text-align:center;margin-bottom:1.5rem">
             <i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:2.5rem"></i>
-            <h3 style="color:var(--text);margin:1rem 0 0 0">Bedrijf Permanent Verwijderen?</h3>
+            <h3 style="color:var(--b-text);margin:1rem 0 0 0">Bedrijf Permanent Verwijderen?</h3>
         </div>
-        <p style="color:var(--text-light);line-height:1.6;margin-bottom:1rem">
-            Weet je zeker dat je <strong style="color:var(--text)"><?= htmlspecialchars($business['company_name'] ?? '') ?></strong> wilt verwijderen?
+        <p style="color:var(--b-text-muted);line-height:1.6;margin-bottom:1rem">
+            Weet je zeker dat je <strong style="color:var(--b-text)"><?= htmlspecialchars($business['company_name'] ?? '') ?></strong> wilt verwijderen?
         </p>
         <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem">
             <p style="color:#ef4444;font-size:0.9rem;margin:0"><strong>Let op:</strong> Dit verwijdert permanent:</p>
@@ -366,12 +366,12 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                 <li>Je publieke bedrijfspagina</li>
             </ul>
         </div>
-        <p style="color:var(--text);margin-bottom:0.75rem"><strong>Typ "VERWIJDER" om te bevestigen:</strong></p>
+        <p style="color:var(--b-text);margin-bottom:0.75rem"><strong>Typ "VERWIJDER" om te bevestigen:</strong></p>
         <form method="POST" action="/business/delete" id="businessDeleteForm">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
-            <input type="text" name="confirm_text" id="businessConfirmText" placeholder="Typ VERWIJDER" autocomplete="off" style="width:100%;padding:0.875rem 1rem;border:2px solid var(--border);border-radius:10px;font-size:1rem;background:var(--secondary);color:var(--text);box-sizing:border-box">
+            <input type="text" name="confirm_text" id="businessConfirmText" placeholder="Typ VERWIJDER" autocomplete="off" style="width:100%;padding:0.875rem 1rem;border:2px solid var(--b-border);border-radius:10px;font-size:1rem;background:var(--b-bg-surface);color:var(--b-text);box-sizing:border-box">
             <div style="display:flex;gap:1rem;margin-top:1.5rem">
-                <button type="button" onclick="hideBusinessDeleteModal()" style="flex:1;padding:0.875rem;background:var(--secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer">Annuleren</button>
+                <button type="button" onclick="hideBusinessDeleteModal()" style="flex:1;padding:0.875rem;background:var(--b-bg-surface);color:var(--b-text);border:1px solid var(--b-border);border-radius:10px;font-weight:600;cursor:pointer">Annuleren</button>
                 <button type="submit" id="businessDeleteBtn" disabled style="flex:1;padding:0.875rem;background:#dc2626;color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer;opacity:0.5">
                     <i class="fas fa-trash-alt"></i> Verwijderen
                 </button>

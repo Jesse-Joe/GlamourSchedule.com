@@ -12,14 +12,14 @@
         padding: 0.75rem;
         cursor: pointer;
         transition: all 0.2s;
-        background: var(--white);
+        background: var(--b-bg-card);
     }
     .color-preset:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     .color-preset.active {
-        border-color: var(--primary);
+        border-color: var(--b-accent);
     }
     .color-preset-preview {
         display: flex;
@@ -53,7 +53,7 @@
         flex: 1;
     }
     .preview-card {
-        background: var(--white);
+        background: var(--b-bg-card);
         border-radius: 15px;
         overflow: hidden;
         box-shadow: 0 5px 20px rgba(0,0,0,0.1);
@@ -82,7 +82,7 @@
         gap: 1rem;
     }
     .font-option {
-        border: 2px solid var(--border);
+        border: 2px solid var(--b-border);
         border-radius: 12px;
         padding: 1rem;
         cursor: pointer;
@@ -90,12 +90,12 @@
         text-align: center;
     }
     .font-option:hover {
-        border-color: var(--primary);
+        border-color: var(--b-accent);
         transform: translateY(-2px);
     }
     .font-option.active {
-        border-color: var(--primary);
-        background: rgba(0,0,0,0.02);
+        border-color: var(--b-accent);
+        background: rgba(255,255,255,0.05);
     }
     .font-option-preview {
         font-size: 1.5rem;
@@ -107,7 +107,7 @@
     }
     .font-option-name {
         font-size: 0.8rem;
-        color: var(--text-muted);
+        color: var(--b-text-muted);
     }
 
     /* Layout Templates */
@@ -117,21 +117,21 @@
         gap: 1rem;
     }
     .layout-option {
-        border: 2px solid var(--border);
+        border: 2px solid var(--b-border);
         border-radius: 12px;
         padding: 1rem;
         cursor: pointer;
         transition: all 0.2s;
     }
     .layout-option:hover {
-        border-color: var(--primary);
+        border-color: var(--b-accent);
     }
     .layout-option.active {
-        border-color: var(--primary);
-        background: rgba(0,0,0,0.02);
+        border-color: var(--b-accent);
+        background: rgba(255,255,255,0.05);
     }
     .layout-preview {
-        background: #f5f5f5;
+        background: var(--b-bg-surface);
         border-radius: 8px;
         padding: 0.5rem;
         margin-bottom: 0.75rem;
@@ -166,7 +166,7 @@
     }
     .layout-option-desc {
         font-size: 0.75rem;
-        color: var(--text-muted);
+        color: var(--b-text-muted);
         text-align: center;
         margin-top: 0.25rem;
     }
@@ -180,7 +180,7 @@
     .button-style-option {
         flex: 1;
         min-width: 120px;
-        border: 2px solid var(--border);
+        border: 2px solid var(--b-border);
         border-radius: 12px;
         padding: 1rem;
         cursor: pointer;
@@ -189,7 +189,7 @@
     }
     .button-style-option:hover,
     .button-style-option.active {
-        border-color: var(--primary);
+        border-color: var(--b-accent);
     }
     .button-style-preview {
         margin-bottom: 0.5rem;
@@ -220,7 +220,7 @@
     }
     .css-editor:focus {
         outline: none;
-        box-shadow: 0 0 0 2px var(--primary);
+        box-shadow: 0 0 0 2px var(--b-accent);
     }
 
     /* Tabs */
@@ -228,7 +228,7 @@
         display: flex;
         gap: 0.5rem;
         margin-bottom: 1.5rem;
-        border-bottom: 2px solid var(--border);
+        border-bottom: 2px solid var(--b-border);
         padding-bottom: 0.5rem;
         overflow-x: auto;
     }
@@ -238,19 +238,19 @@
         background: none;
         cursor: pointer;
         font-weight: 500;
-        color: var(--text-muted);
+        color: var(--b-text-muted);
         border-radius: 8px 8px 0 0;
         transition: all 0.2s;
         white-space: nowrap;
     }
     .theme-tab:hover {
-        color: var(--text-primary);
-        background: rgba(0,0,0,0.03);
+        color: var(--b-text);
+        background: rgba(255,255,255,0.05);
     }
     .theme-tab.active {
-        color: var(--primary);
-        background: rgba(0,0,0,0.05);
-        border-bottom: 2px solid var(--primary);
+        color: var(--b-accent);
+        background: rgba(255,255,255,0.05);
+        border-bottom: 2px solid var(--b-accent);
         margin-bottom: -2px;
     }
     .tab-content {
@@ -645,7 +645,7 @@
                     </div>
                     <p class="text-muted" style="margin-bottom:1rem">Beschikbare CSS variabelen die je kunt gebruiken:</p>
 
-                    <div style="background:#f5f5f5;border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;">
+                    <div style="background:var(--b-bg-surface);border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;">
                         <code>--business-primary</code> - Primaire kleur<br>
                         <code>--business-secondary</code> - Secundaire kleur<br>
                         <code>--business-accent</code> - Accent kleur<br>
@@ -679,8 +679,8 @@
                     </div>
                 </div>
 
-                <div style="margin-top:1rem;padding:1rem;background:#f9f9f9;border-radius:10px;">
-                    <h5 style="margin:0 0 0.5rem;font-size:0.85rem;color:#666;">Preview Opties</h5>
+                <div style="margin-top:1rem;padding:1rem;background:var(--b-bg-surface);border-radius:10px;">
+                    <h5 style="margin:0 0 0.5rem;font-size:0.85rem;color:var(--b-text-muted);">Preview Opties</h5>
                     <div style="display:flex;gap:0.5rem;">
                         <button type="button" class="btn btn-sm btn-secondary" onclick="togglePreviewMode('desktop')">
                             <i class="fas fa-desktop"></i>
@@ -702,7 +702,7 @@
         </div>
     </div>
 
-    <div style="position:sticky;bottom:0;background:var(--secondary);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--border)">
+    <div style="position:sticky;bottom:0;background:var(--b-bg-surface);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--b-border)">
         <div style="display:flex;gap:1rem;align-items:center;">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Thema Opslaan
