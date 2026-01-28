@@ -1451,7 +1451,7 @@
                 ?>
                     <label class="filter-cat-item <?= $isSelected ? 'selected' : '' ?>"
                            data-group="<?= $catGroup ?>"
-                           data-name="<?= htmlspecialchars(strtolower($cat['translated_name'] ?? $cat['name'])) ?>">
+                           data-name="<?= htmlspecialchars(strtolower($cat['translated_name'] ?? $cat['name'] ?? '')) ?>">
                         <input type="checkbox" name="categories[]" value="<?= $cat['id'] ?>" <?= $isSelected ? 'checked' : '' ?>>
                         <i class="fas fa-<?= $icon ?>"></i>
                         <span><?= htmlspecialchars($cat['translated_name'] ?? $cat['name'] ?? '') ?></span>

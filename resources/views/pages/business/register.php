@@ -599,7 +599,7 @@
                     <select name="category_id" class="form-control" required>
                         <option value=""><?= $__('select_category') ?></option>
                         <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?></option>
+                            <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name'] ?? '') ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (isset($errors['category_id'])): ?>

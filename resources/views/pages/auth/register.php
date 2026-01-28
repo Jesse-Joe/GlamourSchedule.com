@@ -608,7 +608,7 @@
                             <option value=""><?= $translations['select_category'] ?? 'Select a category' ?></option>
                             <?php if (isset($categories)): ?>
                                 <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name']) ?></option>
+                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['translated_name'] ?? $cat['name'] ?? '') ?></option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </select>
