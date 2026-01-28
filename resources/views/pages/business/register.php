@@ -499,7 +499,7 @@
             <?php if ($isEarlyAdopter): ?>
                 <div class="early-adopter-badge">
                     <i class="fas fa-star"></i>
-                    <span>Early Adopter: <?= $__('early_adopter_badge', ['count' => 100 - $earlyAdopterCount]) ?> &euro;0,99!</span>
+                    <span>Early Adopter: <?= $__('early_adopter_badge', ['count' => 100 - ($earlyAdopterCount ?? 0)]) ?> &euro;0,99!</span>
                 </div>
             <?php endif; ?>
         </div>
