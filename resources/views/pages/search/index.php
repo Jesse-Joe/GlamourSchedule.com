@@ -2267,10 +2267,26 @@ let allSalonData = [];
 const detectedLang = '<?= $lang ?? 'nl' ?>';
 const langCountryDefaults = { nl: 'NL', de: 'DE', fr: 'FR', en: '' };
 
+// Country map views: [lat, lng, zoom]
+const countryMapViews = {
+    '': [30, 0, 2],           // World view (All)
+    'NL': [52.2, 5.3, 7],     // Netherlands
+    'BE': [50.5, 4.5, 8],     // Belgium
+    'DE': [51.2, 10.4, 6],    // Germany
+    'FR': [46.6, 2.5, 6]      // France
+};
+
 function filterMapCountry(btn) {
     document.querySelectorAll('.country-filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const country = btn.dataset.country;
+
+    // Set map view based on country
+    if (salonMap && countryMapViews[country]) {
+        const [lat, lng, zoom] = countryMapViews[country];
+        salonMap.setView([lat, lng], zoom);
+    }
+
     loadMapMarkers(country);
 }
 
@@ -2299,7 +2315,8 @@ function loadMapMarkers(country) {
                 salonMarkers.addLayer(marker);
             });
             salonMap.addLayer(salonMarkers);
-            if (data.length > 0) {
+            // Only fit bounds for specific country, not for "All" (world view)
+            if (country && data.length > 0) {
                 const bounds = salonMarkers.getBounds();
                 if (bounds.isValid()) salonMap.fitBounds(bounds, { padding: [30, 30] });
             }
@@ -2309,15 +2326,20 @@ function loadMapMarkers(country) {
 
 function initSalonMap() {
     if (salonMap) return;
-    salonMap = L.map('salon-map', { scrollWheelZoom: false }).setView([51.5, 5.5], 7);
+
+    // Auto-select country filter based on detected language
+    const defaultCountry = langCountryDefaults[detectedLang] || '';
+
+    // Get initial view based on default country
+    const [lat, lng, zoom] = countryMapViews[defaultCountry] || countryMapViews[''];
+
+    salonMap = L.map('salon-map', { scrollWheelZoom: false }).setView([lat, lng], zoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap',
         maxZoom: 18
     }).addTo(salonMap);
     salonMarkers = L.markerClusterGroup();
 
-    // Auto-select country filter based on detected language
-    const defaultCountry = langCountryDefaults[detectedLang] || '';
     if (defaultCountry) {
         const btn = document.querySelector('.country-filter-btn[data-country="' + defaultCountry + '"]');
         if (btn) {

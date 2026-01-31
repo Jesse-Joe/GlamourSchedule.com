@@ -54,19 +54,21 @@
             min-height: 100vh;
         }
 
-        /* Sidebar - Dark Theme */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: var(--sidebar-width);
-            background: #000000;
-            border-right: 1px solid #333333;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            transition: transform 0.3s ease;
+        /* Sidebar - Dark Theme - Override prestige.css */
+        body .sidebar {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            width: var(--sidebar-width) !important;
+            height: 100vh !important;
+            background: #000000 !important;
+            border-right: 1px solid #333333 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            z-index: 1000 !important;
+            transition: transform 0.3s ease !important;
+            transform: translateX(0) !important;
         }
         .sidebar-header {
             padding: 1.5rem;
@@ -399,29 +401,73 @@
         .text-center { text-align: center; }
         .text-muted { color: var(--text-light); }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.open {
-                transform: translateX(0);
+        /* Desktop - Always show sidebar */
+        @media (min-width: 1025px) {
+            body .sidebar {
+                display: flex !important;
+                transform: translateX(0) !important;
+                left: 0 !important;
             }
             .main-content {
-                margin-left: 0;
+                margin-left: var(--sidebar-width) !important;
             }
             .mobile-toggle {
-                display: block;
+                display: none !important;
+            }
+        }
+
+        /* Tablet & Mobile */
+        @media (max-width: 1024px) {
+            body .sidebar {
+                transform: translateX(-100%) !important;
+                left: 0 !important;
+            }
+            body .sidebar.open {
+                transform: translateX(0) !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+            .mobile-toggle {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
             }
             .sidebar-overlay {
                 display: none;
                 position: fixed;
                 inset: 0;
                 background: rgba(0,0,0,0.5);
-                z-index: 99;
+                z-index: 999;
             }
             .sidebar-overlay.open {
                 display: block;
+            }
+        }
+
+        /* iPad Portrait */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .page-content {
+                padding: 1.5rem;
+            }
+            .grid-2, .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 767px) {
+            .page-content {
+                padding: 1rem;
+            }
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                padding: 0.75rem 1rem;
+            }
+            .top-bar h1 {
+                font-size: 1.2rem;
             }
         }
 

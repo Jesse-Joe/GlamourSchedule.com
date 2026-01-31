@@ -104,12 +104,11 @@ class BusinessRegisterController extends Controller
 
         $errors = $this->validateRegistration($data);
 
-        // Check if email already exists
+        // Check if email already exists (1 email = 1 account, either customer or business)
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
             $errors['email'] = 'Dit e-mailadres is al in gebruik';
         }
-
         $stmt = $this->db->query("SELECT id FROM users WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
             $errors['email'] = 'Dit e-mailadres is al in gebruik';
@@ -178,13 +177,7 @@ class BusinessRegisterController extends Controller
                 $detectedLanguage = 'nl';
             }
 
-            // Create user account (not verified yet) with detected language
-            $this->db->query(
-                "INSERT INTO users (uuid, email, password_hash, first_name, phone, status, email_verified, language)
-                 VALUES (?, ?, ?, ?, ?, 'active', 0, ?)",
-                [$userUuid, $data['email'], $passwordHash, $data['company_name'], $data['phone'], $detectedLanguage]
-            );
-            $userId = $this->db->lastInsertId();
+            // Business accounts are separate from customer accounts - no user record needed
 
             // Log the registration attempt
             $this->geoIP->logLocation($location, null, null, '/business/register [POST]');
@@ -229,9 +222,10 @@ class BusinessRegisterController extends Controller
             }
 
             // Create business (pending status until verified) with detected language
+            // Business has its own password_hash - separate from customer accounts
             $this->db->query(
                 "INSERT INTO businesses (
-                    uuid, user_id, company_name, slug, email, phone,
+                    uuid, company_name, slug, email, password_hash, phone,
                     street, house_number, postal_code, city, language,
                     description, kvk_number,
                     is_early_adopter, registration_fee_paid, status,
@@ -240,7 +234,7 @@ class BusinessRegisterController extends Controller
                     registration_country, registration_ip, promo_applied
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
-                    $businessUuid, $userId, $data['company_name'], $slug, $data['email'], $data['phone'],
+                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
                     $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $detectedLanguage,
                     $data['description'], $data['kvk_number'],
                     $isPromo ? 1 : 0,
@@ -310,11 +304,11 @@ class BusinessRegisterController extends Controller
             $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             $expiresAt = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
-            // Store verification code
+            // Store verification code (user_id is NULL for business registrations)
             $this->db->query(
                 "INSERT INTO email_verifications (user_id, business_id, email, verification_code, expires_at)
-                 VALUES (?, ?, ?, ?, ?)",
-                [$userId, $businessId, $data['email'], $verificationCode, $expiresAt]
+                 VALUES (NULL, ?, ?, ?, ?)",
+                [$businessId, $data['email'], $verificationCode, $expiresAt]
             );
 
             $this->db->commit();
@@ -714,7 +708,7 @@ GlamourSchedule
             $errors['terms'] = 'Je moet akkoord gaan met de algemene voorwaarden';
         }
 
-        // Check if email exists
+        // Check if email exists (1 email = 1 account, either customer or business)
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
             $errors['email'] = 'Dit e-mailadres is al in gebruik';
@@ -772,13 +766,7 @@ GlamourSchedule
                 $detectedLanguage = 'nl';
             }
 
-            // Create user (inactive until email verified) with detected language
-            $this->db->query(
-                "INSERT INTO users (uuid, email, password_hash, first_name, last_name, status, email_verified, language)
-                 VALUES (?, ?, ?, ?, ?, 'inactive', 0, ?)",
-                [$userUuid, $data['email'], $passwordHash, $data['first_name'], $data['last_name'], $detectedLanguage]
-            );
-            $userId = $this->db->lastInsertId();
+            // Business accounts are separate from customer accounts - no user record needed
 
             // Get sales partner ID
             $referredBy = $salesPartner ? $salesPartner['id'] : null;
@@ -791,15 +779,16 @@ GlamourSchedule
             $verificationToken = bin2hex(random_bytes(32));
             $trialEndsAt = date('Y-m-d', strtotime('+14 days'));
 
+            // Business has its own password_hash - separate from customer accounts
             $this->db->query(
                 "INSERT INTO businesses (
-                    uuid, user_id, company_name, slug, email, language,
+                    uuid, company_name, slug, email, password_hash, language,
                     is_early_adopter, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner, verification_token
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
                 [
-                    $businessUuid, $userId, $data['company_name'], $slug, $data['email'], $detectedLanguage,
+                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $detectedLanguage,
                     $isSalesEarlyAdopter ? 1 : 0,
                     $trialEndsAt, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy, $verificationToken
                 ]
@@ -841,9 +830,8 @@ GlamourSchedule
 
             $this->db->commit();
 
-            // Store session data
+            // Store session data (business accounts are separate - no user_id needed)
             $_SESSION['partner_register_business_id'] = $businessId;
-            $_SESSION['partner_register_user_id'] = $userId;
             $_SESSION['partner_register_temp_password'] = $tempPassword;
             $_SESSION['partner_register_email'] = $data['email'];
             $_SESSION['partner_register_name'] = $data['first_name'];
@@ -889,11 +877,10 @@ GlamourSchedule
     public function partnerPaymentComplete(): string
     {
         $businessId = $_SESSION['partner_register_business_id'] ?? null;
-        $userId = $_SESSION['partner_register_user_id'] ?? null;
         $email = $_SESSION['partner_register_email'] ?? null;
         $firstName = $_SESSION['partner_register_name'] ?? null;
 
-        if (!$businessId || !$userId) {
+        if (!$businessId) {
             return $this->redirect('/partner/register?error=session');
         }
 
@@ -910,9 +897,7 @@ GlamourSchedule
             $email = $business['email'];
         }
         if (empty($firstName)) {
-            $stmt = $this->db->query("SELECT first_name FROM users WHERE id = ?", [$userId]);
-            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $firstName = $user['first_name'] ?? '';
+            $firstName = $business['company_name'] ?? '';
         }
 
         try {
@@ -1023,13 +1008,8 @@ GlamourSchedule
                     );
                     $this->notifySalesPartnerConversion($businessId);
 
-                    // Get user info for email
-                    $stmt = $this->db->query(
-                        "SELECT first_name FROM users WHERE id = (SELECT user_id FROM businesses WHERE id = ?)",
-                        [$businessId]
-                    );
-                    $user = $stmt->fetch(\PDO::FETCH_ASSOC);
-                    $firstName = $user['first_name'] ?? 'Klant';
+                    // Get business info for email (businesses are separate from customers)
+                    $firstName = $business['company_name'] ?? 'Klant';
 
                     // Send completion email
                     $this->sendCompletionEmail($business['email'], $firstName, $business['company_name'], $completionToken);
@@ -1116,11 +1096,10 @@ GlamourSchedule
     public function showCompleteRegistration(string $token): string
     {
         // Find business by token (allow early adopters or paid registrations)
+        // Businesses are separate from customers - no JOIN with users needed
         $stmt = $this->db->query(
-            "SELECT b.*, u.first_name, u.last_name, u.email as user_email
-             FROM businesses b
-             JOIN users u ON b.user_id = u.id
-             WHERE b.verification_token = ? AND (b.registration_fee_paid > 0 OR b.is_early_adopter = 1)",
+            "SELECT * FROM businesses
+             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -1154,11 +1133,10 @@ GlamourSchedule
         }
 
         // Find business by token (allow early adopters or paid registrations)
+        // Businesses are separate from customers - no JOIN with users needed
         $stmt = $this->db->query(
-            "SELECT b.*, u.id as user_id
-             FROM businesses b
-             JOIN users u ON b.user_id = u.id
-             WHERE b.verification_token = ? AND (b.registration_fee_paid > 0 OR b.is_early_adopter = 1)",
+            "SELECT * FROM businesses
+             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -1219,16 +1197,11 @@ GlamourSchedule
         try {
             $this->db->beginTransaction();
 
-            // Update user password
+            // Update business details including password (businesses are separate from customers)
             $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
             $this->db->query(
-                "UPDATE users SET password_hash = ?, status = 'active', email_verified = 1 WHERE id = ?",
-                [$passwordHash, $business['user_id']]
-            );
-
-            // Update business details
-            $this->db->query(
                 "UPDATE businesses SET
+                    password_hash = ?,
                     phone = ?,
                     street = ?,
                     house_number = ?,
@@ -1241,6 +1214,7 @@ GlamourSchedule
                     trial_ends_at = DATE_ADD(NOW(), INTERVAL 14 DAY)
                 WHERE id = ?",
                 [
+                    $passwordHash,
                     $data['phone'],
                     $data['street'],
                     $data['house_number'],

@@ -80,14 +80,8 @@ class VerifyEmailController extends Controller
             [$verification['id']]
         );
 
-        // Update user email_verified
-        $this->db->query(
-            "UPDATE users SET email_verified = 1, email_verified_at = NOW() WHERE id = ?",
-            [$verification['user_id']]
-        );
-
         // Get business details for verification check
-        $stmt = $this->db->query("SELECT kvk_number, name, email FROM businesses WHERE id = ?", [$verification['business_id']]);
+        $stmt = $this->db->query("SELECT kvk_number, company_name as name, email FROM businesses WHERE id = ?", [$verification['business_id']]);
         $businessData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // Auto-verify if business has KVK number
@@ -106,8 +100,7 @@ class VerifyEmailController extends Controller
         // Notify admins of new business registration
         $this->notifyAdminsOfNewBusiness($verification['business_id'], $businessData, $isAutoVerified);
 
-        // Log the user in
-        $_SESSION['user_id'] = $verification['user_id'];
+        // Log the business in (businesses are separate from customers)
         $_SESSION['business_id'] = $verification['business_id'];
         $_SESSION['user_type'] = 'business';
         $_SESSION['new_business_registration'] = true;
@@ -122,7 +115,7 @@ class VerifyEmailController extends Controller
         unset($_SESSION['pending_business_id']);
 
         // Send welcome email
-        $this->sendWelcomeEmail($verification['user_id'], $verification['business_id']);
+        $this->sendWelcomeEmail($verification['business_id']);
 
         // Send KVK warning email if no KVK number
         if (!$isAutoVerified) {
@@ -161,12 +154,9 @@ class VerifyEmailController extends Controller
             return $this->redirect('/verify-email?error=rate_limit');
         }
 
-        // Get business info
+        // Get business info (businesses are separate from customers)
         $stmt = $this->db->query(
-            "SELECT b.id, b.company_name, u.id as user_id
-             FROM businesses b
-             JOIN users u ON b.user_id = u.id
-             WHERE b.email = ?",
+            "SELECT id, company_name FROM businesses WHERE email = ?",
             [$email]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -185,11 +175,11 @@ class VerifyEmailController extends Controller
             [$email]
         );
 
-        // Insert new code
+        // Insert new code (user_id is NULL for business registrations)
         $this->db->query(
             "INSERT INTO email_verifications (user_id, business_id, email, verification_code, expires_at)
-             VALUES (?, ?, ?, ?, ?)",
-            [$business['user_id'], $business['id'], $email, $newCode, $expiresAt]
+             VALUES (NULL, ?, ?, ?, ?)",
+            [$business['id'], $email, $newCode, $expiresAt]
         );
 
         // Send email
@@ -241,18 +231,16 @@ class VerifyEmailController extends Controller
         }
     }
 
-    private function sendWelcomeEmail(int $userId, int $businessId): void
+    private function sendWelcomeEmail(int $businessId): void
     {
-        $stmt = $this->db->query(
-            "SELECT b.*, u.email FROM businesses b JOIN users u ON b.user_id = u.id WHERE b.id = ?",
-            [$businessId]
-        );
+        // Businesses are separate from customers - query directly
+        $stmt = $this->db->query("SELECT * FROM businesses WHERE id = ?", [$businessId]);
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$business) return;
 
-        $dashboardUrl = "https://glamourschedule.nl/business/dashboard";
-        $businessUrl = "https://glamourschedule.nl/business/{$business['slug']}";
+        $dashboardUrl = "https://glamourschedule.com/business/dashboard";
+        $businessUrl = "https://glamourschedule.com/business/{$business['slug']}";
 
         $subject = "Welkom bij GlamourSchedule - Je account is geactiveerd!";
 
@@ -312,8 +300,149 @@ class VerifyEmailController extends Controller
         try {
             $mailer = new Mailer();
             $mailer->send($business['email'], $subject, $htmlBody);
+            // Dashboard reminder will be sent 24h later via cron job
         } catch (\Exception $e) {
             error_log("Failed to send welcome email: " . $e->getMessage());
+        }
+    }
+
+    private function sendDashboardReminderEmail(array $business): void
+    {
+        $dashboardUrl = "https://glamourschedule.com/business/dashboard";
+        $servicesUrl = "https://glamourschedule.com/business/services";
+        $photosUrl = "https://glamourschedule.com/business/photos";
+        $profileUrl = "https://glamourschedule.com/business/profile";
+
+        $subject = "Vergeet niet je dashboard te verkennen! - GlamourSchedule";
+
+        $htmlBody = "
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset='UTF-8'></head>
+        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
+                <tr>
+                    <td align='center'>
+                        <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:16px;overflow:hidden;'>
+                            <tr>
+                                <td style='background:#000000;color:#ffffff;padding:40px;text-align:center;'>
+                                    <div style='width:60px;height:60px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;'>
+                                        <span style='font-size:28px;color:#000;font-weight:bold;'>&#10003;</span>
+                                    </div>
+                                    <h1 style='margin:0;font-size:24px;'>Vergeet niet je pagina compleet te maken!</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding:40px;'>
+                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$business['company_name']}</strong>,</p>
+                                    <p style='font-size:16px;color:#cccccc;line-height:1.6;'>
+                                        Je account is geactiveerd, maar je pagina is nog niet compleet.
+                                        Een complete pagina trekt meer klanten aan en zorgt voor meer boekingen!
+                                    </p>
+
+                                    <div style='background:#0a0a0a;border-radius:12px;padding:25px;margin:25px 0;'>
+                                        <h3 style='margin:0 0 20px;color:#ffffff;font-size:18px;'>Maak je pagina compleet:</h3>
+
+                                        <table width='100%' cellpadding='0' cellspacing='0'>
+                                            <tr>
+                                                <td style='padding:8px 0;'>
+                                                    <a href='{$photosUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                        <table cellpadding='0' cellspacing='0'>
+                                                            <tr>
+                                                                <td style='width:45px;vertical-align:top;'>
+                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                        <span style='color:#f59e0b;font-size:18px;'>&#9634;</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td style='vertical-align:top;'>
+                                                                    <strong style='color:#fff;'>Upload foto's</strong><br>
+                                                                    <span style='color:#888;font-size:13px;'>Logo, cover foto en portfolio</span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style='padding:8px 0;'>
+                                                    <a href='{$servicesUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                        <table cellpadding='0' cellspacing='0'>
+                                                            <tr>
+                                                                <td style='width:45px;vertical-align:top;'>
+                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                        <span style='color:#f59e0b;font-size:18px;'>&#9986;</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td style='vertical-align:top;'>
+                                                                    <strong style='color:#fff;'>Voeg diensten toe</strong><br>
+                                                                    <span style='color:#888;font-size:13px;'>Prijzen, tijdsduur en beschrijvingen</span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style='padding:8px 0;'>
+                                                    <a href='{$profileUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                        <table cellpadding='0' cellspacing='0'>
+                                                            <tr>
+                                                                <td style='width:45px;vertical-align:top;'>
+                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                        <span style='color:#f59e0b;font-size:18px;'>&#9673;</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td style='vertical-align:top;'>
+                                                                    <strong style='color:#fff;'>Vul je profiel aan</strong><br>
+                                                                    <span style='color:#888;font-size:13px;'>Adres, openingstijden en KVK</span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <div style='background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;padding:20px;margin:25px 0;'>
+                                        <table cellpadding='0' cellspacing='0'>
+                                            <tr>
+                                                <td style='width:30px;vertical-align:top;'>
+                                                    <span style='font-size:20px;color:#000;'>&#9733;</span>
+                                                </td>
+                                                <td>
+                                                    <p style='margin:0;color:#000;font-weight:600;font-size:15px;'>
+                                                        <strong>Tip:</strong> Salons met complete profielen krijgen tot 3x meer boekingen!
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <p style='text-align:center;margin:30px 0;'>
+                                        <a href='{$dashboardUrl}' style='display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:16px;'>
+                                            Naar mijn Dashboard &#8594;
+                                        </a>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#666;font-size:12px;border-top:1px solid #333;'>
+                                    <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule - Beauty & Wellness Bookings</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>";
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($business['email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send dashboard reminder email: " . $e->getMessage());
         }
     }
 

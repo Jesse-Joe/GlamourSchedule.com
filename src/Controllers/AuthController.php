@@ -64,11 +64,9 @@ class AuthController extends Controller
 
         // Check based on selected account type
         if ($accountType === 'business') {
-            // Check businesses table with user password from users table
+            // Check businesses table directly (businesses have their own password)
             $stmt = $this->db->query(
-                "SELECT b.*, u.password_hash FROM businesses b
-                 JOIN users u ON b.user_id = u.id
-                 WHERE b.email = ? AND b.status = 'active'",
+                "SELECT * FROM businesses WHERE email = ? AND status = 'active'",
                 [$email]
             );
             $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -284,10 +282,10 @@ class AuthController extends Controller
             }
         }
 
-        // Also check businesses table
+        // Also check businesses table (1 email = 1 account)
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = $this->t('auth_email_registered_business');
+            $errors['email'] = $this->t('auth_email_in_use');
         }
 
         if (!empty($errors)) {
