@@ -220,7 +220,7 @@ class VerifyEmailController extends Controller
                                 <td style='padding:40px;text-align:center;'>
                                     <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$companyName}</strong>,</p>
                                     <p style='font-size:16px;color:#ffffff;'>Je verificatiecode is:</p>
-                                    <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
+                                    <div style='background:#000000;border:2px solid #333333;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
                                     </div>
                                     <p style='font-size:14px;color:#cccccc;'>Deze code is 10 minuten geldig.</p>

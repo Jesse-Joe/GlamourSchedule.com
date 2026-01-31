@@ -1603,8 +1603,8 @@ HTML;
                 <tr><td style="padding:35px;text-align:center;">
                     <p style="font-size:16px;color:#ffffff;margin:0 0 20px 0;">Hallo {$name},</p>
                     <p style="font-size:14px;color:#cccccc;margin:0 0 25px 0;">Gebruik deze code om je e-mailadres te verifiëren:</p>
-                    <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
-                        <span style="font-size:36px;font-weight:bold;color:#ffffff333;letter-spacing:8px;font-family:monospace;">{$code}</span>
+                    <div style="background:#000000;border:2px solid #333333;border-radius:12px;padding:20px;margin:0 0 25px 0;">
+                        <span style="font-size:36px;font-weight:bold;color:#ffffff;letter-spacing:8px;font-family:monospace;">{$code}</span>
                     </div>
                     <p style="font-size:13px;color:#999;margin:0;">Deze code is 10 minuten geldig.</p>
                 </td></tr>

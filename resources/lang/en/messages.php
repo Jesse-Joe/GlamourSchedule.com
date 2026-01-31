@@ -1709,4 +1709,16 @@ return [
     'email_ignore_if_not_requested' => 'If you did not request this code, you can ignore this email.',
     'email_use_code_to' => 'Use the code below to :purpose:',
     'email_all_rights_reserved' => 'All rights reserved.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BANNER / COVER IMAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'banner_uploaded' => 'Banner uploaded successfully!',
+    'banner_deleted' => 'Banner deleted!',
+    'banner_position_updated' => 'Banner position updated!',
+    'banner_upload_error' => 'An error occurred while processing the banner.',
+    'banner_invalid_type' => 'Only JPG, PNG and WebP files are allowed for banners.',
+    'banner_invalid_extension' => 'Invalid file extension.',
+    'no_file_uploaded' => 'No file uploaded or there was an error.',
+    'file_too_large' => 'File is too large. Maximum 5MB.',
 ];

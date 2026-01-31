@@ -9,6 +9,8 @@ class SearchController extends Controller
     {
         $query = trim($_GET['q'] ?? '');
         $category = $_GET['category'] ?? '';
+        $categories = $_GET['categories'] ?? ''; // Multiple categories comma-separated
+        $group = $_GET['group'] ?? '';
         $location = trim($_GET['location'] ?? '');
         $sort = $_GET['sort'] ?? 'rating';
 
@@ -43,12 +45,14 @@ class SearchController extends Controller
             'open_evening' => isset($_GET['open_evening']) && $_GET['open_evening'] === '1',
             'user_lat' => $calcLat,
             'user_lng' => $calcLng,
+            'group' => $group,
+            'categories' => $categories,
         ];
 
         $businesses = [];
         $categories = $this->getCategories();
 
-        $hasFilters = $query || $category || $location ||
+        $hasFilters = $query || $category || $categories || $group || $location ||
                       $filters['price_min'] || $filters['price_max'] ||
                       $filters['high_rated'] || $filters['open_now'] ||
                       $filters['open_weekend'] || $filters['open_evening'];
@@ -144,8 +148,145 @@ class SearchController extends Controller
         return round($earthRadius * $c, 1);
     }
 
+    /**
+     * Geocode a location string to coordinates
+     * Uses cache for common cities, falls back to Nominatim API
+     */
+    private function geocodeLocation(string $location): ?array
+    {
+        $location = strtolower(trim($location));
+        if (empty($location)) {
+            return null;
+        }
+
+        // Common Dutch/Belgian cities cache
+        $cityCache = [
+            'amsterdam' => ['lat' => 52.3676, 'lng' => 4.9041],
+            'rotterdam' => ['lat' => 51.9244, 'lng' => 4.4777],
+            'den haag' => ['lat' => 52.0705, 'lng' => 4.3007],
+            'the hague' => ['lat' => 52.0705, 'lng' => 4.3007],
+            'utrecht' => ['lat' => 52.0907, 'lng' => 5.1214],
+            'eindhoven' => ['lat' => 51.4416, 'lng' => 5.4697],
+            'tilburg' => ['lat' => 51.5555, 'lng' => 5.0913],
+            'groningen' => ['lat' => 53.2194, 'lng' => 6.5665],
+            'almere' => ['lat' => 52.3508, 'lng' => 5.2647],
+            'breda' => ['lat' => 51.5719, 'lng' => 4.7683],
+            'nijmegen' => ['lat' => 51.8426, 'lng' => 5.8546],
+            'arnhem' => ['lat' => 51.9851, 'lng' => 5.8987],
+            'haarlem' => ['lat' => 52.3874, 'lng' => 4.6462],
+            'enschede' => ['lat' => 52.2215, 'lng' => 6.8937],
+            'maastricht' => ['lat' => 50.8514, 'lng' => 5.6909],
+            'zwolle' => ['lat' => 52.5168, 'lng' => 6.0830],
+            'leiden' => ['lat' => 52.1601, 'lng' => 4.4970],
+            'dordrecht' => ['lat' => 51.8133, 'lng' => 4.6901],
+            'zoetermeer' => ['lat' => 52.0575, 'lng' => 4.4931],
+            'amersfoort' => ['lat' => 52.1561, 'lng' => 5.3878],
+            'delft' => ['lat' => 52.0116, 'lng' => 4.3571],
+            'alkmaar' => ['lat' => 52.6324, 'lng' => 4.7534],
+            'deventer' => ['lat' => 52.2549, 'lng' => 6.1636],
+            'hilversum' => ['lat' => 52.2292, 'lng' => 5.1669],
+            'apeldoorn' => ['lat' => 52.2112, 'lng' => 5.9699],
+            'leeuwarden' => ['lat' => 53.2012, 'lng' => 5.7999],
+            'zaandam' => ['lat' => 52.4388, 'lng' => 4.8262],
+            'den bosch' => ['lat' => 51.6978, 'lng' => 5.3037],
+            's-hertogenbosch' => ['lat' => 51.6978, 'lng' => 5.3037],
+            'venlo' => ['lat' => 51.3704, 'lng' => 6.1724],
+            'assen' => ['lat' => 52.9925, 'lng' => 6.5649],
+            'gouda' => ['lat' => 52.0115, 'lng' => 4.7104],
+            // Belgium
+            'brussel' => ['lat' => 50.8503, 'lng' => 4.3517],
+            'brussels' => ['lat' => 50.8503, 'lng' => 4.3517],
+            'antwerpen' => ['lat' => 51.2194, 'lng' => 4.4025],
+            'antwerp' => ['lat' => 51.2194, 'lng' => 4.4025],
+            'gent' => ['lat' => 51.0543, 'lng' => 3.7174],
+            'ghent' => ['lat' => 51.0543, 'lng' => 3.7174],
+            'brugge' => ['lat' => 51.2093, 'lng' => 3.2247],
+            'bruges' => ['lat' => 51.2093, 'lng' => 3.2247],
+            'leuven' => ['lat' => 50.8798, 'lng' => 4.7005],
+            'luik' => ['lat' => 50.6326, 'lng' => 5.5797],
+            'liège' => ['lat' => 50.6326, 'lng' => 5.5797],
+            // Germany border cities
+            'düsseldorf' => ['lat' => 51.2277, 'lng' => 6.7735],
+            'dusseldorf' => ['lat' => 51.2277, 'lng' => 6.7735],
+            'köln' => ['lat' => 50.9375, 'lng' => 6.9603],
+            'koln' => ['lat' => 50.9375, 'lng' => 6.9603],
+            'cologne' => ['lat' => 50.9375, 'lng' => 6.9603],
+        ];
+
+        // Check cache first
+        if (isset($cityCache[$location])) {
+            return $cityCache[$location];
+        }
+
+        // Check for postal code (Dutch format: 4 digits + 2 letters, or just 4 digits)
+        if (preg_match('/^(\d{4})\s*([a-zA-Z]{2})?$/', $location, $matches)) {
+            $postalCode = $matches[1] . (isset($matches[2]) ? strtoupper($matches[2]) : '');
+            return $this->geocodePostalCode($postalCode);
+        }
+
+        // Fallback to Nominatim API for unknown locations
+        return $this->geocodeWithNominatim($location);
+    }
+
+    /**
+     * Geocode Dutch postal code using Nominatim
+     */
+    private function geocodePostalCode(string $postalCode): ?array
+    {
+        // Add NL country code for Dutch postal codes
+        $query = urlencode($postalCode . ', Netherlands');
+        return $this->geocodeWithNominatim($postalCode . ', Netherlands');
+    }
+
+    /**
+     * Geocode using OpenStreetMap Nominatim API
+     */
+    private function geocodeWithNominatim(string $query): ?array
+    {
+        try {
+            $query = urlencode($query);
+            $url = "https://nominatim.openstreetmap.org/search?q={$query}&format=json&limit=1&countrycodes=nl,be,de";
+
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 3,
+                    'header' => "User-Agent: GlamourSchedule/1.0\r\n"
+                ]
+            ]);
+
+            $response = @file_get_contents($url, false, $context);
+            if ($response) {
+                $data = json_decode($response, true);
+                if (!empty($data[0]['lat']) && !empty($data[0]['lon'])) {
+                    return [
+                        'lat' => (float)$data[0]['lat'],
+                        'lng' => (float)$data[0]['lon']
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            error_log("Geocoding error: " . $e->getMessage());
+        }
+
+        return null;
+    }
+
     private function searchBusinesses(string $query, string $category, string $location, string $sort, array $filters = []): array
     {
+        // Group to category slug mapping
+        $groupMapping = [
+            'haar' => ['hair', 'kapper', 'hairdresser', 'hairstylist', 'barber', 'barbershop', 'herenkapper', 'dameskapper', 'afro-hair', 'curly-hair', 'hair-colorist', 'bridal-hair'],
+            'nagels' => ['nails', 'nail-salon', 'nagelstudio', 'manicure', 'pedicure', 'gel-nails', 'gelnagels', 'acrylic-nails', 'polygel', 'nail-art'],
+            'huid' => ['beauty', 'beauty-salon', 'skincare', 'huidverzorging', 'facial', 'gezichtsbehandeling', 'acne-treatment', 'dermapen', 'microneedling', 'hydrafacial'],
+            'lichaam' => ['massage', 'massage-therapist', 'deep-tissue', 'hot-stone', 'swedish-massage', 'thai-massage', 'sports-massage', 'body-treatments', 'body-contouring', 'aromatherapy', 'reflexology'],
+            'ontharing' => ['waxing', 'waxsalon', 'brazilian-wax', 'laser-hair-removal', 'ipl-treatment', 'electrolysis', 'threading', 'sugaring'],
+            'makeup' => ['makeup', 'makeup-artist', 'visagie', 'bridal-makeup', 'permanent-makeup', 'microblading', 'eyelash-extensions', 'wimperextensions', 'lash-lift', 'brow-lamination'],
+            'wellness' => ['spa', 'day-spa', 'wellness', 'wellness-center', 'hammam', 'sauna', 'infrared-sauna', 'float-therapy'],
+            'bruinen' => ['tanning-salon', 'sunbed', 'zonnestudio', 'spray-tan', 'self-tan'],
+            'medisch' => ['botox', 'fillers', 'huidtherapeut', 'cosmetisch-arts', 'physiotherapy'],
+            'alternatief' => ['acupuncture', 'acupunctuur', 'ayurveda', 'reiki', 'meditation', 'yoga-studio', 'pilates', 'holistic-therapy'],
+        ];
+
         $sql = "SELECT DISTINCT b.*, b.company_name as name,
                        COALESCE(AVG(r.rating), 0) as avg_rating,
                        COUNT(DISTINCT r.id) as review_count,
@@ -155,8 +296,11 @@ class SearchController extends Controller
                 LEFT JOIN reviews r ON b.id = r.business_id
                 LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1";
 
-        if ($category) {
-            $sql .= " INNER JOIN business_categories bc ON b.id = bc.business_id";
+        // Join categories if filtering by category, categories, or group
+        $needsCategoryJoin = $category || !empty($filters['categories']) || !empty($filters['group']);
+        if ($needsCategoryJoin) {
+            $sql .= " INNER JOIN business_categories bc ON b.id = bc.business_id
+                      INNER JOIN categories c ON bc.category_id = c.id";
         }
 
         $sql .= " WHERE b.status = 'active'";
@@ -170,9 +314,28 @@ class SearchController extends Controller
             $params[] = $searchTerm;
         }
 
+        // Single category filter
         if ($category) {
             $sql .= " AND bc.category_id = ?";
             $params[] = $category;
+        }
+
+        // Multiple categories filter (comma-separated IDs)
+        if (!empty($filters['categories'])) {
+            $catIds = array_filter(array_map('intval', explode(',', $filters['categories'])));
+            if (!empty($catIds)) {
+                $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+                $sql .= " AND bc.category_id IN ($placeholders)";
+                $params = array_merge($params, $catIds);
+            }
+        }
+
+        // Group filter (e.g., 'haar', 'nagels', etc.)
+        if (!empty($filters['group']) && isset($groupMapping[$filters['group']])) {
+            $slugs = $groupMapping[$filters['group']];
+            $placeholders = implode(',', array_fill(0, count($slugs), '?'));
+            $sql .= " AND c.slug IN ($placeholders)";
+            $params = array_merge($params, $slugs);
         }
 
         if ($location) {
@@ -250,6 +413,20 @@ class SearchController extends Controller
 
     private function getFeaturedBusinesses(string $sort, array $filters = []): array
     {
+        // Group to category slug mapping
+        $groupMapping = [
+            'haar' => ['hair', 'kapper', 'hairdresser', 'hairstylist', 'barber', 'barbershop', 'herenkapper', 'dameskapper', 'afro-hair', 'curly-hair', 'hair-colorist', 'bridal-hair'],
+            'nagels' => ['nails', 'nail-salon', 'nagelstudio', 'manicure', 'pedicure', 'gel-nails', 'gelnagels', 'acrylic-nails', 'polygel', 'nail-art'],
+            'huid' => ['beauty', 'beauty-salon', 'skincare', 'huidverzorging', 'facial', 'gezichtsbehandeling', 'acne-treatment', 'dermapen', 'microneedling', 'hydrafacial'],
+            'lichaam' => ['massage', 'massage-therapist', 'deep-tissue', 'hot-stone', 'swedish-massage', 'thai-massage', 'sports-massage', 'body-treatments', 'body-contouring', 'aromatherapy', 'reflexology'],
+            'ontharing' => ['waxing', 'waxsalon', 'brazilian-wax', 'laser-hair-removal', 'ipl-treatment', 'electrolysis', 'threading', 'sugaring'],
+            'makeup' => ['makeup', 'makeup-artist', 'visagie', 'bridal-makeup', 'permanent-makeup', 'microblading', 'eyelash-extensions', 'wimperextensions', 'lash-lift', 'brow-lamination'],
+            'wellness' => ['spa', 'day-spa', 'wellness', 'wellness-center', 'hammam', 'sauna', 'infrared-sauna', 'float-therapy'],
+            'bruinen' => ['tanning-salon', 'sunbed', 'zonnestudio', 'spray-tan', 'self-tan'],
+            'medisch' => ['botox', 'fillers', 'huidtherapeut', 'cosmetisch-arts', 'physiotherapy'],
+            'alternatief' => ['acupuncture', 'acupunctuur', 'ayurveda', 'reiki', 'meditation', 'yoga-studio', 'pilates', 'holistic-therapy'],
+        ];
+
         $sql = "SELECT b.*, b.company_name as name,
                        COALESCE(AVG(r.rating), 0) as avg_rating,
                        COUNT(DISTINCT r.id) as review_count,
@@ -257,10 +434,35 @@ class SearchController extends Controller
                        MAX(s.price) as max_price
                 FROM businesses b
                 LEFT JOIN reviews r ON b.id = r.business_id
-                LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
-                WHERE b.status = 'active'";
+                LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1";
+
+        // Join categories if filtering by group
+        if (!empty($filters['group']) || !empty($filters['categories'])) {
+            $sql .= " INNER JOIN business_categories bc ON b.id = bc.business_id
+                      INNER JOIN categories c ON bc.category_id = c.id";
+        }
+
+        $sql .= " WHERE b.status = 'active'";
 
         $params = [];
+
+        // Multiple categories filter
+        if (!empty($filters['categories'])) {
+            $catIds = array_filter(array_map('intval', explode(',', $filters['categories'])));
+            if (!empty($catIds)) {
+                $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+                $sql .= " AND bc.category_id IN ($placeholders)";
+                $params = array_merge($params, $catIds);
+            }
+        }
+
+        // Group filter
+        if (!empty($filters['group']) && isset($groupMapping[$filters['group']])) {
+            $slugs = $groupMapping[$filters['group']];
+            $placeholders = implode(',', array_fill(0, count($slugs), '?'));
+            $sql .= " AND c.slug IN ($placeholders)";
+            $params = array_merge($params, $slugs);
+        }
 
         // Opening hours filters
         if (!empty($filters['open_now'])) {
@@ -349,17 +551,20 @@ class SearchController extends Controller
             return [];
         }
 
-        // Get user location from filters if not passed directly
+        // Only use explicit user location (GPS) for distance calculation
+        // Do NOT use IP-based location fallback - distance should only show when user explicitly shares location
         if (!$userLat || !$userLng) {
-            $userLat = $_GET['lat'] ?? null;
-            $userLng = $_GET['lng'] ?? null;
+            $userLat = !empty($_GET['lat']) ? (float)$_GET['lat'] : null;
+            $userLng = !empty($_GET['lng']) ? (float)$_GET['lng'] : null;
+        }
 
-            if (!$userLat || !$userLng) {
-                $ipLocation = $this->getLocationFromIP();
-                if ($ipLocation) {
-                    $userLat = $ipLocation['lat'];
-                    $userLng = $ipLocation['lng'];
-                }
+        // If user entered a location text, try to geocode it
+        $locationText = trim($_GET['location'] ?? '');
+        if ((!$userLat || !$userLng) && $locationText) {
+            $geocoded = $this->geocodeLocation($locationText);
+            if ($geocoded) {
+                $userLat = $geocoded['lat'];
+                $userLng = $geocoded['lng'];
             }
         }
 

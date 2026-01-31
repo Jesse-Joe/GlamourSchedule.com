@@ -670,4 +670,72 @@ class ApiController extends Controller
             return $this->json(['success' => false, 'message' => 'Er ging iets mis']);
         }
     }
+
+    /**
+     * Get salon/business data including banner image
+     * GET /api/salon/{id}
+     */
+    public function getSalon(int $id): string
+    {
+        try {
+            $stmt = $this->db->query(
+                "SELECT b.id, b.company_name as name, b.slug, b.description, b.city, b.address,
+                        b.postal_code, b.phone, b.email, b.website, b.logo, b.cover_image,
+                        b.banner_image, b.banner_position, b.latitude, b.longitude, b.country,
+                        COALESCE(AVG(r.rating), 0) as avg_rating,
+                        COUNT(DISTINCT r.id) as review_count
+                 FROM businesses b
+                 LEFT JOIN reviews r ON b.id = r.business_id
+                 WHERE b.id = ? AND b.status = 'active'
+                 GROUP BY b.id",
+                [$id]
+            );
+            $salon = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$salon) {
+                return $this->json(['error' => 'Salon not found'], 404);
+            }
+
+            // Format numeric values
+            $salon['avg_rating'] = round((float)$salon['avg_rating'], 1);
+            $salon['review_count'] = (int)$salon['review_count'];
+
+            // Get services
+            $servicesStmt = $this->db->query(
+                "SELECT id, name, description, price, duration, category
+                 FROM services
+                 WHERE business_id = ? AND is_active = 1
+                 ORDER BY category, sort_order, name",
+                [$id]
+            );
+            $salon['services'] = $servicesStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Get categories
+            $categoriesStmt = $this->db->query(
+                "SELECT c.id, c.slug, COALESCE(ct.name, c.slug) as name
+                 FROM business_categories bc
+                 INNER JOIN categories c ON bc.category_id = c.id
+                 LEFT JOIN category_translations ct ON c.id = ct.category_id AND ct.language = ?
+                 WHERE bc.business_id = ?",
+                [$this->lang, $id]
+            );
+            $salon['categories'] = $categoriesStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Get opening hours
+            $hoursStmt = $this->db->query(
+                "SELECT day_of_week, open_time, close_time, is_closed
+                 FROM business_hours
+                 WHERE business_id = ?
+                 ORDER BY day_of_week",
+                [$id]
+            );
+            $salon['opening_hours'] = $hoursStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return $this->json($salon);
+
+        } catch (\Exception $e) {
+            error_log('API getSalon error: ' . $e->getMessage());
+            return $this->json(['error' => 'Internal server error'], 500);
+        }
+    }
 }

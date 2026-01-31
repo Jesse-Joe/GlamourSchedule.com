@@ -1,6 +1,73 @@
 <?php ob_start(); ?>
 
 <style>
+/* !! CRITICAL v3 - Business Card Styles - Must override everything !! */
+.results-container .business-grid .biz-card,
+body .results-container .biz-card,
+html body .biz-card {
+    display: flex !important;
+    flex-direction: column !important;
+    background: #1a1a1a !important;
+    border: 2px solid #444 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    text-decoration: none !important;
+    color: #fff !important;
+    min-height: 340px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+.results-container .business-grid .biz-card:hover,
+body .results-container .biz-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4) !important;
+    border-color: #666 !important;
+}
+.biz-card * {
+    box-sizing: border-box !important;
+}
+.results-container div.business-grid,
+body div.business-grid,
+html body div.business-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 1.25rem !important;
+    padding: 1rem !important;
+    width: 100% !important;
+}
+@media (max-width: 600px) {
+    .results-container div.business-grid,
+    body div.business-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+.results-container .biz-card .biz-card-img,
+body .biz-card .biz-card-img {
+    position: relative !important;
+    width: 100% !important;
+    height: 150px !important;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+}
+.results-container .biz-card .biz-card-body,
+body .biz-card .biz-card-body {
+    padding: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+}
+.results-container .biz-card .biz-card-footer,
+body .biz-card .biz-card-footer {
+    margin-top: auto !important;
+    padding-top: 12px !important;
+    border-top: 1px solid #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
 /* Search Page - Dark Theme */
 .search-page {
     max-width: 600px;
@@ -487,17 +554,18 @@
 .biz-card-distance {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.25rem 0.5rem;
+    gap: 0.2rem;
+    padding: 0.15rem 0.35rem;
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: 6px;
-    font-size: 0.75rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
     color: #60a5fa;
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
+    flex-shrink: 0;
 }
 .biz-card-distance i {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
 }
 
 /* Location Permission Banner */
@@ -816,245 +884,277 @@
     color: #ffffff;
 }
 
-/* Business Grid - 3 columns on desktop */
-.business-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+/* =============================================
+   BUSINESS CARDS - Complete Self-Contained Cards
+   ============================================= */
+
+/* Grid Layout - Each card in its own cell */
+.results-container .business-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
-@media (min-width: 640px) {
-    .business-grid {
-        grid-template-columns: repeat(2, 1fr);
+@media (min-width: 540px) {
+    .results-container .business-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem !important;
     }
 }
-@media (min-width: 1024px) {
-    .business-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
+@media (min-width: 900px) {
+    .results-container .business-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1.5rem !important;
+    }
+}
+@media (min-width: 1200px) {
+    .results-container .business-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 1.5rem !important;
     }
 }
 
-/* Business Card - Dark Theme */
-.biz-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+/* Single Business Card - Complete Self-Contained Box */
+.results-container .biz-card {
+    display: flex !important;
+    flex-direction: column !important;
+    background: #1a1a1a !important;
+    border: 2px solid #444 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    text-decoration: none !important;
+    color: #fff !important;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+    min-height: 340px !important;
+    box-sizing: border-box !important;
 }
-.biz-card:hover {
-    transform: translateY(-4px);
-    border-color: #ffffff;
-    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
-}
-
-/* Card Image */
-.biz-card-img {
-    position: relative;
-    height: 180px;
-    background: rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-}
-@media (min-width: 1024px) {
-    .biz-card-img {
-        height: 220px;
-    }
-}
-.biz-card-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-.biz-card:hover .biz-card-img img {
-    transform: scale(1.05);
-}
-.biz-card-img-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.biz-card-img-placeholder i {
-    font-size: 3rem;
-    color: rgba(255, 255, 255, 0.3);
+.results-container .biz-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: #fff !important;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5) !important;
 }
 
-/* Card Badges */
-.biz-card-badges {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    right: 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+/* Card Image Section */
+.results-container .biz-card-img {
+    position: relative !important;
+    width: 100% !important;
+    height: 150px !important;
+    background: #0d0d0d !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
 }
-.biz-badge {
-    padding: 0.35rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+@media (min-width: 768px) {
+    .results-container .biz-card-img { height: 170px !important; }
 }
-.biz-badge-verified {
-    background: #ffffff;
-    color: #000000;
+.results-container .biz-card-img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
 }
-.biz-badge-new {
-    background: #fbbf24;
-    color: #000000;
+.results-container .biz-card-img-placeholder {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #1f1f1f 0%, #0d0d0d 100%) !important;
 }
-.biz-badge-popular {
-    background: #ef4444;
-    color: #ffffff;
+.results-container .biz-card-img-placeholder i {
+    font-size: 3rem !important;
+    color: #333 !important;
 }
-.biz-card-category {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 0.35rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-}
-
-/* Card Body */
-.biz-card-body {
-    padding: 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-@media (min-width: 1024px) {
-    .biz-card-body {
-        padding: 1.25rem;
-    }
-}
-.biz-card-name {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem;
-    color: #ffffff;
-    line-height: 1.3;
-}
-@media (min-width: 1024px) {
-    .biz-card-name {
-        font-size: 1.15rem;
-        margin-bottom: 0.6rem;
-    }
-}
-.biz-card-location {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
-}
-.biz-card-location i {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8rem;
+.results-container .biz-card-letter {
+    font-size: 4rem !important;
+    font-weight: 800 !important;
+    color: #333 !important;
+    text-transform: uppercase !important;
+    user-select: none !important;
 }
 
-/* Rating */
-.biz-card-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+/* Badges on Image */
+.results-container .biz-card-badges {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
 }
-.biz-card-stars {
-    display: flex;
-    gap: 2px;
+.results-container .biz-badge {
+    padding: 5px 10px !important;
+    border-radius: 6px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
 }
-.biz-card-stars i {
-    font-size: 0.8rem;
-    color: #fbbf24;
-}
-.biz-card-stars i.empty {
-    color: rgba(255, 255, 255, 0.3);
-}
-.biz-card-rating-text {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
-}
-.biz-card-rating-score {
-    font-weight: 700;
-    color: #ffffff;
-}
-
-/* Services Preview */
-.biz-card-services {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-bottom: 0.75rem;
-}
-.biz-service-tag {
-    padding: 0.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.8);
+.results-container .biz-badge-new { background: #fbbf24 !important; color: #000 !important; }
+.results-container .biz-badge-popular { background: #ef4444 !important; color: #fff !important; }
+.results-container .biz-card-category {
+    background: rgba(0,0,0,0.8) !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+    border-radius: 6px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
 }
 
-/* Price */
-.biz-card-footer {
-    margin-top: auto;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* Card Body - Contains All Info */
+.results-container .biz-card-body {
+    padding: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-height: 180px !important;
+    box-sizing: border-box !important;
 }
-.biz-card-price {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+@media (min-width: 768px) {
+    .results-container .biz-card-body { padding: 16px !important; }
 }
-.biz-card-price strong {
-    font-size: 1.1rem;
-    color: #ffffff;
+
+/* Business Name */
+.results-container .biz-card-name {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    margin: 0 0 8px 0 !important;
+    color: #fff !important;
+    line-height: 1.3 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
 }
-.biz-card-cta {
-    padding: 0.5rem 1rem;
-    background: #ffffff;
-    color: #000000;
-    border: none;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.2s;
+
+/* Location Row */
+.results-container .biz-card-location {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 13px !important;
+    color: #aaa !important;
+    margin-bottom: 10px !important;
 }
-.biz-card:hover .biz-card-cta {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+.results-container .biz-card-location i {
+    font-size: 11px !important;
+    color: #888 !important;
+    flex-shrink: 0 !important;
+}
+.results-container .biz-card-distance {
+    background: rgba(59,130,246,0.25) !important;
+    color: #60a5fa !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* Rating Row */
+.results-container .biz-card-rating {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+}
+.results-container .biz-card-stars {
+    display: flex !important;
+    gap: 2px !important;
+}
+.results-container .biz-card-stars i {
+    font-size: 12px !important;
+    color: #fbbf24 !important;
+}
+.results-container .biz-card-stars i.empty {
+    color: #444 !important;
+}
+.results-container .biz-card-rating-text {
+    font-size: 13px !important;
+    color: #888 !important;
+}
+.results-container .biz-card-rating-score {
+    font-weight: 700 !important;
+    color: #fff !important;
+}
+
+/* Services Tags */
+.results-container .biz-card-services {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+    margin-bottom: 12px !important;
+    flex: 1 !important;
+}
+.results-container .biz-service-tag {
+    background: #2a2a2a !important;
+    color: #bbb !important;
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    border: 1px solid #3a3a3a !important;
+}
+
+/* Footer with Price & Button */
+.results-container .biz-card-footer {
+    margin-top: auto !important;
+    padding-top: 12px !important;
+    border-top: 1px solid #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+}
+.results-container .biz-card-price {
+    font-size: 13px !important;
+    color: #888 !important;
+}
+.results-container .biz-card-price strong {
+    font-size: 15px !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+.results-container .biz-card-cta {
+    background: #fff !important;
+    color: #000 !important;
+    padding: 10px 16px !important;
+    border-radius: 25px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    transition: background 0.2s ease !important;
+}
+.results-container .biz-card:hover .biz-card-cta {
+    background: #e0e0e0 !important;
 }
 
 /* Route Button */
-.biz-card-route {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    background: rgba(59, 130, 246, 0.2);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    border-radius: 50%;
-    color: #60a5fa;
-    font-size: 0.8rem;
-    text-decoration: none;
-    transition: all 0.2s;
+.results-container .biz-card-route {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    background: rgba(59,130,246,0.15) !important;
+    border: 1px solid rgba(59,130,246,0.4) !important;
+    border-radius: 50% !important;
+    color: #60a5fa !important;
+    font-size: 13px !important;
+    text-decoration: none !important;
+    margin-right: 8px !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
 }
-.biz-card-route:hover {
-    background: #3b82f6;
-    color: #ffffff;
-    border-color: #3b82f6;
-    transform: translateY(-2px);
+.results-container .biz-card-route:hover {
+    background: #3b82f6 !important;
+    color: #fff !important;
+    border-color: #3b82f6 !important;
 }
 
 /* Empty State */
@@ -1231,13 +1331,43 @@
     }
     .category-pills {
         padding: 1rem;
-        margin-bottom: 0;
     }
-    .business-grid {
-        padding: 1rem;
+    /* Business cards on mobile */
+    .results-container .business-grid {
+        gap: 1rem !important;
+        padding: 0.75rem !important;
     }
-    .biz-card-img {
-        height: 140px;
+    .results-container .biz-card {
+        min-height: 300px !important;
+    }
+    .results-container .biz-card-img {
+        height: 130px !important;
+    }
+    .results-container .biz-card-body {
+        padding: 12px !important;
+        min-height: 160px !important;
+    }
+    .results-container .biz-card-name {
+        font-size: 15px !important;
+    }
+    .results-container .biz-card-footer {
+        padding-top: 10px !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+    .results-container .biz-card-cta {
+        padding: 8px 14px !important;
+        font-size: 11px !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+    .results-container .business-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+        padding: 0.5rem !important;
+        margin-bottom: 0 !important;
     }
     .empty-state {
         border-radius: 0;
@@ -1543,7 +1673,7 @@
         </div>
 
         <!-- Business Grid -->
-        <div class="business-grid">
+        <div class="business-grid" style="display:grid !important; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)) !important; gap:1.25rem !important; padding:1rem !important;">
             <?php foreach ($businesses as $biz):
                 $rating = round($biz['avg_rating'] ?? 0, 1);
                 $fullStars = floor($rating);
@@ -1551,22 +1681,38 @@
                 $isNew = isset($biz['created_at']) && strtotime($biz['created_at']) > strtotime('-30 days');
                 $isPopular = ($biz['review_count'] ?? 0) >= 10;
             ?>
-                <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="biz-card">
-                    <!-- Image -->
-                    <div class="biz-card-img">
-                        <?php if (!empty($biz['logo'])): ?>
-                            <?php
-                            $logoUrl = $biz['logo'];
+                <div class="biz-card" onclick="window.location='/business/<?= htmlspecialchars($biz['slug']) ?>'" style="display:flex !important; flex-direction:column !important; background:#1a1a1a !important; border:2px solid #444 !important; border-radius:16px !important; overflow:hidden !important; text-decoration:none !important; color:#fff !important; min-height:340px !important; cursor:pointer !important;">
+                    <!-- Banner/Image Section -->
+                    <div class="biz-card-img" style="position:relative !important; width:100% !important; height:150px !important; background:linear-gradient(135deg,#1a1a2e,#16213e) !important; overflow:hidden !important; flex-shrink:0 !important;">
+                        <?php
+                        // Priority: banner_image > logo > placeholder
+                        $imageUrl = null;
+                        $imagePosition = 'center';
+
+                        if (!empty($biz['banner_image'])) {
+                            // Use banner image
+                            $imageUrl = $biz['banner_image'];
+                            $imagePosition = $biz['banner_position'] ?? 'center';
+                        } elseif (!empty($biz['logo'])) {
+                            // Fall back to logo
+                            $imageUrl = $biz['logo'];
                             // Check if it's an external URL or local path
-                            if (!str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
-                                $logoUrl = '/uploads/businesses/' . $logoUrl;
+                            if (!str_starts_with($imageUrl, 'http://') && !str_starts_with($imageUrl, 'https://')) {
+                                $imageUrl = '/uploads/businesses/' . $imageUrl;
                             }
-                            ?>
-                            <img src="<?= htmlspecialchars($logoUrl) ?>"
-                                 alt="<?= htmlspecialchars($biz['name']) ?>">
+                        }
+                        ?>
+                        <?php if ($imageUrl): ?>
+                            <img src="<?= htmlspecialchars($imageUrl) ?>"
+                                 alt="<?= htmlspecialchars($biz['name']) ?>"
+                                 style="object-position: <?= htmlspecialchars($imagePosition) ?>">
                         <?php else: ?>
                             <div class="biz-card-img-placeholder">
-                                <i class="fas fa-spa"></i>
+                                <?php
+                                // Show first letter of business name as fallback
+                                $firstLetter = mb_strtoupper(mb_substr($biz['name'] ?? 'S', 0, 1));
+                                ?>
+                                <span class="biz-card-letter"><?= $firstLetter ?></span>
                             </div>
                         <?php endif; ?>
 
@@ -1588,8 +1734,8 @@
                     </div>
 
                     <!-- Body -->
-                    <div class="biz-card-body">
-                        <h3 class="biz-card-name"><?= htmlspecialchars($biz['name']) ?></h3>
+                    <div class="biz-card-body" style="padding:14px !important; display:flex !important; flex-direction:column !important; flex:1 !important;">
+                        <h3 class="biz-card-name" style="margin:0 0 8px 0 !important; font-size:1.1rem !important; font-weight:600 !important; color:#fff !important;"><?= htmlspecialchars($biz['name']) ?></h3>
 
                         <?php if (!empty($biz['city'])): ?>
                             <div class="biz-card-location">
@@ -1632,7 +1778,7 @@
                         <?php endif; ?>
 
                         <!-- Footer -->
-                        <div class="biz-card-footer">
+                        <div class="biz-card-footer" style="margin-top:auto !important; padding-top:12px !important; border-top:1px solid #333 !important; display:flex !important; align-items:center !important; justify-content:space-between !important;">
                             <?php if (!empty($biz['min_price'])): ?>
                                 <span class="biz-card-price">
                                     <?= $translations['from_price'] ?? 'From' ?> <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
@@ -1652,7 +1798,7 @@
                             </span>
                         </div>
                     </div>
-                </a>
+                </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -1765,7 +1911,13 @@ function applyFilters() {
     url.searchParams.delete('open_evening');
     url.searchParams.delete('high_rated');
 
-    // Categories
+    // Group filter (from group buttons)
+    const activeGroupBtn = document.querySelector('.filter-group-btn.active');
+    if (activeGroupBtn && activeGroupBtn.dataset.group && activeGroupBtn.dataset.group !== 'all') {
+        url.searchParams.set('group', activeGroupBtn.dataset.group);
+    }
+
+    // Categories (only if no group is set, or specific categories are checked)
     const selectedCats = [];
     document.querySelectorAll('.filter-cat-item input:checked').forEach(input => {
         selectedCats.push(input.value);

@@ -399,7 +399,7 @@ class BusinessRegisterController extends Controller
                                     <p style='font-size:16px;color:#ffffff;margin-bottom:10px;'>Beste <strong>{$companyName}</strong>,</p>
                                     <p style='font-size:16px;color:#ffffff;margin-bottom:30px;'>Gebruik onderstaande code om je account te bevestigen:</p>
 
-                                    <div style='background:#f8f9fa;border:2px dashed #000000;border-radius:10px;padding:30px;margin:20px 0;'>
+                                    <div style='background:#000000;border:2px solid #333333;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
                                     </div>
 

@@ -137,6 +137,11 @@ class Application
             $router->post('/business/photos/delete', 'BusinessDashboardController@deletePhoto');
             $router->post('/business/photos/reorder', 'BusinessDashboardController@reorderPhotos');
 
+            // Banner Management
+            $router->post('/business/banner/upload', 'BusinessDashboardController@uploadBanner');
+            $router->post('/business/banner/position', 'BusinessDashboardController@updateBannerPosition');
+            $router->post('/business/banner/delete', 'BusinessDashboardController@deleteBanner');
+
             // Theme Settings
             $router->get('/business/theme', 'BusinessDashboardController@theme');
             $router->post('/business/theme', 'BusinessDashboardController@updateTheme');
@@ -258,6 +263,7 @@ class Application
         $this->router->get('/api/availability/{businessId}', 'ApiController@availability');
         $this->router->get('/api/available-times/{businessSlug}', 'BookingController@getAvailableTimes');
         $this->router->get('/api/salons/map', 'SearchController@mapData');
+        $this->router->get('/api/salon/{id}', 'ApiController@getSalon');
         $this->router->get('/api/global-search', 'ApiController@globalSearch');
         $this->router->get('/api/categories', 'ApiController@categories');
         $this->router->get('/api/category-groups', 'ApiController@categoryGroups');

@@ -493,6 +493,233 @@ class BusinessDashboardController extends Controller
     }
 
     // ============================================================
+    // BANNER IMAGE MANAGEMENT
+    // ============================================================
+
+    /**
+     * Upload banner image with automatic resize to 1200x400
+     */
+    public function uploadBanner(): string
+    {
+        if (!$this->verifyCsrf()) {
+            die('CSRF token mismatch');
+        }
+
+        if (!isset($_FILES['banner']) || $_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('no_file_uploaded') ?? 'Geen bestand geüpload of er was een fout.'];
+            return $this->redirect('/business/photos');
+        }
+
+        $file = $_FILES['banner'];
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+        // Validate file type
+        if (!in_array($file['type'], $allowedTypes)) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_invalid_type') ?? 'Alleen JPG, PNG en WebP bestanden zijn toegestaan voor banners.'];
+            return $this->redirect('/business/photos');
+        }
+
+        // Validate file size (max 5MB)
+        if ($file['size'] > 5 * 1024 * 1024) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('file_too_large') ?? 'Bestand is te groot. Maximaal 5MB.'];
+            return $this->redirect('/business/photos');
+        }
+
+        // Validate extension
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowedExtensions)) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_invalid_extension') ?? 'Ongeldige bestandsextensie.'];
+            return $this->redirect('/business/photos');
+        }
+
+        // Create banner upload directory
+        $uploadDir = BASE_PATH . '/public/uploads/banners/' . $this->business['id'];
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Delete old banner if exists
+        $oldBanner = $this->business['banner_image'] ?? null;
+        if ($oldBanner) {
+            $oldPath = BASE_PATH . '/public' . $oldBanner;
+            if (file_exists($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        // Generate filename
+        $filename = 'banner_' . time() . '.' . $ext;
+        $filepath = $uploadDir . '/' . $filename;
+        $relativePath = '/uploads/banners/' . $this->business['id'] . '/' . $filename;
+
+        // Process and resize image to max 1200x400
+        $resized = $this->resizeBannerImage($file['tmp_name'], $filepath, $file['type']);
+
+        if ($resized) {
+            // Get banner position from form
+            $position = $_POST['banner_position'] ?? 'center';
+            if (!in_array($position, ['top', 'center', 'bottom'])) {
+                $position = 'center';
+            }
+
+            // Update database
+            $this->db->query(
+                "UPDATE businesses SET banner_image = ?, banner_position = ? WHERE id = ?",
+                [$relativePath, $position, $this->business['id']]
+            );
+
+            // Update local business array
+            $this->business['banner_image'] = $relativePath;
+            $this->business['banner_position'] = $position;
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => $this->t('banner_uploaded') ?? 'Banner succesvol geüpload!'];
+        } else {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_upload_error') ?? 'Er is een fout opgetreden bij het verwerken van de banner.'];
+        }
+
+        return $this->redirect('/business/photos');
+    }
+
+    /**
+     * Update banner position (crop alignment)
+     */
+    public function updateBannerPosition(): string
+    {
+        if (!$this->verifyCsrf()) {
+            die('CSRF token mismatch');
+        }
+
+        $position = $_POST['banner_position'] ?? 'center';
+        if (!in_array($position, ['top', 'center', 'bottom'])) {
+            $position = 'center';
+        }
+
+        $this->db->query(
+            "UPDATE businesses SET banner_position = ? WHERE id = ?",
+            [$position, $this->business['id']]
+        );
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => $this->t('banner_position_updated') ?? 'Bannerpositie bijgewerkt!'];
+        return $this->redirect('/business/photos');
+    }
+
+    /**
+     * Delete banner image
+     */
+    public function deleteBanner(): string
+    {
+        if (!$this->verifyCsrf()) {
+            die('CSRF token mismatch');
+        }
+
+        $bannerPath = $this->business['banner_image'] ?? null;
+
+        if ($bannerPath) {
+            // Delete file from disk
+            $filepath = BASE_PATH . '/public' . $bannerPath;
+            if (file_exists($filepath)) {
+                @unlink($filepath);
+            }
+
+            // Clear from database
+            $this->db->query(
+                "UPDATE businesses SET banner_image = NULL, banner_position = 'center' WHERE id = ?",
+                [$this->business['id']]
+            );
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => $this->t('banner_deleted') ?? 'Banner verwijderd!'];
+        }
+
+        return $this->redirect('/business/photos');
+    }
+
+    /**
+     * Resize banner image to max 1200x400 while maintaining aspect ratio
+     */
+    private function resizeBannerImage(string $sourcePath, string $destPath, string $mimeType): bool
+    {
+        $maxWidth = 1200;
+        $maxHeight = 400;
+
+        // Get original dimensions
+        list($origWidth, $origHeight) = @getimagesize($sourcePath);
+        if (!$origWidth || !$origHeight) {
+            return move_uploaded_file($sourcePath, $destPath);
+        }
+
+        // Create source image based on type
+        switch ($mimeType) {
+            case 'image/jpeg':
+                $sourceImage = @imagecreatefromjpeg($sourcePath);
+                break;
+            case 'image/png':
+                $sourceImage = @imagecreatefrompng($sourcePath);
+                break;
+            case 'image/webp':
+                $sourceImage = @imagecreatefromwebp($sourcePath);
+                break;
+            default:
+                return move_uploaded_file($sourcePath, $destPath);
+        }
+
+        if (!$sourceImage) {
+            return move_uploaded_file($sourcePath, $destPath);
+        }
+
+        // Calculate new dimensions maintaining aspect ratio
+        $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight);
+
+        // Only resize if image is larger than max dimensions
+        if ($ratio < 1) {
+            $newWidth = (int)round($origWidth * $ratio);
+            $newHeight = (int)round($origHeight * $ratio);
+        } else {
+            $newWidth = $origWidth;
+            $newHeight = $origHeight;
+        }
+
+        // Create new image
+        $newImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Preserve transparency for PNG and WebP
+        if ($mimeType === 'image/png' || $mimeType === 'image/webp') {
+            imagealphablending($newImage, false);
+            imagesavealpha($newImage, true);
+            $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
+            imagefilledrectangle($newImage, 0, 0, $newWidth, $newHeight, $transparent);
+        }
+
+        // Resize
+        imagecopyresampled(
+            $newImage, $sourceImage,
+            0, 0, 0, 0,
+            $newWidth, $newHeight,
+            $origWidth, $origHeight
+        );
+
+        // Save based on type
+        $success = false;
+        switch ($mimeType) {
+            case 'image/jpeg':
+                $success = imagejpeg($newImage, $destPath, 90);
+                break;
+            case 'image/png':
+                $success = imagepng($newImage, $destPath, 8);
+                break;
+            case 'image/webp':
+                $success = imagewebp($newImage, $destPath, 90);
+                break;
+        }
+
+        // Clean up
+        imagedestroy($sourceImage);
+        imagedestroy($newImage);
+
+        return $success;
+    }
+
+    // ============================================================
     // THEME SETTINGS
     // ============================================================
 

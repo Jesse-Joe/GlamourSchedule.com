@@ -461,29 +461,52 @@ class AuthController extends Controller
         $useCode = $this->t('email_use_code_to', ['purpose' => $typeText]);
         $allRights = $this->t('email_all_rights_reserved');
 
-        $body = "
-            <div style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; max-width: 600px; margin: 0 auto;'>
-                <div style='background: linear-gradient(135deg, #000000, #000000); padding: 30px; text-align: center; border-radius: 20px 20px 0 0;'>
-                    <h1 style='color: white; margin: 0; font-size: 28px;'>GlamourSchedule</h1>
-                </div>
-                <div style='background: #ffffff; padding: 40px; border-radius: 0 0 20px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);'>
-                    <h2 style='color: #1f2937; margin-top: 0;'>{$yourCode}</h2>
-                    <p style='color: #4b5563; font-size: 16px;'>
-                        {$useCode}
-                    </p>
-                    <div style='background: linear-gradient(135deg, #fffbeb, #f5f3ff); border-radius: 12px; padding: 25px; text-align: center; margin: 25px 0;'>
-                        <span style='font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #000000;'>{$code}</span>
-                    </div>
-                    <p style='color: #6b7280; font-size: 14px;'>
-                        {$codeExpiry}<br>
-                        {$ignoreText}
-                    </p>
-                </div>
-                <p style='text-align: center; color: #9ca3af; font-size: 12px; margin-top: 20px;'>
-                    &copy; " . date('Y') . " GlamourSchedule. {$allRights}
-                </p>
+        $year = date('Y');
+        $body = <<<HTML
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <style>
+        :root { color-scheme: light dark; }
+        @media (prefers-color-scheme: dark) {
+            .email-body { background-color: #1f1f1f !important; }
+            .email-title { color: #ffffff !important; }
+            .email-text { color: #e0e0e0 !important; }
+            .email-subtext { color: #b0b0b0 !important; }
+            .code-box { background: #2d2d2d !important; border: 2px solid #4a4a4a !important; }
+            .code-text { color: #ffffff !important; }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 20px; background-color: #f5f5f5;">
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #000000; padding: 30px; text-align: center; border-radius: 20px 20px 0 0;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px;">GlamourSchedule</h1>
+        </div>
+        <div class="email-body" style="background-color: #ffffff; padding: 40px; border-radius: 0 0 20px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <h2 class="email-title" style="color: #1f2937; margin-top: 0;">{$yourCode}</h2>
+            <p class="email-text" style="color: #4b5563; font-size: 16px;">
+                {$useCode}
+            </p>
+            <div class="code-box" style="background: linear-gradient(135deg, #fffbeb, #f5f3ff); border: 2px solid #e5e7eb; border-radius: 12px; padding: 25px; text-align: center; margin: 25px 0;">
+                <span class="code-text" style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #000000;">{$code}</span>
             </div>
-        ";
+            <p class="email-subtext" style="color: #6b7280; font-size: 14px;">
+                {$codeExpiry}<br>
+                {$ignoreText}
+            </p>
+        </div>
+        <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 20px;">
+            &copy; {$year} GlamourSchedule. {$allRights}
+        </p>
+    </div>
+</body>
+</html>
+HTML;
 
         try {
             $mailer = new Mailer($this->lang);

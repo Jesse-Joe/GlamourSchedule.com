@@ -85,11 +85,13 @@
     .banner-preview {
         position: relative;
         width: 100%;
-        height: 200px;
+        aspect-ratio: 3 / 1;
+        max-height: 300px;
         border-radius: 16px;
         overflow: hidden;
-        background: linear-gradient(135deg, #f5f5f5, #e5e5e5);
+        background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
         margin-bottom: 1rem;
+        border: 2px solid #333;
     }
     .banner-preview img {
         width: 100%;
@@ -103,19 +105,53 @@
         justify-content: center;
         height: 100%;
         color: #666;
+        background: linear-gradient(135deg, #1f1f1f 0%, #0d0d0d 100%);
     }
     .banner-preview-placeholder i {
         font-size: 3rem;
         margin-bottom: 0.5rem;
-        color: #999;
+        color: #444;
+    }
+    .banner-preview-placeholder span {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .banner-upload-zone {
+        border: 3px dashed #444;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: rgba(255,255,255,0.02);
+        margin-bottom: 1rem;
+    }
+    .banner-upload-zone:hover,
+    .banner-upload-zone.dragover {
+        border-color: #fff;
+        background: rgba(255,255,255,0.05);
+    }
+    .banner-upload-zone i {
+        font-size: 2.5rem;
+        color: #666;
+        margin-bottom: 0.75rem;
+    }
+    .banner-upload-zone h4 {
+        margin: 0 0 0.5rem;
+        color: #fff;
+    }
+    .banner-upload-zone p {
+        margin: 0;
+        color: #888;
+        font-size: 0.85rem;
     }
     .banner-upload-btn {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: #000000;
-        color: white;
+        background: #ffffff;
+        color: #000;
         border: none;
         border-radius: 50px;
         cursor: pointer;
@@ -124,19 +160,20 @@
     }
     .banner-upload-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 20px rgba(255,255,255,0.2);
     }
     .banner-actions {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+        align-items: center;
     }
     .banner-delete-btn {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: #ffffff;
+        background: transparent;
         color: #dc2626;
         border: 2px solid #dc2626;
         border-radius: 50px;
@@ -147,6 +184,29 @@
     .banner-delete-btn:hover {
         background: #dc2626;
         color: white;
+    }
+    .banner-position-select {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto;
+    }
+    .banner-position-select label {
+        color: #888;
+        font-size: 0.85rem;
+    }
+    .banner-position-select select {
+        padding: 0.5rem 1rem;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .banner-position-select select:focus {
+        outline: none;
+        border-color: #fff;
     }
 
     /* Mobile-first responsive styles */
@@ -183,50 +243,65 @@
 <!-- Salon Banner Section -->
 <div class="card banner-section">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-image"></i> Salon Banner</h3>
+        <h3 class="card-title"><i class="fas fa-panorama"></i> Salon Banner / Cover</h3>
     </div>
-    <p class="text-muted" style="margin-bottom:1rem">Je salon banner wordt bovenaan je bedrijfspagina getoond. Een goede banner trekt klanten aan!</p>
+    <p class="text-muted" style="margin-bottom:1rem">Je salon banner wordt prominent getoond op zoekresultaten en je bedrijfspagina. Een professionele banner trekt meer klanten aan!</p>
 
+    <?php
+    $hasBanner = !empty($business['banner_image']);
+    $bannerPosition = $business['banner_position'] ?? 'center';
+    ?>
+
+    <!-- Current Banner Preview -->
     <div class="banner-preview">
-        <?php
-        $currentBanner = null;
-        foreach ($images as $img) {
-            if (($img['image_type'] ?? '') === 'cover') {
-                $currentBanner = $img;
-                break;
-            }
-        }
-        ?>
-        <?php if ($currentBanner): ?>
-            <img src="<?= htmlspecialchars($currentBanner['image_path']) ?>" alt="Salon Banner">
+        <?php if ($hasBanner): ?>
+            <img src="<?= htmlspecialchars($business['banner_image']) ?>"
+                 alt="<?= htmlspecialchars($business['company_name'] ?? 'Salon') ?> Banner"
+                 style="object-position: <?= htmlspecialchars($bannerPosition) ?>">
         <?php else: ?>
             <div class="banner-preview-placeholder">
                 <i class="fas fa-image"></i>
-                <span>Nog geen banner ingesteld</span>
+                <span>Nog geen banner geüpload</span>
             </div>
         <?php endif; ?>
     </div>
 
+    <!-- Upload Zone (drag & drop) -->
+    <div class="banner-upload-zone" id="bannerUploadZone" onclick="document.getElementById('bannerFileInput').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h4><?= $hasBanner ? 'Nieuwe banner uploaden' : 'Banner uploaden' ?></h4>
+        <p>Sleep een afbeelding hierheen of klik om te selecteren</p>
+        <p style="color:#666;font-size:0.75rem;margin-top:0.5rem">JPG, PNG of WebP • Max 5MB • Aanbevolen: 1200x400 px</p>
+    </div>
+
+    <form method="POST" action="/business/banner/upload" enctype="multipart/form-data" id="bannerUploadForm" style="display:none">
+        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+        <input type="hidden" name="banner_position" id="bannerPositionInput" value="<?= htmlspecialchars($bannerPosition) ?>">
+        <input type="file" name="banner" id="bannerFileInput" accept="image/jpeg,image/png,image/webp">
+    </form>
+
     <div class="banner-actions">
-        <form method="POST" action="/business/photos" enctype="multipart/form-data" style="display:inline">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-            <input type="hidden" name="image_type" value="cover">
-            <input type="file" name="photo" id="bannerInput" accept="image/*" style="display:none" onchange="this.form.submit()">
-            <button type="button" class="banner-upload-btn" onclick="document.getElementById('bannerInput').click()">
-                <i class="fas fa-upload"></i> <?= $currentBanner ? 'Banner Wijzigen' : 'Banner Uploaden' ?>
-            </button>
-        </form>
-        <?php if ($currentBanner): ?>
-            <form method="POST" action="/business/photos/delete" style="display:inline" onsubmit="return confirm('Weet je zeker dat je de banner wilt verwijderen?')">
+        <?php if ($hasBanner): ?>
+            <!-- Position Control -->
+            <form method="POST" action="/business/banner/position" class="banner-position-select">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                <input type="hidden" name="image_id" value="<?= $currentBanner['id'] ?>">
+                <label for="positionSelect"><i class="fas fa-crop-alt"></i> Positie:</label>
+                <select name="banner_position" id="positionSelect" onchange="this.form.submit()">
+                    <option value="top" <?= $bannerPosition === 'top' ? 'selected' : '' ?>>Boven</option>
+                    <option value="center" <?= $bannerPosition === 'center' ? 'selected' : '' ?>>Midden</option>
+                    <option value="bottom" <?= $bannerPosition === 'bottom' ? 'selected' : '' ?>>Onder</option>
+                </select>
+            </form>
+
+            <!-- Delete Button -->
+            <form method="POST" action="/business/banner/delete" style="display:inline" onsubmit="return confirm('Weet je zeker dat je de banner wilt verwijderen?')">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <button type="submit" class="banner-delete-btn">
-                    <i class="fas fa-trash"></i> Banner Verwijderen
+                    <i class="fas fa-trash-alt"></i> Verwijderen
                 </button>
             </form>
         <?php endif; ?>
     </div>
-    <p class="form-hint" style="margin-top:1rem">Aanbevolen: 1200x400 pixels, JPG of PNG</p>
 </div>
 
 <div class="grid grid-2">
@@ -370,28 +445,81 @@
 </div>
 
 <script>
-    // Drag and drop
+    // ==========================================
+    // BANNER UPLOAD - Drag & Drop
+    // ==========================================
+    const bannerUploadZone = document.getElementById('bannerUploadZone');
+    const bannerFileInput = document.getElementById('bannerFileInput');
+    const bannerUploadForm = document.getElementById('bannerUploadForm');
+
+    if (bannerUploadZone && bannerFileInput) {
+        // Drag over
+        bannerUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            bannerUploadZone.classList.add('dragover');
+        });
+
+        // Drag leave
+        bannerUploadZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            bannerUploadZone.classList.remove('dragover');
+        });
+
+        // Drop
+        bannerUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            bannerUploadZone.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                bannerFileInput.files = files;
+                submitBannerForm();
+            }
+        });
+
+        // File input change
+        bannerFileInput.addEventListener('change', () => {
+            if (bannerFileInput.files.length > 0) {
+                submitBannerForm();
+            }
+        });
+
+        function submitBannerForm() {
+            // Show loading state
+            bannerUploadZone.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#fff;margin-bottom:0.5rem"></i><h4 style="color:#fff">Banner uploaden...</h4>';
+            bannerUploadForm.submit();
+        }
+    }
+
+    // ==========================================
+    // PHOTO UPLOAD - Drag & Drop
+    // ==========================================
     const uploadZone = document.getElementById('uploadZone');
     const photoInput = document.getElementById('photoInput');
 
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
+    if (uploadZone && photoInput) {
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
 
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
 
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            photoInput.files = files;
-            previewImage(photoInput);
-        }
-    });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                photoInput.files = files;
+                previewImage(photoInput);
+            }
+        });
+    }
 
     function previewImage(input) {
         if (input.files && input.files[0]) {

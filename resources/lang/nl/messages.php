@@ -1702,4 +1702,16 @@ return [
     'email_ignore_if_not_requested' => 'Als je deze code niet hebt aangevraagd, kun je deze e-mail negeren.',
     'email_use_code_to' => 'Gebruik onderstaande code om :purpose:',
     'email_all_rights_reserved' => 'Alle rechten voorbehouden.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BANNER / COVER IMAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'banner_uploaded' => 'Banner succesvol geüpload!',
+    'banner_deleted' => 'Banner verwijderd!',
+    'banner_position_updated' => 'Bannerpositie bijgewerkt!',
+    'banner_upload_error' => 'Er is een fout opgetreden bij het verwerken van de banner.',
+    'banner_invalid_type' => 'Alleen JPG, PNG en WebP bestanden zijn toegestaan voor banners.',
+    'banner_invalid_extension' => 'Ongeldige bestandsextensie.',
+    'no_file_uploaded' => 'Geen bestand geüpload of er was een fout.',
+    'file_too_large' => 'Bestand is te groot. Maximaal 5MB.',
 ];
