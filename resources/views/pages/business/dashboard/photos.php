@@ -11,7 +11,7 @@
         aspect-ratio: 1;
         border-radius: 12px;
         overflow: hidden;
-        background: var(--b-bg-surface);
+        background: var(--secondary);
     }
     .photo-item img {
         width: 100%;
@@ -36,7 +36,7 @@
         position: absolute;
         top: 0.5rem;
         left: 0.5rem;
-        background: var(--b-accent);
+        background: var(--primary);
         color: white;
         padding: 0.25rem 0.5rem;
         border-radius: 5px;
@@ -61,7 +61,7 @@
         color: white;
     }
     .upload-zone {
-        border: 3px dashed var(--b-border);
+        border: 3px dashed var(--border);
         border-radius: 15px;
         padding: 3rem;
         text-align: center;
@@ -69,12 +69,12 @@
         cursor: pointer;
     }
     .upload-zone:hover, .upload-zone.dragover {
-        border-color: var(--b-accent);
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary);
+        background: rgba(255, 215, 0, 0.05);
     }
     .upload-zone i {
         font-size: 3rem;
-        color: var(--b-accent);
+        color: var(--primary);
         margin-bottom: 1rem;
     }
 
@@ -88,7 +88,7 @@
         height: 200px;
         border-radius: 16px;
         overflow: hidden;
-        background: var(--b-bg-surface);
+        background: linear-gradient(135deg, #f5f5f5, #e5e5e5);
         margin-bottom: 1rem;
     }
     .banner-preview img {
@@ -136,7 +136,7 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: var(--b-bg-card);
+        background: #ffffff;
         color: #dc2626;
         border: 2px solid #dc2626;
         border-radius: 50px;
@@ -285,7 +285,7 @@
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-lightbulb"></i> Tips voor goede foto's</h3>
             </div>
-            <ul style="padding-left:1.25rem;color:var(--b-text-muted);line-height:1.8">
+            <ul style="padding-left:1.25rem;color:var(--text-light);line-height:1.8">
                 <li>Gebruik goed belichte foto's</li>
                 <li>Toon je beste werk en je salon</li>
                 <li>Upload een professionele logo</li>
@@ -301,7 +301,7 @@
             </div>
             <div style="display:flex;flex-direction:column;gap:0.75rem">
                 <div style="display:flex;align-items:start;gap:0.75rem">
-                    <span style="background:var(--b-accent);color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">LOGO</span>
+                    <span style="background:var(--primary);color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">LOGO</span>
                     <span class="text-muted" style="font-size:0.85rem">Je bedrijfslogo, wordt klein weergegeven</span>
                 </div>
                 <div style="display:flex;align-items:start;gap:0.75rem">
@@ -329,7 +329,7 @@
 
     <?php if (empty($images)): ?>
         <div class="text-center" style="padding:3rem">
-            <i class="fas fa-images" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
+            <i class="fas fa-images" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
             <h4>Nog geen foto's</h4>
             <p class="text-muted">Upload je eerste foto om je pagina aantrekkelijker te maken</p>
         </div>
@@ -339,7 +339,7 @@
                 <div class="photo-item" data-id="<?= $image['id'] ?>">
                     <?php
                     $typeColors = [
-                        'logo' => 'var(--b-accent)',
+                        'logo' => 'var(--primary)',
                         'cover' => 'var(--success)',
                         'gallery' => '#000000',
                         'team' => '#000000',

@@ -82,22 +82,22 @@
 
                 <div style="display:flex;flex-direction:column;gap:1rem">
                     <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-                        <input type="checkbox" name="show_reviews" <?= ($settings['show_reviews'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--b-accent)">
+                        <input type="checkbox" name="show_reviews" <?= ($settings['show_reviews'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
                         <span>Toon reviews op pagina</span>
                     </label>
 
                     <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-                        <input type="checkbox" name="show_prices" <?= ($settings['show_prices'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--b-accent)">
+                        <input type="checkbox" name="show_prices" <?= ($settings['show_prices'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
                         <span>Toon prijzen bij diensten</span>
                     </label>
 
                     <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-                        <input type="checkbox" name="show_duration" <?= ($settings['show_duration'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--b-accent)">
+                        <input type="checkbox" name="show_duration" <?= ($settings['show_duration'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
                         <span>Toon duur bij diensten</span>
                     </label>
 
                     <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-                        <input type="checkbox" name="show_availability" <?= ($settings['show_availability'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--b-accent)">
+                        <input type="checkbox" name="show_availability" <?= ($settings['show_availability'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
                         <span>Toon beschikbaarheid kalender</span>
                     </label>
                 </div>
@@ -110,11 +110,11 @@
 
                 <div style="display:flex;flex-direction:column;gap:1rem">
                     <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-                        <input type="checkbox" name="loyalty_enabled" id="loyalty_enabled" <?= ($settings['loyalty_enabled'] ?? 0) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--b-accent)">
+                        <input type="checkbox" name="loyalty_enabled" id="loyalty_enabled" <?= ($settings['loyalty_enabled'] ?? 0) ? 'checked' : '' ?> style="width:20px;height:20px;accent-color:var(--primary)">
                         <span><?= $translations['loyalty_enable'] ?? 'Loyaliteitspunten inschakelen' ?></span>
                     </label>
 
-                    <div id="loyalty_settings" style="display:<?= ($settings['loyalty_enabled'] ?? 0) ? 'block' : 'none' ?>;margin-top:0.5rem;padding:1rem;background:var(--b-bg-surface);border-radius:8px;">
+                    <div id="loyalty_settings" style="display:<?= ($settings['loyalty_enabled'] ?? 0) ? 'block' : 'none' ?>;margin-top:0.5rem;padding:1rem;background:var(--secondary);border-radius:8px;">
                         <div class="form-group" style="margin-bottom:1rem">
                             <label class="form-label"><?= $translations['loyalty_max_redeem'] ?? 'Max. punten per boeking' ?></label>
                             <select name="loyalty_max_redeem_points" class="form-control">
@@ -124,9 +124,9 @@
                             </select>
                         </div>
 
-                        <div style="background:var(--b-bg-card);border-radius:8px;padding:1rem;font-size:0.85rem;">
-                            <p style="margin:0 0 0.5rem;color:var(--b-text-muted)"><strong><?= $translations['how_it_works'] ?? 'Hoe werkt het?' ?></strong></p>
-                            <ul style="margin:0;padding-left:1.25rem;color:var(--b-text-muted)">
+                        <div style="background:var(--bg-card);border-radius:8px;padding:1rem;font-size:0.85rem;">
+                            <p style="margin:0 0 0.5rem;color:var(--text-light)"><strong><?= $translations['how_it_works'] ?? 'Hoe werkt het?' ?></strong></p>
+                            <ul style="margin:0;padding-left:1.25rem;color:var(--text-light)">
                                 <li><?= $translations['loyalty_earn_booking'] ?? 'Klanten verdienen 100 punten per voltooide boeking' ?></li>
                                 <li><?= $translations['loyalty_earn_review'] ?? 'Klanten verdienen 35 punten per review' ?></li>
                                 <li><?= $translations['loyalty_redeem_info'] ?? '100 punten = 1% korting op de dienstprijs' ?></li>
@@ -143,17 +143,17 @@
             });
             </script>
 
-            <div class="card" style="background:linear-gradient(135deg,#333333,#111111);color:white">
+            <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
                 <h4 style="margin-bottom:0.5rem"><i class="fas fa-lightbulb"></i> Tip</h4>
                 <p style="font-size:0.9rem;opacity:0.9">Voeg goede foto's en een duidelijke beschrijving toe om meer klanten aan te trekken!</p>
-                <a href="/business/photos" class="btn" style="background:var(--b-bg-card);color:var(--b-accent);margin-top:1rem">
+                <a href="/business/photos" class="btn" style="background:#ffffff;color:var(--primary);margin-top:1rem">
                     <i class="fas fa-images"></i> Foto's Beheren
                 </a>
             </div>
         </div>
     </div>
 
-    <div style="position:sticky;bottom:0;background:var(--b-bg-surface);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--b-border)">
+    <div style="position:sticky;bottom:0;background:var(--secondary);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--border)">
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Opslaan
         </button>

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?> - GlamourSchedule Business</title>
 
-    <!-- Early Theme Detection (business dashboard) -->
+    <!-- Early Theme Detection (prevents flash of wrong theme) -->
     <script>
     (function() {
-        var saved = localStorage.getItem('glamour_business_theme');
-        var theme = saved || 'dark';
+        var saved = localStorage.getItem('glamour_theme_mode');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
     })();
     </script>
@@ -27,31 +27,30 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --b-bg: #000000;
-            --b-bg-card: #0a0a0a;
-            --b-bg-surface: #1a1a1a;
-            --b-text: #ffffff;
-            --b-text-muted: #999999;
-            --b-border: #333333;
-            --b-accent: #ffffff;
-            --b-success: #22c55e;
-            --b-danger: #ef4444;
-            --b-warning: #f59e0b;
+            --primary: #000000;
+            --primary-dark: #000000;
+            --primary-light: #333333;
+            --secondary: #000000;
+            --text: #ffffff;
+            --text-light: #999999;
+            --white: #0a0a0a;
+            --border: #333333;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
             --sidebar-width: 280px;
         }
         [data-theme="light"] {
-            --b-bg: #f5f5f5;
-            --b-bg-card: #ffffff;
-            --b-bg-surface: #f0f0f0;
-            --b-text: #000000;
-            --b-text-muted: #666666;
-            --b-border: #e0e0e0;
-            --b-accent: #000000;
+            --secondary: #ffffff;
+            --text: #000000;
+            --text-light: #666666;
+            --white: #ffffff;
+            --border: #e0e0e0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--b-bg);
-            color: var(--b-text);
+            background: var(--secondary);
+            color: var(--text);
             min-height: 100vh;
         }
 
@@ -149,12 +148,10 @@
         .nav-item:hover {
             background: #1a1a1a;
             color: #ffffff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
         }
         .nav-item.active {
             background: #ffffff;
             color: #000000;
-            box-shadow: 0 0 20px rgba(255,255,255,0.15);
         }
         .nav-item.active i {
             color: #000000;
@@ -185,19 +182,17 @@
         .view-page-btn:hover {
             border-color: #ffffff;
             background: #333333;
-            box-shadow: 0 0 20px rgba(255,255,255,0.15);
         }
 
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
-            background: var(--b-bg);
         }
         .top-bar {
-            background: var(--b-bg-card);
+            background: var(--white);
             padding: 1rem 2rem;
-            border-bottom: 1px solid var(--b-border);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -208,7 +203,6 @@
         .top-bar h1 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: var(--b-text);
         }
         .top-bar-actions {
             display: flex;
@@ -217,13 +211,6 @@
         }
         .page-content {
             padding: 2rem;
-            color: var(--b-text);
-        }
-        .page-content a {
-            color: var(--b-text);
-        }
-        .page-content a:hover {
-            opacity: 0.8;
         }
 
         /* Mobile Toggle */
@@ -232,7 +219,7 @@
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: var(--b-text);
+            color: var(--text);
             cursor: pointer;
             padding: 0.5rem;
             min-width: 44px;
@@ -246,15 +233,13 @@
             opacity: 0.7;
         }
 
-        /* Components - all use --b- variables, no prestige.css conflicts */
+        /* Components */
         .card {
-            background: var(--b-bg-card) !important;
-            border: 1px solid var(--b-border) !important;
+            background: var(--white);
             border-radius: 15px;
             padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
-            color: var(--b-text);
-            box-shadow: none;
         }
         .card-header {
             display: flex;
@@ -262,7 +247,7 @@
             align-items: center;
             margin-bottom: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--b-border);
+            border-bottom: 1px solid var(--border);
         }
         .card-title {
             font-size: 1.1rem;
@@ -270,10 +255,9 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--b-text);
         }
         .card-title i {
-            color: var(--b-text);
+            color: var(--primary);
         }
 
         .btn {
@@ -290,23 +274,20 @@
             font-size: 0.9rem;
         }
         .btn-primary {
-            background: var(--b-accent);
-            color: var(--b-bg);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            opacity: 0.9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .btn-secondary {
-            background: var(--b-bg-surface);
-            color: var(--b-text);
-            border: 1px solid var(--b-border);
-        }
-        .btn-secondary:hover {
-            border-color: var(--b-text);
+            background: var(--secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
         .btn-danger {
-            background: var(--b-danger);
+            background: var(--danger);
             color: white;
         }
         .btn-sm {
@@ -321,21 +302,21 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--b-text);
+            color: var(--text);
         }
         .form-control {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 2px solid var(--b-border) !important;
+            border: 2px solid var(--border);
             border-radius: 10px;
             font-size: 1rem;
-            background: var(--b-bg-surface) !important;
-            color: var(--b-text) !important;
+            background: var(--white);
+            color: var(--text);
             transition: border-color 0.2s;
         }
         .form-control:focus {
             outline: none;
-            border-color: var(--b-accent) !important;
+            border-color: var(--primary);
         }
         textarea.form-control {
             min-height: 120px;
@@ -343,7 +324,7 @@
         }
         .form-hint {
             font-size: 0.8rem;
-            color: var(--b-text-muted);
+            color: var(--text-light);
             margin-top: 0.25rem;
         }
 
@@ -354,58 +335,51 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            background: var(--b-bg-surface);
-            color: var(--b-text);
-            border: 1px solid var(--b-border);
         }
         .alert-success {
-            border-left: 4px solid var(--b-success);
+            background: #ffffff;
+            color: #000000;
         }
         .alert-danger {
-            border-left: 4px solid var(--b-danger);
+            background: #f5f5f5;
+            color: #000000;
         }
         .alert-warning {
-            border-left: 4px solid var(--b-warning);
+            background: #ffffff;
+            color: #000000;
         }
-
-        /* Tables */
-        table th {
-            background: var(--b-bg-card);
-            color: var(--b-text);
+        [data-theme="dark"] .alert-success,
+        [data-theme="dark"] .alert-danger,
+        [data-theme="dark"] .alert-warning {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
-        table td {
-            border-color: var(--b-border);
-            color: var(--b-text);
+        [data-theme="dark"] .card {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
         }
-
-        /* Override mobile-friendly.css hard-coded colors */
-        .text-muted, .text-light {
-            color: var(--b-text-muted) !important;
+        [data-theme="dark"] .card-title i {
+            color: #ffffff;
         }
-        input, select, textarea {
-            background: var(--b-bg-surface) !important;
-            color: var(--b-text) !important;
-            border-color: var(--b-border) !important;
+        [data-theme="dark"] .btn-primary {
+            background: #ffffff;
+            color: #000000;
         }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--b-accent) !important;
+        [data-theme="dark"] .btn-primary:hover {
+            background: #f0f0f0;
         }
-        input::placeholder, textarea::placeholder {
-            color: var(--b-text-muted) !important;
+        [data-theme="dark"] .btn-secondary {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            background: var(--b-bg-surface);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--b-text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        [data-theme="dark"] table th {
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+        [data-theme="dark"] table td {
+            border-color: #1a1a1a;
         }
 
         .grid {
@@ -423,59 +397,15 @@
         }
 
         .text-center { text-align: center; }
-        .text-muted { color: var(--b-text-muted) !important; }
+        .text-muted { color: var(--text-light); }
 
-        /* Override prestige.css that hides .sidebar on desktop/tablet */
-        @media (min-width: 769px) {
-            .sidebar {
-                display: flex !important;
-            }
-        }
-
-        /* Tablet - iPad portrait & landscape (769px - 1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            :root {
-                --sidebar-width: 240px;
-            }
-            .sidebar {
-                width: 240px;
-            }
-            .sidebar-header {
-                padding: 1.25rem;
-            }
-            .sidebar-nav {
-                padding: 0.75rem;
-            }
-            .nav-item {
-                padding: 0.65rem 0.75rem;
-                font-size: 0.9rem;
-            }
-            .nav-section-title {
-                font-size: 0.65rem;
-            }
-            .main-content {
-                margin-left: 240px;
-            }
-            .page-content {
-                padding: 1.5rem;
-            }
-            .top-bar {
-                padding: 0.75rem 1.5rem;
-            }
-            .top-bar h1 {
-                font-size: 1.25rem;
-            }
-        }
-
-        /* Mobile (up to 768px) */
-        @media (max-width: 768px) {
+        /* Responsive */
+        @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
-                width: 280px;
             }
             .sidebar.open {
                 transform: translateX(0);
-                display: flex !important;
             }
             .main-content {
                 margin-left: 0;
@@ -492,25 +422,6 @@
             }
             .sidebar-overlay.open {
                 display: block;
-            }
-            .page-content {
-                padding: 1rem;
-            }
-            .top-bar {
-                padding: 0.75rem 1rem;
-            }
-            .top-bar h1 {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* iPad safe area support */
-        @supports (padding-top: env(safe-area-inset-top)) {
-            .sidebar {
-                padding-top: env(safe-area-inset-top);
-            }
-            .top-bar {
-                padding-top: max(1rem, env(safe-area-inset-top));
             }
         }
 
@@ -684,17 +595,11 @@
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
-            localStorage.setItem('glamour_business_theme', next);
-            const icon = document.querySelector('.theme-toggle i');
-            if (icon) icon.className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('theme', next);
         }
 
-        // Set theme icon based on current theme
-        (function() {
-            var theme = document.documentElement.getAttribute('data-theme') || 'dark';
-            var icon = document.querySelector('.theme-toggle i');
-            if (icon) icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-        })();
+        // Always use dark mode as default
+        document.documentElement.setAttribute('data-theme', 'dark');
 
         // Initialize Push Notifications for Business
         async function initBusinessPush() {

@@ -47,7 +47,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
 /* New Booking Form */
 .pos-form-section {
-    background: var(--b-bg-card);
+    background: var(--bg-card);
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -59,10 +59,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--b-text);
+    color: var(--text-primary);
 }
 .pos-form-section h3 i {
-    color: var(--b-accent);
+    color: var(--primary);
 }
 
 /* Customer Search */
@@ -74,8 +74,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     z-index: 100;
@@ -92,24 +92,24 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border);
     transition: background 0.15s;
 }
 .customer-result-item:last-child {
     border-bottom: none;
 }
 .customer-result-item:hover {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
 }
 .customer-result-item .name {
     font-weight: 600;
 }
 .customer-result-item .details {
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 .customer-result-item .badge {
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
     padding: 0.2rem 0.5rem;
     border-radius: 8px;
@@ -121,13 +121,13 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--b-bg-surface);
-    color: var(--b-accent);
+    background: var(--secondary);
+    color: var(--primary);
     font-weight: 600;
-    border-top: 2px solid var(--b-border);
+    border-top: 2px solid var(--border);
 }
 .add-new-customer:hover {
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
 }
 
@@ -136,7 +136,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: linear-gradient(135deg, #1a1a1a, #222222);
+    background: linear-gradient(135deg, #f0f0f0, #e5e5e5);
     padding: 0.875rem 1rem;
     border-radius: 12px;
     margin-bottom: 1rem;
@@ -144,7 +144,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .selected-customer .avatar {
     width: 40px;
     height: 40px;
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -160,12 +160,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .selected-customer .info .contact {
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 .selected-customer .remove {
     background: none;
     border: none;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 50%;
@@ -182,7 +182,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
 }
 .service-item {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 1rem;
@@ -190,11 +190,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     transition: all 0.2s;
 }
 .service-item:hover {
-    border-color: var(--b-accent);
+    border-color: var(--primary);
 }
 .service-item.selected {
-    border-color: var(--b-accent);
-    background: rgba(255,255,255,0.05);
+    border-color: var(--primary);
+    background: rgba(0,0,0,0.05);
 }
 .service-item .name {
     font-weight: 600;
@@ -202,12 +202,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .service-item .meta {
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     display: flex;
     gap: 0.5rem;
 }
 .service-item .price {
-    color: var(--b-accent);
+    color: var(--primary);
     font-weight: 700;
 }
 
@@ -230,7 +230,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
 }
 .payment-method {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 1.25rem;
@@ -239,15 +239,15 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     transition: all 0.2s;
 }
 .payment-method:hover {
-    border-color: var(--b-accent);
+    border-color: var(--primary);
 }
 .payment-method.selected {
-    border-color: var(--b-accent);
-    background: rgba(255,255,255,0.05);
+    border-color: var(--primary);
+    background: rgba(0,0,0,0.05);
 }
 .payment-method i {
     font-size: 1.5rem;
-    color: var(--b-accent);
+    color: var(--primary);
     margin-bottom: 0.5rem;
 }
 .payment-method .title {
@@ -256,7 +256,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .payment-method .desc {
     font-size: 0.75rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 
 /* Today's Bookings */
@@ -268,7 +268,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border);
     align-items: flex-start;
 }
 .booking-item:last-child {
@@ -292,7 +292,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .booking-service {
     font-size: 0.85rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 .booking-badges {
     display: flex;
@@ -321,7 +321,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.25rem;
 }
 .booking-action-btn {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border: none;
     padding: 0.4rem 0.6rem;
     border-radius: 6px;
@@ -333,7 +333,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     white-space: nowrap;
 }
 .booking-action-btn:hover {
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
 }
 .booking-action-btn.danger:hover {
@@ -391,7 +391,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--b-bg-card);
+    background: var(--bg-card);
     border-radius: 24px 24px 0 0;
     max-height: 90vh;
     overflow-y: auto;
@@ -424,10 +424,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: var(--b-bg-card);
+    background: var(--bg-card);
     z-index: 10;
 }
 .pos-modal-header h3 {
@@ -435,7 +435,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     font-size: 1.1rem;
 }
 .pos-modal-close {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border: none;
     width: 36px;
     height: 36px;
@@ -452,7 +452,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     gap: 0.75rem;
     padding: 1.25rem;
-    border-top: 1px solid var(--b-border);
+    border-top: 1px solid var(--border);
 }
 .pos-modal-actions .btn {
     flex: 1;
@@ -482,7 +482,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     100% { transform: scale(1); }
 }
 .payment-link-box {
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border-radius: 12px;
     padding: 1rem;
     margin: 1rem 0;
@@ -492,15 +492,14 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .payment-link-box input {
     flex: 1;
-    background: var(--b-bg-surface);
-    border: 1px solid var(--b-border);
+    background: white;
+    border: 1px solid var(--border);
     padding: 0.75rem;
     border-radius: 8px;
     font-size: 0.85rem;
-    color: var(--b-text);
 }
 .copy-btn {
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
     border: none;
     padding: 0.75rem 1rem;
@@ -516,7 +515,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 .empty-state i {
     font-size: 3rem;
@@ -529,8 +528,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
 /* Digital POS: QR Code Styles */
 .qr-code-section {
-    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-    border: 2px dashed var(--b-border);
+    background: linear-gradient(135deg, #f8f9fa, #fff);
+    border: 2px dashed var(--border);
     border-radius: 16px;
     padding: 1.5rem;
     margin: 1rem 0;
@@ -543,11 +542,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    color: var(--b-text);
+    color: var(--text-primary);
 }
 .qr-code-header i {
     font-size: 1.25rem;
-    color: var(--b-accent);
+    color: var(--primary);
 }
 .qr-code-display {
     display: flex;
@@ -561,12 +560,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .qr-code-hint {
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     margin: 0;
 }
 .qr-code-section .enlarge-btn {
     margin-top: 0.75rem;
-    background: var(--b-accent);
+    background: var(--primary);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -591,18 +590,17 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem;
-    border: 1px solid var(--b-border);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    background: var(--b-bg-card);
+    background: var(--bg-card);
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.2s;
-    color: var(--b-text);
 }
 .share-btn:hover {
-    border-color: var(--b-accent);
-    background: rgba(255,255,255,0.05);
+    border-color: var(--primary);
+    background: rgba(0,0,0,0.02);
 }
 .share-btn i {
     font-size: 1.1rem;
@@ -629,7 +627,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .full-qr-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--b-accent);
+    color: var(--primary);
     margin-bottom: 0.5rem;
 }
 
@@ -641,7 +639,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding: 1rem;
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border-radius: 12px;
 }
 .status-dot {
@@ -675,7 +673,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <i class="fas fa-cash-register"></i>
         POS Systeem
     </h1>
-    <span style="color:var(--b-text-muted)">
+    <span style="color:var(--text-light)">
         <i class="fas fa-calendar"></i>
         <?= $dayNames[date('w')] ?>, <?= date('d') ?> <?= $monthNames[date('n') - 1] ?> <?= date('Y') ?>
     </span>
@@ -837,11 +835,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <!-- Right Column: Today's Bookings -->
     <div>
         <div class="card" style="padding:0">
-            <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--b-border);display:flex;justify-content:space-between;align-items:center">
+            <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
                 <h3 style="margin:0;font-size:1rem">
                     <i class="fas fa-calendar-day"></i> Vandaag
                 </h3>
-                <span class="badge" style="background:var(--b-accent);color:white"><?= count($todayBookings) ?> afspraken</span>
+                <span class="badge" style="background:var(--primary);color:white"><?= count($todayBookings) ?> afspraken</span>
             </div>
 
             <div class="bookings-list">
@@ -908,9 +906,9 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                 <h3 class="card-title" style="font-size:0.95rem"><i class="fas fa-users"></i> Recente Klanten</h3>
             </div>
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
-                <div style="padding:0.75rem 0;border-bottom:1px solid var(--b-border);cursor:pointer"
+                <div style="padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer"
                      onclick="quickSelectCustomer(<?= (int)$customer['id'] ?>, <?= json_encode($customer['name'] ?? '') ?>, <?= json_encode($customer['email'] ?? '') ?>, <?= json_encode($customer['phone'] ?? '') ?>)">
-                    <strong><?= htmlspecialchars($customer['name'] ?? '') ?></strong> <span style="color:var(--b-text-muted);font-size:0.75rem">#<?= (int)$customer['id'] ?></span>
+                    <strong><?= htmlspecialchars($customer['name'] ?? '') ?></strong> <span style="color:var(--text-light);font-size:0.75rem">#<?= (int)$customer['id'] ?></span>
                     <?php if (!empty($customer['email'])): ?>
                         <br><small class="text-muted"><?= htmlspecialchars($customer['email']) ?></small>
                     <?php endif; ?>
@@ -964,7 +962,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             </button>
         </div>
 
-        <div style="background:var(--b-bg-surface);border-radius:12px;padding:1rem;margin-top:1rem">
+        <div style="background:var(--secondary);border-radius:12px;padding:1rem;margin-top:1rem">
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
                 <span>Klant</span>
                 <strong id="successCustomer">-</strong>
@@ -1016,7 +1014,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div class="pos-modal-content" style="text-align:center;padding:2rem">
         <div id="fullQrCodeContainer" style="margin:0 auto 1.5rem"></div>
         <div class="full-qr-amount" id="fullQrAmount">-</div>
-        <p style="color:var(--b-text-muted);margin:0">Scan met je telefoon om te betalen</p>
+        <p style="color:var(--text-light);margin:0">Scan met je telefoon om te betalen</p>
 
         <!-- Payment status indicator -->
         <div class="payment-status-indicator" id="paymentStatusIndicator">
@@ -1098,7 +1096,7 @@ function searchCustomers(query) {
                 nameDiv.className = 'name';
                 nameDiv.textContent = c.name || '';
                 const idSpan = document.createElement('span');
-                idSpan.style.cssText = 'color:var(--b-text-muted);font-size:0.75rem;font-weight:normal';
+                idSpan.style.cssText = 'color:var(--text-light);font-size:0.75rem;font-weight:normal';
                 idSpan.textContent = ' #' + c.id;
                 nameDiv.appendChild(idSpan);
 
@@ -1146,7 +1144,7 @@ function selectCustomer(customer) {
     nameEl.textContent = '';
     nameEl.appendChild(document.createTextNode(customer.name || 'Gast'));
     const idSpan = document.createElement('span');
-    idSpan.style.cssText = 'color:var(--b-text-muted);font-size:0.8rem;font-weight:normal';
+    idSpan.style.cssText = 'color:var(--text-light);font-size:0.8rem;font-weight:normal';
     idSpan.textContent = ' #' + customer.id;
     nameEl.appendChild(idSpan);
     document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || 'Geen contactgegevens';

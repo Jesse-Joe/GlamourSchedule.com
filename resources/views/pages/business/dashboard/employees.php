@@ -6,21 +6,21 @@
         align-items: center;
         gap: 1.5rem;
         padding: 1.25rem;
-        background: var(--b-bg-card);
+        background: var(--white);
         border-radius: 12px;
-        border: 1px solid var(--b-border);
+        border: 1px solid var(--border);
         margin-bottom: 1rem;
         transition: all 0.2s;
     }
     .employee-card:hover {
-        border-color: var(--b-accent);
-        box-shadow: 0 5px 15px rgba(255,255,255,0.05);
+        border-color: var(--primary);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     .employee-avatar {
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #333333, #111111);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -69,12 +69,12 @@
         display: inline-block;
         vertical-align: middle;
         margin-left: 0.5rem;
-        border: 2px solid var(--b-border);
+        border: 2px solid var(--border);
     }
     .service-tag {
         display: inline-block;
         padding: 0.25rem 0.5rem;
-        background: var(--b-bg-surface);
+        background: var(--secondary);
         border-radius: 4px;
         font-size: 0.75rem;
         margin: 0.125rem;
@@ -92,7 +92,7 @@
         display: flex;
     }
     .modal-content {
-        background: var(--b-bg-card);
+        background: var(--white);
         border-radius: 16px;
         width: 90%;
         max-width: 600px;
@@ -111,7 +111,7 @@
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
-        color: var(--b-text-muted);
+        color: var(--text-light);
     }
     .services-grid {
         display: grid;
@@ -123,12 +123,12 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem;
-        background: var(--b-bg-surface);
+        background: var(--secondary);
         border-radius: 8px;
         cursor: pointer;
     }
     .service-checkbox:hover {
-        background: var(--b-border);
+        background: var(--border);
     }
     .service-checkbox input {
         width: 18px;
@@ -246,7 +246,7 @@
 
             <?php if (empty($employees)): ?>
                 <div class="text-center" style="padding:3rem">
-                    <i class="fas fa-users" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
+                    <i class="fas fa-users" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
                     <h4>Nog geen medewerkers</h4>
                     <p class="text-muted">Voeg je eerste medewerker toe om afspraken per persoon te beheren.</p>
                 </div>
@@ -424,7 +424,7 @@
             foreach ($days as $index => $day):
                 $dayIndex = ($index + 1) % 7; // Convert to 0=Sunday format
             ?>
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;padding:0.75rem;background:var(--b-bg-surface);border-radius:8px" class="hours-row" data-day="<?= $dayIndex ?>">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;padding:0.75rem;background:var(--secondary);border-radius:8px" class="hours-row" data-day="<?= $dayIndex ?>">
                     <label style="width:100px;font-weight:500"><?= $day ?></label>
                     <input type="time" name="hours[<?= $dayIndex ?>][open]" class="form-control hour-open" style="flex:1" value="09:00">
                     <span>-</span>

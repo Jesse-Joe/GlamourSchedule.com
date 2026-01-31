@@ -240,8 +240,8 @@
 }
 
 .stat-card {
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-color, #222);
     border-radius: 12px;
     padding: 1.5rem;
     display: flex;
@@ -261,7 +261,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.25rem;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
 }
 
 .stat-content {
@@ -272,12 +272,12 @@
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--b-text);
+    color: var(--text-color);
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
 }
 
 .terminal-list {
@@ -292,13 +292,13 @@
     gap: 1rem;
     padding: 1rem;
     background: rgba(255,255,255,0.02);
-    border: 1px solid var(--b-border);
+    border: 1px solid var(--border-color, #222);
     border-radius: 12px;
     transition: all 0.2s;
 }
 
 .terminal-item:hover {
-    border-color: var(--b-accent);
+    border-color: var(--primary-color, #fff);
     background: rgba(255,255,255,0.05);
 }
 
@@ -337,7 +337,7 @@
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
 }
 
 .empty-state i {
@@ -374,8 +374,8 @@
 
 .modal-content {
     position: relative;
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-color, #222);
     border-radius: 16px;
     width: 90%;
     max-width: 450px;
@@ -388,7 +388,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border-color, #222);
 }
 
 .modal-header h3 {
@@ -399,7 +399,7 @@
 .modal-close {
     background: none;
     border: none;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0;
@@ -428,10 +428,10 @@
 .input-prefix {
     padding: 0.75rem 1rem;
     background: rgba(255,255,255,0.05);
-    border: 1px solid var(--b-border);
+    border: 1px solid var(--border-color, #333);
     border-right: none;
     border-radius: 8px 0 0 8px;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
 }
 
 .input-group .form-control {
@@ -496,12 +496,12 @@
 .table th, .table td {
     padding: 0.75rem;
     text-align: left;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border-color, #222);
 }
 
 .table th {
     font-weight: 600;
-    color: var(--b-text-muted);
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 

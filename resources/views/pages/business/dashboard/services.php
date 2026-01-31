@@ -6,21 +6,21 @@
         align-items: center;
         gap: 1.5rem;
         padding: 1.25rem;
-        background: var(--b-bg-card);
+        background: var(--white);
         border-radius: 12px;
-        border: 1px solid var(--b-border);
+        border: 1px solid var(--border);
         margin-bottom: 1rem;
         transition: all 0.2s;
     }
     .service-card:hover {
-        border-color: var(--b-accent);
+        border-color: var(--primary);
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     .service-icon {
         width: 50px;
         height: 50px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #333333, #111111);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -34,7 +34,7 @@
     .service-price {
         font-size: 1.25rem;
         font-weight: 700;
-        color: var(--b-text);
+        color: var(--primary);
     }
     .service-actions {
         display: flex;
@@ -143,7 +143,7 @@
 
             <?php if (empty($services)): ?>
                 <div class="text-center" style="padding:3rem">
-                    <i class="fas fa-cut" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
+                    <i class="fas fa-cut" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
                     <h4>Nog geen diensten</h4>
                     <p class="text-muted">Voeg je eerste dienst toe om boekingen te ontvangen.</p>
                 </div>

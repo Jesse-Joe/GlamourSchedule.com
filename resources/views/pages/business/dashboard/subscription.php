@@ -59,7 +59,7 @@
 
 /* Price Box */
 .price-box {
-    background: var(--b-bg-card);
+    background: #fff;
     border-radius: 20px;
     padding: 2.5rem;
     max-width: 500px;
@@ -68,25 +68,25 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 }
 .price-box h2 {
-    color: var(--b-text);
+    color: #333;
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
 }
 .price-box .price {
     font-size: 4rem;
     font-weight: 800;
-    color: var(--b-text);
+    color: #000;
     line-height: 1;
     margin: 1rem 0;
 }
 .price-box .price-type {
-    color: var(--b-text-muted);
+    color: #666;
     font-size: 1rem;
     margin-bottom: 1.5rem;
 }
 .price-box .original-price {
     text-decoration: line-through;
-    color: var(--b-text-muted);
+    color: #999;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
@@ -106,13 +106,13 @@
     text-align: left;
     margin: 1.5rem 0;
     padding: 1.5rem;
-    background: var(--b-bg-surface);
+    background: #f9fafb;
     border-radius: 12px;
 }
 .features-list h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
-    color: var(--b-text);
+    color: #333;
 }
 .features-list ul {
     list-style: none;
@@ -121,7 +121,7 @@
 }
 .features-list li {
     padding: 0.5rem 0;
-    color: var(--b-text-muted);
+    color: #555;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -161,7 +161,7 @@
 
 /* Trial Status */
 .trial-status {
-    background: <?= $trialExpired ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)' ?>;
+    background: <?= $trialExpired ? '#fef2f2' : '#fffbeb' ?>;
     border: 1px solid <?= $trialExpired ? '#fecaca' : '#fde68a' ?>;
     border-radius: 12px;
     padding: 1rem 1.5rem;
@@ -176,11 +176,11 @@
 }
 .trial-status-text h4 {
     margin: 0;
-    color: var(--b-text);
+    color: #333;
 }
 .trial-status-text p {
     margin: 0.25rem 0 0 0;
-    color: var(--b-text-muted);
+    color: #666;
     font-size: 0.9rem;
 }
 
@@ -336,14 +336,14 @@
             <img src="https://www.mollie.com/external/icons/payment-methods/paypal.svg" alt="PayPal">
         </div>
 
-        <p style="margin-top:1.5rem;color:var(--b-text-muted);font-size:0.85rem">
+        <p style="margin-top:1.5rem;color:#999;font-size:0.85rem">
             <i class="fas fa-shield-alt"></i> Veilig betalen via Mollie
         </p>
     </div>
 
     <!-- FAQ / Info -->
     <div style="max-width:600px;margin:0 auto;text-align:center">
-        <p style="color:var(--b-text-muted);font-size:0.9rem">
+        <p style="color:#666;font-size:0.9rem">
             Vragen? Neem contact op via <a href="mailto:info@glamourschedule.nl" style="color:#3b82f6">info@glamourschedule.nl</a>
         </p>
     </div>

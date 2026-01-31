@@ -8,23 +8,23 @@
 
         <!-- Progress Steps -->
         <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
-            <div style="flex:1;text-align:center;padding:0.75rem;background:var(--b-bg-card);border-radius:8px">
-                <i class="fas fa-check-circle" style="color:var(--b-text-muted)"></i>
-                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:var(--b-text)">IBAN</p>
+            <div style="flex:1;text-align:center;padding:0.75rem;background:#ffffff;border-radius:8px">
+                <i class="fas fa-check-circle" style="color:#333333"></i>
+                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:#000000">IBAN</p>
             </div>
-            <div style="flex:1;text-align:center;padding:0.75rem;background:linear-gradient(135deg,#333333,#111111);border-radius:8px;color:white">
+            <div style="flex:1;text-align:center;padding:0.75rem;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:8px;color:white">
                 <i class="fas fa-envelope"></i>
                 <p style="margin:0.25rem 0 0 0;font-size:0.75rem">2FA Code</p>
             </div>
-            <div style="flex:1;text-align:center;padding:0.75rem;background:var(--b-bg-surface);border-radius:8px">
-                <i class="fas fa-credit-card" style="color:var(--b-text-muted)"></i>
-                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:var(--b-text-muted)">Betaling</p>
+            <div style="flex:1;text-align:center;padding:0.75rem;background:var(--secondary);border-radius:8px">
+                <i class="fas fa-credit-card" style="color:var(--text-light)"></i>
+                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:var(--text-light)">Betaling</p>
             </div>
         </div>
 
-        <div style="background:var(--b-bg-card);border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
-            <i class="fas fa-envelope" style="font-size:2rem;color:var(--b-text);margin-bottom:0.5rem"></i>
-            <p style="margin:0;color:var(--b-text)">
+        <div style="background:#ffffff;border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
+            <i class="fas fa-envelope" style="font-size:2rem;color:#000000;margin-bottom:0.5rem"></i>
+            <p style="margin:0;color:#000000">
                 We hebben een 6-cijferige code gestuurd naar:<br>
                 <strong><?= htmlspecialchars($email) ?></strong>
             </p>
@@ -66,8 +66,8 @@
 
         <hr style="margin:1.5rem 0">
 
-        <div style="background:var(--b-bg-surface);border-radius:10px;padding:1rem">
-            <p style="margin:0;font-size:0.85rem;color:var(--b-text-muted)">
+        <div style="background:var(--secondary);border-radius:10px;padding:1rem">
+            <p style="margin:0;font-size:0.85rem;color:var(--text-light)">
                 <strong>IBAN:</strong> <?= htmlspecialchars($iban) ?><br>
                 <strong>Naam:</strong> <?= htmlspecialchars($accountHolder) ?>
             </p>

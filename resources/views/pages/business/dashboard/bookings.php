@@ -13,16 +13,16 @@
         text-decoration: none;
         font-weight: 500;
         transition: all 0.2s;
-        background: var(--b-bg-card);
-        color: var(--b-text);
-        border: 2px solid var(--b-border);
+        background: var(--white);
+        color: var(--text);
+        border: 2px solid var(--border);
     }
     .filter-tab:hover {
-        border-color: var(--b-accent);
-        color: var(--b-accent);
+        border-color: var(--primary);
+        color: var(--primary);
     }
     .filter-tab.active {
-        background: linear-gradient(135deg, #333333, #111111);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
         border-color: transparent;
     }
@@ -31,11 +31,11 @@
         grid-template-columns: 100px 1.5fr 1fr 1fr 120px;
         align-items: center;
         padding: 1rem 0;
-        border-bottom: 1px solid var(--b-border);
+        border-bottom: 1px solid var(--border);
         gap: 1rem;
     }
     .booking-row:hover {
-        background: var(--b-bg-surface);
+        background: var(--secondary);
         margin: 0 -1.5rem;
         padding-left: 1.5rem;
         padding-right: 1.5rem;
@@ -55,10 +55,10 @@
         font-size: 0.75rem;
         font-weight: 500;
     }
-    .status-confirmed { background: var(--b-bg-card); color: var(--b-text); }
-    .status-pending { background: var(--b-bg-card); color: var(--b-text); }
-    .status-cancelled { background: var(--b-bg-surface); color: var(--b-text); }
-    .status-completed { background: var(--b-bg-surface); color: var(--b-text); }
+    .status-confirmed { background: #ffffff; color: #000000; }
+    .status-pending { background: #ffffff; color: #000000; }
+    .status-cancelled { background: #f5f5f5; color: #000000; }
+    .status-completed { background: #f5f5f5; color: #000000; }
 </style>
 
 <!-- Filter Tabs -->
@@ -91,13 +91,13 @@
 
     <?php if (empty($bookings)): ?>
         <div class="text-center" style="padding:3rem">
-            <i class="fas fa-calendar-check" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
+            <i class="fas fa-calendar-check" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
             <h4>Geen boekingen gevonden</h4>
             <p class="text-muted">Er zijn geen boekingen in deze categorie.</p>
         </div>
     <?php else: ?>
         <!-- Header -->
-        <div class="booking-row" style="font-weight:600;font-size:0.85rem;color:var(--b-text-muted);border-bottom:2px solid var(--b-border)">
+        <div class="booking-row" style="font-weight:600;font-size:0.85rem;color:var(--text-light);border-bottom:2px solid var(--border)">
             <div>Datum</div>
             <div>Klant</div>
             <div>Dienst</div>
@@ -123,7 +123,7 @@
                     <?php endif; ?>
                 </div>
                 <div>
-                    <i class="fas fa-clock" style="color:var(--b-text-muted)"></i>
+                    <i class="fas fa-clock" style="color:var(--text-light)"></i>
                     <?= !empty($booking['appointment_time']) ? date('H:i', strtotime($booking['appointment_time'])) : '-' ?>
                     <?php if (!empty($booking['duration_minutes'])): ?>
                         - <?= date('H:i', strtotime($booking['appointment_time'] . ' +' . $booking['duration_minutes'] . ' minutes')) ?>

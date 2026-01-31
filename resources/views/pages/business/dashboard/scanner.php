@@ -21,7 +21,7 @@
         text-align: center;
     }
     .scan-result.success {
-        background: linear-gradient(135deg, var(--b-bg-card), var(--b-bg-surface));
+        background: linear-gradient(135deg, #ffffff, #f5f5f5);
         border: 2px solid #333333;
         color: #166534;
     }
@@ -32,26 +32,26 @@
         color: #166534;
     }
     .scan-result.error {
-        background: linear-gradient(135deg, var(--b-bg-surface), var(--b-bg-surface));
+        background: linear-gradient(135deg, #f5f5f5, #f5f5f5);
         border: 2px solid #333333;
-        color: var(--b-text);
+        color: #000000;
     }
     .scan-result.error h3 {
         color: #7f1d1d;
     }
     .scan-result.error p {
-        color: var(--b-text);
+        color: #000000;
     }
     .scan-result.warning {
-        background: linear-gradient(135deg, var(--b-bg-card), var(--b-bg-card));
+        background: linear-gradient(135deg, #ffffff, #ffffff);
         border: 2px solid #000000;
-        color: var(--b-text);
+        color: #000000;
     }
     .scan-result.warning h3 {
-        color: var(--b-text);
+        color: #000000;
     }
     .scan-result.warning p {
-        color: var(--b-text);
+        color: #000000;
     }
     .result-icon {
         width: 80px;
@@ -68,7 +68,7 @@
     .error .result-icon { background: linear-gradient(135deg, #333333, #dc2626); }
     .warning .result-icon { background: linear-gradient(135deg, #000000, #404040); }
     .booking-details {
-        background: var(--b-bg-card);
+        background: #ffffff;
         border-radius: 12px;
         padding: 1rem;
         margin-top: 1rem;
@@ -85,18 +85,18 @@
         font-weight: 600;
     }
     .scanner-instructions {
-        background: linear-gradient(135deg, var(--b-bg-surface), var(--b-bg-surface));
+        background: linear-gradient(135deg, #eff6ff, #f5f5f5);
         border-radius: 12px;
         padding: 1.25rem;
         margin-bottom: 1.5rem;
     }
     .scanner-instructions h4 {
         margin: 0 0 0.5rem 0;
-        color: var(--b-text);
+        color: #000000;
     }
     .scanner-instructions p {
         margin: 0;
-        color: var(--b-text-muted);
+        color: #404040;
         font-size: 0.9rem;
     }
 </style>
@@ -153,7 +153,7 @@
             </button>
         </div>
 
-        <div id="scannerError" style="display:none;margin-top:1rem;padding:1rem;background:var(--b-bg-surface);border-radius:10px;color:var(--b-text);text-align:center">
+        <div id="scannerError" style="display:none;margin-top:1rem;padding:1rem;background:#f5f5f5;border-radius:10px;color:#000000;text-align:center">
             <i class="fas fa-exclamation-circle"></i> <span id="errorMessage"></span>
         </div>
     </div>
@@ -161,10 +161,10 @@
     <!-- Manual input fallback -->
     <div class="card" style="margin-top:1rem">
         <h4 style="margin:0 0 1rem 0"><i class="fas fa-keyboard"></i> Handmatige invoer</h4>
-        <p style="color:var(--b-text-muted);font-size:0.9rem;margin-bottom:0.5rem">
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:0.5rem">
             Camera werkt niet? Voer een van de volgende codes in:
         </p>
-        <ul style="color:var(--b-text-muted);font-size:0.85rem;margin:0 0 1rem 1rem;padding:0">
+        <ul style="color:var(--text-light);font-size:0.85rem;margin:0 0 1rem 1rem;padding:0">
             <li>Boekingsnummer: <strong>GS12345678</strong></li>
             <li>Verificatiecode (SHA256): <strong>A1B2-C3D4-E5F6</strong></li>
         </ul>
@@ -172,7 +172,7 @@
             <input type="text" id="manualInput" class="form-control" placeholder="GS12345678 of A1B2-C3D4-E5F6" style="flex:1;text-transform:uppercase">
             <button type="submit" class="btn"><i class="fas fa-check"></i> Check-in</button>
         </form>
-        <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--b-text-muted)">
+        <p style="margin-top:0.75rem;font-size:0.75rem;color:#666">
             <i class="fas fa-shield-alt"></i> De verificatiecode is gekoppeld aan uw salon via SHA256 encryptie
         </p>
     </div>

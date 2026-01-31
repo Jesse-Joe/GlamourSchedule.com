@@ -78,7 +78,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--b-bg-card);
+    background: #ffffff;
     color: #dc2626;
     padding: 0.75rem 1rem;
     border-radius: 10px;
@@ -95,11 +95,11 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     margin-bottom: 1rem;
 }
 .stat-card {
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--white);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .stat-card i {
     font-size: 1.5rem;
@@ -107,12 +107,11 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 .stat-card h3 {
     margin: 0.35rem 0;
     font-size: 1.5rem;
-    color: var(--b-text);
 }
 .stat-card p {
     margin: 0;
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 
 /* Quick Actions - Stack on mobile */
@@ -126,17 +125,13 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--white);
     border-radius: 12px;
     padding: 1rem;
     text-decoration: none;
-    color: var(--b-text);
-    transition: all 0.2s;
-}
-.action-card:hover {
-    border-color: var(--b-accent);
-    transform: translateY(-2px);
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
 .action-card:active {
     transform: scale(0.98);
@@ -157,12 +152,11 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 .action-text h4 {
     margin: 0;
     font-size: 1rem;
-    color: var(--b-text);
 }
 .action-text p {
     margin: 0;
     font-size: 0.8rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 
 /* Bookings Grid - Stack on mobile */
@@ -172,10 +166,10 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     gap: 1rem;
 }
 .dash-card {
-    background: var(--b-bg-card);
-    border: 1px solid var(--b-border);
+    background: var(--white);
     border-radius: 16px;
     padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .dash-card-header {
     display: flex;
@@ -189,41 +183,34 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--b-text);
 }
 .dash-card-title i {
-    color: var(--b-text);
+    color: var(--primary);
 }
 .btn-small {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
-    background: var(--b-bg-surface);
-    color: var(--b-text);
+    background: var(--secondary);
+    color: var(--text);
     border-radius: 8px;
     text-decoration: none;
-    border: 1px solid var(--b-border);
-    transition: all 0.2s;
-}
-.btn-small:hover {
-    border-color: var(--b-accent);
 }
 .booking-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 0;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid var(--border);
 }
 .booking-item:last-child {
     border-bottom: none;
 }
 .booking-info strong {
     font-size: 0.95rem;
-    color: var(--b-text);
 }
 .booking-info small {
     display: block;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     font-size: 0.8rem;
 }
 .booking-status {
@@ -234,15 +221,15 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     white-space: nowrap;
 }
 .status-confirmed {
-    background: var(--b-success);
+    background: var(--success);
 }
 .status-pending {
-    background: var(--b-warning);
+    background: var(--warning);
 }
 .empty-state {
     text-align: center;
     padding: 2rem 1rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
 }
 .empty-state i {
     font-size: 2rem;
@@ -381,12 +368,12 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
 <!-- Stats -->
 <div class="stats-grid">
     <div class="stat-card">
-        <i class="fas fa-calendar-check" style="color:var(--b-text)"></i>
+        <i class="fas fa-calendar-check" style="color:var(--primary)"></i>
         <h3><?= $stats['todayBookings'] ?></h3>
         <p>Vandaag</p>
     </div>
     <div class="stat-card">
-        <i class="fas fa-calendar-alt" style="color:var(--b-success)"></i>
+        <i class="fas fa-calendar-alt" style="color:var(--success)"></i>
         <h3><?= $stats['totalBookings'] ?></h3>
         <p>Totaal Boekingen</p>
     </div>
@@ -405,7 +392,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
 <!-- Quick Actions -->
 <div class="actions-grid">
     <a href="/business/bookings" class="action-card">
-        <div class="action-icon" style="background:linear-gradient(135deg,#333333,#111111)">
+        <div class="action-icon" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))">
             <i class="fas fa-calendar-alt"></i>
         </div>
         <div class="action-text">
@@ -414,7 +401,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
         </div>
     </a>
     <a href="/business/services" class="action-card">
-        <div class="action-icon" style="background:linear-gradient(135deg,#22c55e,#166534)">
+        <div class="action-icon" style="background:linear-gradient(135deg,var(--success),#000000)">
             <i class="fas fa-cut"></i>
         </div>
         <div class="action-text">
@@ -423,7 +410,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
         </div>
     </a>
     <a href="/business/website" class="action-card">
-        <div class="action-icon" style="background:linear-gradient(135deg,#333333,#1a1a1a)">
+        <div class="action-icon" style="background:linear-gradient(135deg,#000000,#262626)">
             <i class="fas fa-globe"></i>
         </div>
         <div class="action-text">
@@ -452,7 +439,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
                     <div class="booking-item">
                         <div class="booking-info">
                             <strong><?= date('H:i', strtotime($booking['appointment_time'])) ?></strong>
-                            <span style="color:var(--b-text-muted)"> - <?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></span>
+                            <span style="color:var(--text-light)"> - <?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></span>
                             <small><?= htmlspecialchars($booking['service_name']) ?></small>
                         </div>
                         <span class="booking-status <?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'status-confirmed' : 'status-pending' ?>">
@@ -483,7 +470,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
                             <strong><?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></strong>
                             <small><?= htmlspecialchars($booking['service_name']) ?></small>
                         </div>
-                        <small style="color:var(--b-text-muted)"><?= date('d-m-Y', strtotime($booking['created_at'])) ?></small>
+                        <small style="color:var(--text-light)"><?= date('d-m-Y', strtotime($booking['created_at'])) ?></small>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -647,7 +634,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
     to { opacity: 1; }
 }
 .welcome-popup {
-    background: var(--b-bg-card);
+    background: var(--white);
     border-radius: 24px;
     width: 100%;
     max-width: 480px;
@@ -694,11 +681,11 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
 .welcome-popup-body h3 {
     margin: 0 0 0.25rem 0;
     font-size: 1.2rem;
-    color: var(--b-text);
+    color: var(--text);
 }
 .welcome-popup-body .subtitle {
     margin: 0 0 1.25rem 0;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     font-size: 0.9rem;
 }
 .completion-progress {
@@ -710,7 +697,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
 .progress-bar {
     flex: 1;
     height: 8px;
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -722,7 +709,7 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
 }
 .progress-text {
     font-size: 0.85rem;
-    color: var(--b-text-muted);
+    color: var(--text-light);
     white-space: nowrap;
 }
 .completion-checklist {
@@ -735,10 +722,10 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem 1rem;
-    background: var(--b-bg-surface);
+    background: var(--secondary);
     border-radius: 12px;
     text-decoration: none;
-    color: var(--b-text);
+    color: var(--text);
     transition: all 0.2s;
 }
 .checklist-item:hover {
@@ -764,12 +751,12 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
     font-size: 0.95rem;
 }
 .checklist-item .fa-chevron-right {
-    color: var(--b-text-muted);
+    color: var(--text-light);
     font-size: 0.8rem;
 }
 .welcome-popup-footer {
     padding: 1.5rem;
-    border-top: 1px solid var(--b-border);
+    border-top: 1px solid var(--border);
     text-align: center;
 }
 .btn-start {
@@ -796,11 +783,11 @@ $needsVerification = empty($business['kvk_number']) && empty($business['is_verif
     font-size: 0.9rem;
 }
 .skip-text a {
-    color: var(--b-text-muted);
+    color: var(--text-light);
     text-decoration: none;
 }
 .skip-text a:hover {
-    color: var(--b-text);
+    color: var(--text);
 }
 </style>
 

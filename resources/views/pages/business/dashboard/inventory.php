@@ -6,15 +6,15 @@
         align-items: center;
         gap: 1.5rem;
         padding: 1.25rem;
-        background: var(--b-bg-card);
+        background: var(--white);
         border-radius: 12px;
-        border: 1px solid var(--b-border);
+        border: 1px solid var(--border);
         margin-bottom: 1rem;
         transition: all 0.2s;
     }
     .inventory-card:hover {
-        border-color: var(--b-accent);
-        box-shadow: 0 5px 15px rgba(255,255,255,0.05);
+        border-color: var(--primary);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     .inventory-icon {
         width: 50px;
@@ -66,7 +66,7 @@
         align-items: center;
         gap: 0.25rem;
         padding: 0.25rem 0.5rem;
-        background: rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.1);
         border-radius: 6px;
         font-size: 0.75rem;
     }
@@ -102,7 +102,7 @@
         display: flex;
     }
     .modal-content {
-        background: var(--b-bg-card);
+        background: var(--white);
         border-radius: 16px;
         padding: 1.5rem;
         width: 100%;
@@ -124,7 +124,7 @@
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
-        color: var(--b-text);
+        color: var(--text);
     }
 
     /* Mobile responsive */
@@ -270,7 +270,7 @@
 
             <?php if (empty($inventory)): ?>
                 <div class="text-center" style="padding:3rem">
-                    <i class="fas fa-boxes" style="font-size:4rem;color:var(--b-border);margin-bottom:1rem"></i>
+                    <i class="fas fa-boxes" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
                     <h4>Nog geen voorraad</h4>
                     <p class="text-muted">Voeg je eerste product toe om je voorraad bij te houden.</p>
                 </div>
@@ -438,7 +438,7 @@ function openLinkModal(id, name, serviceLinks) {
             const service = services.find(s => s.id == serviceId);
             if (service) {
                 const div = document.createElement('div');
-                div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:0.5rem;background:rgba(255,255,255,0.05);border-radius:6px;margin-bottom:0.5rem';
+                div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:0.5rem;background:rgba(0,0,0,0.05);border-radius:6px;margin-bottom:0.5rem';
                 div.innerHTML = `
                     <span>${service.name} (${qty}x)</span>
                     <form method="POST" action="/business/inventory/unlink" style="margin:0">
