@@ -242,12 +242,12 @@
                 $checkinUrl = 'https://glamourschedule.nl/checkin/' . $booking['uuid'];
                 $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' . urlencode($checkinUrl);
                 $statusLabels = [
-                    'pending' => 'In afwachting',
-                    'confirmed' => 'Bevestigd',
-                    'checked_in' => 'Ingecheckt',
-                    'completed' => 'Voltooid',
-                    'cancelled' => 'Geannuleerd',
-                    'no_show' => 'Niet verschenen'
+                    'pending' => $translations['status_pending'] ?? 'In afwachting',
+                    'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
+                    'checked_in' => $translations['status_checked_in'] ?? 'Ingecheckt',
+                    'completed' => $translations['status_completed'] ?? 'Voltooid',
+                    'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
+                    'no_show' => $translations['status_no_show'] ?? 'Niet verschenen'
                 ];
             ?>
                 <div class="booking-card">
@@ -312,12 +312,12 @@
         <?php else: ?>
             <?php foreach ($past as $booking):
                 $statusLabels = [
-                    'pending' => 'In afwachting',
-                    'confirmed' => 'Bevestigd',
-                    'checked_in' => 'Ingecheckt',
-                    'completed' => 'Voltooid',
-                    'cancelled' => 'Geannuleerd',
-                    'no_show' => 'Niet verschenen'
+                    'pending' => $translations['status_pending'] ?? 'In afwachting',
+                    'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
+                    'checked_in' => $translations['status_checked_in'] ?? 'Ingecheckt',
+                    'completed' => $translations['status_completed'] ?? 'Voltooid',
+                    'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
+                    'no_show' => $translations['status_no_show'] ?? 'Niet verschenen'
                 ];
             ?>
                 <div class="booking-card">
@@ -374,12 +374,12 @@
         <?php else: ?>
             <?php foreach ($bookings as $booking):
                 $statusLabels = [
-                    'pending' => 'In afwachting',
-                    'confirmed' => 'Bevestigd',
-                    'checked_in' => 'Ingecheckt',
-                    'completed' => 'Voltooid',
-                    'cancelled' => 'Geannuleerd',
-                    'no_show' => 'Niet verschenen'
+                    'pending' => $translations['status_pending'] ?? 'In afwachting',
+                    'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
+                    'checked_in' => $translations['status_checked_in'] ?? 'Ingecheckt',
+                    'completed' => $translations['status_completed'] ?? 'Voltooid',
+                    'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
+                    'no_show' => $translations['status_no_show'] ?? 'Niet verschenen'
                 ];
             ?>
                 <div class="booking-card">

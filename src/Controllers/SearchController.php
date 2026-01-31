@@ -63,7 +63,7 @@ class SearchController extends Controller
         $businesses = $this->enrichBusinessData($businesses);
 
         return $this->view('pages/search/index', [
-            'pageTitle' => 'Zoeken',
+            'pageTitle' => $this->t('search'),
             'businesses' => $businesses,
             'categories' => $categories,
             'query' => $query,

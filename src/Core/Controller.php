@@ -316,11 +316,33 @@ abstract class Controller
 
     protected function getTranslations(): array
     {
+        static $cache = [];
+        if (isset($cache[$this->lang])) {
+            return $cache[$this->lang];
+        }
+
         $langFile = BASE_PATH . '/resources/lang/' . $this->lang . '/messages.php';
         if (file_exists($langFile)) {
-            return require $langFile;
+            $cache[$this->lang] = require $langFile;
+            return $cache[$this->lang];
         }
-        return require BASE_PATH . '/resources/lang/nl/messages.php';
+        $cache[$this->lang] = require BASE_PATH . '/resources/lang/nl/messages.php';
+        return $cache[$this->lang];
+    }
+
+    /**
+     * Get a single translation string
+     */
+    protected function t(string $key, array $replacements = [], ?string $default = null): string
+    {
+        $translations = $this->getTranslations();
+        $text = $translations[$key] ?? $default ?? $key;
+
+        foreach ($replacements as $search => $replace) {
+            $text = str_replace(':' . $search, $replace, $text);
+        }
+
+        return $text;
     }
 
     protected function getCurrentUser(): ?array
@@ -382,16 +404,16 @@ abstract class Controller
             $ruleList = explode('|', $rule);
             foreach ($ruleList as $r) {
                 if ($r === 'required' && empty($data[$field])) {
-                    $errors[$field] = 'Dit veld is verplicht';
+                    $errors[$field] = $this->t('error_required');
                 }
                 if (strpos($r, 'min:') === 0 && isset($data[$field])) {
                     $min = (int)substr($r, 4);
                     if (strlen($data[$field]) < $min) {
-                        $errors[$field] = "Minimaal $min karakters vereist";
+                        $errors[$field] = $this->t('error_min_chars', ['count' => $min]);
                     }
                 }
                 if ($r === 'email' && isset($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_EMAIL)) {
-                    $errors[$field] = 'Ongeldig e-mailadres';
+                    $errors[$field] = $this->t('error_email');
                 }
             }
         }

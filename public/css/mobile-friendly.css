@@ -136,8 +136,9 @@ textarea {
     padding: 0.875rem 1rem;
     font-size: 16px;
     border-radius: 8px;
-    border: 2px solid #e5e5e5;
-    background: #fff;
+    border: 2px solid var(--input-border, var(--theme-border, #e5e5e5));
+    background: var(--input-bg, var(--theme-bg, #fff));
+    color: var(--input-text, var(--theme-text, #000));
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -145,8 +146,8 @@ input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    border-color: var(--input-border, var(--theme-border, #000));
+    box-shadow: 0 0 0 3px rgba(var(--theme-text-rgb, 0, 0, 0), 0.1);
 }
 
 /* Form labels */
@@ -202,29 +203,29 @@ input[type="submit"] {
 /* Primary button */
 .btn-primary,
 button.primary {
-    background: #000;
-    color: #fff;
-    border-color: #000;
+    background: var(--btn-bg, var(--theme-text, #000));
+    color: var(--btn-text, var(--theme-bg, #fff));
+    border-color: var(--btn-border, var(--theme-text, #000));
 }
 
 .btn-primary:hover,
 .btn-primary:focus,
 button.primary:hover {
-    background: #333;
-    border-color: #333;
+    background: var(--btn-hover-bg, #333);
+    border-color: var(--btn-hover-bg, #333);
 }
 
 /* Secondary button */
 .btn-secondary,
 button.secondary {
-    background: #fff;
-    color: #000;
-    border-color: #000;
+    background: var(--theme-bg, #fff);
+    color: var(--theme-text, #000);
+    border-color: var(--theme-text, #000);
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus {
-    background: #f5f5f5;
+    background: var(--card-bg, #f5f5f5);
 }
 
 /* Full width buttons on mobile */
@@ -270,7 +271,7 @@ button.secondary {
 .card,
 .content-block,
 .box {
-    background: #fff;
+    background: var(--card-bg, var(--theme-bg, #fff));
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -324,7 +325,7 @@ button.secondary {
 
     .table-stack tr {
         margin-bottom: 1rem;
-        background: #fff;
+        background: var(--card-bg, var(--theme-bg, #fff));
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         padding: 1rem;

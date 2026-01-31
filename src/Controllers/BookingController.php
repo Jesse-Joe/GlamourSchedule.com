@@ -16,7 +16,7 @@ class BookingController extends Controller
         $business = $this->getBusinessByUuid($uuid);
         if (!$business) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
         return $this->renderCreateForm($business);
     }
@@ -28,7 +28,7 @@ class BookingController extends Controller
     {
         $business = $this->getBusinessByUuid($uuid);
         if (!$business) {
-            return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+            return $this->json(['error' => $this->t('error_business_not_found')], 404);
         }
         return $this->processBooking($business);
     }
@@ -41,7 +41,7 @@ class BookingController extends Controller
         $business = $this->getBusinessBySlug($businessSlug);
         if (!$business) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
         return $this->renderCreateForm($business);
     }
@@ -54,7 +54,7 @@ class BookingController extends Controller
         // Check if business needs verification (no KVK and not admin verified)
         if (empty($business['kvk_number']) && empty($business['is_verified'])) {
             return $this->view('pages/booking/pending-verification', [
-                'pageTitle' => 'Nog niet beschikbaar',
+                'pageTitle' => $this->t('page_not_available'),
                 'business' => $business
             ]);
         }
@@ -72,7 +72,7 @@ class BookingController extends Controller
         $settings = $this->getBusinessSettings($business['id']);
 
         return $this->view('pages/booking/create', [
-            'pageTitle' => 'Boeken bij ' . $business['name'],
+            'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
             'business' => $business,
             'services' => $services,
             'selectedService' => $selectedService,
@@ -85,7 +85,7 @@ class BookingController extends Controller
     {
         $business = $this->getBusinessBySlug($businessSlug);
         if (!$business) {
-            return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+            return $this->json(['error' => $this->t('error_business_not_found')], 404);
         }
         return $this->processBooking($business);
     }
@@ -101,7 +101,7 @@ class BookingController extends Controller
         }
 
         if (!$this->verifyCsrf()) {
-            return $this->json(['error' => 'Ongeldige aanvraag'], 400);
+            return $this->json(['error' => $this->t('validation_invalid_request')], 400);
         }
 
         $serviceId = (int)($_POST['service_id'] ?? 0);
@@ -119,7 +119,7 @@ class BookingController extends Controller
         // Validate terms acceptance
         if (!$acceptTerms) {
             return $this->view('pages/booking/create', [
-                'pageTitle' => 'Boeken bij ' . $business['name'],
+                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
                 'business' => $business,
                 'services' => $this->getServices($business['id']),
                 'error' => 'U moet akkoord gaan met de algemene voorwaarden om te boeken.'
@@ -129,7 +129,7 @@ class BookingController extends Controller
         $service = $this->getServiceById($serviceId);
         if (!$service || $service['business_id'] != $business['id']) {
             return $this->view('pages/booking/create', [
-                'pageTitle' => 'Boeken bij ' . $business['name'],
+                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
                 'business' => $business,
                 'services' => $this->getServices($business['id']),
                 'error' => 'Ongeldige dienst geselecteerd'
@@ -140,7 +140,7 @@ class BookingController extends Controller
 
         if (!$userId && !$guestEmail) {
             return $this->view('pages/booking/create', [
-                'pageTitle' => 'Boeken bij ' . $business['name'],
+                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
                 'business' => $business,
                 'services' => $this->getServices($business['id']),
                 'error' => 'Log in of vul je gegevens in'
@@ -150,7 +150,7 @@ class BookingController extends Controller
         // Check if time slot is available (consider employee if BV business)
         if (!$this->isTimeSlotAvailable($business['id'], $date, $time, $service['duration_minutes'], $employeeId)) {
             return $this->view('pages/booking/create', [
-                'pageTitle' => 'Boeken bij ' . $business['name'],
+                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
                 'business' => $business,
                 'services' => $this->getServices($business['id']),
                 'employees' => ($business['business_type'] ?? 'eenmanszaak') === 'bv' ? $this->getEmployees($business['id']) : [],
@@ -268,7 +268,7 @@ class BookingController extends Controller
         }
 
         return $this->view('pages/booking/checkout', [
-            'pageTitle' => 'Bevestig je boeking',
+            'pageTitle' => $this->t('page_confirm_booking'),
             'business' => $business,
             'service' => $service,
             'employee' => $employee,
@@ -488,11 +488,11 @@ class BookingController extends Controller
 
         if (!$booking) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Boeking niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
         return $this->view('pages/booking/show', [
-            'pageTitle' => 'Boeking #' . $booking['booking_number'],
+            'pageTitle' => $this->t('page_booking_number') . $booking['booking_number'],
             'booking' => $booking
         ]);
     }
@@ -1299,14 +1299,14 @@ HTML;
 
         if (!$booking) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Boeking niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
         // Check if business is logged in
         $isBusinessOwner = isset($_SESSION['business_id']) && $_SESSION['business_id'] == $booking['biz_id'];
 
         return $this->view('pages/booking/checkin', [
-            'pageTitle' => 'Check-in #' . $booking['booking_number'],
+            'pageTitle' => $this->t('page_checkin') . $booking['booking_number'],
             'booking' => $booking,
             'isBusinessOwner' => $isBusinessOwner,
             'csrfToken' => $this->csrf()
@@ -1379,7 +1379,7 @@ HTML;
 
         if (!$booking) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Boeking niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
         // Check if already reviewed
@@ -1390,7 +1390,7 @@ HTML;
         $existingReview = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return $this->view('pages/booking/review', [
-            'pageTitle' => 'Review - ' . $booking['business_name'],
+            'pageTitle' => $this->t('page_review') . ' ' . $booking['business_name'],
             'booking' => $booking,
             'alreadyReviewed' => !empty($existingReview),
             'csrfToken' => $this->csrf()
@@ -1501,11 +1501,11 @@ HTML;
     {
         $business = $this->getBusinessBySlug($businessSlug);
         if (!$business) {
-            return $this->json(['error' => 'Bedrijf niet gevonden'], 404);
+            return $this->json(['error' => $this->t('error_business_not_found')], 404);
         }
 
         if (!$this->verifyCsrf()) {
-            return $this->json(['error' => 'Ongeldige aanvraag'], 400);
+            return $this->json(['error' => $this->t('validation_invalid_request')], 400);
         }
 
         $serviceId = (int)($_POST['service_id'] ?? 0);
@@ -1523,12 +1523,12 @@ HTML;
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $this->json(['error' => 'Ongeldig e-mailadres'], 400);
+            return $this->json(['error' => $this->t('error_email')], 400);
         }
 
         $service = $this->getServiceById($serviceId);
         if (!$service || $service['business_id'] != $business['id']) {
-            return $this->json(['error' => 'Ongeldige dienst'], 400);
+            return $this->json(['error' => $this->t('booking_invalid_service')], 400);
         }
 
         // Check if already on waitlist for this date/service
@@ -1808,7 +1808,7 @@ HTML;
     public function cancelWaitlist(string $uuid): string
     {
         if (!$this->verifyCsrf()) {
-            return $this->json(['error' => 'Ongeldige aanvraag'], 400);
+            return $this->json(['error' => $this->t('validation_invalid_request')], 400);
         }
 
         $this->db->query(

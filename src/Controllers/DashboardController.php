@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $pastBookings = $this->getPastBookings($user['id']);
 
         return $this->view('pages/dashboard/index', [
-            'pageTitle' => 'Dashboard',
+            'pageTitle' => $this->t('dashboard'),
             'user' => $user,
             'upcomingBookings' => $upcomingBookings,
             'pastBookings' => $pastBookings
@@ -35,7 +35,7 @@ class DashboardController extends Controller
         $bookings = $this->getAllBookings($user['id']);
 
         return $this->view('pages/dashboard/bookings', [
-            'pageTitle' => 'Mijn Boekingen',
+            'pageTitle' => $this->t('page_my_bookings'),
             'bookings' => $bookings
         ]);
     }
@@ -48,7 +48,7 @@ class DashboardController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$this->verifyCsrf()) {
-                $message = 'Ongeldige sessie. Probeer opnieuw.';
+                $message = $this->t('flash_invalid_session');
                 $messageType = 'danger';
             } else {
                 $action = $_POST['action'] ?? 'update_profile';
@@ -76,7 +76,7 @@ class DashboardController extends Controller
         }
 
         return $this->view('pages/dashboard/settings', [
-            'pageTitle' => 'Instellingen',
+            'pageTitle' => $this->t('page_settings'),
             'user' => $user,
             'message' => $message,
             'messageType' => $messageType,
@@ -103,7 +103,7 @@ class DashboardController extends Controller
         $transactions = $loyaltyService->getAllTransactionHistory($user['id'], 20);
 
         return $this->view('pages/dashboard/loyalty', [
-            'pageTitle' => 'Loyaliteitspunten',
+            'pageTitle' => $this->t('loyalty_points'),
             'user' => $user,
             'totalPoints' => $totalPoints,
             'balances' => $balances,
@@ -286,7 +286,7 @@ class DashboardController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$this->verifyCsrf()) {
-                $message = 'Ongeldige sessie. Probeer opnieuw.';
+                $message = $this->t('flash_invalid_session');
                 $messageType = 'danger';
             } else {
                 $action = $_POST['action'] ?? '';
@@ -307,7 +307,7 @@ class DashboardController extends Controller
         }
 
         return $this->view('pages/dashboard/security', [
-            'pageTitle' => 'Beveiliging',
+            'pageTitle' => $this->t('page_security'),
             'user' => $user,
             'pinEnabled' => (bool)($user['pin_enabled'] ?? false),
             'message' => $message,

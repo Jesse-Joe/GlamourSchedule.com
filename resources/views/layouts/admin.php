@@ -418,39 +418,39 @@
             <div class="sidebar-header">
                 <a href="/admin/dashboard" class="sidebar-brand">
                     <i class="fas fa-shield-alt"></i>
-                    <span>Admin Panel</span>
+                    <span><?= $translations['admin_panel'] ?? 'Admin Panel' ?></span>
                 </a>
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-section">Overzicht</div>
+                <div class="nav-section"><?= $translations['admin_overview'] ?? 'Overzicht' ?></div>
                 <a href="/admin/dashboard" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-home"></i>
-                    Dashboard
+                    <?= $translations['admin_dashboard'] ?? 'Dashboard' ?>
                 </a>
                 <a href="/admin/revenue" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/revenue') !== false ? 'active' : '' ?>">
                     <i class="fas fa-chart-line"></i>
-                    Omzet
+                    <?= $translations['admin_revenue'] ?? 'Omzet' ?>
                 </a>
 
-                <div class="nav-section">Beheer</div>
+                <div class="nav-section"><?= $translations['admin_management'] ?? 'Beheer' ?></div>
                 <a href="/admin/users" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false ? 'active' : '' ?>">
                     <i class="fas fa-users"></i>
-                    Gebruikers
+                    <?= $translations['admin_users'] ?? 'Gebruikers' ?>
                 </a>
                 <a href="/admin/businesses" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/businesses') !== false ? 'active' : '' ?>">
                     <i class="fas fa-store"></i>
-                    Bedrijven
+                    <?= $translations['admin_businesses'] ?? 'Bedrijven' ?>
                 </a>
                 <a href="/admin/sales-partners" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/sales-partners') !== false ? 'active' : '' ?>">
                     <i class="fas fa-handshake"></i>
-                    Sales Partners
+                    <?= $translations['admin_sales_partners'] ?? 'Sales Partners' ?>
                 </a>
 
-                <div class="nav-section">Systeem</div>
+                <div class="nav-section"><?= $translations['admin_system'] ?? 'Systeem' ?></div>
                 <a href="/" class="nav-link" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
-                    Website bekijken
+                    <?= $translations['admin_view_website'] ?? 'Website bekijken' ?>
                 </a>
             </nav>
 
@@ -465,7 +465,7 @@
                     </div>
                 </div>
                 <a href="/admin/logout" class="btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Uitloggen
+                    <i class="fas fa-sign-out-alt"></i> <?= $translations['admin_logout'] ?? 'Uitloggen' ?>
                 </a>
             </div>
         </aside>
@@ -486,10 +486,10 @@
                         <i class="fas fa-check-circle"></i>
                         <?php
                         $msg = $_GET['success'];
-                        if ($msg === 'updated') echo 'Succesvol bijgewerkt.';
-                        elseif ($msg === 'deleted') echo 'Succesvol verwijderd.';
-                        elseif ($msg === 'activated') echo 'Succesvol geactiveerd.';
-                        else echo 'Actie succesvol uitgevoerd.';
+                        if ($msg === 'updated') echo $translations['admin_success_updated'] ?? 'Succesvol bijgewerkt.';
+                        elseif ($msg === 'deleted') echo $translations['admin_success_deleted'] ?? 'Succesvol verwijderd.';
+                        elseif ($msg === 'activated') echo $translations['admin_success_activated'] ?? 'Succesvol geactiveerd.';
+                        else echo $translations['admin_success_action'] ?? 'Actie succesvol uitgevoerd.';
                         ?>
                     </div>
                 <?php endif; ?>
@@ -499,9 +499,9 @@
                         <i class="fas fa-exclamation-circle"></i>
                         <?php
                         $err = $_GET['error'];
-                        if ($err === 'csrf') echo 'Beveiligingsfout. Probeer opnieuw.';
-                        elseif ($err === 'has_business') echo 'Gebruiker heeft een bedrijf en kan niet worden verwijderd.';
-                        else echo 'Er is een fout opgetreden.';
+                        if ($err === 'csrf') echo $translations['admin_error_csrf'] ?? 'Beveiligingsfout. Probeer opnieuw.';
+                        elseif ($err === 'has_business') echo $translations['admin_error_has_business'] ?? 'Gebruiker heeft een bedrijf en kan niet worden verwijderd.';
+                        else echo $translations['admin_error_generic'] ?? 'Er is een fout opgetreden.';
                         ?>
                     </div>
                 <?php endif; ?>

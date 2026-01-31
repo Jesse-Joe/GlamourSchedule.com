@@ -326,4 +326,119 @@ HTML;
             error_log("Mollie webhook: Failed to award loyalty points for $bookingUuid: " . $e->getMessage());
         }
     }
+
+    /**
+     * Handle Stripe webhook
+     */
+    public function stripe(): string
+    {
+        $payload = file_get_contents('php://input');
+        $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+        $webhookSecret = $this->config['stripe']['webhook_secret'] ?? '';
+
+        try {
+            // Verify webhook signature if secret is configured
+            if ($webhookSecret) {
+                $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
+            } else {
+                $event = json_decode($payload, false);
+            }
+
+            // Handle the event
+            switch ($event->type) {
+                case 'checkout.session.completed':
+                    $session = $event->data->object;
+                    $this->handleStripePaymentSuccess($session);
+                    break;
+
+                case 'checkout.session.expired':
+                    $session = $event->data->object;
+                    $this->handleStripePaymentExpired($session);
+                    break;
+
+                default:
+                    error_log("Stripe webhook: Unhandled event type: " . $event->type);
+            }
+
+            http_response_code(200);
+            return json_encode(['received' => true]);
+
+        } catch (\Exception $e) {
+            error_log("Stripe webhook error: " . $e->getMessage());
+            http_response_code(400);
+            return json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Handle successful Stripe payment
+     */
+    private function handleStripePaymentSuccess($session): void
+    {
+        $bookingUuid = $session->metadata->booking_uuid ?? null;
+
+        if (!$bookingUuid) {
+            error_log("Stripe webhook: No booking_uuid in session metadata");
+            return;
+        }
+
+        // Get booking
+        $stmt = $this->db->query(
+            "SELECT b.*, biz.email as business_email, biz.company_name as business_name,
+                    u.email as customer_email, u.name as customer_name,
+                    s.name as service_name
+             FROM bookings b
+             JOIN businesses biz ON b.business_id = biz.id
+             JOIN users u ON b.user_id = u.id
+             JOIN services s ON b.service_id = s.id
+             WHERE b.uuid = ?",
+            [$bookingUuid]
+        );
+        $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$booking) {
+            error_log("Stripe webhook: Booking not found for UUID: $bookingUuid");
+            return;
+        }
+
+        // Update booking status
+        $this->db->query(
+            "UPDATE bookings SET payment_status = 'paid', status = 'confirmed', payment_id = ? WHERE uuid = ?",
+            [$session->id, $bookingUuid]
+        );
+
+        // Send confirmation emails
+        try {
+            $lang = $booking['language'] ?? 'nl';
+            $mailer = new Mailer($lang);
+
+            // Customer confirmation
+            $mailer->sendBookingConfirmation($booking);
+
+            // Business notification
+            $mailer->sendBookingNotificationToBusiness($booking);
+
+            error_log("Stripe webhook: Emails sent for booking $bookingUuid");
+        } catch (\Exception $e) {
+            error_log("Stripe webhook: Failed to send emails: " . $e->getMessage());
+        }
+
+        error_log("Stripe webhook: Payment confirmed for booking $bookingUuid");
+    }
+
+    /**
+     * Handle expired Stripe payment
+     */
+    private function handleStripePaymentExpired($session): void
+    {
+        $bookingUuid = $session->metadata->booking_uuid ?? null;
+
+        if ($bookingUuid) {
+            $this->db->query(
+                "UPDATE bookings SET payment_status = 'expired' WHERE uuid = ? AND payment_status = 'pending'",
+                [$bookingUuid]
+            );
+            error_log("Stripe webhook: Payment expired for booking $bookingUuid");
+        }
+    }
 }

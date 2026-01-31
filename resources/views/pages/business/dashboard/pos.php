@@ -857,19 +857,19 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                                 <div class="booking-service"><?= htmlspecialchars($booking['service_name']) ?></div>
                                 <div class="booking-badges">
                                     <span class="booking-badge badge-<?= $booking['payment_method'] ?>">
-                                        <?= $booking['payment_method'] === 'cash' ? 'Contant' : 'Online' ?>
+                                        <?= $booking['payment_method'] === 'cash' ? ($translations['booking_payment_cash'] ?? 'Contant') : ($translations['booking_payment_online'] ?? 'Online') ?>
                                     </span>
                                     <span class="booking-badge badge-payment-<?= $booking['payment_status'] ?>">
-                                        <?= $booking['payment_status'] === 'paid' ? 'Betaald' : 'Wacht op betaling' ?>
+                                        <?= $booking['payment_status'] === 'paid' ? ($translations['booking_payment_paid'] ?? 'Betaald') : ($translations['booking_payment_pending'] ?? 'Wacht op betaling') ?>
                                     </span>
                                     <span class="booking-badge badge-status-<?= $booking['booking_status'] ?>">
                                         <?php
                                         $statusLabels = [
-                                            'pending' => 'In afwachting',
-                                            'confirmed' => 'Bevestigd',
-                                            'completed' => 'Voltooid',
-                                            'cancelled' => 'Geannuleerd',
-                                            'no_show' => 'Niet verschenen'
+                                            'pending' => $translations['status_pending'] ?? 'In afwachting',
+                                            'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
+                                            'completed' => $translations['status_completed'] ?? 'Voltooid',
+                                            'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
+                                            'no_show' => $translations['status_no_show'] ?? 'Niet verschenen'
                                         ];
                                         echo $statusLabels[$booking['booking_status']] ?? $booking['booking_status'];
                                         ?>

@@ -8,7 +8,8 @@
         "mollie/mollie-api-php": "^3.7",
         "phpmailer/phpmailer": "^7.0",
         "minishlink/web-push": "^7.0",
-        "dompdf/dompdf": "^3.1"
+        "dompdf/dompdf": "^3.1",
+        "stripe/stripe-php": "^19.3"
     },
     "autoload": {
         "psr-4": {

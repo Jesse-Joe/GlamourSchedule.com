@@ -1303,7 +1303,8 @@ HTML;
     {
         $to = $booking['business_email'];
         $customerName = $this->sanitize($booking['customer_name']);
-        $subject = "Nieuwe boeking #{$booking['booking_number']} - {$customerName}";
+        $newBookingText = $this->t('new_booking');
+        $subject = "{$newBookingText} #{$booking['booking_number']} - {$customerName}";
 
         $dateFormatted = date('d-m-Y', strtotime($booking['date']));
         $priceFormatted = number_format($booking['price'], 2, ',', '.');
@@ -1319,7 +1320,7 @@ HTML;
             'time' => $booking['time'],
             'duration' => $booking['duration'] ?? '60',
             'price' => $priceFormatted,
-            'notes' => $booking['notes'] ?? 'Geen opmerkingen',
+            'notes' => $booking['notes'] ?? $this->t('no_notes'),
             'dashboard_url' => "{$this->baseUrl}/business/dashboard"
         ]), $businessSettings);
 
@@ -1382,7 +1383,7 @@ HTML;
      */
     public function sendBusinessWelcome(array $business, string $setupUrl): bool
     {
-        $subject = "Welkom bij GlamourSchedule - Voltooi je registratie";
+        $subject = $this->t('welcome') . " - " . $this->t('registration_success');
         $htmlBody = $this->getBusinessWelcomeTemplate($business, $setupUrl);
         $textBody = $this->getBusinessWelcomeTextTemplate($business, $setupUrl);
 
@@ -1394,7 +1395,7 @@ HTML;
      */
     public function sendBusinessSetupEmail(array $business): bool
     {
-        $subject = "Stel je bedrijfspagina in - GlamourSchedule";
+        $subject = $this->t('setup_page') . " - GlamourSchedule";
         $dashboardUrl = "{$this->baseUrl}/business/dashboard";
         $businessUrl = "{$this->baseUrl}/business/" . ($business['slug'] ?? '');
 

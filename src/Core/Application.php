@@ -241,12 +241,16 @@ class Application
         $this->router->post('/waitlist/{uuid}/cancel', 'BookingController@cancelWaitlist');
 
         // Payments
+        $this->router->get('/payment/{bookingUuid}', 'PaymentController@selectMethod');
         $this->router->get('/payment/create/{bookingUuid}', 'PaymentController@create');
+        $this->router->post('/payment/create/{bookingUuid}', 'PaymentController@create');
         $this->router->get('/payment/return/{bookingUuid}', 'PaymentController@returnUrl');
+        $this->router->get('/api/payment/methods', 'PaymentController@getMethods');
 
         // Payment webhooks
         $this->router->post('/api/webhooks/mollie', 'WebhookController@mollie');
         $this->router->post('/api/webhooks/mollie-terminal', 'MollieTerminalController@webhook');
+        $this->router->post('/api/webhooks/stripe', 'WebhookController@stripe');
         
         // API endpoints
         $this->router->get('/api/translations/{lang}', 'ApiController@translations');

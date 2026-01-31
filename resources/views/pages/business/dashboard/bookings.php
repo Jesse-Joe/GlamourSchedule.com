@@ -138,10 +138,10 @@
                         'completed' => 'status-completed'
                     ];
                     $statusLabels = [
-                        'confirmed' => 'Bevestigd',
-                        'pending' => 'In afwachting',
-                        'cancelled' => 'Geannuleerd',
-                        'completed' => 'Afgerond'
+                        'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
+                        'pending' => $translations['status_pending'] ?? 'In afwachting',
+                        'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
+                        'completed' => $translations['status_completed'] ?? 'Afgerond'
                     ];
                     $statusIcons = [
                         'confirmed' => 'check-circle',

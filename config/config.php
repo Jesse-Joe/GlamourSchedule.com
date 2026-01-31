@@ -231,6 +231,16 @@ return [
     ],
 
     // ═══════════════════════════════════════════════════════════════════════
+    // STRIPE PAYMENT SETTINGS (Internationaal)
+    // ═══════════════════════════════════════════════════════════════════════
+    'stripe' => [
+        'public_key' => getenv('STRIPE_PUBLIC_KEY') ?: '',
+        'secret_key' => getenv('STRIPE_SECRET_KEY') ?: '',
+        'webhook_secret' => getenv('STRIPE_WEBHOOK_SECRET') ?: '',
+        'webhook_url' => 'https://glamourschedule.com/api/webhooks/stripe',
+    ],
+
+    // ═══════════════════════════════════════════════════════════════════════
     // EMAIL SETTINGS
     // ═══════════════════════════════════════════════════════════════════════
     'mail' => [

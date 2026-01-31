@@ -22,15 +22,15 @@ class AuthController extends Controller
         if (isset($_SESSION['user_id'])) {
             return $this->redirect('/dashboard');
         }
-        return $this->view('pages/auth/login', ['pageTitle' => 'Inloggen']);
+        return $this->view('pages/auth/login', ['pageTitle' => $this->t('page_login')]);
     }
 
     public function login(): string
     {
         if (!$this->verifyCsrf()) {
             return $this->view('pages/auth/login', [
-                'pageTitle' => 'Inloggen',
-                'error' => 'Ongeldige aanvraag, probeer opnieuw'
+                'pageTitle' => $this->t('page_login'),
+                'error' => $this->t('validation_invalid_request')
             ]);
         }
 
@@ -43,8 +43,8 @@ class AuthController extends Controller
         $rateLimitCheck = $this->checkRateLimit($ipAddress, $email);
         if ($rateLimitCheck['blocked']) {
             return $this->view('pages/auth/login', [
-                'pageTitle' => 'Inloggen',
-                'error' => 'Te veel inlogpogingen. Probeer het over ' . $rateLimitCheck['minutes_remaining'] . ' minuten opnieuw.',
+                'pageTitle' => $this->t('page_login'),
+                'error' => $this->t('auth_too_many_attempts', ['minutes' => $rateLimitCheck['minutes_remaining']]),
                 'email' => $email
             ]);
         }
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         if (!empty($errors)) {
             return $this->view('pages/auth/login', [
-                'pageTitle' => 'Inloggen',
+                'pageTitle' => $this->t('page_login'),
                 'errors' => $errors,
                 'email' => $email
             ]);
@@ -92,8 +92,8 @@ class AuthController extends Controller
             $this->recordLoginAttempt($ipAddress, $email, false);
 
             return $this->view('pages/auth/login', [
-                'pageTitle' => 'Inloggen',
-                'error' => 'Ongeldige bedrijfs e-mail of wachtwoord. Zorg dat je het juiste accounttype hebt geselecteerd.',
+                'pageTitle' => $this->t('page_login'),
+                'error' => $this->t('auth_invalid_business_credentials'),
                 'email' => $email
             ]);
         }
@@ -123,8 +123,8 @@ class AuthController extends Controller
         $this->recordLoginAttempt($ipAddress, $email, false);
 
         return $this->view('pages/auth/login', [
-            'pageTitle' => 'Inloggen',
-            'error' => 'Ongeldige e-mail of wachtwoord. Zorg dat je het juiste accounttype hebt geselecteerd.',
+            'pageTitle' => $this->t('page_login'),
+            'error' => $this->t('auth_invalid_credentials'),
             'email' => $email
         ]);
     }
@@ -136,7 +136,7 @@ class AuthController extends Controller
         }
 
         return $this->view('pages/auth/verify-code', [
-            'pageTitle' => 'Verificatie',
+            'pageTitle' => $this->t('page_verification'),
             'email' => $_SESSION['pending_login']['email'],
             'type' => 'login'
         ]);
@@ -150,10 +150,10 @@ class AuthController extends Controller
 
         if (!$this->verifyCsrf()) {
             return $this->view('pages/auth/verify-code', [
-                'pageTitle' => 'Verificatie',
+                'pageTitle' => $this->t('page_verification'),
                 'email' => $_SESSION['pending_login']['email'],
                 'type' => 'login',
-                'error' => 'Ongeldige aanvraag'
+                'error' => $this->t('validation_invalid_request')
             ]);
         }
 
@@ -162,10 +162,10 @@ class AuthController extends Controller
 
         if (!$this->verifyCode($email, $code, 'login')) {
             return $this->view('pages/auth/verify-code', [
-                'pageTitle' => 'Verificatie',
+                'pageTitle' => $this->t('page_verification'),
                 'email' => $email,
                 'type' => 'login',
-                'error' => 'Ongeldige of verlopen code. Controleer uw e-mail of vraag een nieuwe code aan.'
+                'error' => $this->t('auth_invalid_or_expired_code')
             ]);
         }
 
@@ -195,7 +195,7 @@ class AuthController extends Controller
     public function resendLoginCode(): string
     {
         if (!isset($_SESSION['pending_login'])) {
-            return $this->json(['success' => false, 'message' => 'Geen actieve sessie']);
+            return $this->json(['success' => false, 'message' => $this->t('auth_no_active_session')]);
         }
 
         $email = $_SESSION['pending_login']['email'];
@@ -203,7 +203,7 @@ class AuthController extends Controller
 
         $this->sendVerificationCode($email, $userId, 'login');
 
-        return $this->json(['success' => true, 'message' => 'Nieuwe code verzonden']);
+        return $this->json(['success' => true, 'message' => $this->t('auth_new_code_sent')]);
     }
 
     public function showRegister(): string
@@ -220,7 +220,7 @@ class AuthController extends Controller
         $categories = $this->getCategories();
 
         return $this->view('pages/auth/register', [
-            'pageTitle' => 'Registreren',
+            'pageTitle' => $this->t('page_register'),
             'categories' => $categories
         ]);
     }
@@ -242,8 +242,8 @@ class AuthController extends Controller
     {
         if (!$this->verifyCsrf()) {
             return $this->view('pages/auth/register', [
-                'pageTitle' => 'Registreren',
-                'error' => 'Ongeldige aanvraag'
+                'pageTitle' => $this->t('page_register'),
+                'error' => $this->t('validation_invalid_request')
             ]);
         }
 
@@ -265,11 +265,11 @@ class AuthController extends Controller
         ]);
 
         if ($data['password'] !== $data['password_confirm']) {
-            $errors['password_confirm'] = 'Wachtwoorden komen niet overeen';
+            $errors['password_confirm'] = $this->t('error_password_match');
         }
 
         if (!$data['accept_terms']) {
-            $errors['accept_terms'] = 'U moet akkoord gaan met de algemene voorwaarden';
+            $errors['accept_terms'] = $this->t('auth_accept_terms_required');
         }
 
         // Check if email exists in users table
@@ -278,21 +278,21 @@ class AuthController extends Controller
 
         if ($existingUser) {
             if ($existingUser['status'] === 'active') {
-                $errors['email'] = 'Dit e-mailadres is al in gebruik. <a href="/login" style="color:var(--primary)">Inloggen?</a>';
+                $errors['email'] = $this->t('auth_email_in_use');
             } else {
-                $errors['email'] = 'Dit account is gedeactiveerd. Neem contact op met support.';
+                $errors['email'] = $this->t('auth_account_deactivated');
             }
         }
 
         // Also check businesses table
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = 'Dit e-mailadres is al geregistreerd als bedrijf. <a href="/login" style="color:var(--primary)">Inloggen?</a>';
+            $errors['email'] = $this->t('auth_email_registered_business');
         }
 
         if (!empty($errors)) {
             return $this->view('pages/auth/register', [
-                'pageTitle' => 'Registreren',
+                'pageTitle' => $this->t('page_register'),
                 'errors' => $errors,
                 'data' => $data
             ]);
@@ -320,7 +320,7 @@ class AuthController extends Controller
         }
 
         return $this->view('pages/auth/verify-code', [
-            'pageTitle' => 'E-mail Verificatie',
+            'pageTitle' => $this->t('page_email_verification'),
             'email' => $_SESSION['pending_registration']['email'],
             'type' => 'registration'
         ]);
@@ -334,10 +334,10 @@ class AuthController extends Controller
 
         if (!$this->verifyCsrf()) {
             return $this->view('pages/auth/verify-code', [
-                'pageTitle' => 'E-mail Verificatie',
+                'pageTitle' => $this->t('page_email_verification'),
                 'email' => $_SESSION['pending_registration']['email'],
                 'type' => 'registration',
-                'error' => 'Ongeldige aanvraag'
+                'error' => $this->t('validation_invalid_request')
             ]);
         }
 
@@ -346,10 +346,10 @@ class AuthController extends Controller
 
         if (!$this->verifyCode($email, $code, 'registration')) {
             return $this->view('pages/auth/verify-code', [
-                'pageTitle' => 'E-mail Verificatie',
+                'pageTitle' => $this->t('page_email_verification'),
                 'email' => $email,
                 'type' => 'registration',
-                'error' => 'Ongeldige of verlopen code. Controleer uw e-mail of vraag een nieuwe code aan.'
+                'error' => $this->t('auth_invalid_or_expired_code')
             ]);
         }
 
@@ -397,13 +397,13 @@ class AuthController extends Controller
     public function resendRegistrationCode(): string
     {
         if (!isset($_SESSION['pending_registration'])) {
-            return $this->json(['success' => false, 'message' => 'Geen actieve registratie']);
+            return $this->json(['success' => false, 'message' => $this->t('auth_no_active_registration')]);
         }
 
         $email = $_SESSION['pending_registration']['email'];
         $this->sendVerificationCode($email, null, 'registration');
 
-        return $this->json(['success' => true, 'message' => 'Nieuwe code verzonden']);
+        return $this->json(['success' => true, 'message' => $this->t('auth_new_code_sent')]);
     }
 
     public function logout(): string
@@ -439,21 +439,27 @@ class AuthController extends Controller
     {
         switch ($type) {
             case 'registration':
-                $subject = 'GlamourSchedule - Bevestig je e-mailadres';
-                $typeText = 'je registratie te voltooien';
+                $subject = $this->t('email_subject_verify_email');
+                $typeText = $this->t('email_purpose_registration');
                 break;
             case 'login':
-                $subject = 'GlamourSchedule - Inlogcode';
-                $typeText = 'in te loggen';
+                $subject = $this->t('email_subject_login_code');
+                $typeText = $this->t('email_purpose_login');
                 break;
             case 'password_reset':
-                $subject = 'GlamourSchedule - Wachtwoord reset';
-                $typeText = 'je wachtwoord te resetten';
+                $subject = $this->t('email_subject_password_reset');
+                $typeText = $this->t('email_purpose_password_reset');
                 break;
             default:
-                $subject = 'GlamourSchedule - Verificatiecode';
-                $typeText = 'door te gaan';
+                $subject = $this->t('email_subject_verification_code');
+                $typeText = $this->t('email_purpose_continue');
         }
+
+        $codeExpiry = $this->t('email_code_validity', ['minutes' => self::CODE_EXPIRY_MINUTES]);
+        $ignoreText = $this->t('email_ignore_if_not_requested');
+        $yourCode = $this->t('email_your_verification_code');
+        $useCode = $this->t('email_use_code_to', ['purpose' => $typeText]);
+        $allRights = $this->t('email_all_rights_reserved');
 
         $body = "
             <div style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -461,20 +467,20 @@ class AuthController extends Controller
                     <h1 style='color: white; margin: 0; font-size: 28px;'>GlamourSchedule</h1>
                 </div>
                 <div style='background: #ffffff; padding: 40px; border-radius: 0 0 20px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);'>
-                    <h2 style='color: #1f2937; margin-top: 0;'>Je verificatiecode</h2>
+                    <h2 style='color: #1f2937; margin-top: 0;'>{$yourCode}</h2>
                     <p style='color: #4b5563; font-size: 16px;'>
-                        Gebruik onderstaande code om {$typeText}:
+                        {$useCode}
                     </p>
                     <div style='background: linear-gradient(135deg, #fffbeb, #f5f3ff); border-radius: 12px; padding: 25px; text-align: center; margin: 25px 0;'>
                         <span style='font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #000000;'>{$code}</span>
                     </div>
                     <p style='color: #6b7280; font-size: 14px;'>
-                        Deze code is " . self::CODE_EXPIRY_MINUTES . " minuten geldig.<br>
-                        Als je deze code niet hebt aangevraagd, kun je deze e-mail negeren.
+                        {$codeExpiry}<br>
+                        {$ignoreText}
                     </p>
                 </div>
                 <p style='text-align: center; color: #9ca3af; font-size: 12px; margin-top: 20px;'>
-                    &copy; " . date('Y') . " GlamourSchedule. Alle rechten voorbehouden.
+                    &copy; " . date('Y') . " GlamourSchedule. {$allRights}
                 </p>
             </div>
         ";

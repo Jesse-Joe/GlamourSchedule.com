@@ -2,19 +2,52 @@
 namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
-use Mollie\Api\MollieApiClient;
+use GlamourSchedule\Services\HybridPaymentService;
 
 class PaymentController extends Controller
 {
-    private MollieApiClient $mollie;
+    private HybridPaymentService $paymentService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->mollie = new MollieApiClient();
-        $this->mollie->setApiKey($this->config['mollie']['api_key'] ?? '');
+        $this->paymentService = new HybridPaymentService($this->config);
     }
 
+    /**
+     * Show payment method selection page
+     */
+    public function selectMethod(string $bookingUuid): string
+    {
+        $booking = $this->getBooking($bookingUuid);
+
+        if (!$booking) {
+            http_response_code(404);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
+        }
+
+        if ($booking['payment_status'] === 'paid') {
+            return $this->redirect("/booking/$bookingUuid");
+        }
+
+        // Get country from session or default to NL
+        $country = $_SESSION['customer_country'] ?? 'NL';
+
+        // Get available payment methods for this country
+        $methods = $this->paymentService->getPaymentMethods($country, $booking['total_price']);
+
+        return $this->view('pages/payment/select-method', [
+            'pageTitle' => $this->t('select_payment_method'),
+            'booking' => $booking,
+            'methods' => $methods,
+            'country' => $country,
+            'stripeEnabled' => $this->paymentService->isStripeEnabled()
+        ]);
+    }
+
+    /**
+     * Create payment with selected method
+     */
     public function create(string $bookingUuid): string
     {
         $booking = $this->getBooking($bookingUuid);
@@ -28,78 +61,139 @@ class PaymentController extends Controller
             return $this->redirect("/booking/$bookingUuid");
         }
 
+        // Get selected payment method
+        $method = $_POST['method'] ?? $_GET['method'] ?? null;
+        $country = $_SESSION['customer_country'] ?? 'NL';
+
         try {
-            $payment = $this->mollie->payments->create([
-                'amount' => [
-                    'currency' => 'EUR',
-                    'value' => number_format($booking['total_price'], 2, '.', '')
-                ],
+            // Determine provider first
+            $provider = $this->paymentService->getProvider($country, $method);
+
+            $result = $this->paymentService->createPayment([
+                'amount' => (float)$booking['total_price'],
+                'currency' => 'EUR',
                 'description' => "Boeking {$booking['booking_number']} - {$booking['service_name']}",
-                'redirectUrl' => "https://{$_SERVER['HTTP_HOST']}/payment/return/{$bookingUuid}",
-                'webhookUrl' => "https://{$_SERVER['HTTP_HOST']}/api/webhooks/mollie",
+                'method' => $method,
+                'country' => $country,
+                'provider' => $provider,
+                'redirect_url' => "https://{$_SERVER['HTTP_HOST']}/payment/return/{$bookingUuid}",
+                'cancel_url' => "https://{$_SERVER['HTTP_HOST']}/booking/{$bookingUuid}",
+                'webhook_url' => "https://{$_SERVER['HTTP_HOST']}/api/webhooks/{$provider}",
                 'metadata' => [
                     'booking_uuid' => $bookingUuid,
                     'booking_number' => $booking['booking_number']
                 ]
             ]);
 
-            // Store payment ID
+            // Store payment info
             $this->db->query(
-                "UPDATE bookings SET mollie_payment_id = ? WHERE uuid = ?",
-                [$payment->id, $bookingUuid]
+                "UPDATE bookings SET
+                    payment_provider = ?,
+                    payment_id = ?,
+                    mollie_payment_id = CASE WHEN ? = 'mollie' THEN ? ELSE mollie_payment_id END
+                 WHERE uuid = ?",
+                [
+                    $result['provider'],
+                    $result['payment_id'],
+                    $result['provider'],
+                    $result['payment_id'],
+                    $bookingUuid
+                ]
             );
 
-            return $this->redirect($payment->getCheckoutUrl());
+            return $this->redirect($result['checkout_url']);
 
         } catch (\Exception $e) {
-            error_log("Mollie payment error: " . $e->getMessage());
+            error_log("Payment error: " . $e->getMessage());
             return $this->view('pages/payment/error', [
-                'pageTitle' => 'Betaling mislukt',
-                'error' => 'Er is een fout opgetreden bij het starten van de betaling.'
+                'pageTitle' => $this->t('page_payment_failed'),
+                'error' => $this->t('payment_error_starting')
             ]);
         }
     }
 
+    /**
+     * Handle return from payment provider
+     */
     public function returnUrl(string $bookingUuid): string
     {
         $booking = $this->getBooking($bookingUuid);
 
         if (!$booking) {
             http_response_code(404);
-            return $this->view('pages/errors/404', ['pageTitle' => 'Niet gevonden']);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
-        // Check payment status with Mollie
-        if ($booking['mollie_payment_id']) {
-            try {
-                $payment = $this->mollie->payments->get($booking['mollie_payment_id']);
+        // Check for cancellation
+        if (isset($_GET['cancelled'])) {
+            return $this->view('pages/payment/cancelled', [
+                'pageTitle' => $this->t('payment_cancelled'),
+                'booking' => $booking
+            ]);
+        }
 
-                if ($payment->isPaid()) {
+        // Determine provider and payment ID
+        $provider = $booking['payment_provider'] ?? 'mollie';
+        $paymentId = $booking['payment_id'] ?? $booking['mollie_payment_id'];
+
+        // Handle Stripe session ID from URL
+        if (isset($_GET['session_id'])) {
+            $provider = 'stripe';
+            $paymentId = $_GET['session_id'];
+        }
+
+        if ($paymentId) {
+            try {
+                $status = $this->paymentService->getPaymentStatus($paymentId, $provider);
+
+                if ($status['paid']) {
                     $this->db->query(
                         "UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE uuid = ?",
                         [$bookingUuid]
                     );
 
+                    // Send confirmation email
+                    $this->sendBookingConfirmation($booking);
+
                     return $this->view('pages/payment/success', [
-                        'pageTitle' => 'Betaling geslaagd',
+                        'pageTitle' => $this->t('payment_successful'),
                         'booking' => $booking
                     ]);
-                } elseif ($payment->isFailed() || $payment->isCanceled() || $payment->isExpired()) {
+                } elseif ($status['failed'] || $status['cancelled'] || $status['expired']) {
                     return $this->view('pages/payment/failed', [
-                        'pageTitle' => 'Betaling mislukt',
+                        'pageTitle' => $this->t('payment_failed'),
                         'booking' => $booking,
-                        'status' => $payment->status
+                        'status' => $status['status']
                     ]);
                 }
             } catch (\Exception $e) {
-                error_log("Mollie status check error: " . $e->getMessage());
+                error_log("Payment status check error: " . $e->getMessage());
             }
         }
 
         // Payment still pending
         return $this->view('pages/payment/pending', [
-            'pageTitle' => 'Betaling in behandeling',
+            'pageTitle' => $this->t('payment_pending'),
             'booking' => $booking
+        ]);
+    }
+
+    /**
+     * Get available payment methods API endpoint
+     */
+    public function getMethods(): string
+    {
+        $country = $_GET['country'] ?? 'NL';
+        $amount = (float)($_GET['amount'] ?? 50);
+
+        $methods = $this->paymentService->getPaymentMethods($country, $amount);
+
+        return $this->json([
+            'success' => true,
+            'country' => $country,
+            'methods' => $methods,
+            'stripe_enabled' => $this->paymentService->isStripeEnabled(),
+            'mollie_enabled' => $this->paymentService->isMollieEnabled()
         ]);
     }
 
@@ -115,4 +209,15 @@ class PaymentController extends Controller
         );
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
+
+    private function sendBookingConfirmation(array $booking): void
+    {
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer($_SESSION['lang'] ?? 'nl');
+            $mailer->sendBookingConfirmation($booking);
+        } catch (\Exception $e) {
+            error_log("Failed to send booking confirmation: " . $e->getMessage());
+        }
+    }
+
 }
