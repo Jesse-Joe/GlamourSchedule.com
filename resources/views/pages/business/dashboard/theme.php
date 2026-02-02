@@ -259,18 +259,63 @@
     .tab-content.active {
         display: block;
     }
+
+    /* Mobile Theme Dropdown */
+    .theme-tabs-mobile {
+        display: none;
+        margin-bottom: 1.5rem;
+    }
+    .theme-tabs-mobile select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-card);
+        color: var(--text-primary);
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+    }
+    .theme-tabs-mobile select:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .theme-tabs {
+            display: none;
+        }
+        .theme-tabs-mobile {
+            display: block;
+        }
+    }
 </style>
 
 <form method="POST" action="/business/theme" id="themeForm">
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 
-    <!-- Theme Tabs -->
+    <!-- Theme Tabs (Desktop) -->
     <div class="theme-tabs">
         <button type="button" class="theme-tab active" data-tab="colors"><i class="fas fa-palette"></i> Kleuren</button>
         <button type="button" class="theme-tab" data-tab="fonts"><i class="fas fa-font"></i> Lettertypen</button>
         <button type="button" class="theme-tab" data-tab="layout"><i class="fas fa-th-large"></i> Layout</button>
         <button type="button" class="theme-tab" data-tab="styling"><i class="fas fa-paint-brush"></i> Styling</button>
         <button type="button" class="theme-tab" data-tab="advanced"><i class="fas fa-code"></i> Geavanceerd</button>
+    </div>
+
+    <!-- Theme Tabs (Mobile Dropdown) -->
+    <div class="theme-tabs-mobile">
+        <select id="themeTabsMobile">
+            <option value="colors">Kleuren</option>
+            <option value="fonts">Lettertypen</option>
+            <option value="layout">Layout</option>
+            <option value="styling">Styling</option>
+            <option value="advanced">Geavanceerd</option>
+        </select>
     </div>
 
     <div class="grid grid-2">
@@ -718,17 +763,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script>
-    // Tab switching
+    // Tab switching function
+    function switchToTab(tabId) {
+        document.querySelectorAll('.theme-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        const tabButton = document.querySelector('.theme-tab[data-tab="' + tabId + '"]');
+        if (tabButton) tabButton.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+
+        // Sync mobile dropdown
+        document.getElementById('themeTabsMobile').value = tabId;
+    }
+
+    // Desktop tab clicking
     document.querySelectorAll('.theme-tab').forEach(tab => {
         tab.addEventListener('click', function() {
-            const tabId = this.dataset.tab;
-
-            document.querySelectorAll('.theme-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-            this.classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
+            switchToTab(this.dataset.tab);
         });
+    });
+
+    // Mobile dropdown change
+    document.getElementById('themeTabsMobile').addEventListener('change', function() {
+        switchToTab(this.value);
     });
 
     // Color preset selection
