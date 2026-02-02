@@ -390,6 +390,150 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * Manual payouts overview - shows what needs to be transferred manually
+     */
+    public function payouts(): string
+    {
+        $admin = $this->requireAuth();
+
+        // Get pending business payouts (bookings that need manual transfer)
+        $stmt = $this->db->query(
+            "SELECT
+                b.id as booking_id,
+                b.booking_number,
+                b.service_price,
+                b.platform_fee,
+                b.business_payout,
+                b.payout_status,
+                b.checked_in_at,
+                b.created_at,
+                bus.id as business_id,
+                bus.company_name,
+                bus.iban,
+                bus.email as business_email,
+                s.name as service_name,
+                u.name as customer_name
+             FROM bookings b
+             JOIN businesses bus ON b.business_id = bus.id
+             JOIN services s ON b.service_id = s.id
+             LEFT JOIN users u ON b.user_id = u.id
+             WHERE b.payment_status = 'paid'
+               AND b.payout_status IN ('pending', 'processing')
+               AND (bus.mollie_account_id IS NULL OR bus.mollie_account_id = '')
+             ORDER BY b.checked_in_at ASC, b.created_at ASC"
+        );
+        $pendingBookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Group by business for easier processing
+        $businessPayouts = [];
+        foreach ($pendingBookings as $booking) {
+            $bizId = $booking['business_id'];
+            if (!isset($businessPayouts[$bizId])) {
+                $businessPayouts[$bizId] = [
+                    'business_id' => $bizId,
+                    'company_name' => $booking['company_name'],
+                    'iban' => $booking['iban'],
+                    'email' => $booking['business_email'],
+                    'bookings' => [],
+                    'total_amount' => 0
+                ];
+            }
+            $payoutAmount = $booking['business_payout'] ?? ($booking['service_price'] - ($booking['platform_fee'] ?? 1.75));
+            $businessPayouts[$bizId]['bookings'][] = $booking;
+            $businessPayouts[$bizId]['total_amount'] += $payoutAmount;
+        }
+
+        // Get pending sales partner payouts
+        $stmt = $this->db->query(
+            "SELECT
+                su.id as sales_user_id,
+                su.name as sales_name,
+                su.email as sales_email,
+                su.iban as sales_iban,
+                COUNT(sr.id) as referral_count,
+                SUM(sr.commission) as total_commission
+             FROM sales_users su
+             JOIN sales_referrals sr ON sr.sales_user_id = su.id
+             WHERE su.status = 'active'
+               AND sr.status = 'converted'
+               AND su.iban IS NOT NULL AND su.iban != ''
+             GROUP BY su.id
+             HAVING total_commission >= 49.99"
+        );
+        $salesPayouts = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Get failed/pending business_payouts records
+        $stmt = $this->db->query(
+            "SELECT bp.*, bus.company_name, bus.iban
+             FROM business_payouts bp
+             JOIN businesses bus ON bp.business_id = bus.id
+             WHERE bp.status IN ('pending', 'failed', 'processing')
+             ORDER BY bp.created_at DESC
+             LIMIT 50"
+        );
+        $payoutRecords = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Calculate totals
+        $totalBusinessAmount = array_sum(array_column($businessPayouts, 'total_amount'));
+        $totalSalesAmount = array_sum(array_column($salesPayouts, 'total_commission'));
+
+        return $this->view('pages/admin/payouts', [
+            'pageTitle' => 'Handmatige Uitbetalingen - Admin',
+            'admin' => $admin,
+            'businessPayouts' => $businessPayouts,
+            'salesPayouts' => $salesPayouts,
+            'payoutRecords' => $payoutRecords,
+            'totalBusinessAmount' => $totalBusinessAmount,
+            'totalSalesAmount' => $totalSalesAmount,
+            'totalAmount' => $totalBusinessAmount + $totalSalesAmount
+        ]);
+    }
+
+    /**
+     * Mark a payout as manually completed
+     */
+    public function markPayoutComplete(string $type, string $id): string
+    {
+        $admin = $this->requireAuth();
+
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/admin/payouts?error=csrf');
+        }
+
+        if ($type === 'business') {
+            // Mark all pending bookings for this business as paid out
+            $this->db->query(
+                "UPDATE bookings SET payout_status = 'completed', payout_date = CURDATE()
+                 WHERE business_id = ? AND payout_status IN ('pending', 'processing') AND payment_status = 'paid'",
+                [$id]
+            );
+
+            // Also update any business_payouts records
+            $this->db->query(
+                "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE(), notes = 'Handmatig gemarkeerd door admin'
+                 WHERE business_id = ? AND status IN ('pending', 'processing', 'failed')",
+                [$id]
+            );
+        } elseif ($type === 'sales') {
+            // Mark sales referrals as paid
+            $this->db->query(
+                "UPDATE sales_referrals SET status = 'paid', paid_at = NOW()
+                 WHERE sales_user_id = ? AND status = 'converted'",
+                [$id]
+            );
+        } elseif ($type === 'record') {
+            // Mark specific payout record as completed
+            $this->db->query(
+                "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE(), notes = 'Handmatig gemarkeerd door admin'
+                 WHERE id = ?",
+                [$id]
+            );
+        }
+
+        return $this->redirect('/admin/payouts?success=marked');
+    }
+
     public function updateUser(string $id): string
     {
         $admin = $this->requireAuth();

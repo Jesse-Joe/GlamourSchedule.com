@@ -738,4 +738,34 @@ class ApiController extends Controller
             return $this->json(['error' => 'Internal server error'], 500);
         }
     }
+
+    /**
+     * Get Wise EUR balance (admin only)
+     */
+    public function wiseBalance(): string
+    {
+        // Check if admin is logged in
+        if (!isset($_SESSION['admin_id'])) {
+            return $this->json(['error' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $wise = new \GlamourSchedule\Services\WiseService();
+
+            if (!$wise->isConfigured()) {
+                return $this->json(['balance' => null, 'error' => 'Wise not configured']);
+            }
+
+            $balance = $wise->getEurBalance();
+
+            return $this->json([
+                'balance' => $balance,
+                'currency' => 'EUR',
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

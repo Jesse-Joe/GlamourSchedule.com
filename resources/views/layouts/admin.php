@@ -450,6 +450,10 @@
                     <i class="fas fa-chart-line"></i>
                     <?= $translations['admin_revenue'] ?? 'Omzet' ?>
                 </a>
+                <a href="/admin/payouts" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/payouts') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-money-bill-transfer"></i>
+                    Uitbetalingen
+                </a>
 
                 <div class="nav-section"><?= $translations['admin_management'] ?? 'Beheer' ?></div>
                 <a href="/admin/users" class="nav-link <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false ? 'active' : '' ?>">

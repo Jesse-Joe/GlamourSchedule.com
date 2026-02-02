@@ -271,6 +271,7 @@ class Application
         $this->router->get('/api/available-times/{businessSlug}', 'BookingController@getAvailableTimes');
         $this->router->get('/api/salons/map', 'SearchController@mapData');
         $this->router->get('/api/salon/{id}', 'ApiController@getSalon');
+        $this->router->get('/api/wise/balance', 'ApiController@wiseBalance');
         $this->router->get('/api/global-search', 'ApiController@globalSearch');
         $this->router->get('/api/categories', 'ApiController@categories');
         $this->router->get('/api/category-groups', 'ApiController@categoryGroups');
@@ -383,6 +384,8 @@ class Application
         $this->router->get('/admin/businesses', 'AdminController@businesses');
         $this->router->get('/admin/sales-partners', 'AdminController@salesPartners');
         $this->router->get('/admin/revenue', 'AdminController@revenue');
+        $this->router->get('/admin/payouts', 'AdminController@payouts');
+        $this->router->post('/admin/payouts/mark/{type}/{id}', 'AdminController@markPayoutComplete');
         $this->router->post('/admin/user/{id}/update', 'AdminController@updateUser');
         $this->router->post('/admin/user/{id}/delete', 'AdminController@deleteUser');
         $this->router->post('/admin/business/{id}/update', 'AdminController@updateBusiness');
