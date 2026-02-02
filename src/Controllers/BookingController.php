@@ -328,6 +328,19 @@ class BookingController extends Controller
         $loyaltyPointsRedeemed = 0;
         $userId = $bookingData['user_id'];
 
+        // If no user_id but guest_email provided, check if email matches existing user account
+        if (!$userId && !empty($bookingData['guest_email'])) {
+            $existingUser = $this->db->query(
+                "SELECT id FROM users WHERE email = ? AND is_guest = 0 LIMIT 1",
+                [$bookingData['guest_email']]
+            )->fetch(\PDO::FETCH_ASSOC);
+
+            if ($existingUser) {
+                $userId = $existingUser['id'];
+                $bookingData['user_id'] = $userId;
+            }
+        }
+
         if ($userId) {
             $loyaltyService = new LoyaltyService();
             $pointsToRedeem = (int)($_POST['loyalty_points'] ?? 0);
