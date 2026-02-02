@@ -29,6 +29,142 @@
     </div>
 </div>
 
+<!-- Wise Fee Information -->
+<div class="card" style="margin-top:1.5rem;border:1px solid var(--info);">
+    <div class="card-header" style="cursor:pointer;" onclick="document.getElementById('fee-info').style.display = document.getElementById('fee-info').style.display === 'none' ? 'block' : 'none';">
+        <h3 class="card-title" style="margin:0;"><i class="fas fa-info-circle"></i> Wise Transactiekosten per Land</h3>
+        <span class="badge badge-info"><i class="fas fa-chevron-down"></i> Klik om te tonen</span>
+    </div>
+    <div id="fee-info" style="display:none;padding:1rem;">
+        <p style="color:var(--text-light);margin-bottom:1rem;">
+            <i class="fas fa-calculator"></i> Wise rekent een <strong>vaste fee + percentage</strong> per transactie.
+            Houd hier rekening mee bij uitbetalingen.
+        </p>
+        <div class="table-responsive">
+            <table style="font-size:0.9rem;">
+                <thead>
+                    <tr>
+                        <th>Land</th>
+                        <th>IBAN Prefix</th>
+                        <th>Vaste Fee</th>
+                        <th>Variabel</th>
+                        <th>Voorbeeld €100</th>
+                        <th>Voorbeeld €500</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Nederland</strong></td>
+                        <td><code>NL</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Belgie</strong></td>
+                        <td><code>BE</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Duitsland</strong></td>
+                        <td><code>DE</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Frankrijk</strong></td>
+                        <td><code>FR</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Spanje</strong></td>
+                        <td><code>ES</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Italie</strong></td>
+                        <td><code>IT</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(34,197,94,0.1);">
+                        <td><strong>Polen</strong></td>
+                        <td><code>PL</code></td>
+                        <td>€0.54</td>
+                        <td>0.41%</td>
+                        <td>€0.95</td>
+                        <td>€2.59</td>
+                    </tr>
+                    <tr style="background:rgba(251,191,36,0.15);">
+                        <td><strong>Verenigd Koninkrijk</strong></td>
+                        <td><code>GB</code></td>
+                        <td>€0.71</td>
+                        <td>0.56%</td>
+                        <td>€1.27</td>
+                        <td>€3.51</td>
+                    </tr>
+                    <tr style="background:rgba(251,191,36,0.15);">
+                        <td><strong>Zwitserland</strong></td>
+                        <td><code>CH</code></td>
+                        <td>€0.89</td>
+                        <td>0.41%</td>
+                        <td>€1.30</td>
+                        <td>€2.94</td>
+                    </tr>
+                    <tr style="background:rgba(239,68,68,0.1);">
+                        <td><strong>Turkije</strong></td>
+                        <td><code>TR</code></td>
+                        <td>€1.05</td>
+                        <td>1.41%</td>
+                        <td>€2.46</td>
+                        <td>€8.10</td>
+                    </tr>
+                    <tr style="background:rgba(239,68,68,0.1);">
+                        <td><strong>Marokko</strong></td>
+                        <td><code>MA</code></td>
+                        <td>€1.66</td>
+                        <td>1.85%</td>
+                        <td>€3.51</td>
+                        <td>€10.91</td>
+                    </tr>
+                    <tr style="background:rgba(239,68,68,0.1);">
+                        <td><strong>Verenigde Staten</strong></td>
+                        <td><code>US</code></td>
+                        <td>€0.94</td>
+                        <td>0.56%</td>
+                        <td>€1.50</td>
+                        <td>€3.74</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top:1rem;padding:0.75rem;background:var(--bg);border-radius:8px;font-size:0.85rem;">
+            <p style="margin:0 0 0.5rem 0;"><strong>Legenda:</strong></p>
+            <span style="display:inline-block;width:12px;height:12px;background:rgba(34,197,94,0.3);margin-right:0.5rem;border-radius:2px;"></span> SEPA-landen (goedkoop)
+            <span style="display:inline-block;width:12px;height:12px;background:rgba(251,191,36,0.3);margin-left:1rem;margin-right:0.5rem;border-radius:2px;"></span> Europa non-SEPA
+            <span style="display:inline-block;width:12px;height:12px;background:rgba(239,68,68,0.2);margin-left:1rem;margin-right:0.5rem;border-radius:2px;"></span> Buiten Europa (duurder)
+            <p style="margin:0.75rem 0 0 0;color:var(--text-light);">
+                <i class="fas fa-external-link-alt"></i>
+                <a href="https://wise.com/pricing" target="_blank" style="color:var(--info);">Actuele tarieven bekijken op Wise.com</a>
+            </p>
+        </div>
+    </div>
+</div>
+
 <!-- Wise Pending Transfers -->
 <?php if (!empty($wiseTransfers)): ?>
 <div class="card" style="margin-top:1.5rem;border:2px solid var(--warning);">
