@@ -570,6 +570,11 @@ GlamourSchedule
             $errors['category_id'] = 'Selecteer een categorie';
         }
 
+        // KVK is optional but if provided, must be 8 digits
+        if (!empty($data['kvk_number']) && !preg_match('/^\d{8}$/', $data['kvk_number'])) {
+            $errors['kvk_number'] = 'KVK-nummer moet 8 cijfers bevatten';
+        }
+
         return $errors;
     }
 

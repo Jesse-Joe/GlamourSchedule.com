@@ -225,8 +225,13 @@ class AdminController extends Controller
         }
 
         if (!empty($status)) {
-            $whereClause .= " AND status = ?";
-            $params[] = $status;
+            if ($status === 'kvk_pending') {
+                // Filter: has KVK number but not verified yet
+                $whereClause .= " AND kvk_number IS NOT NULL AND kvk_number != '' AND kvk_verified = 0 AND is_verified = 0";
+            } else {
+                $whereClause .= " AND status = ?";
+                $params[] = $status;
+            }
         }
 
         // Get total count
@@ -463,6 +468,95 @@ class AdminController extends Controller
         );
 
         return $this->redirect('/admin/businesses?success=activated');
+    }
+
+    /**
+     * Verify a business's KVK number
+     */
+    public function verifyKvk(string $id): string
+    {
+        $admin = $this->requireAuth();
+
+        if (!$this->verifyCsrf()) {
+            return $this->redirect('/admin/businesses?error=csrf');
+        }
+
+        // Get business info for email
+        $stmt = $this->db->query("SELECT email, company_name, kvk_number FROM businesses WHERE id = ?", [$id]);
+        $business = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$business || empty($business['kvk_number'])) {
+            return $this->redirect('/admin/businesses?error=no_kvk');
+        }
+
+        $this->db->query(
+            "UPDATE businesses SET kvk_verified = 1, status = 'active' WHERE id = ?",
+            [$id]
+        );
+
+        // Send notification email to business
+        $this->sendKvkVerifiedEmail($business);
+
+        return $this->redirect('/admin/businesses?success=kvk_verified');
+    }
+
+    /**
+     * Send email notification when KVK is verified
+     */
+    private function sendKvkVerifiedEmail(array $business): void
+    {
+        $html = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#ffffff;padding:40px;text-align:center;">
+                            <div style="font-size:3rem;margin-bottom:1rem;">✓</div>
+                            <h1 style="margin:0;font-size:24px;">KVK Geverifieerd!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Beste {$business['company_name']},</p>
+                            <p style="font-size:16px;color:#cccccc;line-height:1.6;margin:0 0 25px;">
+                                Goed nieuws! Je KVK-nummer ({$business['kvk_number']}) is succesvol geverifieerd.
+                            </p>
+                            <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
+                                <p style="margin:0;color:#166534;font-weight:600;font-size:16px;">
+                                    Je kunt nu boekingen ontvangen!
+                                </p>
+                            </div>
+                            <p style="text-align:center;margin:30px 0;">
+                                <a href="https://glamourschedule.nl/login" style="display:inline-block;background:#22c55e;color:#fff;padding:15px 40px;border-radius:10px;text-decoration:none;font-weight:600;">
+                                    Ga naar Dashboard
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#999;font-size:12px;">GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer->send($business['email'], 'Je KVK is geverifieerd - GlamourSchedule', $html);
+        } catch (\Exception $e) {
+            error_log('KVK verification email failed: ' . $e->getMessage());
+        }
     }
 
     public function updateSalesPartner(string $id): string

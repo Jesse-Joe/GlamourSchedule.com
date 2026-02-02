@@ -339,27 +339,28 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     </div>
 <?php endif; ?>
 
-<?php
-// Check if business needs verification (no KVK and not yet verified)
-$needsVerification = empty($business['kvk_number']) && empty($business['is_verified']);
-?>
-<?php if ($needsVerification): ?>
+<?php if (!empty($kvkVerificationNeeded)): ?>
     <div class="dash-banner dash-banner-pending" style="background:linear-gradient(135deg,#f59e0b,#d97706);margin-bottom:1rem">
         <div style="display:flex;align-items:flex-start;gap:1rem">
             <div style="width:50px;height:50px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <i class="fas fa-lock" style="font-size:1.5rem"></i>
+                <i class="fas fa-building" style="font-size:1.5rem"></i>
             </div>
             <div style="flex:1">
                 <h3 style="margin:0;display:flex;align-items:center;gap:0.5rem;font-size:1.1rem">
-                    <i class="fas fa-clock"></i> Verificatie in behandeling
+                    <i class="fas fa-exclamation-triangle"></i> KVK-verificatie vereist
                 </h3>
                 <p style="margin:0.5rem 0 0 0;opacity:0.95;font-size:0.9rem;line-height:1.5">
-                    Je bedrijf wordt binnen <strong>24 uur</strong> geverifieerd door ons team.
-                    Tot die tijd kun je geen boekingen ontvangen.
+                    Je kunt je omgeving klaarmaken, maar <strong>geen boekingen ontvangen</strong> totdat je KVK-nummer is geverifieerd.
                 </p>
-                <p style="margin:0.75rem 0 0 0;opacity:0.85;font-size:0.85rem">
-                    <i class="fas fa-info-circle"></i> Tip: Voeg je KVK-nummer toe voor directe verificatie
-                </p>
+                <?php if (empty($business['kvk_number'])): ?>
+                    <a href="/business/profile" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.95);color:#92400e;padding:0.6rem 1rem;border-radius:8px;text-decoration:none;font-weight:600;margin-top:0.75rem;font-size:0.9rem">
+                        <i class="fas fa-plus"></i> KVK-nummer toevoegen
+                    </a>
+                <?php else: ?>
+                    <p style="margin:0.75rem 0 0 0;opacity:0.85;font-size:0.85rem">
+                        <i class="fas fa-clock"></i> Je KVK-nummer (<?= htmlspecialchars($business['kvk_number']) ?>) wordt geverifieerd...
+                    </p>
+                <?php endif; ?>
             </div>
         </div>
     </div>

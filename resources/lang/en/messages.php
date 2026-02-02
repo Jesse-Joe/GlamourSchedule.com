@@ -107,6 +107,7 @@ return [
     'postal_code' => 'Postal code',
     'city' => 'City',
     'kvk_number' => 'Chamber of Commerce Number',
+    'kvk_verification_note' => 'Without a Chamber of Commerce number, you cannot receive bookings until your account is manually verified.',
     'category' => 'Category',
     'select_category' => 'Select your category',
     'description' => 'Description',
@@ -242,6 +243,7 @@ return [
     'error' => 'Error',
     'error_required' => 'This field is required',
     'error_business_not_found' => 'Business not found',
+    'error_business_not_verified' => 'This business is not yet verified and cannot accept bookings.',
     'error_min_chars' => 'Minimum :count characters required',
     'error_email' => 'Invalid email address',
     'error_password_min' => 'Password must be at least 8 characters',
@@ -1616,6 +1618,8 @@ return [
     'auth_email_in_use_login' => 'This email address is already in use. <a href="/login" style="color:var(--primary)">Log in?</a>',
     'auth_account_deactivated' => 'This account has been deactivated. Please contact support.',
     'auth_email_registered_business' => 'This email address is already registered as a business. <a href="/login" style="color:var(--primary)">Log in?</a>',
+    'auth_email_is_customer_account' => 'This email address is registered as a customer account. Select "Personal" to log in or use a different email for your business account.',
+    'auth_email_is_business_account' => 'This email address is registered as a business account. Select "Business" to log in or use a different email for your personal account.',
 
     // Booking errors
     'booking_business_not_found' => 'Business not found',

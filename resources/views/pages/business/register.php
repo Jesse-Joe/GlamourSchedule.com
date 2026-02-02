@@ -631,7 +631,11 @@
 
                 <div class="form-group">
                     <label><i class="fas fa-file-contract"></i> <?= $__('kvk_number') ?> <span style="font-weight:400;color:#9ca3af">(<?= $__('optional') ?>)</span></label>
-                    <input type="text" name="kvk_number" class="form-control" placeholder="12345678" value="<?= htmlspecialchars($data['kvk_number'] ?? '') ?>">
+                    <input type="text" name="kvk_number" class="form-control" placeholder="12345678" value="<?= htmlspecialchars($data['kvk_number'] ?? '') ?>" pattern="\d{8}" maxlength="8">
+                    <small style="color:#9ca3af;display:block;margin-top:4px;"><?= $__('kvk_verification_note') ?></small>
+                    <?php if (isset($errors['kvk_number'])): ?>
+                        <span class="error-text"><?= htmlspecialchars($errors['kvk_number']) ?></span>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-group">

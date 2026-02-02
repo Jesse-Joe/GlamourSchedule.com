@@ -107,6 +107,7 @@ return [
     'postal_code' => 'Postcode',
     'city' => 'Stad',
     'kvk_number' => 'KVK Nummer',
+    'kvk_verification_note' => 'Zonder KVK-nummer kun je geen boekingen ontvangen totdat je account handmatig is geverifieerd.',
     'category' => 'Categorie',
     'select_category' => 'Selecteer je categorie',
     'description' => 'Omschrijving',
@@ -242,6 +243,7 @@ return [
     'error' => 'Fout',
     'error_required' => 'Dit veld is verplicht',
     'error_business_not_found' => 'Bedrijf niet gevonden',
+    'error_business_not_verified' => 'Dit bedrijf is nog niet geverifieerd en kan geen boekingen ontvangen.',
     'error_min_chars' => 'Minimaal :count tekens vereist',
     'error_email' => 'Ongeldig e-mailadres',
     'error_password_min' => 'Wachtwoord moet minimaal 8 tekens zijn',
@@ -1609,6 +1611,8 @@ return [
     'auth_email_in_use_login' => 'Dit e-mailadres is al in gebruik. <a href="/login" style="color:var(--primary)">Inloggen?</a>',
     'auth_account_deactivated' => 'Dit account is gedeactiveerd. Neem contact op met support.',
     'auth_email_registered_business' => 'Dit e-mailadres is al geregistreerd als bedrijf. <a href="/login" style="color:var(--primary)">Inloggen?</a>',
+    'auth_email_is_customer_account' => 'Dit e-mailadres is geregistreerd als klantaccount. Selecteer "Persoonlijk" om in te loggen of gebruik een ander e-mailadres voor je bedrijfsaccount.',
+    'auth_email_is_business_account' => 'Dit e-mailadres is geregistreerd als bedrijfsaccount. Selecteer "Zakelijk" om in te loggen of gebruik een ander e-mailadres voor je persoonlijke account.',
 
     // Booking errors
     'booking_business_not_found' => 'Bedrijf niet gevonden',
