@@ -95,47 +95,58 @@ class AdminController extends Controller
     {
         // Total users
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM users");
-        $totalUsers = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $totalUsers = $result['count'] ?? 0;
 
         // Total businesses
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM businesses");
-        $totalBusinesses = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $totalBusinesses = $result['count'] ?? 0;
 
         // Active businesses
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM businesses WHERE status = 'active'");
-        $activeBusinesses = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $activeBusinesses = $result['count'] ?? 0;
 
         // Pending businesses
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM businesses WHERE status = 'pending'");
-        $pendingBusinesses = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $pendingBusinesses = $result['count'] ?? 0;
 
         // Total bookings
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM bookings");
-        $totalBookings = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $totalBookings = $result['count'] ?? 0;
 
         // Bookings today
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM bookings WHERE DATE(created_at) = CURDATE()");
-        $bookingsToday = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $bookingsToday = $result['count'] ?? 0;
 
         // Bookings this month
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM bookings WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())");
-        $bookingsThisMonth = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $bookingsThisMonth = $result['count'] ?? 0;
 
         // Revenue this month (admin fees)
         $stmt = $this->db->query("SELECT COALESCE(SUM(admin_fee), 0) as total FROM bookings WHERE payment_status = 'paid' AND MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())");
-        $revenueThisMonth = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $revenueThisMonth = $result['total'] ?? 0;
 
         // Total revenue
         $stmt = $this->db->query("SELECT COALESCE(SUM(admin_fee), 0) as total FROM bookings WHERE payment_status = 'paid'");
-        $totalRevenue = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $totalRevenue = $result['total'] ?? 0;
 
         // Sales partners
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM sales_users WHERE status = 'active'");
-        $activeSalesPartners = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $activeSalesPartners = $result['count'] ?? 0;
 
         // Recent registrations (last 7 days)
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM businesses WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
-        $recentRegistrations = $stmt->fetch(\PDO::FETCH_ASSOC)['count'];
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $recentRegistrations = $result['count'] ?? 0;
 
         // Bookings per day (last 14 days)
         $stmt = $this->db->query("

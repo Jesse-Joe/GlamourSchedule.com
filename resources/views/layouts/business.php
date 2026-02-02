@@ -607,8 +607,8 @@
                 <h1><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?></h1>
             </div>
             <div class="top-bar-actions">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <i class="fas fa-moon"></i>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <i class="fas fa-sun"></i>
                 </button>
                 <a href="/logout" class="btn btn-secondary btn-sm">
                     <i class="fas fa-sign-out-alt"></i> <?= $translations['nav_logout'] ?? 'Logout' ?>
@@ -638,14 +638,23 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
+            const current = html.getAttribute('data-theme') || 'dark';
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+            localStorage.setItem('glamour_theme_mode', next);
+            updateThemeIcon();
         }
 
-        // Always use dark mode as default
-        document.documentElement.setAttribute('data-theme', 'dark');
+        function updateThemeIcon() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.className = current === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Initialize theme icon on load
+        updateThemeIcon();
 
         // Initialize Push Notifications for Business
         async function initBusinessPush() {

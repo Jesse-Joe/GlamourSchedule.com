@@ -169,7 +169,7 @@
             min-height: 100vh;
         }
         .topbar {
-            background: white;
+            background: var(--card);
             padding: 1rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -178,6 +178,22 @@
             position: sticky;
             top: 0;
             z-index: 50;
+        }
+        .theme-toggle {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--border);
         }
         .topbar-title {
             font-size: 1.25rem;
@@ -192,7 +208,7 @@
             padding: 2rem;
         }
         .card {
-            background: white;
+            background: var(--card);
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             padding: 1.5rem;
@@ -217,7 +233,7 @@
             margin-bottom: 2rem;
         }
         .stat-card {
-            background: white;
+            background: var(--card);
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -331,6 +347,8 @@
             border-radius: 6px;
             font-size: 0.9rem;
             transition: border-color 0.2s;
+            background: var(--card);
+            color: var(--text);
         }
         .form-control:focus {
             outline: none;
@@ -474,6 +492,9 @@
             <div class="topbar">
                 <h1 class="topbar-title"><?= $pageTitle ?? 'Dashboard' ?></h1>
                 <div class="topbar-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                        <i class="fas fa-sun" id="themeIcon"></i>
+                    </button>
                     <span style="color:var(--text-light);font-size:0.9rem">
                         <?= date('d M Y, H:i') ?>
                     </span>
@@ -519,6 +540,26 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
         }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('glamour_theme_mode', next);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = current === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Initialize theme icon on load
+        updateThemeIcon();
     </script>
 
     <!-- Theme Manager -->

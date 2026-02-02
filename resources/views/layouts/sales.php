@@ -27,11 +27,27 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        :root {
+            --theme-bg: #000000;
+            --theme-bg-secondary: #0a0a0a;
+            --theme-card: #1a1a1a;
+            --theme-text: #ffffff;
+            --theme-text-muted: #a1a1a1;
+            --theme-border: #333333;
+        }
+        [data-theme="light"] {
+            --theme-bg: #f5f5f5;
+            --theme-bg-secondary: #ffffff;
+            --theme-card: #ffffff;
+            --theme-text: #000000;
+            --theme-text-muted: #666666;
+            --theme-border: #e0e0e0;
+        }
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--theme-bg, #000000);
-            color: var(--theme-text, #ffffff);
+            background: var(--theme-bg);
+            color: var(--theme-text);
             min-height: 100vh;
         }
 
@@ -122,12 +138,30 @@
             color: #ffffff;
         }
 
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--theme-card);
+            border: 1px solid var(--theme-border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--theme-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--theme-border);
+        }
+
         /* Main Content */
         .sales-main {
             margin-left: 280px;
             padding: 1.5rem;
             min-height: 100vh;
-            background: #0a0a0a;
+            background: var(--theme-bg-secondary);
         }
         .sales-header {
             display: flex;
@@ -139,51 +173,56 @@
         }
         .sales-header h1 {
             margin: 0;
-            color: #ffffff;
+            color: var(--theme-text);
             font-size: 1.5rem;
         }
+        .sales-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         .referral-code-box {
-            background: #000000;
-            color: white;
+            background: var(--theme-bg);
+            color: var(--theme-text);
             padding: 0.75rem 1.25rem;
             border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            border: 1px solid #333333;
+            border: 1px solid var(--theme-border);
         }
         .referral-code-box span {
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.7);
+            color: var(--theme-text-muted);
         }
         .referral-code-box code {
             font-size: 1.1rem;
             font-weight: bold;
             letter-spacing: 2px;
-            color: #ffffff;
+            color: var(--theme-text);
         }
         .referral-code-box button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #444444;
-            color: white;
+            background: var(--theme-card);
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
             padding: 0.5rem 0.75rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
         }
         .referral-code-box button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--theme-border);
         }
 
         /* Stats Cards */
         .stat-card {
-            background: #1a1a1a;
+            background: var(--theme-card);
             border-radius: 16px;
             padding: 1.5rem;
-            border: 1px solid #333333;
+            border: 1px solid var(--theme-border);
         }
         .stat-card h4 {
-            color: #a1a1a1;
+            color: var(--theme-text-muted);
             font-size: 0.85rem;
             margin: 0 0 0.75rem 0;
             text-transform: uppercase;
@@ -192,18 +231,18 @@
         .stat-card .value {
             font-size: 2rem;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--theme-text);
         }
 
         /* Cards */
         .card {
-            background: #1a1a1a;
+            background: var(--theme-card);
             border-radius: 16px;
             padding: 1.5rem;
-            border: 1px solid #333333;
+            border: 1px solid var(--theme-border);
         }
         .card h3 {
-            color: #ffffff;
+            color: var(--theme-text);
             margin: 0 0 1rem 0;
         }
 
@@ -214,12 +253,12 @@
             border-radius: 12px;
         }
         .alert-success {
-            background: #1a1a1a;
+            background: var(--theme-card);
             border: 1px solid #22c55e;
             color: #22c55e;
         }
         .alert-error {
-            background: #1a1a1a;
+            background: var(--theme-card);
             border: 1px solid #ef4444;
             color: #ef4444;
         }
@@ -266,8 +305,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #0a0a0a;
-            border-top: 1px solid #333333;
+            background: var(--theme-bg-secondary);
+            border-top: 1px solid var(--theme-border);
             padding: 0.5rem 0.25rem;
             z-index: 1000;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
@@ -298,12 +337,12 @@
             margin-bottom: 0.2rem;
         }
         .mobile-bottom-nav a.active {
-            color: #fff;
-            background: #1a1a1a;
+            color: var(--theme-text);
+            background: var(--theme-card);
         }
         .mobile-bottom-nav a:active {
             transform: scale(0.95);
-            background: #222;
+            background: var(--theme-card);
         }
         .mobile-bottom-nav a.nav-logout {
             color: #ef4444;
@@ -420,8 +459,8 @@
             display: none;
         }
         .referral-card {
-            background: #1a1a1a;
-            border: 1px solid #333333;
+            background: var(--theme-card);
+            border: 1px solid var(--theme-border);
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 0.75rem;
@@ -434,11 +473,11 @@
         }
         .referral-card-name {
             font-weight: 600;
-            color: #fff;
+            color: var(--theme-text);
         }
         .referral-card-date {
             font-size: 0.8rem;
-            color: #888;
+            color: var(--theme-text-muted);
         }
         .referral-card-footer {
             display: flex;
@@ -447,7 +486,7 @@
         }
         .referral-card-commission {
             font-weight: 700;
-            color: #fff;
+            color: var(--theme-text);
             font-size: 1.1rem;
         }
 
@@ -472,17 +511,17 @@
         th, td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #333333;
+            border-bottom: 1px solid var(--theme-border);
         }
         th {
-            color: #a1a1a1;
+            color: var(--theme-text-muted);
             font-weight: 500;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.5px;
         }
         td {
-            color: #ffffff;
+            color: var(--theme-text);
         }
 
         /* Buttons */
@@ -508,10 +547,10 @@
 
         /* Links */
         a {
-            color: #ffffff;
+            color: var(--theme-text);
         }
         a:hover {
-            color: #ffffff;
+            color: var(--theme-text);
         }
 
         /* Grid layouts */
@@ -605,12 +644,17 @@
     <main class="sales-main">
         <div class="sales-header">
             <h1><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?></h1>
-            <div class="referral-code-box">
-                <span><?= $translations['your_code'] ?? 'Your code:' ?></span>
-                <code id="refCode"><?= htmlspecialchars($salesUser['referral_code'] ?? '') ?></code>
-                <button onclick="copyCode()" id="copyBtn">
-                    <i class="fas fa-copy"></i>
+            <div class="sales-header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <i class="fas fa-sun" id="themeIcon"></i>
                 </button>
+                <div class="referral-code-box">
+                    <span><?= $translations['your_code'] ?? 'Your code:' ?></span>
+                    <code id="refCode"><?= htmlspecialchars($salesUser['referral_code'] ?? '') ?></code>
+                    <button onclick="copyCode()" id="copyBtn">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -684,6 +728,26 @@
                 }, 2000);
             });
         }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('glamour_theme_mode', next);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = current === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Initialize theme icon on load
+        updateThemeIcon();
 
         // Close sidebar when clicking on a link (mobile)
         document.querySelectorAll('.sales-sidebar nav a').forEach(link => {

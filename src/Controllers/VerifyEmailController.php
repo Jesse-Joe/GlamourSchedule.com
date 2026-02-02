@@ -449,10 +449,14 @@ class VerifyEmailController extends Controller
     private function maskEmail(string $email): string
     {
         $parts = explode('@', $email);
-        $name = $parts[0];
-        $domain = $parts[1];
+        $name = $parts[0] ?? '';
+        $domain = $parts[1] ?? 'example.com';
 
-        $maskedName = substr($name, 0, 2) . str_repeat('*', max(strlen($name) - 4, 2)) . substr($name, -2);
+        if (strlen($name) <= 4) {
+            $maskedName = substr($name, 0, 1) . str_repeat('*', max(strlen($name) - 1, 1));
+        } else {
+            $maskedName = substr($name, 0, 2) . str_repeat('*', max(strlen($name) - 4, 2)) . substr($name, -2);
+        }
 
         return $maskedName . '@' . $domain;
     }
