@@ -152,18 +152,21 @@
     background: var(--btn-hover-bg);
     color: var(--btn-hover-text);
 }
+/* Dark mode (default): show sun icon to switch to light */
 .theme-toggle .theme-icon-light {
-    display: none !important;
-}
-.theme-toggle .theme-icon-dark {
     display: inline-block;
     color: var(--theme-text);
 }
+.theme-toggle .theme-icon-dark {
+    display: none !important;
+}
+/* Light mode: show moon icon to switch to dark */
 [data-theme="light"] .theme-toggle .theme-icon-light {
-    display: inline-block !important;
+    display: none !important;
 }
 [data-theme="light"] .theme-toggle .theme-icon-dark {
-    display: none !important;
+    display: inline-block !important;
+    color: var(--theme-text);
 }
 
 html {
