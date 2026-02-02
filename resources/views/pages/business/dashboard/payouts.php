@@ -147,10 +147,10 @@
             </ul>
         </div>
 
-        <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-question-circle"></i> Vragen?</h4>
-            <p style="font-size:0.9rem;opacity:0.9">Neem contact op met onze klantenservice als je vragen hebt over uitbetalingen.</p>
-            <a href="/contact" class="btn" style="background:#ffffff;color:var(--primary);margin-top:0.5rem">
+        <div class="card" style="background:linear-gradient(135deg,#000000,#1a1a1a);border:1px solid #333333;color:#ffffff">
+            <h4 style="margin-bottom:0.5rem;color:#ffffff"><i class="fas fa-question-circle"></i> Vragen?</h4>
+            <p style="font-size:0.9rem;color:#999999">Neem contact op met onze klantenservice als je vragen hebt over uitbetalingen.</p>
+            <a href="/contact" class="btn" style="background:#ffffff;color:#000000;margin-top:0.5rem">
                 <i class="fas fa-envelope"></i> Contact
             </a>
         </div>
