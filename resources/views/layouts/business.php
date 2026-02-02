@@ -26,30 +26,36 @@
     <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Dark mode (default) */
         :root {
-            --primary: #000000;
-            --primary-dark: #000000;
+            --primary: #ffffff;
+            --primary-dark: #e0e0e0;
             --primary-light: #333333;
-            --secondary: #000000;
+            --secondary: #1a1a1a;
             --text: #ffffff;
             --text-light: #999999;
-            --white: #0a0a0a;
+            --white: #000000;
+            --card-bg: #0a0a0a;
             --border: #333333;
             --success: #22c55e;
             --danger: #ef4444;
             --warning: #f59e0b;
             --sidebar-width: 280px;
         }
+        /* Light mode */
         [data-theme="light"] {
-            --secondary: #ffffff;
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #f5f5f5;
             --text: #000000;
             --text-light: #666666;
             --white: #ffffff;
+            --card-bg: #ffffff;
             --border: #e0e0e0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--secondary);
+            background: var(--white);
             color: var(--text);
             min-height: 100vh;
         }
@@ -190,9 +196,10 @@
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            background: var(--white);
         }
         .top-bar {
-            background: var(--white);
+            background: var(--card-bg);
             padding: 1rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -201,10 +208,12 @@
             position: sticky;
             top: 0;
             z-index: 50;
+            color: var(--text);
         }
         .top-bar h1 {
             font-size: 1.5rem;
             font-weight: 600;
+            color: var(--text);
         }
         .top-bar-actions {
             display: flex;
@@ -237,11 +246,13 @@
 
         /* Components */
         .card {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
+            color: var(--text);
+            border: 1px solid var(--border);
         }
         .card-header {
             display: flex;
@@ -257,6 +268,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--text);
         }
         .card-title i {
             color: var(--primary);
@@ -337,51 +349,56 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
         .alert-success {
-            background: #ffffff;
-            color: #000000;
+            border-left: 4px solid var(--success);
         }
         .alert-danger {
-            background: #f5f5f5;
-            color: #000000;
+            border-left: 4px solid var(--danger);
         }
         .alert-warning {
-            background: #ffffff;
-            color: #000000;
+            border-left: 4px solid var(--warning);
         }
-        [data-theme="dark"] .alert-success,
-        [data-theme="dark"] .alert-danger,
-        [data-theme="dark"] .alert-warning {
-            background: #1a1a1a;
-            color: #ffffff;
-            border: 1px solid #333333;
+
+        /* Dark mode specific overrides */
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
         }
-        [data-theme="dark"] .card {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
+        .btn-primary:hover {
+            opacity: 0.9;
         }
-        [data-theme="dark"] .card-title i {
-            color: #ffffff;
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
-        [data-theme="dark"] .btn-primary {
-            background: #ffffff;
-            color: #000000;
+
+        /* Table styles */
+        table {
+            color: var(--text);
         }
-        [data-theme="dark"] .btn-primary:hover {
-            background: #f0f0f0;
+        table th {
+            background: var(--card-bg);
+            color: var(--text);
+            border-color: var(--border);
         }
-        [data-theme="dark"] .btn-secondary {
-            background: #1a1a1a;
-            color: #ffffff;
-            border: 1px solid #333333;
+        table td {
+            border-color: var(--border);
+            color: var(--text);
         }
-        [data-theme="dark"] table th {
-            background: #0a0a0a;
-            color: #ffffff;
+
+        /* Form styles in light/dark mode */
+        .form-control {
+            background: var(--card-bg);
+            color: var(--text);
+            border-color: var(--border);
         }
-        [data-theme="dark"] table td {
-            border-color: #1a1a1a;
+        .form-control::placeholder {
+            color: var(--text-light);
         }
 
         .grid {
@@ -474,15 +491,69 @@
         /* Theme Toggle */
         .theme-toggle {
             background: var(--secondary);
-            border: none;
-            width: 40px;
-            height: 40px;
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             cursor: pointer;
             color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+        }
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Top bar actions mobile-friendly */
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .top-bar-actions .btn {
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile: compact top bar actions */
+        @media (max-width: 480px) {
+            .top-bar-actions {
+                gap: 0.35rem;
+            }
+            .top-bar-actions .btn span,
+            .top-bar-actions .btn-text {
+                display: none;
+            }
+            .top-bar-actions .btn {
+                padding: 0.5rem;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+            }
+            .top-bar-actions .btn i {
+                margin: 0;
+            }
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+            }
+            .top-bar h1 {
+                font-size: 1rem;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
 
     </style>
@@ -610,8 +681,9 @@
                 <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
                     <i class="fas fa-sun"></i>
                 </button>
-                <a href="/logout" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> <?= $translations['nav_logout'] ?? 'Logout' ?>
+                <a href="/logout" class="btn btn-secondary btn-sm" title="<?= $translations['nav_logout'] ?? 'Logout' ?>">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="btn-text"><?= $translations['nav_logout'] ?? 'Logout' ?></span>
                 </a>
             </div>
         </header>
