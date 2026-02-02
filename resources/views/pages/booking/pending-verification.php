@@ -107,7 +107,7 @@
         <div class="info-box">
             <p>
                 <i class="fas fa-info-circle"></i>
-                De verificatie wordt binnen 24 uur afgerond. Probeer het later opnieuw om een afspraak te boeken.
+                Dit bedrijf staat op hold, probeer het later nogmaals.
             </p>
         </div>
 
