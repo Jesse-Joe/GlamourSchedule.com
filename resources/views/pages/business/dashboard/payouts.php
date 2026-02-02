@@ -90,16 +90,47 @@
                 <p style="font-family:monospace;font-size:1.1rem;margin:0.25rem 0 0 0">
                     <?= htmlspecialchars($business['iban'] ?? 'Niet opgegeven') ?>
                 </p>
+                <?php if (!empty($business['account_holder'])): ?>
+                <p class="text-muted" style="font-size:0.85rem;margin:0.5rem 0 0 0">
+                    Rekeninghouder: <?= htmlspecialchars($business['account_holder']) ?>
+                </p>
+                <?php endif; ?>
             </div>
 
             <?php if (empty($business['iban'])): ?>
                 <div class="alert alert-warning" style="margin-top:1rem">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>Voeg je IBAN toe in je profiel om uitbetalingen te ontvangen.</span>
+                    <span>Voeg je IBAN toe om uitbetalingen te ontvangen.</span>
                 </div>
-                <a href="/business/profile" class="btn btn-primary" style="margin-top:0.5rem">
-                    <i class="fas fa-edit"></i> IBAN Toevoegen
+                <a href="/business/change-iban" class="btn btn-primary" style="margin-top:0.5rem">
+                    <i class="fas fa-plus"></i> IBAN Toevoegen
                 </a>
+            <?php else: ?>
+                <?php
+                $canChangeIban = true;
+                $daysRemaining = 0;
+                if (!empty($business['iban_changed_at'])) {
+                    $lastChange = strtotime($business['iban_changed_at']);
+                    $daysSinceChange = (time() - $lastChange) / 86400;
+                    if ($daysSinceChange < 30) {
+                        $canChangeIban = false;
+                        $daysRemaining = ceil(30 - $daysSinceChange);
+                    }
+                }
+                ?>
+                <?php if ($canChangeIban): ?>
+                    <a href="/business/change-iban" class="btn btn-secondary btn-sm" style="margin-top:1rem">
+                        <i class="fas fa-edit"></i> IBAN Wijzigen
+                    </a>
+                <?php else: ?>
+                    <div style="margin-top:1rem;padding:0.75rem;background:var(--bg);border-radius:8px;font-size:0.85rem">
+                        <i class="fas fa-lock" style="color:var(--text-muted)"></i>
+                        <span class="text-muted">IBAN wijzigen beschikbaar over <?= $daysRemaining ?> dag(en)</span>
+                    </div>
+                <?php endif; ?>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">
+                    <i class="fas fa-shield-alt"></i> IBAN kan max. 1x per 30 dagen worden gewijzigd (met 2FA)
+                </p>
             <?php endif; ?>
         </div>
 

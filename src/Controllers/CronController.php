@@ -391,13 +391,13 @@ class CronController extends Controller
     private const PLATFORM_FEE = 1.75;
 
     /**
-     * Process automatic payouts to businesses for completed bookings
+     * Process automatic payouts to businesses via Wise (IBAN only)
      * Runs hourly: /cron/process-payouts?key=glamour-cron-2024-secret
      *
      * Requirements:
-     * - Booking status = 'completed' (QR scanned)
-     * - 24 hours have passed since completion
-     * - Business has Mollie Connect linked
+     * - Booking status = 'checked_in' (QR scanned)
+     * - 24 hours have passed since check-in
+     * - Business has valid IBAN
      */
     public function processPayouts(): string
     {
@@ -406,20 +406,17 @@ class CronController extends Controller
             return json_encode(['error' => 'Unauthorized']);
         }
 
-        $this->logPayout('Starting automatic payout processing');
+        $this->logPayout('Starting automatic payout processing (IBAN/Wise)');
 
         try {
             // Find checked-in bookings older than 24 hours that haven't been paid out
-            // Business must have Mollie Connect linked
-            // Status = 'checked_in' means QR code was scanned
+            // Business must have valid IBAN
             $stmt = $this->db->query(
                 "SELECT b.*,
                         bus.id as business_id,
                         bus.company_name,
                         bus.email as business_email,
                         bus.iban as business_iban,
-                        bus.mollie_account_id,
-                        bus.mollie_access_token,
                         s.name as service_name
                  FROM bookings b
                  JOIN businesses bus ON b.business_id = bus.id
@@ -428,6 +425,7 @@ class CronController extends Controller
                    AND b.payout_status = 'pending'
                    AND b.payment_status = 'paid'
                    AND b.checked_in_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                   AND bus.iban IS NOT NULL AND bus.iban != ''
                  ORDER BY b.business_id, b.created_at"
             );
             $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -451,8 +449,6 @@ class CronController extends Controller
                         'company_name' => $booking['company_name'],
                         'email' => $booking['business_email'],
                         'iban' => $booking['business_iban'],
-                        'mollie_account_id' => $booking['mollie_account_id'],
-                        'mollie_access_token' => $booking['mollie_access_token'],
                         'bookings' => [],
                         'total_service_amount' => 0,
                         'total_platform_fee' => 0,
@@ -478,23 +474,23 @@ class CronController extends Controller
                 $businessPayouts[$businessId]['total_payout'] += $payoutAmount;
             }
 
+            // Initialize Wise
+            $wise = new WiseService();
+            if (!$wise->isConfigured()) {
+                $this->logPayout('ERROR: Wise not configured');
+                return json_encode([
+                    'success' => false,
+                    'error' => 'Wise not configured',
+                    'timestamp' => date('Y-m-d H:i:s')
+                ]);
+            }
+
             $payoutsProcessed = 0;
-            $payoutsFailed = 0;
+            $payoutsPending = 0;
             $totalAmount = 0;
             $results = [];
 
             foreach ($businessPayouts as $payout) {
-                // Check if business has Mollie Connect linked
-                if (empty($payout['mollie_account_id'])) {
-                    $this->logPayout("Skipping {$payout['company_name']} - no Mollie Connect linked");
-                    $results[] = [
-                        'business' => $payout['company_name'],
-                        'status' => 'skipped',
-                        'reason' => 'No Mollie Connect'
-                    ];
-                    continue;
-                }
-
                 // Create payout record in database first
                 $this->db->query(
                     "INSERT INTO business_payouts (business_id, amount, platform_fee, bookings_count, period_start, period_end, status, created_at)
@@ -510,13 +506,19 @@ class CronController extends Controller
                 );
                 $payoutId = $this->db->lastInsertId();
 
-                // Execute Mollie Connect transfer
-                $transferResult = $this->executeMollieTransfer($payout, $payoutId);
+                // Execute Wise transfer
+                $description = "GlamourSchedule uitbetaling #$payoutId";
+                $transferResult = $wise->makePayment(
+                    $payout['iban'],
+                    $payout['company_name'],
+                    $payout['total_payout'],
+                    $description
+                );
 
                 if ($transferResult['success']) {
-                    // Update payout record with Mollie transfer ID
+                    // Update payout record with Wise transfer ID
                     $this->db->query(
-                        "UPDATE business_payouts SET mollie_transfer_id = ?, status = 'completed', payout_date = CURDATE() WHERE id = ?",
+                        "UPDATE business_payouts SET transaction_id = ?, status = 'completed', payout_date = CURDATE(), notes = 'Automatisch via Wise' WHERE id = ?",
                         [$transferResult['transfer_id'], $payoutId]
                     );
 
@@ -534,7 +536,7 @@ class CronController extends Controller
                     $payoutsProcessed++;
                     $totalAmount += $payout['total_payout'];
 
-                    $this->logPayout("SUCCESS: Payout to {$payout['company_name']}: €" . number_format($payout['total_payout'], 2) . " (Transfer: {$transferResult['transfer_id']})");
+                    $this->logPayout("SUCCESS: Payout to {$payout['company_name']}: €" . number_format($payout['total_payout'], 2) . " (Wise: {$transferResult['transfer_id']})");
 
                     $results[] = [
                         'business' => $payout['company_name'],
@@ -543,34 +545,44 @@ class CronController extends Controller
                         'transfer_id' => $transferResult['transfer_id']
                     ];
                 } else {
-                    // Update payout as failed
+                    // Update payout as pending (requires manual approval in Wise)
                     $this->db->query(
-                        "UPDATE business_payouts SET status = 'failed', notes = ? WHERE id = ?",
-                        [$transferResult['error'], $payoutId]
+                        "UPDATE business_payouts SET status = 'pending', notes = ? WHERE id = ?",
+                        ["Wise: {$transferResult['error']} - Wacht op goedkeuring in Wise", $payoutId]
                     );
 
-                    $payoutsFailed++;
-                    $this->logPayout("FAILED: Payout to {$payout['company_name']}: " . $transferResult['error']);
+                    // Update bookings to processing
+                    $bookingIds = array_column($payout['bookings'], 'id');
+                    $placeholders = implode(',', array_fill(0, count($bookingIds), '?'));
+                    $this->db->query(
+                        "UPDATE bookings SET payout_status = 'processing' WHERE id IN ($placeholders)",
+                        $bookingIds
+                    );
+
+                    $payoutsPending++;
+                    $totalAmount += $payout['total_payout'];
+                    $this->logPayout("PENDING: Payout to {$payout['company_name']}: " . $transferResult['error'] . " - Wacht op goedkeuring in Wise");
 
                     $results[] = [
                         'business' => $payout['company_name'],
-                        'status' => 'failed',
-                        'error' => $transferResult['error']
+                        'status' => 'pending',
+                        'amount' => $payout['total_payout'],
+                        'note' => $transferResult['error']
                     ];
                 }
             }
 
             // Send admin notification
-            if ($payoutsProcessed > 0 || $payoutsFailed > 0) {
-                $this->sendAdminPayoutNotification($businessPayouts, $totalAmount, $payoutsFailed);
+            if ($payoutsProcessed > 0 || $payoutsPending > 0) {
+                $this->sendAdminPayoutNotification($businessPayouts, $totalAmount, $payoutsPending);
             }
 
-            $this->logPayout("Payout processing complete. Success: $payoutsProcessed, Failed: $payoutsFailed, Total: €" . number_format($totalAmount, 2));
+            $this->logPayout("Payout processing complete. Success: $payoutsProcessed, Pending: $payoutsPending, Total: €" . number_format($totalAmount, 2));
 
             return json_encode([
                 'success' => true,
                 'payouts_processed' => $payoutsProcessed,
-                'payouts_failed' => $payoutsFailed,
+                'payouts_pending' => $payoutsPending,
                 'total_amount' => $totalAmount,
                 'results' => $results,
                 'timestamp' => date('Y-m-d H:i:s')
@@ -694,10 +706,10 @@ class CronController extends Controller
      * Process automatic QR payouts - 24 hours after QR check-in
      * Runs hourly: /cron/qr-payouts?key=glamour-cron-2024-secret
      *
-     * This processes payments that used Mollie split payments:
-     * - Platform fee (€1.75) is already retained by platform at payment time
-     * - Business amount is held in Mollie until released
-     * - 24 hours after QR check-in, we release funds to business
+     * This processes payments via Wise (IBAN):
+     * - Platform fee (€1.75) is retained by platform
+     * - Business amount is transferred via Wise to their IBAN
+     * - 24 hours after QR check-in, we initiate the transfer
      */
     public function qrPayouts(): string
     {
@@ -712,21 +724,20 @@ class CronController extends Controller
             file_put_contents($logFile, "[$timestamp] $msg\n", FILE_APPEND);
         };
 
-        $log('=== QR PAYOUT PROCESSING START ===');
+        $log('=== QR PAYOUT PROCESSING START (IBAN/Wise) ===');
 
         try {
             // Find bookings that:
             // 1. Are checked in (QR scanned)
             // 2. Were checked in more than 24 hours ago
             // 3. Have payout_status = 'pending'
-            // 4. Business has Mollie Connect (split payment)
+            // 4. Business has valid IBAN
             $stmt = $this->db->query(
                 "SELECT b.*,
                         biz.id as biz_id,
                         biz.company_name,
                         biz.email as business_email,
-                        biz.mollie_account_id,
-                        biz.mollie_onboarding_status,
+                        biz.iban as business_iban,
                         s.name as service_name
                  FROM bookings b
                  JOIN businesses biz ON b.business_id = biz.id
@@ -735,8 +746,7 @@ class CronController extends Controller
                    AND b.checked_in_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR)
                    AND b.payout_status = 'pending'
                    AND b.payment_status = 'paid'
-                   AND biz.mollie_account_id IS NOT NULL
-                   AND biz.mollie_onboarding_status = 'completed'
+                   AND biz.iban IS NOT NULL AND biz.iban != ''
                  ORDER BY b.checked_in_at ASC"
             );
             $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);

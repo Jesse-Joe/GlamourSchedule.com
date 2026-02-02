@@ -1456,9 +1456,25 @@ class BusinessDashboardController extends Controller
 
     /**
      * Show 2FA form for IBAN change
+     * IBAN can only be changed once per 30 days
      */
     public function changeIban(): string
     {
+        // Check 30-day restriction
+        if (!empty($this->business['iban_changed_at'])) {
+            $lastChange = strtotime($this->business['iban_changed_at']);
+            $daysSinceChange = (time() - $lastChange) / 86400;
+
+            if ($daysSinceChange < 30) {
+                $daysRemaining = ceil(30 - $daysSinceChange);
+                $_SESSION['flash'] = [
+                    'type' => 'error',
+                    'message' => "Je kunt je IBAN pas over $daysRemaining dag(en) wijzigen. IBAN kan maximaal 1x per 30 dagen worden gewijzigd."
+                ];
+                return $this->redirect('/business/payouts');
+            }
+        }
+
         // Generate and send 2FA code
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $_SESSION['iban_change_2fa'] = [
@@ -1521,16 +1537,131 @@ class BusinessDashboardController extends Controller
             ]);
         }
 
-        // Code correct - reset IBAN verification
+        // Code correct - allow IBAN entry
         unset($_SESSION['iban_change_2fa']);
 
+        // Set session flag to allow IBAN entry
+        $_SESSION['iban_change_verified'] = [
+            'business_id' => $this->business['id'],
+            'expires_at' => time() + 1800 // 30 minutes to enter IBAN
+        ];
+
+        // Show IBAN entry form
+        return $this->view('pages/business/dashboard/iban-entry', [
+            'pageTitle' => 'IBAN Invoeren',
+            'business' => $this->business,
+            'csrfToken' => $this->csrf()
+        ]);
+    }
+
+    /**
+     * Save manually entered IBAN after 2FA verification
+     */
+    public function saveManualIban(): string
+    {
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            return $this->redirect('/business/payouts');
+        }
+
+        // Check if 2FA was verified
+        if (empty($_SESSION['iban_change_verified']) ||
+            $_SESSION['iban_change_verified']['business_id'] !== $this->business['id'] ||
+            $_SESSION['iban_change_verified']['expires_at'] < time()) {
+            unset($_SESSION['iban_change_verified']);
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Verificatie sessie verlopen. Probeer opnieuw.'];
+            return $this->redirect('/business/change-iban');
+        }
+
+        $iban = strtoupper(preg_replace('/\s+/', '', $_POST['iban'] ?? ''));
+        $accountHolder = trim($_POST['account_holder'] ?? '');
+
+        // Validate IBAN
+        if (!$this->validateIban($iban)) {
+            return $this->view('pages/business/dashboard/iban-entry', [
+                'pageTitle' => 'IBAN Invoeren',
+                'business' => $this->business,
+                'csrfToken' => $this->csrf(),
+                'error' => 'Ongeldig IBAN formaat. Controleer je invoer.',
+                'iban' => $iban,
+                'account_holder' => $accountHolder
+            ]);
+        }
+
+        // Validate account holder
+        if (strlen($accountHolder) < 2) {
+            return $this->view('pages/business/dashboard/iban-entry', [
+                'pageTitle' => 'IBAN Invoeren',
+                'business' => $this->business,
+                'csrfToken' => $this->csrf(),
+                'error' => 'Vul de naam van de rekeninghouder in.',
+                'iban' => $iban,
+                'account_holder' => $accountHolder
+            ]);
+        }
+
+        // Clear verification session
+        unset($_SESSION['iban_change_verified']);
+
+        // Save IBAN (not verified via iDEAL, but entered after 2FA)
         $this->db->query(
-            "UPDATE businesses SET iban_verified = 0 WHERE id = ?",
-            [$this->business['id']]
+            "UPDATE businesses SET iban = ?, account_holder = ?, iban_verified = 0, iban_changed_at = NOW() WHERE id = ?",
+            [$iban, $accountHolder, $this->business['id']]
         );
 
-        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Verificatie gelukt! Voer je nieuwe IBAN in.'];
-        return $this->redirect('/business/profile');
+        // Send confirmation email
+        $this->sendIbanChangedEmail($iban, $accountHolder);
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'IBAN opgeslagen! Je ontvangt een bevestigingsmail.'];
+        return $this->redirect('/business/payouts');
+    }
+
+    /**
+     * Send email confirmation for IBAN change
+     */
+    private function sendIbanChangedEmail(string $iban, string $accountHolder): void
+    {
+        $maskedIban = substr($iban, 0, 4) . ' **** **** ' . substr($iban, -4);
+        $subject = "IBAN Gewijzigd - GlamourSchedule";
+        $htmlBody = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+        <tr><td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+                <tr><td style="background:linear-gradient(135deg,#000000,#404040);color:#ffffff;padding:35px;text-align:center;">
+                    <div style="font-size:42px;margin-bottom:8px;">🏦</div>
+                    <h1 style="margin:0;font-size:24px;">IBAN Gewijzigd</h1>
+                </td></tr>
+                <tr><td style="padding:35px;">
+                    <p style="font-size:16px;color:#ffffff;">Beste {$this->business['company_name']},</p>
+                    <p style="font-size:16px;color:#555;">Je IBAN is succesvol gewijzigd:</p>
+                    <div style="background:#0a0a0a;border-radius:12px;padding:20px;margin:20px 0;">
+                        <p style="margin:0 0 10px 0;color:#888;font-size:14px;">Rekeninghouder:</p>
+                        <p style="margin:0 0 20px 0;color:#fff;font-size:16px;font-weight:bold;">{$accountHolder}</p>
+                        <p style="margin:0 0 10px 0;color:#888;font-size:14px;">IBAN:</p>
+                        <p style="margin:0;color:#fff;font-size:18px;font-family:monospace;">{$maskedIban}</p>
+                    </div>
+                    <p style="font-size:14px;color:#dc2626;margin-top:20px;"><strong>Let op:</strong> Je kunt je IBAN pas weer over 30 dagen wijzigen.</p>
+                    <p style="font-size:14px;color:#888;margin-top:10px;">Heb jij deze wijziging niet aangevraagd? Neem direct contact met ons op.</p>
+                </td></tr>
+                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        try {
+            $mailer = new Mailer();
+            $mailer->send($this->business['email'], $subject, $htmlBody);
+        } catch (\Exception $e) {
+            error_log("Failed to send IBAN changed email: " . $e->getMessage());
+        }
     }
 
     /**

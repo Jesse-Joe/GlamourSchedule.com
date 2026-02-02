@@ -166,10 +166,11 @@ class Application
             $router->post('/business/iban/add', 'BusinessDashboardController@addIban');
             $router->get('/business/iban/complete', 'BusinessDashboardController@ibanPaymentComplete');
 
-            // IBAN Change (with 2FA)
+            // IBAN Change (with 2FA + 30-day restriction)
             $router->get('/business/change-iban', 'BusinessDashboardController@changeIban');
             $router->post('/business/iban/verify-change', 'BusinessDashboardController@verifyIbanChange');
             $router->post('/business/iban/resend-change-code', 'BusinessDashboardController@resendIbanChange2FA');
+            $router->post('/business/iban/save', 'BusinessDashboardController@saveManualIban');
 
             // Reviews Management
             $router->get('/business/reviews', 'BusinessDashboardController@reviews');
