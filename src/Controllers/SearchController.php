@@ -24,14 +24,52 @@ class SearchController extends Controller
         // Server-side coordinates for distance calculation (GPS or IP fallback)
         $calcLat = $userLat;
         $calcLng = $userLng;
-        if (!$calcLat || !$calcLng) {
-            $ipLocation = $this->getLocationFromIP();
-            if ($ipLocation) {
+        $ipCountry = null;
+
+        // Get IP location for coordinates and country
+        $ipLocation = $this->getLocationFromIP();
+        if ($ipLocation) {
+            $ipCountry = $ipLocation['country'] ?? null;
+            if (!$calcLat || !$calcLng) {
                 $calcLat = $ipLocation['lat'];
                 $calcLng = $ipLocation['lng'];
                 if ($locationSource === 'none') {
                     $locationSource = 'ip';
                 }
+            }
+        }
+
+        // Country from URL parameter (user selected dropdown)
+        $selectedCountry = trim($_GET['country'] ?? '');
+        $countryFilterDisabled = isset($_GET['country']) && $_GET['country'] === ''; // User explicitly chose "All Countries"
+
+        // Detect country priority:
+        // 1. URL country param (explicit user choice from dropdown)
+        // 2. Search location text (user typed a city/country)
+        // 3. Language setting (user's language preference = their country)
+        // 4. IP location (where they are physically)
+        // 5. Default NL
+        if ($countryFilterDisabled) {
+            $userCountry = ''; // No country filter - show all
+        } elseif (!empty($selectedCountry)) {
+            $userCountry = strtoupper($selectedCountry);
+        } else {
+            // First check search location text
+            $userCountry = $this->detectCountryFromLocation($location, null, null);
+
+            // Then use language (language = country preference)
+            if (empty($userCountry)) {
+                $userCountry = $this->getCountryFromLanguage($this->lang ?? 'nl');
+            }
+
+            // Then IP location
+            if (empty($userCountry) && $ipCountry) {
+                $userCountry = $ipCountry;
+            }
+
+            // Default fallback
+            if (empty($userCountry)) {
+                $userCountry = 'NL';
             }
         }
 
@@ -47,6 +85,7 @@ class SearchController extends Controller
             'user_lng' => $calcLng,
             'group' => $group,
             'categories' => $categories,
+            'country' => $userCountry, // Filter by user's country
         ];
 
         $businesses = [];
@@ -78,7 +117,8 @@ class SearchController extends Controller
             'userLat' => $userLat,
             'userLng' => $userLng,
             'locationSource' => $locationSource,
-            'searchCountry' => $this->detectCountryFromLocation($location, $calcLat, $calcLng)
+            'searchCountry' => $userCountry,
+            'ipCountry' => $ipCountry
         ]);
     }
 
@@ -92,7 +132,7 @@ class SearchController extends Controller
         // Skip localhost/private IPs
         if (empty($ip) || $ip === '127.0.0.1' || $ip === '::1' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
             // Default to Amsterdam for local development
-            return ['lat' => 52.3676, 'lng' => 4.9041, 'city' => 'Amsterdam'];
+            return ['lat' => 52.3676, 'lng' => 4.9041, 'city' => 'Amsterdam', 'country' => 'NL'];
         }
 
         // Handle multiple IPs (X-Forwarded-For can contain comma-separated list)
@@ -109,14 +149,15 @@ class SearchController extends Controller
         }
 
         try {
-            $response = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,lat,lon,city");
+            $response = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,lat,lon,city,countryCode");
             if ($response) {
                 $data = json_decode($response, true);
                 if ($data && $data['status'] === 'success') {
                     $result = [
                         'lat' => (float)$data['lat'],
                         'lng' => (float)$data['lon'],
-                        'city' => $data['city'] ?? ''
+                        'city' => $data['city'] ?? '',
+                        'country' => $data['countryCode'] ?? ''
                     ];
                     // Cache for 1 hour
                     $_SESSION[$cacheKey] = ['data' => $result, 'expires' => time() + 3600];
@@ -239,6 +280,78 @@ class SearchController extends Controller
         }
 
         return '';
+    }
+
+    /**
+     * Convert country code to country name (as stored in database)
+     */
+    private function getCountryName(string $countryCode): string
+    {
+        $mapping = [
+            'NL' => 'Nederland',
+            'BE' => 'België',
+            'DE' => 'Duitsland',
+            'FR' => 'Frankrijk',
+            'GB' => 'United Kingdom',
+            'ES' => 'Spanje',
+            'IT' => 'Italië',
+            'PT' => 'Portugal',
+            'AT' => 'Oostenrijk',
+            'CH' => 'Zwitserland',
+            'US' => 'United States',
+            'JP' => 'Japan',
+            'KR' => 'South Korea',
+            'CN' => 'China',
+            'RU' => 'Russia',
+            'PL' => 'Poland',
+            'SE' => 'Sweden',
+            'DK' => 'Denmark',
+            'NO' => 'Norway',
+            'FI' => 'Finland',
+            'TR' => 'Turkey',
+            'SA' => 'Saudi Arabia',
+            'IL' => 'Israel',
+            'TH' => 'Thailand',
+            'VN' => 'Vietnam',
+            'ID' => 'Indonesia',
+            'MY' => 'Malaysia',
+            'IN' => 'India',
+        ];
+        return $mapping[strtoupper($countryCode)] ?? $countryCode;
+    }
+
+    /**
+     * Map language code to default country code
+     */
+    private function getCountryFromLanguage(string $lang): string
+    {
+        $mapping = [
+            'nl' => 'NL',
+            'de' => 'DE',
+            'fr' => 'FR',
+            'en' => 'GB',
+            'es' => 'ES',
+            'it' => 'IT',
+            'pt' => 'PT',
+            'ja' => 'JP',
+            'ko' => 'KR',
+            'zh' => 'CN',
+            'ru' => 'RU',
+            'pl' => 'PL',
+            'sv' => 'SE',
+            'da' => 'DK',
+            'no' => 'NO',
+            'fi' => 'FI',
+            'tr' => 'TR',
+            'ar' => 'SA',
+            'he' => 'IL',
+            'th' => 'TH',
+            'vi' => 'VN',
+            'id' => 'ID',
+            'ms' => 'MY',
+            'hi' => 'IN',
+        ];
+        return $mapping[strtolower($lang)] ?? '';
     }
 
     /**
@@ -457,6 +570,15 @@ class SearchController extends Controller
             $params[] = $locationTerm;
         }
 
+        // Country filter based on user's IP location
+        if (!empty($filters['country'])) {
+            $countryCode = strtoupper($filters['country']);
+            $countryName = $this->getCountryName($countryCode);
+            $sql .= " AND (UPPER(b.country) = ? OR UPPER(b.country) = ?)";
+            $params[] = $countryCode;
+            $params[] = strtoupper($countryName);
+        }
+
         // Opening hours filters
         if (!empty($filters['open_now'])) {
             $currentDay = (int)date('w'); // 0=Sunday, 6=Saturday
@@ -574,6 +696,15 @@ class SearchController extends Controller
             $placeholders = implode(',', array_fill(0, count($slugs), '?'));
             $sql .= " AND c.slug IN ($placeholders)";
             $params = array_merge($params, $slugs);
+        }
+
+        // Country filter based on user's IP location
+        if (!empty($filters['country'])) {
+            $countryCode = strtoupper($filters['country']);
+            $countryName = $this->getCountryName($countryCode);
+            $sql .= " AND (UPPER(b.country) = ? OR UPPER(b.country) = ?)";
+            $params[] = $countryCode;
+            $params[] = strtoupper($countryName);
         }
 
         // Opening hours filters

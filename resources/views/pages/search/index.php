@@ -1551,6 +1551,47 @@ body .biz-card .biz-card-footer {
                                 <i class="fas fa-crosshairs"></i>
                             </button>
                         </div>
+                        <div class="search-bar-select country-select">
+                            <select name="country" id="search-country" onchange="this.form.submit()">
+                                <option value=""><?= $translations['all_countries'] ?? 'All Countries' ?> 🌍</option>
+                                <optgroup label="Europe">
+                                    <option value="NL" <?= ($filters['country'] ?? '') === 'NL' ? 'selected' : '' ?>>🇳🇱 Nederland</option>
+                                    <option value="BE" <?= ($filters['country'] ?? '') === 'BE' ? 'selected' : '' ?>>🇧🇪 België</option>
+                                    <option value="DE" <?= ($filters['country'] ?? '') === 'DE' ? 'selected' : '' ?>>🇩🇪 Deutschland</option>
+                                    <option value="FR" <?= ($filters['country'] ?? '') === 'FR' ? 'selected' : '' ?>>🇫🇷 France</option>
+                                    <option value="GB" <?= ($filters['country'] ?? '') === 'GB' ? 'selected' : '' ?>>🇬🇧 United Kingdom</option>
+                                    <option value="ES" <?= ($filters['country'] ?? '') === 'ES' ? 'selected' : '' ?>>🇪🇸 España</option>
+                                    <option value="IT" <?= ($filters['country'] ?? '') === 'IT' ? 'selected' : '' ?>>🇮🇹 Italia</option>
+                                    <option value="PT" <?= ($filters['country'] ?? '') === 'PT' ? 'selected' : '' ?>>🇵🇹 Portugal</option>
+                                    <option value="AT" <?= ($filters['country'] ?? '') === 'AT' ? 'selected' : '' ?>>🇦🇹 Österreich</option>
+                                    <option value="CH" <?= ($filters['country'] ?? '') === 'CH' ? 'selected' : '' ?>>🇨🇭 Schweiz</option>
+                                    <option value="PL" <?= ($filters['country'] ?? '') === 'PL' ? 'selected' : '' ?>>🇵🇱 Polska</option>
+                                    <option value="SE" <?= ($filters['country'] ?? '') === 'SE' ? 'selected' : '' ?>>🇸🇪 Sverige</option>
+                                    <option value="NO" <?= ($filters['country'] ?? '') === 'NO' ? 'selected' : '' ?>>🇳🇴 Norge</option>
+                                    <option value="DK" <?= ($filters['country'] ?? '') === 'DK' ? 'selected' : '' ?>>🇩🇰 Danmark</option>
+                                    <option value="FI" <?= ($filters['country'] ?? '') === 'FI' ? 'selected' : '' ?>>🇫🇮 Suomi</option>
+                                    <option value="RU" <?= ($filters['country'] ?? '') === 'RU' ? 'selected' : '' ?>>🇷🇺 Россия</option>
+                                </optgroup>
+                                <optgroup label="Asia">
+                                    <option value="JP" <?= ($filters['country'] ?? '') === 'JP' ? 'selected' : '' ?>>🇯🇵 日本</option>
+                                    <option value="KR" <?= ($filters['country'] ?? '') === 'KR' ? 'selected' : '' ?>>🇰🇷 한국</option>
+                                    <option value="CN" <?= ($filters['country'] ?? '') === 'CN' ? 'selected' : '' ?>>🇨🇳 中国</option>
+                                    <option value="TH" <?= ($filters['country'] ?? '') === 'TH' ? 'selected' : '' ?>>🇹🇭 ไทย</option>
+                                    <option value="VN" <?= ($filters['country'] ?? '') === 'VN' ? 'selected' : '' ?>>🇻🇳 Việt Nam</option>
+                                    <option value="ID" <?= ($filters['country'] ?? '') === 'ID' ? 'selected' : '' ?>>🇮🇩 Indonesia</option>
+                                    <option value="MY" <?= ($filters['country'] ?? '') === 'MY' ? 'selected' : '' ?>>🇲🇾 Malaysia</option>
+                                    <option value="IN" <?= ($filters['country'] ?? '') === 'IN' ? 'selected' : '' ?>>🇮🇳 India</option>
+                                </optgroup>
+                                <optgroup label="Middle East">
+                                    <option value="TR" <?= ($filters['country'] ?? '') === 'TR' ? 'selected' : '' ?>>🇹🇷 Türkiye</option>
+                                    <option value="SA" <?= ($filters['country'] ?? '') === 'SA' ? 'selected' : '' ?>>🇸🇦 السعودية</option>
+                                    <option value="IL" <?= ($filters['country'] ?? '') === 'IL' ? 'selected' : '' ?>>🇮🇱 ישראל</option>
+                                </optgroup>
+                                <optgroup label="Americas">
+                                    <option value="US" <?= ($filters['country'] ?? '') === 'US' ? 'selected' : '' ?>>🇺🇸 United States</option>
+                                </optgroup>
+                            </select>
+                        </div>
                     </div>
                     <input type="hidden" name="lat" id="user-lat" value="<?= htmlspecialchars($userLat ?? '') ?>" data-source="<?= htmlspecialchars($locationSource ?? 'none') ?>">
                     <input type="hidden" name="lng" id="user-lng" value="<?= htmlspecialchars($userLng ?? '') ?>" data-source="<?= htmlspecialchars($locationSource ?? 'none') ?>">
