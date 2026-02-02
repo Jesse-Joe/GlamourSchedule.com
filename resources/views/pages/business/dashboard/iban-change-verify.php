@@ -6,9 +6,9 @@
             <h3 class="card-title"><i class="fas fa-shield-alt"></i> IBAN Wijzigen</h3>
         </div>
 
-        <div style="background:#ffffff;border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
-            <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#404040;margin-bottom:0.5rem"></i>
-            <p style="margin:0;color:#000000">
+        <div style="background:#1a1a1a;border:1px solid #f59e0b;border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
+            <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#f59e0b;margin-bottom:0.5rem"></i>
+            <p style="margin:0;color:#ffffff">
                 Voor je veiligheid hebben we een verificatiecode gestuurd naar:<br>
                 <strong><?= htmlspecialchars($email) ?></strong>
             </p>

@@ -112,25 +112,25 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     $isInCoolingPeriod = $hoursRemaining > 0;
                     ?>
                     <!-- IBAN Geverifieerd -->
-                    <div style="padding:1rem;background:#ffffff;border-radius:10px;border:1px solid #333333;margin-bottom:1rem">
+                    <div style="padding:1rem;background:#1a1a1a;border-radius:10px;border:1px solid #22c55e;margin-bottom:1rem">
                         <div style="display:flex;align-items:center;gap:0.75rem">
-                            <i class="fas fa-check-circle" style="color:#333333;font-size:1.5rem"></i>
+                            <i class="fas fa-check-circle" style="color:#22c55e;font-size:1.5rem"></i>
                             <div>
-                                <p style="margin:0;font-weight:600;color:#000000">IBAN Geverifieerd</p>
-                                <p style="margin:0.25rem 0 0 0;font-family:monospace;color:#000000"><?= htmlspecialchars($business['iban']) ?></p>
-                                <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#000000"><?= htmlspecialchars($business['account_holder'] ?? '') ?></p>
+                                <p style="margin:0;font-weight:600;color:#ffffff">IBAN Geverifieerd</p>
+                                <p style="margin:0.25rem 0 0 0;font-family:monospace;color:#ffffff"><?= htmlspecialchars($business['iban']) ?></p>
+                                <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#999999"><?= htmlspecialchars($business['account_holder'] ?? '') ?></p>
                             </div>
                         </div>
                     </div>
 
                     <?php if ($isInCoolingPeriod): ?>
                         <!-- 72-hour security delay warning -->
-                        <div style="padding:1rem;background:#ffffff;border-radius:10px;border:1px solid #000000;margin-bottom:1rem">
+                        <div style="padding:1rem;background:#1a1a1a;border-radius:10px;border:1px solid #f59e0b;margin-bottom:1rem">
                             <div style="display:flex;align-items:center;gap:0.75rem">
-                                <i class="fas fa-shield-alt" style="color:#404040;font-size:1.25rem"></i>
+                                <i class="fas fa-shield-alt" style="color:#f59e0b;font-size:1.25rem"></i>
                                 <div>
-                                    <p style="margin:0;font-weight:600;color:#000000">Beveiligingsperiode actief</p>
-                                    <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#000000">
+                                    <p style="margin:0;font-weight:600;color:#ffffff">Beveiligingsperiode actief</p>
+                                    <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#999999">
                                         Uitbetalingen beschikbaar over <?= $hoursRemaining ?> uur (72 uur na IBAN wijziging)
                                     </p>
                                 </div>
@@ -148,9 +148,9 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
                 <?php else: ?>
                     <!-- IBAN Toevoegen -->
-                    <div style="background:linear-gradient(135deg,#ffffff,#ffffff);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
-                        <h4 style="margin:0 0 0.5rem 0;color:#000000"><i class="fas fa-shield-alt"></i> Veilige IBAN Verificatie</h4>
-                        <p style="margin:0;color:#000000;font-size:0.9rem">
+                    <div style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);border:1px solid #333333;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
+                        <h4 style="margin:0 0 0.5rem 0;color:#ffffff"><i class="fas fa-shield-alt"></i> Veilige IBAN Verificatie</h4>
+                        <p style="margin:0;color:#999999;font-size:0.9rem">
                             Koppel je bankrekening via een €0,01 iDEAL betaling. Je IBAN wordt automatisch opgehaald.
                         </p>
                     </div>
@@ -171,31 +171,31 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     <h3 class="card-title"><i class="fas fa-money-bill-wave"></i> Cash Betaling</h3>
                 </div>
 
-                <div style="padding:1rem;background:#f8fafc;border-radius:12px;margin-bottom:1rem">
+                <div style="padding:1rem;background:#1a1a1a;border:1px solid #333333;border-radius:12px;margin-bottom:1rem">
                     <div style="display:flex;align-items:flex-start;gap:1rem">
                         <label class="switch" style="flex-shrink:0;margin-top:0.25rem">
                             <input type="checkbox" name="cash_payment_enabled" value="1" <?= !empty($business['cash_payment_enabled']) ? 'checked' : '' ?>>
                             <span class="slider"></span>
                         </label>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#000000">Cash betalingen accepteren</p>
-                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#4b5563">
+                            <p style="margin:0;font-weight:600;color:#ffffff">Cash betalingen accepteren</p>
+                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#999999">
                                 Sta klanten toe om contant te betalen bij aankomst in uw salon.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div style="padding:1rem;background:#ffffff;border-radius:12px;border:1px solid #000000">
+                <div style="padding:1rem;background:#1a1a1a;border-radius:12px;border:1px solid #333333">
                     <div style="display:flex;align-items:flex-start;gap:0.75rem">
-                        <i class="fas fa-info-circle" style="color:#000000;font-size:1.25rem;margin-top:0.125rem"></i>
+                        <i class="fas fa-info-circle" style="color:#ffffff;font-size:1.25rem;margin-top:0.125rem"></i>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#000000">Platform Fee bij Cash Betaling</p>
-                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#000000">
-                                Bij cash betalingen betaalt de klant <strong>€1,75 platform fee</strong> online tijdens het boeken.
+                            <p style="margin:0;font-weight:600;color:#ffffff">Platform Fee bij Cash Betaling</p>
+                            <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#999999">
+                                Bij cash betalingen betaalt de klant <strong style="color:#ffffff">€1,75 platform fee</strong> online tijdens het boeken.
                                 Dit bedrag wordt afgetrokken van uw openstaande cash saldo.
                             </p>
-                            <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#000000">
+                            <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#999999">
                                 <i class="fas fa-calculator"></i> Voorbeeld: Dienst €50 → Klant betaalt €1,75 online + €48,25 cash bij aankomst
                             </p>
                         </div>

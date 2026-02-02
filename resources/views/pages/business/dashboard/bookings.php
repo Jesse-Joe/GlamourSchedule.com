@@ -55,10 +55,10 @@
         font-size: 0.75rem;
         font-weight: 500;
     }
-    .status-confirmed { background: #ffffff; color: #000000; }
-    .status-pending { background: #ffffff; color: #000000; }
-    .status-cancelled { background: #f5f5f5; color: #000000; }
-    .status-completed { background: #f5f5f5; color: #000000; }
+    .status-confirmed { background: #1a1a1a; color: #22c55e; border: 1px solid #22c55e; }
+    .status-pending { background: #1a1a1a; color: #f59e0b; border: 1px solid #f59e0b; }
+    .status-cancelled { background: #1a1a1a; color: #ef4444; border: 1px solid #ef4444; }
+    .status-completed { background: #1a1a1a; color: #ffffff; border: 1px solid #ffffff; }
 </style>
 
 <!-- Filter Tabs -->

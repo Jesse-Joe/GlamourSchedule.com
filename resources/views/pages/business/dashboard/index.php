@@ -95,11 +95,13 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     margin-bottom: 1rem;
 }
 .stat-card {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
 }
 .stat-card i {
     font-size: 1.5rem;
@@ -107,6 +109,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 .stat-card h3 {
     margin: 0.35rem 0;
     font-size: 1.5rem;
+    color: var(--text);
 }
 .stat-card p {
     margin: 0;
@@ -125,13 +128,14 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 12px;
     padding: 1rem;
     text-decoration: none;
-    color: inherit;
+    color: var(--text);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: transform 0.2s;
+    border: 1px solid var(--border);
 }
 .action-card:active {
     transform: scale(0.98);
@@ -152,6 +156,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 .action-text h4 {
     margin: 0;
     font-size: 1rem;
+    color: var(--text);
 }
 .action-text p {
     margin: 0;
@@ -166,10 +171,12 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     gap: 1rem;
 }
 .dash-card {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
 }
 .dash-card-header {
     display: flex;
@@ -183,6 +190,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--text);
 }
 .dash-card-title i {
     color: var(--primary);
@@ -194,6 +202,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     color: var(--text);
     border-radius: 8px;
     text-decoration: none;
+    border: 1px solid var(--border);
 }
 .booking-item {
     display: flex;
@@ -201,12 +210,14 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     align-items: center;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--border);
+    color: var(--text);
 }
 .booking-item:last-child {
     border-bottom: none;
 }
 .booking-info strong {
     font-size: 0.95rem;
+    color: var(--text);
 }
 .booking-info small {
     display: block;
@@ -635,13 +646,14 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     to { opacity: 1; }
 }
 .welcome-popup {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 24px;
     width: 100%;
     max-width: 480px;
     max-height: 90vh;
     overflow-y: auto;
     animation: slideUp 0.4s ease;
+    border: 1px solid var(--border);
 }
 @keyframes slideUp {
     from { transform: translateY(30px); opacity: 0; }
@@ -678,6 +690,9 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
 }
 .welcome-popup-body {
     padding: 1.5rem;
+}
+.welcome-popup-body {
+    color: var(--text);
 }
 .welcome-popup-body h3 {
     margin: 0 0 0.25rem 0;
@@ -728,13 +743,15 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     text-decoration: none;
     color: var(--text);
     transition: all 0.2s;
+    border: 1px solid var(--border);
 }
 .checklist-item:hover {
-    background: #e5e5e5;
+    background: var(--border);
     transform: translateX(4px);
 }
 .checklist-item.done {
-    background: #f0fdf4;
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
 }
 .checklist-item.done .checklist-icon i {
     color: #22c55e;

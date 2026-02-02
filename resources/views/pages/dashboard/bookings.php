@@ -101,7 +101,8 @@
     color: #ffffff;
 }
 .booking-card-qr {
-    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    border: 1px solid #333333;
     border-radius: 12px;
     padding: 1rem;
     display: flex;
@@ -117,7 +118,20 @@
 .booking-card-qr-text {
     flex: 1;
     font-size: 0.85rem;
+    color: #ffffff;
+}
+.booking-card-qr-text small {
+    color: #888888;
+}
+[data-theme="light"] .booking-card-qr {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-card-qr-text {
     color: #000000;
+}
+[data-theme="light"] .booking-card-qr-text small {
+    color: #666666;
 }
 .booking-card-actions {
     display: flex;
@@ -240,7 +254,10 @@
         <?php else: ?>
             <?php foreach ($upcoming as $booking):
                 $checkinUrl = 'https://glamourschedule.nl/checkin/' . $booking['uuid'];
-                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' . urlencode($checkinUrl);
+                $theme = $_COOKIE['theme'] ?? 'dark';
+                $qrColor = $theme === 'light' ? '000000' : 'ffffff';
+                $qrBg = $theme === 'light' ? 'ffffff' : '000000';
+                $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&color={$qrColor}&bgcolor={$qrBg}&data=" . urlencode($checkinUrl);
                 $statusLabels = [
                     'pending' => $translations['status_pending'] ?? 'In afwachting',
                     'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',

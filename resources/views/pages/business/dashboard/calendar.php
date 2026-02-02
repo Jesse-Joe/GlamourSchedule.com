@@ -31,20 +31,21 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .calendar-nav-btn {
         padding: 0.75rem 1rem;
-        border: 2px solid var(--border);
-        background: var(--bg-card);
+        border: 2px solid #333333;
+        background: #1a1a1a;
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.2s;
         text-decoration: none;
-        color: var(--text-primary);
+        color: #ffffff;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
     .calendar-nav-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
+        border-color: #ffffff;
+        color: #ffffff;
+        background: #333333;
     }
     @media (max-width: 480px) {
         .calendar-nav-btn span {
@@ -62,9 +63,12 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         margin: 0;
         font-size: 1.25rem;
     }
+    .calendar-date h2 {
+        color: #ffffff;
+    }
     .calendar-date p {
         margin: 0.25rem 0 0 0;
-        color: var(--text-light);
+        color: #999999;
         font-size: 0.9rem;
     }
     @media (max-width: 480px) {
@@ -83,7 +87,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: grid;
         grid-template-columns: 60px 1fr;
         min-height: 60px;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #333333;
     }
     @media (max-width: 480px) {
         .time-slot {
@@ -94,8 +98,8 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     .time-label {
         padding: 0.75rem 0.5rem;
         font-size: 0.8rem;
-        color: var(--text-light);
-        border-right: 1px solid var(--border);
+        color: #999999;
+        border-right: 1px solid #333333;
         text-align: center;
         font-weight: 600;
     }
@@ -104,8 +108,8 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         position: relative;
     }
     .booking-block {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
+        background: linear-gradient(135deg, #ffffff, #e0e0e0);
+        color: #000000;
         border-radius: 10px;
         padding: 0.75rem;
         margin-bottom: 0.25rem;
@@ -114,14 +118,16 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .booking-block:hover {
         transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(255,255,255,0.2);
     }
     .booking-block-title {
         font-weight: 600;
         font-size: 0.9rem;
+        color: #000000;
     }
     .booking-block-info {
         font-size: 0.75rem;
-        opacity: 0.9;
+        color: #333333;
         margin-top: 0.25rem;
     }
     @media (max-width: 480px) {
@@ -154,7 +160,7 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     }
     .appointment-list-item {
         padding: 1rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #333333;
         display: flex;
         gap: 1rem;
         align-items: flex-start;
@@ -163,8 +169,8 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         border-bottom: none;
     }
     .appointment-time-badge {
-        background: var(--primary);
-        color: white;
+        background: #ffffff;
+        color: #000000;
         padding: 0.5rem 0.75rem;
         border-radius: 8px;
         font-weight: 700;
@@ -177,10 +183,11 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
     .appointment-name {
         font-weight: 600;
         margin-bottom: 0.25rem;
+        color: #ffffff;
     }
     .appointment-service {
         font-size: 0.85rem;
-        color: var(--text-light);
+        color: #999999;
     }
     .status-badge {
         padding: 0.25rem 0.75rem;
@@ -188,9 +195,9 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         font-size: 0.75rem;
         font-weight: 500;
     }
-    .status-confirmed { background: #f5f5f5; color: #166534; }
-    .status-checked_in { background: #f5f5f5; color: #000000; }
-    .status-pending { background: #ffffff; color: #000000; }
+    .status-confirmed { background: #1a1a1a; color: #22c55e; border: 1px solid #22c55e; }
+    .status-checked_in { background: #1a1a1a; color: #ffffff; border: 1px solid #ffffff; }
+    .status-pending { background: #1a1a1a; color: #f59e0b; border: 1px solid #f59e0b; }
 
     /* Booking Details Modal */
     .booking-modal-overlay {
@@ -212,7 +219,8 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg-card);
+        background: #0a0a0a;
+        border: 1px solid #333333;
         border-radius: 24px 24px 0 0;
         max-height: 85vh;
         overflow-y: auto;
@@ -229,19 +237,20 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         justify-content: space-between;
         align-items: center;
         padding: 1.25rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #333333;
         position: sticky;
         top: 0;
-        background: var(--bg-card);
+        background: #0a0a0a;
         z-index: 10;
     }
     .booking-modal-header h3 {
         margin: 0;
         font-size: 1.1rem;
+        color: #ffffff;
     }
     .booking-modal-close {
-        background: var(--secondary);
-        border: none;
+        background: #1a1a1a;
+        border: 1px solid #333333;
         width: 36px;
         height: 36px;
         border-radius: 50%;
@@ -249,7 +258,10 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--text-primary);
+        color: #ffffff;
+    }
+    .booking-modal-close:hover {
+        background: #333333;
     }
     .booking-modal-content {
         padding: 1.25rem;
@@ -258,24 +270,25 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #333333;
     }
     .booking-detail-row:last-child {
         border-bottom: none;
     }
     .booking-detail-label {
-        color: var(--text-light);
+        color: #999999;
         font-size: 0.9rem;
     }
     .booking-detail-value {
         font-weight: 600;
         text-align: right;
+        color: #ffffff;
     }
     .booking-modal-actions {
         display: flex;
         gap: 0.75rem;
         padding: 1.25rem;
-        border-top: 1px solid var(--border);
+        border-top: 1px solid #333333;
         flex-wrap: wrap;
     }
     .booking-modal-actions .btn {

@@ -8,9 +8,9 @@
 
         <!-- Progress Steps -->
         <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
-            <div style="flex:1;text-align:center;padding:0.75rem;background:#ffffff;border-radius:8px">
-                <i class="fas fa-check-circle" style="color:#333333"></i>
-                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:#000000">IBAN</p>
+            <div style="flex:1;text-align:center;padding:0.75rem;background:#1a1a1a;border:1px solid #22c55e;border-radius:8px">
+                <i class="fas fa-check-circle" style="color:#22c55e"></i>
+                <p style="margin:0.25rem 0 0 0;font-size:0.75rem;color:#ffffff">IBAN</p>
             </div>
             <div style="flex:1;text-align:center;padding:0.75rem;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:8px;color:white">
                 <i class="fas fa-envelope"></i>
@@ -22,9 +22,9 @@
             </div>
         </div>
 
-        <div style="background:#ffffff;border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
-            <i class="fas fa-envelope" style="font-size:2rem;color:#000000;margin-bottom:0.5rem"></i>
-            <p style="margin:0;color:#000000">
+        <div style="background:#1a1a1a;border:1px solid #333333;border-radius:10px;padding:1rem;margin-bottom:1.5rem;text-align:center">
+            <i class="fas fa-envelope" style="font-size:2rem;color:#ffffff;margin-bottom:0.5rem"></i>
+            <p style="margin:0;color:#ffffff">
                 We hebben een 6-cijferige code gestuurd naar:<br>
                 <strong><?= htmlspecialchars($email) ?></strong>
             </p>

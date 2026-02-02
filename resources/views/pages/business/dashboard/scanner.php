@@ -21,37 +21,37 @@
         text-align: center;
     }
     .scan-result.success {
-        background: linear-gradient(135deg, #ffffff, #f5f5f5);
-        border: 2px solid #333333;
-        color: #166534;
+        background: linear-gradient(135deg, #0a0a0a, #111111);
+        border: 2px solid #22c55e;
+        color: #22c55e;
     }
     .scan-result.success h3 {
-        color: #14532d;
+        color: #22c55e;
     }
     .scan-result.success p {
-        color: #166534;
+        color: #ffffff;
     }
     .scan-result.error {
-        background: linear-gradient(135deg, #f5f5f5, #f5f5f5);
-        border: 2px solid #333333;
-        color: #000000;
+        background: linear-gradient(135deg, #0a0a0a, #111111);
+        border: 2px solid #ef4444;
+        color: #ef4444;
     }
     .scan-result.error h3 {
-        color: #7f1d1d;
+        color: #ef4444;
     }
     .scan-result.error p {
-        color: #000000;
+        color: #ffffff;
     }
     .scan-result.warning {
-        background: linear-gradient(135deg, #ffffff, #ffffff);
-        border: 2px solid #000000;
-        color: #000000;
+        background: linear-gradient(135deg, #0a0a0a, #111111);
+        border: 2px solid #f59e0b;
+        color: #f59e0b;
     }
     .scan-result.warning h3 {
-        color: #000000;
+        color: #f59e0b;
     }
     .scan-result.warning p {
-        color: #000000;
+        color: #ffffff;
     }
     .result-icon {
         width: 80px;
@@ -68,35 +68,42 @@
     .error .result-icon { background: linear-gradient(135deg, #333333, #dc2626); }
     .warning .result-icon { background: linear-gradient(135deg, #000000, #404040); }
     .booking-details {
-        background: #ffffff;
+        background: #1a1a1a;
+        border: 1px solid #333333;
         border-radius: 12px;
         padding: 1rem;
         margin-top: 1rem;
         text-align: left;
+        color: #ffffff;
     }
     .booking-details table {
         width: 100%;
     }
     .booking-details td {
         padding: 0.5rem 0;
+        color: #ffffff;
+    }
+    .booking-details td:first-child {
+        color: #999999;
     }
     .booking-details td:last-child {
         text-align: right;
         font-weight: 600;
     }
     .scanner-instructions {
-        background: linear-gradient(135deg, #eff6ff, #f5f5f5);
+        background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        border: 1px solid #333333;
         border-radius: 12px;
         padding: 1.25rem;
         margin-bottom: 1.5rem;
     }
     .scanner-instructions h4 {
         margin: 0 0 0.5rem 0;
-        color: #000000;
+        color: #ffffff;
     }
     .scanner-instructions p {
         margin: 0;
-        color: #404040;
+        color: #999999;
         font-size: 0.9rem;
     }
 </style>
@@ -153,7 +160,7 @@
             </button>
         </div>
 
-        <div id="scannerError" style="display:none;margin-top:1rem;padding:1rem;background:#f5f5f5;border-radius:10px;color:#000000;text-align:center">
+        <div id="scannerError" style="display:none;margin-top:1rem;padding:1rem;background:#1a1a1a;border:1px solid #ef4444;border-radius:10px;color:#ef4444;text-align:center">
             <i class="fas fa-exclamation-circle"></i> <span id="errorMessage"></span>
         </div>
     </div>

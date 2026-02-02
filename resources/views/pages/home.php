@@ -390,53 +390,6 @@
     </div>
 </section>
 
-<!-- Featured Businesses -->
-<?php if (!empty($featuredBusinesses)): ?>
-<section class="section section-gray">
-    <div class="section-header">
-        <div class="section-tag"><?= $translations['featured_label'] ?? 'Popular' ?></div>
-        <h2 class="section-title"><?= $translations['featured_title'] ?? 'Popular Salons' ?></h2>
-        <p class="section-subtitle"><?= $translations['featured_subtitle'] ?? 'The best rated salons near you' ?></p>
-    </div>
-
-    <div class="business-grid" style="max-width: 1100px; margin: 0 auto;">
-        <?php foreach (array_slice($featuredBusinesses, 0, 4) as $biz):
-            $logoUrl = $biz['logo'] ?? '';
-            if ($logoUrl && !str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
-                $logoUrl = '/uploads/businesses/' . $logoUrl;
-            }
-        ?>
-        <div class="business-card">
-            <div class="business-image">
-                <?php if ($logoUrl): ?>
-                    <img src="<?= htmlspecialchars($logoUrl) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
-                <?php else: ?>
-                    <i class="fas fa-spa"></i>
-                <?php endif; ?>
-            </div>
-            <div class="business-body">
-                <h3 class="business-name"><?= htmlspecialchars($biz['name']) ?></h3>
-                <div class="business-location">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span><?= htmlspecialchars($biz['city'] ?? ($translations['netherlands'] ?? 'Netherlands')) ?></span>
-                </div>
-                <div class="business-rating">
-                    <div class="stars">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <i class="fas fa-star<?= $i <= round($biz['avg_rating'] ?? 5) ? '' : ($i - 0.5 <= ($biz['avg_rating'] ?? 5) ? '-half-alt' : '') ?>"></i>
-                        <?php endfor; ?>
-                    </div>
-                    <span class="count">(<?= $biz['review_count'] ?? 0 ?>)</span>
-                </div>
-                <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="business-btn">
-                    <?= $translations['view_book'] ?? 'View & Book' ?>
-                </a>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
 
 <!-- Salon World Map -->
 <section class="section" id="home-map-section">

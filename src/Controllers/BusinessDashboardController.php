@@ -1823,7 +1823,7 @@ HTML;
         if (preg_match('/(checkin|booking)\/([a-f0-9\-]+)/i', $qrData, $matches)) {
             $uuid = $matches[2];
             $stmt = $this->db->query(
-                "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
+                "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
                  JOIN services s ON b.service_id = s.id
                  LEFT JOIN users u ON b.user_id = u.id
@@ -1835,7 +1835,7 @@ HTML;
         // Check if it's a raw UUID
         elseif (preg_match('/^[a-f0-9\-]{36}$/i', $qrData)) {
             $stmt = $this->db->query(
-                "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
+                "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
                  JOIN services s ON b.service_id = s.id
                  LEFT JOIN users u ON b.user_id = u.id
@@ -1848,7 +1848,7 @@ HTML;
         elseif (preg_match('/^[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/i', $qrData)) {
             $verificationCode = strtoupper($qrData);
             $stmt = $this->db->query(
-                "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
+                "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
                  JOIN services s ON b.service_id = s.id
                  LEFT JOIN users u ON b.user_id = u.id
@@ -1861,7 +1861,7 @@ HTML;
         elseif (preg_match('/^GS[A-F0-9]{8}$/i', $qrData)) {
             $bookingNumber = strtoupper($qrData);
             $stmt = $this->db->query(
-                "SELECT b.*, s.name as service_name, u.first_name, u.last_name, u.email as user_email
+                "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
                  JOIN services s ON b.service_id = s.id
                  LEFT JOIN users u ON b.user_id = u.id
@@ -1932,10 +1932,69 @@ HTML;
         $customerEmail = $booking['guest_email'] ?? $booking['user_email'] ?? null;
         if (!$customerEmail) return;
 
-        $customerName = $booking['guest_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?: 'Klant';
-        $reviewUrl = "https://glamourschedule.nl/review/{$booking['uuid']}";
+        $lang = $booking['language'] ?? 'nl';
+        $customerName = $booking['guest_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?: ($lang === 'fr' ? 'Client' : ($lang === 'en' ? 'Customer' : ($lang === 'de' ? 'Kunde' : 'Klant')));
+        $reviewUrl = "https://glamourschedule.nl/review/{$booking['uuid']}?lang={$lang}";
 
-        $subject = "Check-in bevestigd - {$this->business['company_name']}";
+        // Multi-language translations
+        $translations = [
+            'nl' => [
+                'subject' => "Check-in bevestigd - {$this->business['company_name']}",
+                'title' => "Je bent ingecheckt!",
+                'greeting' => "Beste {$customerName},",
+                'confirmed' => "Je aanwezigheid bij <strong>{$this->business['company_name']}</strong> is bevestigd.",
+                'booking' => "Boeking",
+                'service' => "Dienst",
+                'time' => "Tijd",
+                'enjoy' => "Veel plezier met je afspraak!",
+                'review_title' => "Wat vond je van je bezoek?",
+                'review_text' => "Help andere klanten door je ervaring te delen met {$this->business['company_name']}",
+                'review_button' => "Laat een review achter"
+            ],
+            'fr' => [
+                'subject' => "Check-in confirmé - {$this->business['company_name']}",
+                'title' => "Vous êtes enregistré!",
+                'greeting' => "Cher(e) {$customerName},",
+                'confirmed' => "Votre présence chez <strong>{$this->business['company_name']}</strong> est confirmée.",
+                'booking' => "Réservation",
+                'service' => "Service",
+                'time' => "Heure",
+                'enjoy' => "Profitez de votre rendez-vous!",
+                'review_title' => "Comment avez-vous trouvé votre visite?",
+                'review_text' => "Aidez d'autres clients en partageant votre expérience avec {$this->business['company_name']}",
+                'review_button' => "Laisser un avis"
+            ],
+            'en' => [
+                'subject' => "Check-in confirmed - {$this->business['company_name']}",
+                'title' => "You're checked in!",
+                'greeting' => "Dear {$customerName},",
+                'confirmed' => "Your presence at <strong>{$this->business['company_name']}</strong> has been confirmed.",
+                'booking' => "Booking",
+                'service' => "Service",
+                'time' => "Time",
+                'enjoy' => "Enjoy your appointment!",
+                'review_title' => "How was your visit?",
+                'review_text' => "Help other customers by sharing your experience with {$this->business['company_name']}",
+                'review_button' => "Leave a review"
+            ],
+            'de' => [
+                'subject' => "Check-in bestätigt - {$this->business['company_name']}",
+                'title' => "Sie sind eingecheckt!",
+                'greeting' => "Liebe(r) {$customerName},",
+                'confirmed' => "Ihre Anwesenheit bei <strong>{$this->business['company_name']}</strong> wurde bestätigt.",
+                'booking' => "Buchung",
+                'service' => "Dienstleistung",
+                'time' => "Zeit",
+                'enjoy' => "Viel Spaß bei Ihrem Termin!",
+                'review_title' => "Wie fanden Sie Ihren Besuch?",
+                'review_text' => "Helfen Sie anderen Kunden, indem Sie Ihre Erfahrung mit {$this->business['company_name']} teilen",
+                'review_button' => "Bewertung hinterlassen"
+            ]
+        ];
+
+        $t = $translations[$lang] ?? $translations['nl'];
+        $subject = $t['subject'];
+
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -1948,38 +2007,38 @@ HTML;
                     <tr>
                         <td style="background:linear-gradient(135deg,#333333,#000000);padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">✓</div>
-                            <h1 style="margin:0;font-size:24px;">Je bent ingecheckt!</h1>
+                            <h1 style="margin:0;font-size:24px;">{$t['title']}</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;">Beste {$customerName},</p>
-                            <p style="color:#555;line-height:1.6;">
-                                Je aanwezigheid bij <strong>{$this->business['company_name']}</strong> is bevestigd.
+                            <p style="font-size:18px;color:#ffffff;">{$t['greeting']}</p>
+                            <p style="color:#999999;line-height:1.6;">
+                                {$t['confirmed']}
                             </p>
-                            <div style="background:#f0fdf4;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0;color:#ffffff;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
-                                <p style="margin:10px 0 0;color:#ffffff;"><strong>Dienst:</strong> {$booking['service_name']}</p>
-                                <p style="margin:10px 0 0;color:#ffffff;"><strong>Tijd:</strong> {$booking['appointment_time']}</p>
+                            <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:20px;margin:25px 0;">
+                                <p style="margin:0;color:#ffffff;"><strong>{$t['booking']}:</strong> #{$booking['booking_number']}</p>
+                                <p style="margin:10px 0 0;color:#ffffff;"><strong>{$t['service']}:</strong> {$booking['service_name']}</p>
+                                <p style="margin:10px 0 0;color:#ffffff;"><strong>{$t['time']}:</strong> {$booking['appointment_time']}</p>
                             </div>
-                            <p style="color:#555;">Veel plezier met je afspraak!</p>
+                            <p style="color:#999999;">{$t['enjoy']}</p>
 
                             <!-- Review Request Section -->
-                            <div style="background:linear-gradient(135deg,#f5f5f5,#f5f5f5);border-radius:12px;padding:25px;margin:30px 0;text-align:center;">
+                            <div style="background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:25px;margin:30px 0;text-align:center;">
                                 <div style="font-size:32px;margin-bottom:10px;">⭐</div>
-                                <h3 style="margin:0 0 10px;color:#ffffff;font-size:18px;">Wat vond je van je bezoek?</h3>
-                                <p style="color:#78350f;margin:0 0 20px;font-size:14px;line-height:1.5;">
-                                    Help andere klanten door je ervaring te delen met {$this->business['company_name']}
+                                <h3 style="margin:0 0 10px;color:#ffffff;font-size:18px;">{$t['review_title']}</h3>
+                                <p style="color:#999999;margin:0 0 20px;font-size:14px;line-height:1.5;">
+                                    {$t['review_text']}
                                 </p>
-                                <a href="{$reviewUrl}" style="display:inline-block;background:linear-gradient(135deg,#000000,#404040);color:#fff;padding:14px 35px;border-radius:30px;text-decoration:none;font-weight:600;font-size:15px;">
-                                    Laat een review achter
+                                <a href="{$reviewUrl}" style="display:inline-block;background:linear-gradient(135deg,#ffffff,#e0e0e0);color:#000;padding:14px 35px;border-radius:30px;text-decoration:none;font-weight:600;font-size:15px;">
+                                    {$t['review_button']}
                                 </a>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                            <p style="margin:0;color:#666666;font-size:13px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

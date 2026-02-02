@@ -1,311 +1,807 @@
 <?php ob_start(); ?>
 
 <style>
-/* Mobile-first responsive styles */
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    .card {
-        padding: 1rem;
-        border-radius: 12px;
-    }
-    .btn {
-        width: 100%;
-        padding: 0.875rem 1rem;
-    }
-    table td {
-        font-size: 0.9rem;
-    }
+/* Booking page - Mobile-first dark mode */
+.booking-page {
+    min-height: 100vh;
+    background: #000000;
+    padding: 1rem;
 }
-@media (max-width: 480px) {
-    h2 {
-        font-size: 1.5rem;
+.booking-card {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #0a0a0a;
+    border: 1px solid #222222;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+/* Status Header */
+.booking-header {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
+}
+.booking-status-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+.booking-status-icon i {
+    font-size: 1.75rem;
+    color: #ffffff;
+}
+.booking-status-icon.success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+.booking-status-icon.warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+.booking-status-icon.danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+.booking-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+}
+.booking-subtitle {
+    color: #888888;
+    font-size: 0.95rem;
+    margin: 0;
+}
+.booking-number-badge {
+    display: inline-block;
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    margin-top: 1rem;
+    color: #ffffff;
+    font-family: monospace;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Content Body */
+.booking-body {
+    padding: 1.5rem;
+}
+
+/* Details Section */
+.booking-section {
+    background: #111111;
+    border: 1px solid #1a1a1a;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.booking-section-title {
+    font-size: 0.75rem;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #1a1a1a;
+}
+.booking-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #1a1a1a;
+}
+.booking-row:last-child {
+    border-bottom: none;
+}
+.booking-label {
+    color: #888888;
+    font-size: 0.9rem;
+}
+.booking-value {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: right;
+}
+.booking-value.price {
+    color: #22c55e;
+    font-size: 1.1rem;
+}
+
+/* Address Box */
+.booking-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #0a0a0a;
+    border-radius: 12px;
+    margin-top: 0.75rem;
+}
+.booking-address i {
+    color: #ec4899;
+    margin-top: 2px;
+}
+.booking-address-text {
+    color: #cccccc;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+.booking-address-text a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+/* Policy Box */
+.booking-policy {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    padding: 0.875rem;
+    margin-bottom: 1rem;
+}
+.booking-policy-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #f59e0b;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0 0 0.5rem 0;
+}
+.booking-policy-text {
+    color: #d4a574;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Email Notice */
+.booking-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+}
+.booking-notice i {
+    color: #22c55e;
+    font-size: 0.9rem;
+}
+.booking-notice span {
+    color: #86efac;
+    font-size: 0.8rem;
+}
+.booking-notice.reminder {
+    background: #111111;
+    border-color: #222222;
+}
+.booking-notice.reminder i {
+    color: #f59e0b;
+}
+.booking-notice.reminder span {
+    color: #888888;
+}
+
+/* QR Code Section */
+.booking-qr {
+    text-align: center;
+    padding: 1.25rem;
+    background: #111111;
+    border: 2px dashed #333333;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+.booking-qr-title {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+}
+.booking-qr-title i {
+    color: #ec4899;
+}
+.booking-qr img {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    background: #000000;
+    padding: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.booking-qr-number {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #0a0a0a;
+    border-radius: 8px;
+    display: inline-block;
+}
+.booking-qr-number .label {
+    color: #666666;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+.booking-qr-number .number {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: monospace;
+}
+
+/* Verification Code */
+.booking-verification {
+    margin-top: 1rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    display: inline-block;
+}
+.booking-verification .label {
+    color: #f59e0b;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.booking-verification .code {
+    color: #fbbf24;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    font-family: monospace;
+    margin-top: 0.25rem;
+}
+.booking-qr-hint {
+    color: #666666;
+    font-size: 0.75rem;
+    margin: 1rem 0 0 0;
+}
+
+/* Checked In State */
+.booking-checkedin {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+.booking-checkedin-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+}
+.booking-checkedin-icon i {
+    color: #ffffff;
+    font-size: 1.25rem;
+}
+.booking-checkedin h4 {
+    color: #22c55e;
+    margin: 0;
+    font-size: 1rem;
+}
+.booking-checkedin p {
+    color: #86efac;
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0 0;
+}
+
+/* Refund Notice */
+.booking-refund {
+    text-align: center;
+    padding: 1rem;
+    background: #111111;
+    border: 1px solid #222222;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+.booking-refund p {
+    margin: 0;
+    color: #ffffff;
+}
+.booking-refund p + p {
+    margin-top: 0.25rem;
+    color: #888888;
+    font-size: 0.85rem;
+}
+
+/* Buttons */
+.booking-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.booking-btn-primary {
+    background: #ffffff;
+    color: #000000;
+}
+.booking-btn-primary:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+}
+.booking-btn-secondary {
+    background: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #333333;
+}
+.booking-btn-secondary:hover {
+    background: #222222;
+}
+.booking-btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+}
+.booking-btn-danger:hover {
+    background: #b91c1c;
+}
+.booking-btn-pay {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    font-size: 1.05rem;
+    padding: 1rem;
+}
+.booking-btn-pay:hover {
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+.booking-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.booking-actions .booking-btn {
+    flex: 1;
+}
+
+/* Modal */
+.booking-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    padding: 1rem;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+}
+.booking-modal-content {
+    max-width: 360px;
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #222222;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: auto;
+}
+.booking-modal-header {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    padding: 1.5rem;
+    text-align: center;
+}
+.booking-modal-header i {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+.booking-modal-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+.booking-modal-body {
+    padding: 1.5rem;
+}
+.booking-modal-info {
+    background: #111111;
+    border: 1px solid #222222;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.booking-modal-info p {
+    margin: 0;
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+.booking-modal-info .warning {
+    color: #f59e0b;
+    font-weight: 600;
+}
+.booking-modal-info .danger {
+    color: #ef4444;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+}
+.booking-modal-info .success {
+    color: #22c55e;
+}
+.booking-modal-question {
+    color: #888888;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Light mode */
+[data-theme="light"] .booking-page {
+    background: #f5f5f5;
+}
+[data-theme="light"] .booking-card {
+    background: #ffffff;
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-header {
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+[data-theme="light"] .booking-title {
+    color: #000000;
+}
+[data-theme="light"] .booking-number-badge {
+    background: #f0f0f0;
+    border-color: #e0e0e0;
+    color: #000000;
+}
+[data-theme="light"] .booking-section {
+    background: #fafafa;
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-section-title {
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-row {
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-label {
+    color: #666666;
+}
+[data-theme="light"] .booking-value {
+    color: #000000;
+}
+[data-theme="light"] .booking-address {
+    background: #f0f0f0;
+}
+[data-theme="light"] .booking-address-text {
+    color: #333333;
+}
+[data-theme="light"] .booking-qr {
+    background: #fafafa;
+    border-color: #cccccc;
+}
+[data-theme="light"] .booking-qr-title {
+    color: #000000;
+}
+[data-theme="light"] .booking-qr-number {
+    background: #f0f0f0;
+}
+[data-theme="light"] .booking-qr-number .number {
+    color: #000000;
+}
+[data-theme="light"] .booking-qr img {
+    background: #ffffff;
+}
+[data-theme="light"] .booking-btn-primary {
+    background: #000000;
+    color: #ffffff;
+}
+[data-theme="light"] .booking-btn-secondary {
+    background: #f0f0f0;
+    color: #000000;
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-modal-info {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+}
+[data-theme="light"] .booking-modal-info p {
+    color: #333333;
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+    .booking-page {
+        padding: 0.5rem;
     }
-    .qr-code-container img {
-        width: 150px !important;
-        height: 150px !important;
+    .booking-header {
+        padding: 1.5rem 1rem;
+    }
+    .booking-body {
+        padding: 1rem;
+    }
+    .booking-title {
+        font-size: 1.25rem;
+    }
+    .booking-qr img {
+        width: 120px;
+        height: 120px;
+    }
+    .booking-verification .code {
+        font-size: 1.25rem;
     }
 }
 </style>
 
-<div class="container" style="max-width:600px">
-    <div class="card text-center">
-        <?php if ($booking['status'] === 'cancelled'): ?>
-            <div style="width:80px;height:80px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-                <i class="fas fa-times" style="font-size:2rem;color:white"></i>
-            </div>
-            <h2>Boeking Geannuleerd</h2>
-            <?php if ($booking['payment_status'] === 'paid' || $booking['payment_status'] === 'refunded'): ?>
-                <div style="background:var(--card-bg);border:2px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0;text-align:center">
-                    <p style="margin:0;color:var(--text);font-weight:600">
-                        <i class="fas fa-undo"></i> Terugbetaling in behandeling
-                    </p>
-                    <p style="margin:0.5rem 0 0;color:var(--text-light);font-size:0.9rem">
-                        Binnen 72 uur wordt het bedrag teruggestort op uw rekening
-                    </p>
+<div class="booking-page">
+    <div class="booking-card">
+        <!-- Header with Status -->
+        <div class="booking-header">
+            <?php if ($booking['status'] === 'cancelled'): ?>
+                <div class="booking-status-icon danger">
+                    <i class="fas fa-times"></i>
+                </div>
+                <h1 class="booking-title">Boeking Geannuleerd</h1>
+                <p class="booking-subtitle">Deze afspraak is geannuleerd</p>
+            <?php elseif ($booking['status'] === 'pending' && $booking['payment_status'] !== 'paid'): ?>
+                <div class="booking-status-icon warning">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h1 class="booking-title"><?= $__('payment_required') ?></h1>
+                <p class="booking-subtitle"><?= $__('complete_payment_to_confirm') ?></p>
+            <?php elseif ($booking['status'] === 'checked_in'): ?>
+                <div class="booking-status-icon success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="booking-title">Ingecheckt!</h1>
+                <p class="booking-subtitle">Je aanwezigheid is bevestigd</p>
+            <?php else: ?>
+                <div class="booking-status-icon success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="booking-title"><?= $__('booking_confirmed') ?></h1>
+                <p class="booking-subtitle">Je afspraak is bevestigd</p>
+            <?php endif; ?>
+            <div class="booking-number-badge">#<?= htmlspecialchars($booking['booking_number']) ?></div>
+        </div>
+
+        <!-- Body Content -->
+        <div class="booking-body">
+            <?php if ($booking['status'] === 'cancelled' && ($booking['payment_status'] === 'paid' || $booking['payment_status'] === 'refunded')): ?>
+                <div class="booking-refund">
+                    <p><i class="fas fa-undo"></i> Terugbetaling in behandeling</p>
+                    <p>Binnen 72 uur op je rekening</p>
                 </div>
             <?php endif; ?>
-        <?php elseif ($booking['status'] === 'pending' && $booking['payment_status'] !== 'paid'): ?>
-            <div style="width:80px;height:80px;background:var(--warning);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-                <i class="fas fa-credit-card" style="font-size:2rem;color:white"></i>
-            </div>
-            <h2><?= $__('payment_required') ?></h2>
-            <p style="color:var(--text-light);margin-bottom:1.5rem"><?= $__('complete_payment_to_confirm') ?></p>
-            <a href="/payment/create/<?= $booking['uuid'] ?>" class="btn" style="font-size:1.1rem;padding:1rem 2rem">
-                <i class="fas fa-lock"></i> <?= $__('pay_now') ?> - &euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>
-            </a>
-        <?php elseif ($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid'): ?>
-            <div style="width:80px;height:80px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-                <i class="fas fa-check" style="font-size:2rem;color:white"></i>
-            </div>
-            <h2><?= $__('booking_confirmed') ?></h2>
-        <?php endif; ?>
 
-        <p style="color:var(--text-light);margin-bottom:2rem"><?= $__('booking_number') ?>: <?= htmlspecialchars($booking['booking_number']) ?></p>
-    </div>
-
-    <div class="card">
-        <h3><i class="fas fa-info-circle"></i> <?= $__('booking_details') ?></h3>
-
-        <table style="width:100%;margin-top:1rem">
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('salon') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500"><?= htmlspecialchars($booking['business_name']) ?></td>
-            </tr>
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('service') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500"><?= htmlspecialchars($booking['service_name']) ?></td>
-            </tr>
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('date') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></td>
-            </tr>
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('time') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500"><?= date('H:i', strtotime($booking['appointment_time'])) ?></td>
-            </tr>
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('duration') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500"><?= $booking['duration_minutes'] ?> <?= $__('minutes') ?></td>
-            </tr>
-            <tr>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('total') ?></td>
-                <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:var(--primary);font-size:1.2rem">&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?></td>
-            </tr>
-        </table>
-
-        <div style="margin-top:1.5rem;padding:1rem;background:var(--secondary);border-radius:10px">
-            <p><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($booking['address']) ?>, <?= htmlspecialchars($booking['city']) ?></p>
-            <?php if (!empty($booking['business_phone'])): ?>
-                <p style="margin-top:0.5rem"><i class="fas fa-phone"></i> <?= htmlspecialchars($booking['business_phone']) ?></p>
-            <?php endif; ?>
-        </div>
-
-        <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'cancelled'): ?>
-        <!-- 24-hour Policy Box -->
-        <div style="margin-top:1.5rem;padding:1.25rem;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px">
-            <h4 style="margin:0 0 0.75rem;color:#92400e;display:flex;align-items:center;gap:0.5rem;font-size:1rem">
-                <i class="fas fa-exclamation-triangle"></i> 24-uurs annuleringsbeleid
-            </h4>
-            <p style="margin:0;color:#92400e;font-size:0.9rem;line-height:1.5">
-                Je kunt gratis annuleren tot 24 uur voor de afspraak. Bij annulering binnen 24 uur wordt 50% van het bedrag in rekening gebracht. De overige 50% wordt teruggestort.
-            </p>
-        </div>
-
-        <!-- Confirmation Email Notice -->
-        <div style="margin-top:1rem;padding:1rem;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #10b981;border-radius:12px">
-            <p style="margin:0;color:#065f46;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem">
-                <i class="fas fa-envelope-circle-check"></i>
-                <span>Er is een bevestigingsmail verstuurd naar <strong><?= htmlspecialchars($booking['guest_email'] ?? $booking['user_email'] ?? 'je e-mailadres') ?></strong></span>
-            </p>
-        </div>
-
-        <!-- Reminder Notice -->
-        <div style="margin-top:1rem;padding:1rem;background:var(--secondary);border-radius:12px">
-            <p style="margin:0;color:var(--text-light);font-size:0.85rem;display:flex;align-items:center;gap:0.5rem">
-                <i class="fas fa-bell"></i>
-                <span>Je ontvangt een herinnering 24 uur en 1 uur voor je afspraak</span>
-            </p>
-        </div>
-        <?php endif; ?>
-
-        <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'checked_in'): ?>
-            <!-- Check-in QR Code -->
-            <div style="margin-top:1.5rem;padding:1.5rem;background:var(--card-bg);border:2px dashed var(--border);border-radius:12px;text-align:center">
-                <h4 style="margin:0 0 1rem 0;color:var(--text)"><i class="fas fa-qrcode"></i> Check-in Code</h4>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>"
-                     alt="Check-in QR" style="border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.1);background:#fff;padding:10px">
-
-                <!-- Booking Number -->
-                <div style="margin-top:1rem;padding:0.75rem 1.5rem;background:var(--secondary);border-radius:8px;display:inline-block">
-                    <p style="margin:0;color:var(--text-light);font-size:0.8rem">Boekingsnummer:</p>
-                    <p style="margin:0.25rem 0 0 0;font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:2px"><?= htmlspecialchars($booking['booking_number']) ?></p>
-                </div>
-
-                <!-- SHA256 Verification Code (for manual entry if scanner doesn't work) -->
-                <?php if (!empty($booking['verification_code'])): ?>
-                <div style="margin-top:1rem;padding:1rem 1.5rem;background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;display:inline-block">
-                    <p style="margin:0;color:#92400e;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;font-weight:600">
-                        <i class="fas fa-shield-alt"></i> Verificatiecode (SHA256)
-                    </p>
-                    <p style="margin:0.5rem 0 0 0;font-size:1.75rem;font-weight:800;color:#78350f;letter-spacing:3px;font-family:monospace">
-                        <?= htmlspecialchars($booking['verification_code']) ?>
-                    </p>
-                    <p style="margin:0.5rem 0 0 0;color:#92400e;font-size:0.7rem">
-                        <i class="fas fa-lock"></i> Beveiligd met SHA256 encryptie
-                    </p>
-                </div>
-                <?php endif; ?>
-
-                <p style="margin:1rem 0 0 0;color:var(--text);font-size:0.9rem">
-                    <i class="fas fa-info-circle"></i> Toon de QR-code of noem de verificatiecode bij aankomst
-                </p>
-            </div>
-        <?php elseif ($booking['status'] === 'checked_in'): ?>
-            <!-- Already checked in -->
-            <div style="margin-top:1.5rem;padding:1.5rem;background:var(--card-bg);border-radius:12px;text-align:center">
-                <div style="width:60px;height:60px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
-                    <i class="fas fa-check" style="font-size:1.5rem;color:white"></i>
-                </div>
-                <h4 style="margin:0;color:var(--text)">Ingecheckt!</h4>
-                <p style="margin:0.5rem 0 0 0;color:var(--text-light);font-size:0.9rem">Je aanwezigheid is bevestigd</p>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($booking['status'] !== 'cancelled' && $booking['status'] !== 'checked_in'): ?>
-            <?php
-            // Calculate if within 24 hours of appointment
-            $appointmentDateTime = new DateTime($booking['appointment_date'] . ' ' . $booking['appointment_time']);
-            $now = new DateTime();
-            $hoursUntilAppointment = ($appointmentDateTime->getTimestamp() - $now->getTimestamp()) / 3600;
-            $isWithin24Hours = $hoursUntilAppointment <= 24 && $hoursUntilAppointment > 0;
-            $isPastAppointment = $hoursUntilAppointment <= 0;
-            $halfPrice = number_format($booking['total_price'] / 2, 2, ',', '.');
-            ?>
-            <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
-                <a href="/search" class="btn btn-secondary" style="flex:1;text-align:center;min-width:140px">
-                    <i class="fas fa-search"></i> <?= $__('new_booking') ?>
+            <?php if ($booking['status'] === 'pending' && $booking['payment_status'] !== 'paid'): ?>
+                <a href="/payment/create/<?= $booking['uuid'] ?>" class="booking-btn booking-btn-pay">
+                    <i class="fas fa-lock"></i> <?= $__('pay_now') ?> - &euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>
                 </a>
-                <?php if (!$isPastAppointment): ?>
-                    <button type="button" class="btn btn-danger" style="flex:1;min-width:140px" onclick="showCancelModal()">
-                        <i class="fas fa-times"></i> <?= $__('cancel_booking') ?>
-                    </button>
-                <?php endif; ?>
-            </div>
-
-            <!-- Cancel Modal -->
-            <?php if (!$isPastAppointment): ?>
-            <div id="cancelModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;padding:1rem;overflow-y:auto;align-items:center;justify-content:center">
-                <div style="max-width:400px;width:100%;background:var(--bg-card);border-radius:16px;overflow:hidden">
-                    <div style="background:linear-gradient(135deg,#333333,#dc2626);padding:1.5rem;text-align:center;color:white">
-                        <div style="font-size:2.5rem;margin-bottom:0.5rem"><i class="fas fa-exclamation-triangle"></i></div>
-                        <h3 style="margin:0">Afspraak annuleren</h3>
-                    </div>
-                    <div style="padding:1.5rem">
-                        <?php if ($isWithin24Hours): ?>
-                            <div style="background:#f5f5f5;border:2px solid #333333;border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center">
-                                <p style="margin:0;color:#000000;font-weight:600;font-size:0.95rem">
-                                    <i class="fas fa-clock"></i> Je annuleert binnen 24 uur voor de afspraak
-                                </p>
-                                <p style="margin:0.75rem 0 0;color:#dc2626;font-size:1.25rem;font-weight:700">
-                                    50% van het bedrag (&euro;<?= $halfPrice ?>) gaat naar het bedrijf
-                                </p>
-                                <p style="margin:0.5rem 0 0;color:#7f1d1d;font-size:0.85rem">
-                                    Je ontvangt &euro;<?= $halfPrice ?> terug
-                                </p>
-                            </div>
-                        <?php else: ?>
-                            <div style="background:#ffffff;border:2px solid #333333;border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center">
-                                <p style="margin:0;color:#000000;font-weight:600">
-                                    <i class="fas fa-check-circle"></i> Gratis annuleren
-                                </p>
-                                <p style="margin:0.5rem 0 0;color:#000000;font-size:0.9rem">
-                                    Je ontvangt het volledige bedrag (&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>) terug
-                                </p>
-                            </div>
-                        <?php endif; ?>
-
-                        <p style="text-align:center;margin-bottom:1.5rem;color:var(--text-light)">
-                            Weet je zeker dat je deze afspraak wilt annuleren?
-                        </p>
-
-                        <div style="display:flex;gap:0.75rem">
-                            <button type="button" class="btn btn-secondary" style="flex:1" onclick="hideCancelModal()">
-                                Terug
-                            </button>
-                            <button type="button" class="btn btn-danger" style="flex:1" onclick="showFinalConfirm()">
-                                Ja, annuleer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Final Confirmation Modal -->
-            <div id="finalConfirmModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1001;padding:1rem;overflow-y:auto;align-items:center;justify-content:center">
-                <div style="max-width:400px;width:100%;background:var(--bg-card);border-radius:16px;overflow:hidden">
-                    <div style="padding:2rem;text-align:center">
-                        <div style="font-size:3rem;margin-bottom:1rem"><i class="fas fa-question-circle" style="color:#000000"></i></div>
-                        <h3 style="margin:0 0 1rem">Laatste bevestiging</h3>
-                        <?php if ($isWithin24Hours): ?>
-                            <p style="color:#dc2626;font-weight:600;margin-bottom:1.5rem">
-                                Door te annuleren gaat &euro;<?= $halfPrice ?> naar <?= htmlspecialchars($booking['business_name']) ?>
-                            </p>
-                        <?php else: ?>
-                            <p style="color:var(--text-light);margin-bottom:1.5rem">
-                                Je afspraak bij <?= htmlspecialchars($booking['business_name']) ?> wordt geannuleerd
-                            </p>
-                        <?php endif; ?>
-
-                        <form method="POST" action="/booking/<?= $booking['uuid'] ?>/cancel">
-                            <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
-                            <input type="hidden" name="confirm_cancel" value="1">
-                            <?php if ($isWithin24Hours): ?>
-                                <input type="hidden" name="late_cancel" value="1">
-                            <?php endif; ?>
-                            <div style="display:flex;gap:0.75rem">
-                                <button type="button" class="btn btn-secondary" style="flex:1" onclick="hideFinalConfirm()">
-                                    Nee, behouden
-                                </button>
-                                <button type="submit" class="btn btn-danger" style="flex:1">
-                                    Ja, definitief annuleren
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-            function showCancelModal() {
-                document.getElementById('cancelModal').style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-            function hideCancelModal() {
-                document.getElementById('cancelModal').style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            function showFinalConfirm() {
-                document.getElementById('cancelModal').style.display = 'none';
-                document.getElementById('finalConfirmModal').style.display = 'flex';
-            }
-            function hideFinalConfirm() {
-                document.getElementById('finalConfirmModal').style.display = 'none';
-                document.getElementById('cancelModal').style.display = 'flex';
-            }
-            // Close modal on outside click
-            document.getElementById('cancelModal').addEventListener('click', function(e) {
-                if (e.target === this) hideCancelModal();
-            });
-            document.getElementById('finalConfirmModal').addEventListener('click', function(e) {
-                if (e.target === this) hideFinalConfirm();
-            });
-            </script>
+                <div style="height:1rem"></div>
             <?php endif; ?>
-        <?php endif; ?>
+
+            <!-- Booking Details -->
+            <div class="booking-section">
+                <h3 class="booking-section-title"><i class="fas fa-calendar-check"></i> Afspraakdetails</h3>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('salon') ?></span>
+                    <span class="booking-value"><?= htmlspecialchars($booking['business_name']) ?></span>
+                </div>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('service') ?></span>
+                    <span class="booking-value"><?= htmlspecialchars($booking['service_name']) ?></span>
+                </div>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('date') ?></span>
+                    <span class="booking-value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></span>
+                </div>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('time') ?></span>
+                    <span class="booking-value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></span>
+                </div>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('duration') ?></span>
+                    <span class="booking-value"><?= $booking['duration_minutes'] ?> min</span>
+                </div>
+                <div class="booking-row">
+                    <span class="booking-label"><?= $__('total') ?></span>
+                    <span class="booking-value price">&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?></span>
+                </div>
+                <div class="booking-address">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="booking-address-text">
+                        <?= htmlspecialchars($booking['address']) ?>, <?= htmlspecialchars($booking['city']) ?>
+                        <?php if (!empty($booking['business_phone'])): ?>
+                            <br><a href="tel:<?= htmlspecialchars($booking['business_phone']) ?>"><i class="fas fa-phone"></i> <?= htmlspecialchars($booking['business_phone']) ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'cancelled'): ?>
+                <!-- Policy -->
+                <div class="booking-policy">
+                    <h4 class="booking-policy-title"><i class="fas fa-exclamation-triangle"></i> 24-uurs beleid</h4>
+                    <p class="booking-policy-text">Gratis annuleren tot 24u voor de afspraak. Binnen 24u: 50% kosten.</p>
+                </div>
+
+                <!-- Email Notice -->
+                <div class="booking-notice">
+                    <i class="fas fa-envelope-circle-check"></i>
+                    <span>Bevestiging verzonden naar <?= htmlspecialchars($booking['guest_email'] ?? $booking['user_email'] ?? 'je e-mail') ?></span>
+                </div>
+
+                <!-- Reminder -->
+                <div class="booking-notice reminder">
+                    <i class="fas fa-bell"></i>
+                    <span>Herinnering 24u en 1u voor je afspraak</span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (($booking['status'] === 'confirmed' || $booking['payment_status'] === 'paid') && $booking['status'] !== 'checked_in' && $booking['status'] !== 'cancelled'): ?>
+                <!-- QR Code -->
+                <div class="booking-qr">
+                    <h4 class="booking-qr-title"><i class="fas fa-qrcode"></i> Check-in QR Code</h4>
+                    <?php
+                        $theme = $_COOKIE['theme'] ?? 'dark';
+                        $qrColor = $theme === 'light' ? '000000' : 'ffffff';
+                        $qrBg = $theme === 'light' ? 'ffffff' : '000000';
+                    ?>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=<?= $qrColor ?>&bgcolor=<?= $qrBg ?>&data=<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>" alt="QR" class="qr-code-img" data-checkin-url="<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>">
+
+                    <div class="booking-qr-number">
+                        <div class="label">Boekingsnummer</div>
+                        <div class="number"><?= htmlspecialchars($booking['booking_number']) ?></div>
+                    </div>
+
+                    <?php if (!empty($booking['verification_code'])): ?>
+                    <div class="booking-verification">
+                        <div class="label"><i class="fas fa-shield-alt"></i> Verificatiecode</div>
+                        <div class="code"><?= htmlspecialchars($booking['verification_code']) ?></div>
+                    </div>
+                    <?php endif; ?>
+
+                    <p class="booking-qr-hint"><i class="fas fa-info-circle"></i> Toon bij aankomst in de salon</p>
+                </div>
+            <?php elseif ($booking['status'] === 'checked_in'): ?>
+                <div class="booking-checkedin">
+                    <div class="booking-checkedin-icon"><i class="fas fa-check"></i></div>
+                    <h4>Succesvol ingecheckt</h4>
+                    <p>Veel plezier met je behandeling!</p>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($booking['status'] !== 'cancelled' && $booking['status'] !== 'checked_in'): ?>
+                <?php
+                $appointmentDateTime = new DateTime($booking['appointment_date'] . ' ' . $booking['appointment_time']);
+                $now = new DateTime();
+                $hoursUntilAppointment = ($appointmentDateTime->getTimestamp() - $now->getTimestamp()) / 3600;
+                $isWithin24Hours = $hoursUntilAppointment <= 24 && $hoursUntilAppointment > 0;
+                $isPastAppointment = $hoursUntilAppointment <= 0;
+                $halfPrice = number_format($booking['total_price'] / 2, 2, ',', '.');
+                ?>
+                <div class="booking-actions">
+                    <a href="/search" class="booking-btn booking-btn-secondary">
+                        <i class="fas fa-plus"></i> Nieuw
+                    </a>
+                    <?php if (!$isPastAppointment): ?>
+                    <button type="button" class="booking-btn booking-btn-danger" onclick="showCancelModal()">
+                        <i class="fas fa-times"></i> Annuleer
+                    </button>
+                    <?php endif; ?>
+                </div>
+            <?php elseif ($booking['status'] === 'cancelled' || $booking['status'] === 'checked_in'): ?>
+                <a href="/search" class="booking-btn booking-btn-primary" style="margin-top:1rem">
+                    <i class="fas fa-search"></i> Nieuwe afspraak boeken
+                </a>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
+
+<?php if ($booking['status'] !== 'cancelled' && $booking['status'] !== 'checked_in' && !$isPastAppointment): ?>
+<!-- Cancel Modal -->
+<div id="cancelModal" class="booking-modal">
+    <div class="booking-modal-content">
+        <div class="booking-modal-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Afspraak annuleren</h3>
+        </div>
+        <div class="booking-modal-body">
+            <div class="booking-modal-info">
+                <?php if ($isWithin24Hours): ?>
+                    <p class="warning"><i class="fas fa-clock"></i> Binnen 24 uur voor afspraak</p>
+                    <p class="danger">50% (&euro;<?= $halfPrice ?>) gaat naar salon</p>
+                    <p>Je krijgt &euro;<?= $halfPrice ?> terug</p>
+                <?php else: ?>
+                    <p class="success"><i class="fas fa-check-circle"></i> Gratis annuleren</p>
+                    <p>Volledig bedrag (&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>) terug</p>
+                <?php endif; ?>
+            </div>
+            <p class="booking-modal-question">Weet je het zeker?</p>
+            <div class="booking-actions">
+                <button type="button" class="booking-btn booking-btn-secondary" onclick="hideCancelModal()">Terug</button>
+                <button type="button" class="booking-btn booking-btn-danger" onclick="showFinalConfirm()">Annuleer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Final Confirm Modal -->
+<div id="finalConfirmModal" class="booking-modal" style="z-index:1001">
+    <div class="booking-modal-content">
+        <div class="booking-modal-body" style="text-align:center;padding:2rem">
+            <i class="fas fa-question-circle" style="font-size:3rem;color:#f59e0b;margin-bottom:1rem"></i>
+            <h3 style="color:#fff;margin:0 0 1rem">Laatste check</h3>
+            <?php if ($isWithin24Hours): ?>
+                <p style="color:#ef4444;font-weight:600;margin-bottom:1.5rem">&euro;<?= $halfPrice ?> gaat naar <?= htmlspecialchars($booking['business_name']) ?></p>
+            <?php else: ?>
+                <p style="color:#888;margin-bottom:1.5rem">Je afspraak wordt definitief geannuleerd</p>
+            <?php endif; ?>
+            <form method="POST" action="/booking/<?= $booking['uuid'] ?>/cancel">
+                <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+                <input type="hidden" name="confirm_cancel" value="1">
+                <?php if ($isWithin24Hours): ?><input type="hidden" name="late_cancel" value="1"><?php endif; ?>
+                <div class="booking-actions">
+                    <button type="button" class="booking-btn booking-btn-secondary" onclick="hideFinalConfirm()">Behouden</button>
+                    <button type="submit" class="booking-btn booking-btn-danger">Definitief</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showCancelModal() {
+    document.getElementById('cancelModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function hideCancelModal() {
+    document.getElementById('cancelModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function showFinalConfirm() {
+    document.getElementById('cancelModal').style.display = 'none';
+    document.getElementById('finalConfirmModal').style.display = 'flex';
+}
+function hideFinalConfirm() {
+    document.getElementById('finalConfirmModal').style.display = 'none';
+    document.getElementById('cancelModal').style.display = 'flex';
+}
+document.getElementById('cancelModal').addEventListener('click', function(e) {
+    if (e.target === this) hideCancelModal();
+});
+document.getElementById('finalConfirmModal').addEventListener('click', function(e) {
+    if (e.target === this) hideFinalConfirm();
+});
+</script>
+<?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>
 <?php include BASE_PATH . '/resources/views/layouts/main.php'; ?>
