@@ -72,25 +72,29 @@ class WiseService
     }
 
     /**
-     * Create a quote for a transfer
+     * Create a quote for a transfer (using v3 profile-specific endpoint)
      */
-    public function createQuote(float $amount, string $sourceCurrency = 'EUR', string $targetCurrency = 'EUR'): ?array
+    public function createQuote(float $amount, string $sourceCurrency = 'EUR', string $targetCurrency = 'EUR', ?int $targetAccount = null): ?array
     {
         $data = [
-            'profile' => (int) $this->profileId,
             'sourceCurrency' => $sourceCurrency,
             'targetCurrency' => $targetCurrency,
-            'sourceAmount' => $amount,
-            'payOut' => 'BANK_TRANSFER'
+            'sourceAmount' => $amount
         ];
 
-        $response = $this->request('POST', '/v3/quotes', $data);
+        // If target account is specified, include it for better quote accuracy
+        if ($targetAccount) {
+            $data['targetAccount'] = $targetAccount;
+        }
+
+        // Use profile-specific endpoint to ensure quote is linked to profile
+        $response = $this->request('POST', "/v3/profiles/{$this->profileId}/quotes", $data);
 
         if ($response && isset($response['id'])) {
             return [
                 'quote_id' => $response['id'],
-                'source_amount' => $response['sourceAmount'],
-                'target_amount' => $response['targetAmount'] ?? $response['sourceAmount'],
+                'source_amount' => $response['sourceAmount'] ?? $amount,
+                'target_amount' => $response['targetAmount'] ?? $amount,
                 'fee' => $response['fee'] ?? 0,
                 'rate' => $response['rate'] ?? 1,
                 'expires_at' => $response['expirationTime'] ?? null
@@ -215,27 +219,27 @@ class WiseService
     }
 
     /**
-     * Make a complete payment (quote + recipient + transfer + fund)
+     * Make a complete payment (recipient + quote + transfer + fund)
      */
     public function makePayment(string $iban, string $name, float $amount, string $description, string $currency = 'EUR'): array
     {
         $this->log("Starting payment: €$amount to $name ($iban)");
 
-        // Step 1: Create quote
-        $quote = $this->createQuote($amount, 'EUR', $currency);
-        if (!$quote) {
-            $this->log("Failed to create quote");
-            return ['success' => false, 'error' => 'Kon geen quote aanmaken'];
-        }
-        $this->log("Quote created: {$quote['quote_id']}");
-
-        // Step 2: Get or create recipient
+        // Step 1: Get or create recipient FIRST (needed for quote)
         $recipient = $this->getOrCreateRecipient($name, $iban, $currency);
         if (!$recipient) {
             $this->log("Failed to create recipient");
             return ['success' => false, 'error' => 'Kon ontvanger niet aanmaken'];
         }
         $this->log("Recipient: {$recipient['recipient_id']}");
+
+        // Step 2: Create quote with recipient for accurate pricing
+        $quote = $this->createQuote($amount, 'EUR', $currency, $recipient['recipient_id']);
+        if (!$quote) {
+            $this->log("Failed to create quote");
+            return ['success' => false, 'error' => 'Kon geen quote aanmaken'];
+        }
+        $this->log("Quote created: {$quote['quote_id']}");
 
         // Step 3: Create transfer
         $transfer = $this->createTransfer($quote['quote_id'], $recipient['recipient_id'], $description);
@@ -311,11 +315,16 @@ class WiseService
     }
 
     /**
-     * Generate unique transaction ID
+     * Generate unique transaction ID (UUID v4 format required by Wise)
      */
     private function generateTransactionId(): string
     {
-        return 'GS-' . date('Ymd') . '-' . bin2hex(random_bytes(8));
+        // Generate UUID v4
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // Version 4
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // Variant
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**
