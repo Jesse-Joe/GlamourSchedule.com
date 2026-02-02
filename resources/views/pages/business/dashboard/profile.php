@@ -313,19 +313,35 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                 </a>
             </div>
 
-            <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
-                <h4 style="margin-bottom:0.5rem"><i class="fas fa-chart-line"></i> Statistieken</h4>
+            <div class="card stats-card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333;transition:all 0.3s ease;cursor:default">
+                <h4 class="stats-title" style="margin-bottom:0.5rem;color:#000000;transition:color 0.3s ease"><i class="fas fa-chart-line"></i> Statistieken</h4>
                 <div class="grid grid-2" style="margin-top:1rem">
                     <div>
-                        <p style="font-size:2rem;font-weight:700;margin:0"><?= number_format($business['total_reviews'] ?? 0) ?></p>
-                        <p style="opacity:0.9;font-size:0.85rem">Reviews</p>
+                        <p class="stats-number" style="font-size:2rem;font-weight:700;margin:0;color:#000000;transition:color 0.3s ease"><?= number_format($business['total_reviews'] ?? 0) ?></p>
+                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease">Reviews</p>
                     </div>
                     <div>
-                        <p style="font-size:2rem;font-weight:700;margin:0"><?= number_format($business['rating'] ?? 0, 1) ?></p>
-                        <p style="opacity:0.9;font-size:0.85rem">Gemiddelde score</p>
+                        <p class="stats-number" style="font-size:2rem;font-weight:700;margin:0;color:#000000;transition:color 0.3s ease"><?= number_format($business['rating'] ?? 0, 1) ?></p>
+                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease">Gemiddelde score</p>
                     </div>
                 </div>
             </div>
+            <style>
+                .stats-card:hover {
+                    background: linear-gradient(135deg,#000000,#1a1a1a) !important;
+                    border-color: #ffffff !important;
+                }
+                .stats-card:hover .stats-title,
+                .stats-card:hover .stats-number {
+                    color: #ffffff !important;
+                }
+                .stats-card:hover .stats-label {
+                    color: #cccccc !important;
+                }
+                .stats-card:hover i {
+                    color: #ffffff !important;
+                }
+            </style>
 
             <!-- Bedrijf Opzeggen -->
             <div class="card" style="border-color:#dc2626;background:rgba(220,38,38,0.1)">
