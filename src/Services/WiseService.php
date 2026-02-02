@@ -22,7 +22,8 @@ class WiseService
 
     public function __construct()
     {
-        $this->sandbox = (bool) (getenv('WISE_SANDBOX') ?: false);
+        $sandboxEnv = strtolower(getenv('WISE_SANDBOX') ?: 'false');
+        $this->sandbox = in_array($sandboxEnv, ['true', '1', 'yes'], true);
         $this->apiKey = getenv('WISE_API_KEY') ?: '';
         $this->profileId = getenv('WISE_PROFILE_ID') ?: '';
 
