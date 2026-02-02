@@ -2,3 +2,6 @@
 vendor/
 *.log
 .DS_Store
+
+# Bunq credentials
+storage/bunq/

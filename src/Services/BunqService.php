@@ -9,6 +9,8 @@ class BunqService
 {
     private string $apiKey;
     private string $accountId;
+    private string $sessionToken;
+    private string $userId;
     private string $baseUrl;
     private bool $sandbox;
 
@@ -17,6 +19,17 @@ class BunqService
         $this->sandbox = (bool) (getenv('BUNQ_SANDBOX') ?: false);
         $this->apiKey = getenv('BUNQ_API_KEY') ?: '';
         $this->accountId = getenv('BUNQ_ACCOUNT_ID') ?: '';
+        $this->sessionToken = '';
+        $this->userId = '';
+
+        // Load from saved config if available
+        $configFile = (defined('BASE_PATH') ? BASE_PATH : '/var/www/glamourschedule') . '/storage/bunq/config.json';
+        if (file_exists($configFile)) {
+            $config = json_decode(file_get_contents($configFile), true);
+            $this->sessionToken = $config['session_token'] ?? '';
+            $this->userId = $config['user_id'] ?? '';
+            $this->accountId = $this->accountId ?: ($config['account_id'] ?? '');
+        }
 
         $this->baseUrl = $this->sandbox
             ? 'https://public-api.sandbox.bunq.com/v1'
@@ -28,7 +41,7 @@ class BunqService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey) && !empty($this->accountId);
+        return !empty($this->sessionToken) && !empty($this->accountId);
     }
 
     /**
@@ -36,10 +49,17 @@ class BunqService
      */
     public function getBalance(): ?float
     {
-        $response = $this->request('GET', "/user/{$this->getUserId()}/monetary-account/{$this->accountId}");
+        $userId = $this->getUserId();
+        if (!$userId) return null;
 
-        if ($response && isset($response['Response'][0]['MonetaryAccountBank']['balance']['value'])) {
-            return (float) $response['Response'][0]['MonetaryAccountBank']['balance']['value'];
+        $response = $this->request('GET', "/user/{$userId}/monetary-account/{$this->accountId}");
+
+        if ($response && isset($response['Response'][0])) {
+            // Handle different account types
+            $accountType = array_key_first($response['Response'][0]);
+            if (isset($response['Response'][0][$accountType]['balance']['value'])) {
+                return (float) $response['Response'][0][$accountType]['balance']['value'];
+            }
         }
 
         return null;
@@ -123,22 +143,22 @@ class BunqService
     }
 
     /**
-     * Get user ID from API key
+     * Get user ID from config or API
      */
     private function getUserId(): ?string
     {
-        static $userId = null;
-
-        if ($userId !== null) {
-            return $userId;
+        // Use stored user ID if available
+        if (!empty($this->userId)) {
+            return (string) $this->userId;
         }
 
+        // Fallback: get from API
         $response = $this->request('GET', '/user');
 
         if ($response && isset($response['Response'][0])) {
             $userType = array_key_first($response['Response'][0]);
-            $userId = (string) $response['Response'][0][$userType]['id'];
-            return $userId;
+            $this->userId = (string) $response['Response'][0][$userType]['id'];
+            return $this->userId;
         }
 
         return null;
@@ -161,9 +181,12 @@ class BunqService
 
         $ch = curl_init($url);
 
+        // Use session token for authentication (not API key directly)
+        $authToken = $this->sessionToken ?: $this->apiKey;
+
         $headers = [
             'Content-Type: application/json',
-            'X-Bunq-Client-Authentication: ' . $this->apiKey,
+            'X-Bunq-Client-Authentication: ' . $authToken,
             'X-Bunq-Language: nl_NL',
             'X-Bunq-Region: nl_NL',
             'User-Agent: GlamourSchedule/1.0'
