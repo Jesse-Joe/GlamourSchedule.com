@@ -1373,6 +1373,15 @@ HTML;
             [$uuid]
         );
 
+        // Update business total revenue
+        $bookingAmount = (float)($booking['total_price'] ?? 0);
+        if ($bookingAmount > 0) {
+            $this->db->query(
+                "UPDATE businesses SET total_revenue = total_revenue + ? WHERE id = ?",
+                [$bookingAmount, $booking['business_id']]
+            );
+        }
+
         return $this->redirect("/checkin/$uuid?success=1");
     }
 
