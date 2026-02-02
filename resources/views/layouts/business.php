@@ -488,27 +488,13 @@
             }
         }
 
-        /* Theme Toggle */
-        .theme-toggle {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
+        /* Theme Toggle in Navigation */
+        .theme-toggle-nav {
+            font-family: inherit;
+            font-size: inherit;
         }
-        .theme-toggle:hover {
-            background: var(--border);
-        }
-        .theme-toggle:active {
-            transform: scale(0.95);
+        .theme-toggle-nav:hover {
+            background: #1a1a1a;
         }
 
         /* Top bar actions mobile-friendly */
@@ -542,10 +528,6 @@
             }
             .top-bar-actions .btn i {
                 margin: 0;
-            }
-            .theme-toggle {
-                width: 40px;
-                height: 40px;
             }
             .top-bar h1 {
                 font-size: 1rem;
@@ -658,6 +640,9 @@
                 <a href="/business/mollie/connect" class="nav-item <?= $currentPath === '/business/mollie/connect' ? 'active' : '' ?>" style="<?= empty($business['mollie_account_id']) ? 'background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;' : '' ?>">
                     <i class="fas fa-link"></i> <?= empty($business['mollie_account_id']) ? ($translations['nav_mollie_connect'] ?? 'Connect Mollie') : ($translations['nav_mollie_connected'] ?? 'Mollie Connected') ?>
                 </a>
+                <button type="button" class="nav-item theme-toggle-nav" onclick="toggleTheme()" style="width:100%;border:none;background:none;cursor:pointer;text-align:left;">
+                    <i class="fas fa-sun" id="themeIconNav"></i> <span id="themeTextNav"><?= $translations['nav_light_mode'] ?? 'Light Mode' ?></span>
+                </button>
             </div>
         </nav>
 
@@ -678,9 +663,6 @@
                 <h1><?= htmlspecialchars($pageTitle ?? 'Dashboard') ?></h1>
             </div>
             <div class="top-bar-actions">
-                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
-                    <i class="fas fa-sun"></i>
-                </button>
                 <a href="/logout" class="btn btn-secondary btn-sm" title="<?= $translations['nav_logout'] ?? 'Logout' ?>">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="btn-text"><?= $translations['nav_logout'] ?? 'Logout' ?></span>
@@ -719,9 +701,13 @@
 
         function updateThemeIcon() {
             const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            const icon = document.querySelector('.theme-toggle i');
+            const icon = document.getElementById('themeIconNav');
+            const text = document.getElementById('themeTextNav');
             if (icon) {
                 icon.className = current === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            if (text) {
+                text.textContent = current === 'dark' ? '<?= $translations['nav_light_mode'] ?? 'Light Mode' ?>' : '<?= $translations['nav_dark_mode'] ?? 'Dark Mode' ?>';
             }
         }
 
