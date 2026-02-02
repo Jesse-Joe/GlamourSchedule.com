@@ -455,9 +455,9 @@ $monthName = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'a
             <?php endif; ?>
         </div>
 
-        <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> Agenda Tips</h4>
-            <p style="font-size:0.85rem;opacity:0.9">Houd je agenda up-to-date zodat klanten alleen beschikbare tijden zien bij het boeken.</p>
+        <div class="card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333">
+            <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-info-circle"></i> Agenda Tips</h4>
+            <p style="font-size:0.85rem;color:#333333">Houd je agenda up-to-date zodat klanten alleen beschikbare tijden zien bij het boeken.</p>
         </div>
     </div>
 </div>
