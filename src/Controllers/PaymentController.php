@@ -200,21 +200,63 @@ class PaymentController extends Controller
     private function getBooking(string $uuid): ?array
     {
         $stmt = $this->db->query(
-            "SELECT b.*, biz.company_name as business_name, s.name as service_name, s.duration_minutes as duration
+            "SELECT b.*, biz.company_name as business_name, biz.email as business_email,
+                    s.name as service_name, s.duration_minutes as duration,
+                    u.email as user_email, u.first_name as user_first_name, u.last_name as user_last_name
              FROM bookings b
              JOIN businesses biz ON b.business_id = biz.id
              JOIN services s ON b.service_id = s.id
+             LEFT JOIN users u ON b.user_id = u.id
              WHERE b.uuid = ?",
             [$uuid]
         );
-        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+        $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($booking) {
+            // Set customer_name and customer_email for display
+            if (!empty($booking['user_id']) && !empty($booking['user_email'])) {
+                $booking['customer_name'] = trim($booking['user_first_name'] . ' ' . $booking['user_last_name']);
+                $booking['customer_email'] = $booking['user_email'];
+            } else {
+                $booking['customer_name'] = $booking['guest_name'] ?? '';
+                $booking['customer_email'] = $booking['guest_email'] ?? '';
+            }
+        }
+
+        return $booking ?: null;
     }
 
     private function sendBookingConfirmation(array $booking): void
     {
         try {
+            // Get customer info - check user_id first, then guest info
+            $customerEmail = $booking['guest_email'];
+            $customerName = $booking['guest_name'] ?? 'Klant';
+
+            if (!empty($booking['user_id'])) {
+                $stmt = $this->db->query(
+                    "SELECT email, first_name, last_name FROM users WHERE id = ?",
+                    [$booking['user_id']]
+                );
+                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($user) {
+                    $customerEmail = $user['email'];
+                    $customerName = trim($user['first_name'] . ' ' . $user['last_name']);
+                }
+            }
+
+            // Prepare booking data with expected field names
+            $bookingData = array_merge($booking, [
+                'customer_email' => $customerEmail,
+                'customer_name' => $customerName,
+                'date' => $booking['appointment_date'],
+                'time' => date('H:i', strtotime($booking['appointment_time'])),
+                'price' => $booking['total_price']
+            ]);
+
             $mailer = new \GlamourSchedule\Core\Mailer($_SESSION['lang'] ?? 'nl');
-            $mailer->sendBookingConfirmation($booking);
+            $mailer->sendBookingConfirmation($bookingData);
+            $mailer->sendBookingNotificationToBusiness($bookingData);
         } catch (\Exception $e) {
             error_log("Failed to send booking confirmation: " . $e->getMessage());
         }

@@ -250,7 +250,7 @@ return [
         'username' => getenv('MAIL_USERNAME') ?: '',
         'password' => getenv('MAIL_PASSWORD') ?: '',
         'encryption' => 'tls',
-        'from_address' => 'noreply@glamourschedule.com',
+        'from_address' => getenv('MAIL_FROM_ADDRESS') ?: 'noreply@glamourschedule.com',
         'from_name' => 'GlamourSchedule',
     ],
     

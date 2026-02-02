@@ -150,11 +150,11 @@
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('customer_name') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['guest_name'] ?? $booking['customer_name'] ?? '') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['customer_name'] ?? $booking['guest_name'] ?? '') ?></td>
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('email') ?></td>
-                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['guest_email'] ?? $booking['customer_email'] ?? '') ?></td>
+                    <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);text-align:right;font-weight:500;color:var(--theme-text, #fff)"><?= htmlspecialchars($booking['customer_email'] ?? $booking['guest_email'] ?? '') ?></td>
                 </tr>
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid var(--card-border, #333);color:var(--theme-text-muted, #999)"><?= $__('salon') ?></td>

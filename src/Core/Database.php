@@ -10,11 +10,32 @@ use PDOException;
 class Database
 {
     private static ?PDO $instance = null;
+    private static ?Database $dbInstance = null;
     private array $config;
-    
-    public function __construct(array $config)
+
+    public function __construct(array $config = [])
     {
-        $this->config = $config;
+        $this->config = $config ?: $this->loadConfig();
+    }
+
+    /**
+     * Get singleton Database instance
+     */
+    public static function getInstance(): Database
+    {
+        if (self::$dbInstance === null) {
+            self::$dbInstance = new self();
+        }
+        return self::$dbInstance;
+    }
+
+    /**
+     * Load config from file
+     */
+    private function loadConfig(): array
+    {
+        $config = require BASE_PATH . '/config/config.php';
+        return $config['database'];
     }
     
     public function getConnection(): PDO
