@@ -206,68 +206,65 @@ if (!$coverImage && !empty($images)) {
 <?php endif; ?>
 
 /* ========== GALLERY STYLES ========== */
-<?php if ($galleryStyle === 'carousel'): ?>
-.biz-gallery {
-    display: flex;
-    overflow-x: auto;
+/* Carousel Gallery */
+.biz-gallery.biz-gallery-carousel {
+    display: flex !important;
+    overflow-x: auto !important;
     scroll-snap-type: x mandatory;
     gap: 8px;
     padding-bottom: 12px;
     scrollbar-width: thin;
     scrollbar-color: var(--accent) var(--border);
 }
-.biz-gallery::-webkit-scrollbar {
+.biz-gallery.biz-gallery-carousel::-webkit-scrollbar {
     height: 6px;
 }
-.biz-gallery::-webkit-scrollbar-track {
+.biz-gallery.biz-gallery-carousel::-webkit-scrollbar-track {
     background: var(--border);
     border-radius: 3px;
 }
-.biz-gallery::-webkit-scrollbar-thumb {
+.biz-gallery.biz-gallery-carousel::-webkit-scrollbar-thumb {
     background: var(--accent);
     border-radius: 3px;
 }
-.biz-gallery-item {
-    flex: 0 0 280px;
+.biz-gallery.biz-gallery-carousel .biz-gallery-item {
+    flex: 0 0 280px !important;
     scroll-snap-align: start;
-    aspect-ratio: 4/3;
+    aspect-ratio: 4/3 !important;
     border-radius: 12px;
-}
-.biz-gallery-item:first-child {
-    grid-column: auto;
-    grid-row: auto;
+    grid-column: auto !important;
+    grid-row: auto !important;
 }
 @media (min-width: 768px) {
-    .biz-gallery-item {
-        flex: 0 0 350px;
+    .biz-gallery.biz-gallery-carousel .biz-gallery-item {
+        flex: 0 0 350px !important;
     }
 }
-<?php elseif ($galleryStyle === 'masonry'): ?>
-.biz-gallery {
-    display: block;
+
+/* Masonry Gallery */
+.biz-gallery.biz-gallery-masonry {
+    display: block !important;
     columns: 2;
     column-gap: 4px;
 }
-.biz-gallery-item {
+.biz-gallery.biz-gallery-masonry .biz-gallery-item {
     break-inside: avoid;
     margin-bottom: 4px;
-    aspect-ratio: auto;
+    aspect-ratio: auto !important;
     border-radius: 8px;
+    grid-column: auto !important;
+    grid-row: auto !important;
 }
-.biz-gallery-item:first-child {
-    grid-column: auto;
-    grid-row: auto;
-}
-.biz-gallery-item img {
+.biz-gallery.biz-gallery-masonry .biz-gallery-item img {
     width: 100%;
-    height: auto;
+    height: auto !important;
+    object-fit: cover;
 }
 @media (min-width: 768px) {
-    .biz-gallery {
+    .biz-gallery.biz-gallery-masonry {
         columns: 3;
     }
 }
-<?php endif; ?>
 
 /* ========== LAYOUT: SIDEBAR ========== */
 <?php if ($layoutTemplate === 'sidebar'): ?>
