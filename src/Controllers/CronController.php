@@ -4,6 +4,7 @@ namespace GlamourSchedule\Controllers;
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
 use GlamourSchedule\Services\BunqService;
+use GlamourSchedule\Services\WiseService;
 use GlamourSchedule\Services\InvoiceService;
 
 class CronController extends Controller
@@ -1076,12 +1077,23 @@ HTML;
             $this->logPayout("Total payout amount needed: €" . number_format($totalNeeded, 2));
             $this->logPayout("Number of businesses to pay: " . count($businessPayouts));
 
-            // Check if Bunq is configured for automatic transfers
+            // Check if Bunq is configured for automatic transfers (Dutch IBANs)
             $bunq = new BunqService();
             $useBunq = $bunq->isConfigured();
 
-            if (!$useBunq) {
-                $this->logPayout("WARNING: Bunq not configured - payouts will require manual processing");
+            // Check if Wise is configured for international transfers (non-Dutch IBANs)
+            $wise = new WiseService();
+            $useWise = $wise->isConfigured();
+
+            if (!$useBunq && !$useWise) {
+                $this->logPayout("WARNING: Neither Bunq nor Wise configured - payouts will require manual processing");
+            } else {
+                if ($useBunq) {
+                    $this->logPayout("Bunq configured for Dutch IBAN payouts");
+                }
+                if ($useWise) {
+                    $this->logPayout("Wise configured for international IBAN payouts");
+                }
             }
 
             // CRITICAL: Check Bunq balance before proceeding
@@ -1146,55 +1158,111 @@ HTML;
                 $payoutId = $this->db->lastInsertId();
                 $payout['payout_id'] = $payoutId;
 
-                // Try Bunq automatic transfer
-                if ($useBunq) {
-                    $description = "GlamourSchedule uitbetaling #$payoutId";
-                    $bunqResult = $bunq->makePayment(
+                // Determine payment method based on IBAN country
+                $ibanCountry = strtoupper(substr(str_replace(' ', '', $payout['iban']), 0, 2));
+                $isDutchIban = ($ibanCountry === 'NL');
+                $description = "GlamourSchedule uitbetaling #$payoutId";
+                $paymentSuccess = false;
+                $paymentMethod = 'manual';
+                $transactionId = null;
+                $errorMessage = null;
+
+                // Try automatic payment
+                if ($isDutchIban && $useBunq) {
+                    // Dutch IBAN - use Bunq
+                    $this->logPayout("Processing {$payout['company_name']} via Bunq (Dutch IBAN: $ibanCountry)");
+                    $result = $bunq->makePayment(
                         $payout['iban'],
                         $payout['company_name'],
                         $payout['total_payout'],
                         $description
                     );
 
-                    if ($bunqResult['success']) {
-                        // Mark as completed
-                        $this->db->query(
-                            "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE(), transaction_id = ?, notes = 'Automatisch via Bunq' WHERE id = ?",
-                            [$bunqResult['payment_id'], $payoutId]
-                        );
-
-                        // Update bookings
-                        $bookingIds = array_column($payout['bookings'], 'id');
-                        $placeholders = implode(',', array_fill(0, count($bookingIds), '?'));
-                        $this->db->query(
-                            "UPDATE bookings SET payout_status = 'completed', payout_date = CURDATE() WHERE id IN ($placeholders)",
-                            $bookingIds
-                        );
-
-                        // Send success email
-                        $this->sendWeeklyPayoutEmail($payout, $payoutId, true);
-
-                        $payoutsProcessed++;
-                        $totalAmount += $payout['total_payout'];
-                        $payout['bunq_status'] = 'success';
-
-                        $this->logPayout("SUCCESS (Bunq): {$payout['company_name']} - €" . number_format($payout['total_payout'], 2) . " - Payment ID: {$bunqResult['payment_id']}");
+                    if ($result['success']) {
+                        $paymentSuccess = true;
+                        $paymentMethod = 'bunq';
+                        $transactionId = $result['payment_id'];
                     } else {
-                        // Mark as failed, add to manual list
-                        $this->db->query(
-                            "UPDATE business_payouts SET status = 'failed', notes = ? WHERE id = ?",
-                            ['Bunq error: ' . $bunqResult['error'], $payoutId]
-                        );
-
-                        $payoutsFailed++;
-                        $manualPayouts[] = $payout;
-                        $payout['bunq_status'] = 'failed';
-                        $payout['bunq_error'] = $bunqResult['error'];
-
-                        $this->logPayout("FAILED (Bunq): {$payout['company_name']} - " . $bunqResult['error']);
+                        $errorMessage = $result['error'];
                     }
+                } elseif (!$isDutchIban && $useWise) {
+                    // International IBAN - use Wise
+                    $this->logPayout("Processing {$payout['company_name']} via Wise (International IBAN: $ibanCountry)");
+                    $result = $wise->makePayment(
+                        $payout['iban'],
+                        $payout['company_name'],
+                        $payout['total_payout'],
+                        $description
+                    );
+
+                    if ($result['success']) {
+                        $paymentSuccess = true;
+                        $paymentMethod = 'wise';
+                        $transactionId = $result['transfer_id'];
+                    } else {
+                        $errorMessage = $result['error'];
+                    }
+                } elseif (!$isDutchIban && $useBunq) {
+                    // International IBAN but only Bunq available - try Bunq (may support SEPA)
+                    $this->logPayout("Processing {$payout['company_name']} via Bunq (International IBAN: $ibanCountry - Wise not configured)");
+                    $result = $bunq->makePayment(
+                        $payout['iban'],
+                        $payout['company_name'],
+                        $payout['total_payout'],
+                        $description
+                    );
+
+                    if ($result['success']) {
+                        $paymentSuccess = true;
+                        $paymentMethod = 'bunq';
+                        $transactionId = $result['payment_id'];
+                    } else {
+                        $errorMessage = $result['error'];
+                    }
+                }
+
+                // Process result
+                if ($paymentSuccess) {
+                    $methodNote = $paymentMethod === 'bunq' ? 'Automatisch via Bunq' : 'Automatisch via Wise';
+
+                    // Mark as completed
+                    $this->db->query(
+                        "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE(), transaction_id = ?, notes = ? WHERE id = ?",
+                        [$transactionId, $methodNote, $payoutId]
+                    );
+
+                    // Update bookings
+                    $bookingIds = array_column($payout['bookings'], 'id');
+                    $placeholders = implode(',', array_fill(0, count($bookingIds), '?'));
+                    $this->db->query(
+                        "UPDATE bookings SET payout_status = 'completed', payout_date = CURDATE() WHERE id IN ($placeholders)",
+                        $bookingIds
+                    );
+
+                    // Send success email
+                    $this->sendWeeklyPayoutEmail($payout, $payoutId, true, $paymentMethod);
+
+                    $payoutsProcessed++;
+                    $totalAmount += $payout['total_payout'];
+                    $payout['payment_status'] = 'success';
+                    $payout['payment_method'] = $paymentMethod;
+
+                    $this->logPayout("SUCCESS ($paymentMethod): {$payout['company_name']} - €" . number_format($payout['total_payout'], 2) . " - Transaction ID: $transactionId");
+                } elseif ($errorMessage) {
+                    // Automatic payment failed
+                    $this->db->query(
+                        "UPDATE business_payouts SET status = 'failed', notes = ? WHERE id = ?",
+                        ["Error: $errorMessage", $payoutId]
+                    );
+
+                    $payoutsFailed++;
+                    $manualPayouts[] = $payout;
+                    $payout['payment_status'] = 'failed';
+                    $payout['payment_error'] = $errorMessage;
+
+                    $this->logPayout("FAILED: {$payout['company_name']} - $errorMessage");
                 } else {
-                    // No Bunq configured - mark for manual processing
+                    // No automatic payment method available
                     $this->db->query(
                         "UPDATE business_payouts SET status = 'pending', notes = 'Handmatige overboeking vereist' WHERE id = ?",
                         [$payoutId]
@@ -1210,7 +1278,7 @@ HTML;
 
                     $manualPayouts[] = $payout;
                     $totalAmount += $payout['total_payout'];
-                    $payout['bunq_status'] = 'manual';
+                    $payout['payment_status'] = 'manual';
 
                     // Send notification email
                     $this->sendWeeklyPayoutEmail($payout, $payoutId, false);
@@ -1220,13 +1288,14 @@ HTML;
             }
 
             // Send admin notification
-            $this->sendWeeklyAdminNotification($businessPayouts, $totalAmount, $useBunq, count($manualPayouts));
+            $this->sendWeeklyAdminNotification($businessPayouts, $totalAmount, $useBunq || $useWise, count($manualPayouts));
 
-            $this->logPayout("Weekly payout complete. Bunq: $payoutsProcessed success, $payoutsFailed failed. Manual: " . count($manualPayouts));
+            $this->logPayout("Weekly payout complete. Auto: $payoutsProcessed success, $payoutsFailed failed. Manual: " . count($manualPayouts));
 
             return json_encode([
                 'success' => true,
                 'bunq_enabled' => $useBunq,
+                'wise_enabled' => $useWise,
                 'payouts_processed' => $payoutsProcessed,
                 'payouts_failed' => $payoutsFailed,
                 'manual_required' => count($manualPayouts),
@@ -1244,7 +1313,7 @@ HTML;
     /**
      * Send weekly payout notification to business
      */
-    private function sendWeeklyPayoutEmail(array $payout, int $payoutId, bool $isAutomatic = false): void
+    private function sendWeeklyPayoutEmail(array $payout, int $payoutId, bool $isAutomatic = false, string $paymentMethod = 'manual'): void
     {
         $mailer = new Mailer();
 
@@ -1257,6 +1326,12 @@ HTML;
             </tr>";
         }
 
+        // Payment method display name
+        $methodName = $paymentMethod === 'bunq' ? 'Bunq' : ($paymentMethod === 'wise' ? 'Wise' : 'handmatig');
+
+        // Delivery time based on method
+        $deliveryTime = $paymentMethod === 'bunq' ? '1 werkdag' : ($paymentMethod === 'wise' ? '1-2 werkdagen' : '1-3 werkdagen');
+
         if ($isAutomatic) {
             $subject = "Uitbetaling voltooid - €" . number_format($payout['total_payout'], 2, ',', '.');
             $headerBg = '#22c55e';
@@ -1264,9 +1339,9 @@ HTML;
             $statusBox = "
                 <div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
                     <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</p>
-                    <p style='margin:5px 0 0;color:#166534;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Automatisch overgemaakt</p>
+                    <p style='margin:5px 0 0;color:#166534;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Automatisch via $methodName</p>
                 </div>";
-            $statusMessage = "<p style='color:#166534;'>Het bedrag is automatisch overgemaakt naar je bankrekening. Je ontvangt het binnen 1 werkdag.</p>";
+            $statusMessage = "<p style='color:#166534;'>Het bedrag is automatisch overgemaakt naar je bankrekening. Je ontvangt het binnen $deliveryTime.</p>";
             $tipBox = "";
         } else {
             $subject = "Wekelijkse uitbetaling in verwerking - €" . number_format($payout['total_payout'], 2, ',', '.');
