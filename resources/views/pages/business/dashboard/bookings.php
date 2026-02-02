@@ -18,8 +18,9 @@
         border: 2px solid var(--border);
     }
     .filter-tab:hover {
-        border-color: var(--primary);
-        color: var(--primary);
+        border-color: #ffffff;
+        background: #ffffff;
+        color: #000000;
     }
     .filter-tab.active {
         background: linear-gradient(135deg, var(--primary), var(--primary-dark));
