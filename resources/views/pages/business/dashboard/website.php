@@ -143,10 +143,10 @@
             });
             </script>
 
-            <div class="card" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white">
-                <h4 style="margin-bottom:0.5rem"><i class="fas fa-lightbulb"></i> Tip</h4>
-                <p style="font-size:0.9rem;opacity:0.9">Voeg goede foto's en een duidelijke beschrijving toe om meer klanten aan te trekken!</p>
-                <a href="/business/photos" class="btn" style="background:#ffffff;color:var(--primary);margin-top:1rem">
+            <div class="card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333">
+                <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-lightbulb" style="color:#f5c518"></i> Tip</h4>
+                <p style="font-size:0.9rem;color:#333333">Voeg goede foto's en een duidelijke beschrijving toe om meer klanten aan te trekken!</p>
+                <a href="/business/photos" class="btn" style="background:#000000;color:#ffffff;margin-top:1rem">
                     <i class="fas fa-images"></i> Foto's Beheren
                 </a>
             </div>

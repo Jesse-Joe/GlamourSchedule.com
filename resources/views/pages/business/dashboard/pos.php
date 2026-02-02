@@ -47,11 +47,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
 /* New Booking Form */
 .pos-form-section {
-    background: var(--bg-card);
+    background: #0a0a0a;
+    border: 1px solid #333333;
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .pos-form-section h3 {
     margin: 0 0 1rem 0;
@@ -59,10 +60,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-primary);
+    color: #ffffff;
 }
 .pos-form-section h3 i {
-    color: var(--primary);
+    color: #ffffff;
 }
 
 /* Customer Search */
@@ -74,10 +75,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: #0a0a0a;
+    border: 1px solid #333333;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     z-index: 100;
     display: none;
     max-height: 250px;
@@ -92,25 +93,27 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #333333;
     transition: background 0.15s;
+    color: #ffffff;
 }
 .customer-result-item:last-child {
     border-bottom: none;
 }
 .customer-result-item:hover {
-    background: var(--secondary);
+    background: #1a1a1a;
 }
 .customer-result-item .name {
     font-weight: 600;
+    color: #ffffff;
 }
 .customer-result-item .details {
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: #999999;
 }
 .customer-result-item .badge {
-    background: var(--primary);
-    color: white;
+    background: #ffffff;
+    color: #000000;
     padding: 0.2rem 0.5rem;
     border-radius: 8px;
     font-size: 0.7rem;
@@ -121,14 +124,14 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--secondary);
-    color: var(--primary);
+    background: #1a1a1a;
+    color: #ffffff;
     font-weight: 600;
-    border-top: 2px solid var(--border);
+    border-top: 2px solid #333333;
 }
 .add-new-customer:hover {
-    background: var(--primary);
-    color: white;
+    background: #ffffff;
+    color: #000000;
 }
 
 /* Selected Customer Badge */
@@ -136,16 +139,18 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: linear-gradient(135deg, #f0f0f0, #e5e5e5);
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    border: 1px solid #333333;
     padding: 0.875rem 1rem;
     border-radius: 12px;
     margin-bottom: 1rem;
+    color: #ffffff;
 }
 .selected-customer .avatar {
     width: 40px;
     height: 40px;
-    background: var(--primary);
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -182,32 +187,34 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
 }
 .service-item {
-    background: var(--secondary);
-    border: 2px solid transparent;
+    background: #1a1a1a;
+    border: 2px solid #333333;
     border-radius: 12px;
     padding: 1rem;
     cursor: pointer;
     transition: all 0.2s;
+    color: #ffffff;
 }
 .service-item:hover {
-    border-color: var(--primary);
+    border-color: #ffffff;
 }
 .service-item.selected {
-    border-color: var(--primary);
-    background: rgba(0,0,0,0.05);
+    border-color: #ffffff;
+    background: #0a0a0a;
 }
 .service-item .name {
     font-weight: 600;
     margin-bottom: 0.25rem;
+    color: #ffffff;
 }
 .service-item .meta {
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: #999999;
     display: flex;
     gap: 0.5rem;
 }
 .service-item .price {
-    color: var(--primary);
+    color: #ffffff;
     font-weight: 700;
 }
 
@@ -230,33 +237,35 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
 }
 .payment-method {
-    background: var(--secondary);
-    border: 2px solid transparent;
+    background: #1a1a1a;
+    border: 2px solid #333333;
     border-radius: 12px;
     padding: 1.25rem;
     cursor: pointer;
     text-align: center;
     transition: all 0.2s;
+    color: #ffffff;
 }
 .payment-method:hover {
-    border-color: var(--primary);
+    border-color: #ffffff;
 }
 .payment-method.selected {
-    border-color: var(--primary);
-    background: rgba(0,0,0,0.05);
+    border-color: #ffffff;
+    background: #0a0a0a;
 }
 .payment-method i {
     font-size: 1.5rem;
-    color: var(--primary);
+    color: #ffffff;
     margin-bottom: 0.5rem;
 }
 .payment-method .title {
     font-weight: 600;
     margin-bottom: 0.25rem;
+    color: #ffffff;
 }
 .payment-method .desc {
     font-size: 0.75rem;
-    color: var(--text-light);
+    color: #999999;
 }
 
 /* Today's Bookings */
@@ -268,7 +277,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #333333;
     align-items: flex-start;
 }
 .booking-item:last-child {
@@ -289,10 +298,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .booking-customer {
     font-weight: 600;
     margin-bottom: 0.25rem;
+    color: #ffffff;
 }
 .booking-service {
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: #999999;
 }
 .booking-badges {
     display: flex;
@@ -321,8 +331,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.25rem;
 }
 .booking-action-btn {
-    background: var(--secondary);
-    border: none;
+    background: #1a1a1a;
+    border: 1px solid #333333;
     padding: 0.4rem 0.6rem;
     border-radius: 6px;
     cursor: pointer;
@@ -331,13 +341,17 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     align-items: center;
     gap: 0.3rem;
     white-space: nowrap;
+    color: #ffffff;
 }
 .booking-action-btn:hover {
-    background: var(--primary);
-    color: white;
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
 }
 .booking-action-btn.danger:hover {
     background: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
 }
 
 /* Summary Card */
@@ -391,13 +405,15 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--bg-card);
+    background: #0a0a0a;
     border-radius: 24px 24px 0 0;
     max-height: 90vh;
     overflow-y: auto;
     z-index: 1001;
     transform: translateY(100%);
     transition: transform 0.3s ease;
+    border: 1px solid #333333;
+    color: #ffffff;
 }
 .pos-modal.active {
     display: block;
@@ -424,19 +440,20 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #333333;
     position: sticky;
     top: 0;
-    background: var(--bg-card);
+    background: #0a0a0a;
     z-index: 10;
 }
 .pos-modal-header h3 {
     margin: 0;
     font-size: 1.1rem;
+    color: #ffffff;
 }
 .pos-modal-close {
-    background: var(--secondary);
-    border: none;
+    background: #1a1a1a;
+    border: 1px solid #333333;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -444,6 +461,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #ffffff;
+}
+.pos-modal-close:hover {
+    background: #ffffff;
+    color: #000000;
 }
 .pos-modal-content {
     padding: 1.25rem;
@@ -452,7 +474,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     display: flex;
     gap: 0.75rem;
     padding: 1.25rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid #333333;
 }
 .pos-modal-actions .btn {
     flex: 1;
@@ -482,25 +504,27 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     100% { transform: scale(1); }
 }
 .payment-link-box {
-    background: var(--secondary);
+    background: #1a1a1a;
     border-radius: 12px;
     padding: 1rem;
     margin: 1rem 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    border: 1px solid #333333;
 }
 .payment-link-box input {
     flex: 1;
-    background: white;
-    border: 1px solid var(--border);
+    background: #0a0a0a;
+    border: 1px solid #333333;
     padding: 0.75rem;
     border-radius: 8px;
     font-size: 0.85rem;
+    color: #ffffff;
 }
 .copy-btn {
-    background: var(--primary);
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border: none;
     padding: 0.75rem 1rem;
     border-radius: 8px;
@@ -508,14 +532,14 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     font-weight: 600;
 }
 .copy-btn:hover {
-    opacity: 0.9;
+    background: #e0e0e0;
 }
 
 /* Empty State */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
-    color: var(--text-light);
+    color: #999999;
 }
 .empty-state i {
     font-size: 3rem;
@@ -528,8 +552,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
 /* Digital POS: QR Code Styles */
 .qr-code-section {
-    background: linear-gradient(135deg, #f8f9fa, #fff);
-    border: 2px dashed var(--border);
+    background: #ffffff;
+    border: 2px dashed #333333;
     border-radius: 16px;
     padding: 1.5rem;
     margin: 1rem 0;
@@ -542,11 +566,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #000000;
 }
 .qr-code-header i {
     font-size: 1.25rem;
-    color: var(--primary);
+    color: #000000;
 }
 .qr-code-display {
     display: flex;
@@ -560,13 +584,13 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 }
 .qr-code-hint {
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: #333333;
     margin: 0;
 }
 .qr-code-section .enlarge-btn {
     margin-top: 0.75rem;
-    background: var(--primary);
-    color: white;
+    background: #000000;
+    color: #ffffff;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -574,7 +598,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     font-size: 0.85rem;
 }
 .qr-code-section .enlarge-btn:hover {
-    opacity: 0.9;
+    background: #333333;
 }
 
 /* Digital Share Options */
@@ -590,24 +614,27 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem;
-    border: 1px solid var(--border);
+    border: 1px solid #333333;
     border-radius: 10px;
-    background: var(--bg-card);
+    background: #1a1a1a;
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.2s;
+    color: #ffffff;
 }
 .share-btn:hover {
-    border-color: var(--primary);
-    background: rgba(0,0,0,0.02);
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #000000;
 }
 .share-btn i {
     font-size: 1.1rem;
 }
 .share-btn .fa-whatsapp { color: #25D366; }
 .share-btn .fa-sms { color: #4A90D9; }
-.share-btn .fa-print { color: #666; }
+.share-btn .fa-print { color: #999999; }
+.share-btn:hover .fa-print { color: #333333; }
 
 /* Full Screen QR Modal */
 .fullscreen-qr-modal {
@@ -616,6 +643,9 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .fullscreen-qr-modal #fullQrCodeContainer {
     width: 280px;
     height: 280px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1rem;
 }
 .fullscreen-qr-modal #fullQrCodeContainer canvas,
 .fullscreen-qr-modal #fullQrCodeContainer img {
@@ -627,7 +657,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 .full-qr-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--primary);
+    color: #ffffff;
     margin-bottom: 0.5rem;
 }
 
@@ -639,8 +669,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding: 1rem;
-    background: var(--secondary);
+    background: #1a1a1a;
     border-radius: 12px;
+    border: 1px solid #333333;
+    color: #ffffff;
 }
 .status-dot {
     width: 12px;
@@ -669,11 +701,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <div class="pos-header">
-    <h1>
+    <h1 style="color:#ffffff">
         <i class="fas fa-cash-register"></i>
         POS Systeem
     </h1>
-    <span style="color:var(--text-light)">
+    <span style="color:#999999">
         <i class="fas fa-calendar"></i>
         <?= $dayNames[date('w')] ?>, <?= date('d') ?> <?= $monthNames[date('n') - 1] ?> <?= date('Y') ?>
     </span>
@@ -703,15 +735,16 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                            class="form-control"
                            id="customerSearch"
                            placeholder="Zoek klant op ID, naam, email of telefoon..."
-                           autocomplete="off">
+                           autocomplete="off"
+                           style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                     <div class="customer-search-results" id="customerResults">
                         <!-- Results will be populated via JS -->
                     </div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem">
-                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="E-mail (optioneel)">
-                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="Telefoon (optioneel)">
+                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="E-mail (optioneel)" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="Telefoon (optioneel)" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
 
@@ -723,7 +756,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             <h3><i class="fas fa-concierge-bell"></i> Dienst</h3>
 
             <?php if (empty($services)): ?>
-                <p class="text-muted">Geen diensten gevonden. <a href="/business/services">Voeg diensten toe</a></p>
+                <p style="color:#999999">Geen diensten gevonden. <a href="/business/services" style="color:#ffffff">Voeg diensten toe</a></p>
             <?php else: ?>
                 <div class="service-grid">
                     <?php foreach ($services as $service): ?>
@@ -750,7 +783,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <!-- Employee Section (only for BV) -->
         <div class="pos-form-section">
             <h3><i class="fas fa-user-tie"></i> Medewerker</h3>
-            <select class="form-control" id="selectedEmployee">
+            <select class="form-control" id="selectedEmployee" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 <option value="">-- Geen specifieke medewerker --</option>
                 <?php foreach ($employees as $emp): ?>
                     <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?></option>
@@ -764,12 +797,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             <h3><i class="fas fa-clock"></i> Datum & Tijd</h3>
             <div class="datetime-row">
                 <div>
-                    <label class="form-label">Datum</label>
-                    <input type="date" class="form-control" id="appointmentDate" value="<?= $today ?>" min="<?= $today ?>">
+                    <label class="form-label" style="color:#ffffff">Datum</label>
+                    <input type="date" class="form-control" id="appointmentDate" value="<?= $today ?>" min="<?= $today ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
                 <div>
-                    <label class="form-label">Tijd</label>
-                    <input type="time" class="form-control" id="appointmentTime" value="<?= date('H:00', strtotime('+1 hour')) ?>">
+                    <label class="form-label" style="color:#ffffff">Tijd</label>
+                    <input type="time" class="form-control" id="appointmentTime" value="<?= date('H:00', strtotime('+1 hour')) ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
         </div>
@@ -795,7 +828,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <!-- Notes Section -->
         <div class="pos-form-section">
             <h3><i class="fas fa-sticky-note"></i> Notities (optioneel)</h3>
-            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="Eventuele opmerkingen..."></textarea>
+            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="Eventuele opmerkingen..." style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
 
         <!-- Summary & Submit -->
@@ -834,12 +867,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
     <!-- Right Column: Today's Bookings -->
     <div>
-        <div class="card" style="padding:0">
-            <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-                <h3 style="margin:0;font-size:1rem">
+        <div class="card" style="padding:0;background:#0a0a0a;border:1px solid #333333">
+            <div style="padding:1rem 1.25rem;border-bottom:1px solid #333333;display:flex;justify-content:space-between;align-items:center">
+                <h3 style="margin:0;font-size:1rem;color:#ffffff">
                     <i class="fas fa-calendar-day"></i> Vandaag
                 </h3>
-                <span class="badge" style="background:var(--primary);color:white"><?= count($todayBookings) ?> afspraken</span>
+                <span class="badge" style="background:#ffffff;color:#000000"><?= count($todayBookings) ?> afspraken</span>
             </div>
 
             <div class="bookings-list">
@@ -901,16 +934,16 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Recent Customers -->
         <?php if (!empty($recentCustomers)): ?>
-        <div class="card" style="margin-top:1rem">
+        <div class="card" style="margin-top:1rem;background:#0a0a0a;border:1px solid #333333">
             <div class="card-header">
-                <h3 class="card-title" style="font-size:0.95rem"><i class="fas fa-users"></i> Recente Klanten</h3>
+                <h3 class="card-title" style="font-size:0.95rem;color:#ffffff"><i class="fas fa-users"></i> Recente Klanten</h3>
             </div>
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
-                <div style="padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer"
+                <div style="padding:0.75rem 0;border-bottom:1px solid #333333;cursor:pointer;color:#ffffff"
                      onclick="quickSelectCustomer(<?= (int)$customer['id'] ?>, <?= json_encode($customer['name'] ?? '') ?>, <?= json_encode($customer['email'] ?? '') ?>, <?= json_encode($customer['phone'] ?? '') ?>)">
-                    <strong><?= htmlspecialchars($customer['name'] ?? '') ?></strong> <span style="color:var(--text-light);font-size:0.75rem">#<?= (int)$customer['id'] ?></span>
+                    <strong><?= htmlspecialchars($customer['name'] ?? '') ?></strong> <span style="color:#999999;font-size:0.75rem">#<?= (int)$customer['id'] ?></span>
                     <?php if (!empty($customer['email'])): ?>
-                        <br><small class="text-muted"><?= htmlspecialchars($customer['email']) ?></small>
+                        <br><small style="color:#999999"><?= htmlspecialchars($customer['email']) ?></small>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -941,8 +974,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div class="pos-modal-content">
         <div class="success-animation">
             <div class="checkmark"><i class="fas fa-check"></i></div>
-            <h3 style="margin:0 0 0.5rem 0" id="successTitle">Afspraak succesvol aangemaakt!</h3>
-            <p class="text-muted" id="successSubtitle">De betalingslink is verzonden naar de klant.</p>
+            <h3 style="margin:0 0 0.5rem 0;color:#ffffff" id="successTitle">Afspraak succesvol aangemaakt!</h3>
+            <p style="color:#999999" id="successSubtitle">De betalingslink is verzonden naar de klant.</p>
         </div>
 
         <!-- Digital POS: QR Code for instant payment -->
@@ -962,22 +995,22 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
             </button>
         </div>
 
-        <div style="background:var(--secondary);border-radius:12px;padding:1rem;margin-top:1rem">
-            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+        <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-top:1rem;border:1px solid #333333">
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
                 <span>Klant</span>
-                <strong id="successCustomer">-</strong>
+                <strong id="successCustomer" style="color:#ffffff">-</strong>
             </div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
                 <span>Dienst</span>
-                <strong id="successService">-</strong>
+                <strong id="successService" style="color:#ffffff">-</strong>
             </div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
                 <span>Datum & Tijd</span>
-                <strong id="successDateTime">-</strong>
+                <strong id="successDateTime" style="color:#ffffff">-</strong>
             </div>
-            <div style="display:flex;justify-content:space-between">
+            <div style="display:flex;justify-content:space-between;color:#999999">
                 <span>Online te betalen</span>
-                <strong id="successAmount">-</strong>
+                <strong id="successAmount" style="color:#ffffff">-</strong>
             </div>
         </div>
 
@@ -1014,7 +1047,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div class="pos-modal-content" style="text-align:center;padding:2rem">
         <div id="fullQrCodeContainer" style="margin:0 auto 1.5rem"></div>
         <div class="full-qr-amount" id="fullQrAmount">-</div>
-        <p style="color:var(--text-light);margin:0">Scan met je telefoon om te betalen</p>
+        <p style="color:#999999;margin:0">Scan met je telefoon om te betalen</p>
 
         <!-- Payment status indicator -->
         <div class="payment-status-indicator" id="paymentStatusIndicator">
@@ -1035,20 +1068,20 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     </div>
     <div class="pos-modal-content">
         <div style="margin-bottom:1rem">
-            <label class="form-label">Naam *</label>
-            <input type="text" class="form-control" id="newCustomerName" placeholder="Volledige naam">
+            <label class="form-label" style="color:#ffffff">Naam *</label>
+            <input type="text" class="form-control" id="newCustomerName" placeholder="Volledige naam" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="email@voorbeeld.nl">
+            <label class="form-label" style="color:#ffffff">E-mail</label>
+            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="email@voorbeeld.nl" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label">Telefoon</label>
-            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="06-12345678">
+            <label class="form-label" style="color:#ffffff">Telefoon</label>
+            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="06-12345678" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div>
-            <label class="form-label">Notities</label>
-            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="Optionele notities..."></textarea>
+            <label class="form-label" style="color:#ffffff">Notities</label>
+            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="Optionele notities..." style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
     </div>
     <div class="pos-modal-actions">

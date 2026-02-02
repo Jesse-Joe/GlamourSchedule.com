@@ -376,7 +376,7 @@
             </div>
             <div style="display:flex;flex-direction:column;gap:0.75rem">
                 <div style="display:flex;align-items:start;gap:0.75rem">
-                    <span style="background:var(--primary);color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">LOGO</span>
+                    <span style="background:#ffffff;color:#000000;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem;border:1px solid #333333">LOGO</span>
                     <span class="text-muted" style="font-size:0.85rem">Je bedrijfslogo, wordt klein weergegeven</span>
                 </div>
                 <div style="display:flex;align-items:start;gap:0.75rem">

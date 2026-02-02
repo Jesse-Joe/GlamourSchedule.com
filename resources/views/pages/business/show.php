@@ -2,16 +2,14 @@
 /**
  * BUSINESS PAGE TEMPLATE
  * ======================
- * Layout: Consistent for ALL businesses
+ * Layout: Customizable via business theme settings
  * Theme: Follows user preference (dark/light toggle)
  * Accents: Uses business colors if set, otherwise default
- *
- * This ensures brand consistency while allowing businesses
- * to customize their accent color for highlights/buttons.
  */
 
 // Business accent color from settings
 $rawAccentColor = $settings['primary_color'] ?? '';
+$secondaryColor = $settings['secondary_color'] ?? '#333333';
 
 // Helper function to calculate color luminance (0-255)
 function getColorLuminance($hex) {
@@ -27,9 +25,8 @@ function getColorLuminance($hex) {
 }
 
 // Determine accent colors for both themes
-// Dark theme needs light accents, light theme needs dark accents
-$defaultDarkAccent = '#ffffff';  // White accent for dark mode
-$defaultLightAccent = '#000000'; // Black accent for light mode
+$defaultDarkAccent = '#ffffff';
+$defaultLightAccent = '#000000';
 
 $accentLuminance = !empty($rawAccentColor) ? getColorLuminance($rawAccentColor) : -1;
 
@@ -43,6 +40,37 @@ $lightThemeAccent = ($accentLuminance >= 0 && $accentLuminance < 200) ? $rawAcce
 $showReviews = ($settings['show_reviews'] ?? 1) == 1;
 $showPrices = ($settings['show_prices'] ?? 1) == 1;
 $showDuration = ($settings['show_duration'] ?? 1) == 1;
+
+// Theme settings
+$layoutTemplate = $settings['layout_template'] ?? 'classic';
+$fontFamily = $settings['font_family'] ?? 'playfair';
+$fontStyle = $settings['font_style'] ?? 'elegant';
+$buttonStyle = $settings['button_style'] ?? 'rounded';
+$headerStyle = $settings['header_style'] ?? 'gradient';
+$galleryStyle = $settings['gallery_style'] ?? 'grid';
+$customCss = $settings['custom_css'] ?? '';
+
+// Font mapping
+$fontFamilyMap = [
+    'playfair' => "'Playfair Display', serif",
+    'cormorant' => "'Cormorant Garamond', serif",
+    'lora' => "'Lora', serif",
+    'montserrat' => "'Montserrat', sans-serif",
+    'poppins' => "'Poppins', sans-serif",
+    'dancing' => "'Dancing Script', cursive",
+    'great-vibes' => "'Great Vibes', cursive",
+    'raleway' => "'Raleway', sans-serif",
+];
+$headingFont = $fontFamilyMap[$fontFamily] ?? $fontFamilyMap['playfair'];
+
+// Button border radius
+$buttonRadiusMap = [
+    'rounded' => '25px',
+    'square' => '4px',
+    'pill' => '50px',
+    'sharp' => '0',
+];
+$buttonRadius = $buttonRadiusMap[$buttonStyle] ?? '25px';
 
 // Images
 $coverImage = $business['cover_image'] ?? $business['banner_image'] ?? null;
@@ -60,19 +88,22 @@ if (!$coverImage && !empty($images)) {
 ?>
 <?php ob_start(); ?>
 
+<!-- Google Fonts for theme -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 /* =============================================
-   BUSINESS PAGE - Theme Aware
-
-   Supports both dark and light modes via data-theme attribute.
-   Business accent color adapts to be visible on both themes.
+   BUSINESS PAGE - Theme Aware + Custom Settings
    ============================================= */
 
 /* ========== DARK THEME (Default) ========== */
 .biz-page,
 [data-theme="dark"] .biz-page {
     --accent: <?= htmlspecialchars($darkThemeAccent) ?>;
-    --accent-text: #000000;     /* Text on accent buttons */
+    --accent-text: #000000;
+    --secondary: <?= htmlspecialchars($secondaryColor) ?>;
 
     --bg: #000000;
     --bg-elevated: #0a0a0a;
@@ -88,12 +119,16 @@ if (!$coverImage && !empty($images)) {
 
     --hero-overlay: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 100%);
     --map-filter: grayscale(100%) invert(100%) contrast(90%);
+
+    --heading-font: <?= $headingFont ?>;
+    --button-radius: <?= $buttonRadius ?>;
 }
 
 /* ========== LIGHT THEME ========== */
 [data-theme="light"] .biz-page {
     --accent: <?= htmlspecialchars($lightThemeAccent) ?>;
-    --accent-text: #ffffff;     /* Text on accent buttons */
+    --accent-text: #ffffff;
+    --secondary: <?= htmlspecialchars($secondaryColor) ?>;
 
     --bg: #ffffff;
     --bg-elevated: #f8f8f8;
@@ -109,7 +144,266 @@ if (!$coverImage && !empty($images)) {
 
     --hero-overlay: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.2) 100%);
     --map-filter: none;
+
+    --heading-font: <?= $headingFont ?>;
+    --button-radius: <?= $buttonRadius ?>;
 }
+
+/* ========== FONT STYLES ========== */
+.biz-title,
+.biz-card-title,
+.biz-service-name {
+    font-family: var(--heading-font);
+}
+
+<?php if ($fontStyle === 'elegant'): ?>
+.biz-title { font-style: italic; }
+<?php elseif ($fontStyle === 'bold'): ?>
+.biz-title { font-weight: 800; }
+<?php elseif ($fontStyle === 'light'): ?>
+.biz-title { font-weight: 300; }
+<?php endif; ?>
+
+/* ========== BUTTON STYLES ========== */
+.biz-nav-cta,
+.biz-float-btn {
+    border-radius: var(--button-radius);
+}
+
+/* ========== HEADER STYLES ========== */
+<?php if ($headerStyle === 'solid'): ?>
+.biz-hero-bg {
+    background: var(--accent) !important;
+}
+.biz-hero-bg img {
+    display: none;
+}
+<?php elseif ($headerStyle === 'transparent'): ?>
+.biz-hero {
+    min-height: 200px;
+    height: auto;
+}
+.biz-hero-bg {
+    background: transparent !important;
+}
+.biz-hero-bg img {
+    display: none;
+}
+.biz-hero-overlay {
+    background: none !important;
+}
+.biz-tagline,
+.biz-location-hero {
+    color: var(--text-secondary);
+}
+<?php elseif ($headerStyle === 'image'): ?>
+.biz-hero-bg {
+    background: #000 !important;
+}
+.biz-hero-bg img {
+    opacity: 1;
+}
+<?php endif; ?>
+
+/* ========== GALLERY STYLES ========== */
+<?php if ($galleryStyle === 'carousel'): ?>
+.biz-gallery {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 8px;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--border);
+}
+.biz-gallery::-webkit-scrollbar {
+    height: 6px;
+}
+.biz-gallery::-webkit-scrollbar-track {
+    background: var(--border);
+    border-radius: 3px;
+}
+.biz-gallery::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}
+.biz-gallery-item {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+}
+.biz-gallery-item:first-child {
+    grid-column: auto;
+    grid-row: auto;
+}
+@media (min-width: 768px) {
+    .biz-gallery-item {
+        flex: 0 0 350px;
+    }
+}
+<?php elseif ($galleryStyle === 'masonry'): ?>
+.biz-gallery {
+    display: block;
+    columns: 2;
+    column-gap: 4px;
+}
+.biz-gallery-item {
+    break-inside: avoid;
+    margin-bottom: 4px;
+    aspect-ratio: auto;
+    border-radius: 8px;
+}
+.biz-gallery-item:first-child {
+    grid-column: auto;
+    grid-row: auto;
+}
+.biz-gallery-item img {
+    width: 100%;
+    height: auto;
+}
+@media (min-width: 768px) {
+    .biz-gallery {
+        columns: 3;
+    }
+}
+<?php endif; ?>
+
+/* ========== LAYOUT: SIDEBAR ========== */
+<?php if ($layoutTemplate === 'sidebar'): ?>
+@media (min-width: 768px) {
+    .biz-grid {
+        grid-template-columns: 340px 1fr;
+    }
+    .biz-sidebar {
+        order: -1;
+    }
+    .biz-main {
+        order: 1;
+    }
+}
+<?php endif; ?>
+
+/* ========== LAYOUT: HERO ========== */
+<?php if ($layoutTemplate === 'hero'): ?>
+.biz-hero {
+    height: 60vh;
+    min-height: 450px;
+    max-height: 600px;
+}
+.biz-title {
+    font-size: 2.5rem;
+}
+@media (min-width: 768px) {
+    .biz-title {
+        font-size: 3.5rem;
+    }
+}
+<?php endif; ?>
+
+/* ========== LAYOUT: MINIMAL ========== */
+<?php if ($layoutTemplate === 'minimal'): ?>
+.biz-hero {
+    height: auto;
+    min-height: 200px;
+    padding: 2rem 0;
+}
+.biz-hero-bg img {
+    display: none;
+}
+.biz-hero-overlay {
+    background: none;
+}
+.biz-logo {
+    display: none;
+}
+.biz-badges {
+    display: none;
+}
+.biz-nav {
+    display: none;
+}
+.biz-tagline,
+.biz-location-hero {
+    color: var(--text-secondary);
+}
+<?php endif; ?>
+
+/* ========== LAYOUT: CARDS ========== */
+<?php if ($layoutTemplate === 'cards'): ?>
+.biz-services {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+.biz-service {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px;
+    background: var(--surface);
+    transition: all 0.3s;
+}
+.biz-service:hover {
+    border-color: var(--accent) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+}
+.biz-service-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 16px;
+}
+.biz-service-info {
+    text-align: center;
+}
+.biz-service-meta {
+    justify-content: center;
+}
+.biz-service-right {
+    flex-direction: column;
+    margin-top: 1rem;
+    gap: 0.5rem;
+}
+.biz-service-price {
+    font-size: 1.5rem;
+}
+.biz-service-arrow {
+    display: none;
+}
+<?php endif; ?>
+
+/* ========== LAYOUT: MAGAZINE ========== */
+<?php if ($layoutTemplate === 'magazine'): ?>
+@media (min-width: 768px) {
+    .biz-grid {
+        display: block;
+    }
+    .biz-main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    .biz-main > .biz-card:first-child {
+        grid-column: span 2;
+    }
+    .biz-sidebar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    .biz-sidebar .biz-card + .biz-card {
+        margin-top: 0;
+    }
+}
+<?php endif; ?>
+
+/* ========== CUSTOM CSS ========== */
+<?= $customCss ?>
 
 * { box-sizing: border-box; }
 
@@ -1360,7 +1654,7 @@ if (!$coverImage && !empty($images)) {
 }
 </style>
 
-<div class="biz-page">
+<div class="biz-page biz-layout-<?= htmlspecialchars($layoutTemplate) ?>" data-layout="<?= htmlspecialchars($layoutTemplate) ?>" data-gallery="<?= htmlspecialchars($galleryStyle) ?>">
     <!-- Hero -->
     <section class="biz-hero">
         <div class="biz-hero-bg">
@@ -1448,7 +1742,8 @@ if (!$coverImage && !empty($images)) {
                 <!-- Gallery -->
                 <?php if (!empty($images)):
                     $imgCount = count($images);
-                    $maxShow = min(5, $imgCount);
+                    // Carousel shows all images, grid/masonry show limited
+                    $maxShow = ($galleryStyle === 'carousel') ? $imgCount : min(5, $imgCount);
                 ?>
                 <div class="biz-card" id="fotos">
                     <div class="biz-card-header">
@@ -1456,11 +1751,11 @@ if (!$coverImage && !empty($images)) {
                         <span class="biz-card-count"><?= $imgCount ?></span>
                     </div>
                     <div class="biz-card-body" style="padding:0.5rem">
-                        <div class="biz-gallery">
+                        <div class="biz-gallery biz-gallery-<?= htmlspecialchars($galleryStyle) ?>">
                             <?php foreach (array_slice($images, 0, $maxShow) as $i => $img): ?>
                                 <div class="biz-gallery-item" onclick="openLightbox(<?= $i ?>)">
                                     <img src="<?= htmlspecialchars($img['image_path']) ?>" alt="" loading="lazy">
-                                    <?php if ($i == $maxShow - 1 && $imgCount > $maxShow): ?>
+                                    <?php if ($galleryStyle === 'grid' && $i == $maxShow - 1 && $imgCount > $maxShow): ?>
                                         <div class="biz-gallery-more">
                                             <span>+<?= $imgCount - $maxShow ?></span>
                                             <span>meer</span>

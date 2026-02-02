@@ -23,9 +23,9 @@
         color: #000000;
     }
     .filter-tab.active {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border-color: transparent;
+        background: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
     }
     .booking-row {
         display: grid;

@@ -98,10 +98,17 @@ class BusinessController extends Controller
         );
         $settings = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        return $settings ?: [
+        // Default settings
+        $defaults = [
             'primary_color' => '#000000',
             'secondary_color' => '#333333',
             'accent_color' => '#000000',
+            'font_family' => 'playfair',
+            'font_style' => 'elegant',
+            'layout_template' => 'classic',
+            'button_style' => 'rounded',
+            'header_style' => 'gradient',
+            'gallery_style' => 'grid',
             'tagline' => '',
             'about_title' => '',
             'about_text' => '',
@@ -109,8 +116,16 @@ class BusinessController extends Controller
             'show_reviews' => 1,
             'show_prices' => 1,
             'show_duration' => 1,
-            'gallery_style' => 'grid',
+            'show_availability' => 1,
+            'custom_css' => '',
         ];
+
+        // Merge with defaults
+        if ($settings) {
+            return array_merge($defaults, $settings);
+        }
+
+        return $defaults;
     }
 
     private function getReviewStats(int $businessId): array
@@ -176,6 +191,19 @@ class BusinessController extends Controller
 
     private function getBusinessImages(int $businessId): array
     {
+        // Try business_photos first (main photo table used by dashboard)
+        $stmt = $this->db->query(
+            "SELECT id, business_id, filename, original_name as alt_text, path as image_path, is_primary, sort_order, created_at
+             FROM business_photos WHERE business_id = ? ORDER BY is_primary DESC, sort_order LIMIT 10",
+            [$businessId]
+        );
+        $photos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (!empty($photos)) {
+            return $photos;
+        }
+
+        // Fallback to business_images if no photos found
         $stmt = $this->db->query(
             "SELECT * FROM business_images WHERE business_id = ? ORDER BY sort_order LIMIT 10",
             [$businessId]
