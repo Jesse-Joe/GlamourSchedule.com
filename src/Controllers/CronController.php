@@ -1077,63 +1077,41 @@ HTML;
             $this->logPayout("Total payout amount needed: €" . number_format($totalNeeded, 2));
             $this->logPayout("Number of businesses to pay: " . count($businessPayouts));
 
-            // Check if Bunq is configured for automatic transfers (Dutch IBANs)
-            $bunq = new BunqService();
-            $useBunq = $bunq->isConfigured();
-
-            // Check if Wise is configured for international transfers (non-Dutch IBANs)
+            // Check if Wise is configured for automatic transfers
             $wise = new WiseService();
             $useWise = $wise->isConfigured();
 
-            if (!$useBunq && !$useWise) {
-                $this->logPayout("WARNING: Neither Bunq nor Wise configured - payouts will require manual processing");
+            if (!$useWise) {
+                $this->logPayout("WARNING: Wise not configured - payouts will require manual processing");
             } else {
-                if ($useBunq) {
-                    $this->logPayout("Bunq configured for Dutch IBAN payouts");
-                }
-                if ($useWise) {
-                    $this->logPayout("Wise configured for international IBAN payouts");
-                }
+                $this->logPayout("Wise configured for all IBAN payouts");
             }
 
-            // CRITICAL: Check Bunq balance before proceeding
-            $bunqBalance = null;
+            // CRITICAL: Check Wise balance before proceeding
+            $wiseBalance = null;
             $sufficientFunds = false;
 
-            if ($useBunq) {
-                $bunqBalance = $bunq->getBalance();
-                $this->logPayout("Bunq balance: €" . ($bunqBalance !== null ? number_format($bunqBalance, 2) : 'UNKNOWN'));
+            if ($useWise) {
+                $wiseBalance = $wise->getEurBalance();
+                $this->logPayout("Wise EUR balance: €" . ($wiseBalance !== null ? number_format($wiseBalance, 2) : 'UNKNOWN'));
 
-                if ($bunqBalance === null) {
-                    // Cannot determine balance - abort automatic payments
-                    $this->logPayout("ERROR: Could not retrieve Bunq balance - aborting automatic payments");
-                    $this->sendBalanceErrorAlert($businessPayouts, $totalNeeded);
-                    return json_encode([
-                        'success' => false,
-                        'error' => 'Could not retrieve Bunq balance',
-                        'total_needed' => $totalNeeded,
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
+                if ($wiseBalance === null) {
+                    // Cannot determine balance - continue but warn
+                    $this->logPayout("WARNING: Could not retrieve Wise balance - proceeding anyway");
                 }
 
-                // Add 10% safety margin
-                $requiredBalance = $totalNeeded * 1.10;
-                $sufficientFunds = $bunqBalance >= $requiredBalance;
+                if ($wiseBalance !== null) {
+                    // Add 10% safety margin
+                    $requiredBalance = $totalNeeded * 1.10;
+                    $sufficientFunds = $wiseBalance >= $requiredBalance;
 
-                if (!$sufficientFunds) {
-                    $this->logPayout("ERROR: Insufficient funds - Need €" . number_format($requiredBalance, 2) . ", Have €" . number_format($bunqBalance, 2));
-                    $this->sendInsufficientFundsAlert($businessPayouts, $totalNeeded, $bunqBalance);
-                    return json_encode([
-                        'success' => false,
-                        'error' => 'Insufficient Bunq balance',
-                        'balance' => $bunqBalance,
-                        'required' => $requiredBalance,
-                        'total_needed' => $totalNeeded,
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
+                    if (!$sufficientFunds) {
+                        $this->logPayout("WARNING: Low Wise balance - Need €" . number_format($requiredBalance, 2) . ", Have €" . number_format($wiseBalance, 2));
+                        $this->sendInsufficientFundsAlert($businessPayouts, $totalNeeded, $wiseBalance);
+                    } else {
+                        $this->logPayout("Balance check PASSED: €" . number_format($wiseBalance, 2) . " >= €" . number_format($requiredBalance, 2));
+                    }
                 }
-
-                $this->logPayout("Balance check PASSED: €" . number_format($bunqBalance, 2) . " >= €" . number_format($requiredBalance, 2));
             }
 
             $payoutsProcessed = 0;
@@ -1158,36 +1136,17 @@ HTML;
                 $payoutId = $this->db->lastInsertId();
                 $payout['payout_id'] = $payoutId;
 
-                // Determine payment method based on IBAN country
+                // Payment details
                 $ibanCountry = strtoupper(substr(str_replace(' ', '', $payout['iban']), 0, 2));
-                $isDutchIban = ($ibanCountry === 'NL');
                 $description = "GlamourSchedule uitbetaling #$payoutId";
                 $paymentSuccess = false;
                 $paymentMethod = 'manual';
                 $transactionId = null;
                 $errorMessage = null;
 
-                // Try automatic payment
-                if ($isDutchIban && $useBunq) {
-                    // Dutch IBAN - use Bunq
-                    $this->logPayout("Processing {$payout['company_name']} via Bunq (Dutch IBAN: $ibanCountry)");
-                    $result = $bunq->makePayment(
-                        $payout['iban'],
-                        $payout['company_name'],
-                        $payout['total_payout'],
-                        $description
-                    );
-
-                    if ($result['success']) {
-                        $paymentSuccess = true;
-                        $paymentMethod = 'bunq';
-                        $transactionId = $result['payment_id'];
-                    } else {
-                        $errorMessage = $result['error'];
-                    }
-                } elseif (!$isDutchIban && $useWise) {
-                    // International IBAN - use Wise
-                    $this->logPayout("Processing {$payout['company_name']} via Wise (International IBAN: $ibanCountry)");
+                // Try automatic payment via Wise
+                if ($useWise) {
+                    $this->logPayout("Processing {$payout['company_name']} via Wise (IBAN: $ibanCountry)");
                     $result = $wise->makePayment(
                         $payout['iban'],
                         $payout['company_name'],
@@ -1202,28 +1161,11 @@ HTML;
                     } else {
                         $errorMessage = $result['error'];
                     }
-                } elseif (!$isDutchIban && $useBunq) {
-                    // International IBAN but only Bunq available - try Bunq (may support SEPA)
-                    $this->logPayout("Processing {$payout['company_name']} via Bunq (International IBAN: $ibanCountry - Wise not configured)");
-                    $result = $bunq->makePayment(
-                        $payout['iban'],
-                        $payout['company_name'],
-                        $payout['total_payout'],
-                        $description
-                    );
-
-                    if ($result['success']) {
-                        $paymentSuccess = true;
-                        $paymentMethod = 'bunq';
-                        $transactionId = $result['payment_id'];
-                    } else {
-                        $errorMessage = $result['error'];
-                    }
                 }
 
                 // Process result
                 if ($paymentSuccess) {
-                    $methodNote = $paymentMethod === 'bunq' ? 'Automatisch via Bunq' : 'Automatisch via Wise';
+                    $methodNote = 'Automatisch via Wise';
 
                     // Mark as completed
                     $this->db->query(
@@ -1288,13 +1230,12 @@ HTML;
             }
 
             // Send admin notification
-            $this->sendWeeklyAdminNotification($businessPayouts, $totalAmount, $useBunq || $useWise, count($manualPayouts));
+            $this->sendWeeklyAdminNotification($businessPayouts, $totalAmount, $useWise, count($manualPayouts));
 
             $this->logPayout("Weekly payout complete. Auto: $payoutsProcessed success, $payoutsFailed failed. Manual: " . count($manualPayouts));
 
             return json_encode([
                 'success' => true,
-                'bunq_enabled' => $useBunq,
                 'wise_enabled' => $useWise,
                 'payouts_processed' => $payoutsProcessed,
                 'payouts_failed' => $payoutsFailed,
@@ -1410,7 +1351,7 @@ HTML;
     /**
      * Send weekly admin notification
      */
-    private function sendWeeklyAdminNotification(array $payouts, float $totalAmount, bool $bunqEnabled = false, int $manualCount = 0): void
+    private function sendWeeklyAdminNotification(array $payouts, float $totalAmount, bool $wiseEnabled = false, int $manualCount = 0): void
     {
         $mailer = new Mailer();
         $adminEmail = 'jjt-services@outlook.com';
@@ -1422,9 +1363,9 @@ HTML;
 
         $payoutsList = '';
         foreach ($payouts as $p) {
-            $status = $p['bunq_status'] ?? 'manual';
+            $status = $p['payment_status'] ?? 'manual';
             if ($status === 'success') {
-                $statusBadge = '<span style="background:#22c55e;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">Automatisch</span>';
+                $statusBadge = '<span style="background:#22c55e;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">Wise</span>';
                 $successCount++;
                 $successAmount += $p['total_payout'];
             } elseif ($status === 'failed') {
@@ -1444,7 +1385,7 @@ HTML;
             </tr>";
         }
 
-        if ($bunqEnabled && $manualCount === 0) {
+        if ($wiseEnabled && $manualCount === 0) {
             $subject = "Wekelijkse uitbetalingen voltooid - €" . number_format($totalAmount, 2, ',', '.');
             $headerBg = '#22c55e';
             $headerText = 'Alle Uitbetalingen Automatisch Verwerkt';
@@ -1517,7 +1458,7 @@ HTML;
 
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
                     <p style='margin:0;font-size:13px;color:#cccccc;'>
-                        <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
+                        <strong>Wise automatisering:</strong> " . ($wiseEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
                         <strong>Totaal verwerkt:</strong> €" . number_format($totalAmount, 2, ',', '.') . "
                     </p>
                 </div>
@@ -1892,41 +1833,26 @@ HTML;
             $totalNeeded = array_sum(array_column($salesPartners, 'total_commission'));
             $this->logSalesPayout("Total payout amount needed: €" . number_format($totalNeeded, 2));
 
-            // Check Bunq configuration
-            $bunq = new BunqService();
-            $useBunq = $bunq->isConfigured();
+            // Check Wise configuration
+            $wise = new WiseService();
+            $useWise = $wise->isConfigured();
 
-            if (!$useBunq) {
-                $this->logSalesPayout("WARNING: Bunq not configured - payouts will require manual processing");
+            if (!$useWise) {
+                $this->logSalesPayout("WARNING: Wise not configured - payouts will require manual processing");
             }
 
-            // Check Bunq balance
-            if ($useBunq) {
-                $bunqBalance = $bunq->getBalance();
-                if ($bunqBalance === null) {
-                    $this->logSalesPayout("ERROR: Could not retrieve Bunq balance");
-                    $this->sendSalesBalanceErrorAlert($salesPartners, $totalNeeded);
-                    return json_encode([
-                        'success' => false,
-                        'error' => 'Could not retrieve Bunq balance',
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
+            // Check Wise balance
+            if ($useWise) {
+                $wiseBalance = $wise->getEurBalance();
+                if ($wiseBalance !== null) {
+                    $requiredBalance = $totalNeeded * 1.10; // 10% safety margin
+                    if ($wiseBalance < $requiredBalance) {
+                        $this->logSalesPayout("WARNING: Low Wise balance - Need €" . number_format($requiredBalance, 2) . ", Have €" . number_format($wiseBalance, 2));
+                        $this->sendSalesInsufficientFundsAlert($salesPartners, $totalNeeded, $wiseBalance);
+                    } else {
+                        $this->logSalesPayout("Balance check PASSED: €" . number_format($wiseBalance, 2));
+                    }
                 }
-
-                $requiredBalance = $totalNeeded * 1.10; // 10% safety margin
-                if ($bunqBalance < $requiredBalance) {
-                    $this->logSalesPayout("ERROR: Insufficient funds - Need €" . number_format($requiredBalance, 2) . ", Have €" . number_format($bunqBalance, 2));
-                    $this->sendSalesInsufficientFundsAlert($salesPartners, $totalNeeded, $bunqBalance);
-                    return json_encode([
-                        'success' => false,
-                        'error' => 'Insufficient Bunq balance for sales payouts',
-                        'balance' => $bunqBalance,
-                        'required' => $requiredBalance,
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                }
-
-                $this->logSalesPayout("Balance check PASSED: €" . number_format($bunqBalance, 2));
             }
 
             $payoutsProcessed = 0;
@@ -1972,21 +1898,21 @@ HTML;
 
                 $this->logSalesPayout("Processing {$partner['sales_name']}: " . count($referrals) . " salons - " . $businessList);
 
-                // Try Bunq automatic transfer
-                if ($useBunq) {
+                // Try Wise automatic transfer
+                if ($useWise) {
                     $description = "GlamourSchedule commissie - " . count($referrals) . " salon(s)";
-                    $bunqResult = $bunq->makePayment(
+                    $wiseResult = $wise->makePayment(
                         $partner['sales_iban'],
                         $partner['sales_name'],
                         $partner['total_commission'],
                         $description
                     );
 
-                    if ($bunqResult['success']) {
+                    if ($wiseResult['success']) {
                         // Mark payout as completed
                         $this->db->query(
                             "UPDATE sales_payouts SET status = 'completed', transaction_id = ?, completed_at = NOW() WHERE id = ?",
-                            [$bunqResult['payment_id'], $payoutId]
+                            [$wiseResult['transfer_id'], $payoutId]
                         );
 
                         // Update referrals status to 'paid'
@@ -2005,7 +1931,7 @@ HTML;
                         $payoutsProcessed++;
                         $totalAmount += $partner['total_commission'];
 
-                        $this->logSalesPayout("SUCCESS: {$partner['sales_name']} - €" . number_format($partner['total_commission'], 2) . " - {$bunqResult['payment_id']}");
+                        $this->logSalesPayout("SUCCESS: {$partner['sales_name']} - €" . number_format($partner['total_commission'], 2) . " - {$wiseResult['transfer_id']}");
 
                         $results[] = [
                             'partner' => $partner['sales_name'],
@@ -2018,21 +1944,21 @@ HTML;
                         // Mark as failed
                         $this->db->query(
                             "UPDATE sales_payouts SET status = 'failed', notes = ? WHERE id = ?",
-                            ['Bunq error: ' . $bunqResult['error'], $payoutId]
+                            ['Wise error: ' . $wiseResult['error'], $payoutId]
                         );
 
                         $payoutsFailed++;
 
-                        $this->logSalesPayout("FAILED: {$partner['sales_name']} - " . $bunqResult['error']);
+                        $this->logSalesPayout("FAILED: {$partner['sales_name']} - " . $wiseResult['error']);
 
                         $results[] = [
                             'partner' => $partner['sales_name'],
                             'status' => 'failed',
-                            'error' => $bunqResult['error']
+                            'error' => $wiseResult['error']
                         ];
                     }
                 } else {
-                    // No Bunq - mark for manual processing
+                    // No Wise - mark for manual processing
                     $this->db->query(
                         "UPDATE sales_payouts SET status = 'pending', notes = 'Handmatige overboeking vereist' WHERE id = ?",
                         [$payoutId]
@@ -2056,13 +1982,13 @@ HTML;
             }
 
             // Send admin notification
-            $this->sendSalesAdminNotification($salesPartners, $totalAmount, $useBunq, $payoutsFailed);
+            $this->sendSalesAdminNotification($salesPartners, $totalAmount, $useWise, $payoutsFailed);
 
             $this->logSalesPayout("Sales payout complete. Success: $payoutsProcessed, Failed: $payoutsFailed, Total: €" . number_format($totalAmount, 2));
 
             return json_encode([
                 'success' => true,
-                'bunq_enabled' => $useBunq,
+                'wise_enabled' => $useWise,
                 'payouts_processed' => $payoutsProcessed,
                 'payouts_failed' => $payoutsFailed,
                 'total_amount' => $totalAmount,
@@ -2178,7 +2104,7 @@ HTML;
     /**
      * Send admin notification for sales payouts
      */
-    private function sendSalesAdminNotification(array $partners, float $totalAmount, bool $bunqEnabled, int $failedCount): void
+    private function sendSalesAdminNotification(array $partners, float $totalAmount, bool $wiseEnabled, int $failedCount): void
     {
         $mailer = new Mailer();
         $adminEmail = 'jjt-services@outlook.com';
@@ -2188,7 +2114,7 @@ HTML;
         $manualCount = 0;
 
         foreach ($partners as $p) {
-            $status = $p['bunq_status'] ?? ($bunqEnabled ? 'success' : 'manual');
+            $status = $p['payment_status'] ?? ($wiseEnabled ? 'success' : 'manual');
             if ($status === 'success') {
                 $badge = '<span style="background:#22c55e;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">Automatisch</span>';
                 $successCount++;
@@ -2260,7 +2186,7 @@ HTML;
 
                 <div style='background:#f9fafb;border-radius:8px;padding:15px;margin-top:20px;'>
                     <p style='margin:0;font-size:13px;color:#cccccc;'>
-                        <strong>Bunq automatisering:</strong> " . ($bunqEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
+                        <strong>Wise automatisering:</strong> " . ($wiseEnabled ? 'Actief' : 'Niet geconfigureerd') . "<br>
                         <strong>Commissie per salon:</strong> €49,99 (na betaling registratiefee)<br>
                         <strong>Minimum uitbetaling:</strong> €" . number_format(self::SALES_MINIMUM_PAYOUT, 2, ',', '.') . "
                     </p>
