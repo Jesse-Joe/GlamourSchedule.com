@@ -44,6 +44,9 @@ class BusinessDashboardController extends Controller
         $aiManager = new GlamoriManager($this->db);
         $aiManagerData = $aiManager->getWidgetData($this->business['id']);
 
+        // Check if KVK verification is needed (no KVK verified and not admin verified)
+        $kvkVerificationNeeded = empty($this->business['kvk_verified']) && empty($this->business['is_verified']);
+
         return $this->view('pages/business/dashboard/index', [
             'pageTitle' => 'Bedrijf Dashboard',
             'business' => $this->business,
@@ -52,7 +55,8 @@ class BusinessDashboardController extends Controller
             'recentBookings' => $recentBookings,
             'isNewRegistration' => $isNewRegistration,
             'profileCompletion' => $profileCompletion,
-            'aiManager' => $aiManagerData
+            'aiManager' => $aiManagerData,
+            'kvkVerificationNeeded' => $kvkVerificationNeeded
         ]);
     }
 
@@ -332,7 +336,10 @@ class BusinessDashboardController extends Controller
 
     public function updateWebsite(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/website');
+        }
 
         $settings = [
             'tagline' => trim($_POST['tagline'] ?? ''),
@@ -381,7 +388,10 @@ class BusinessDashboardController extends Controller
 
     public function uploadPhoto(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/photos');
+        }
 
         if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Geen bestand geüpload of er was een fout.'];
@@ -446,7 +456,10 @@ class BusinessDashboardController extends Controller
 
     public function deletePhoto(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/photos');
+        }
 
         $imageId = (int)($_POST['image_id'] ?? 0);
 
@@ -474,22 +487,35 @@ class BusinessDashboardController extends Controller
 
     public function reorderPhotos(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        header('Content-Type: application/json');
 
-        $order = json_decode($_POST['order'] ?? '[]', true);
-
-        if (is_array($order)) {
-            foreach ($order as $position => $imageId) {
-                $this->db->query(
-                    "UPDATE business_images SET sort_order = ? WHERE id = ? AND business_id = ?",
-                    [$position, (int)$imageId, $this->business['id']]
-                );
-            }
+        if (!$this->verifyCsrf()) {
+            http_response_code(403);
+            return json_encode(['success' => false, 'error' => 'CSRF token mismatch']);
         }
 
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
-        exit;
+        $orderJson = $_POST['order'] ?? '[]';
+        $order = json_decode($orderJson, true);
+
+        // Validate JSON decode was successful and result is array
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($order)) {
+            http_response_code(400);
+            return json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+        }
+
+        // Validate all values are integers
+        foreach ($order as $position => $imageId) {
+            if (!is_numeric($imageId)) {
+                http_response_code(400);
+                return json_encode(['success' => false, 'error' => 'Invalid image ID']);
+            }
+            $this->db->query(
+                "UPDATE business_images SET sort_order = ? WHERE id = ? AND business_id = ?",
+                [(int)$position, (int)$imageId, $this->business['id']]
+            );
+        }
+
+        return json_encode(['success' => true]);
     }
 
     // ============================================================
@@ -502,7 +528,8 @@ class BusinessDashboardController extends Controller
     public function uploadBanner(): string
     {
         if (!$this->verifyCsrf()) {
-            die('CSRF token mismatch');
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/photos');
         }
 
         if (!isset($_FILES['banner']) || $_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
@@ -587,7 +614,8 @@ class BusinessDashboardController extends Controller
     public function updateBannerPosition(): string
     {
         if (!$this->verifyCsrf()) {
-            die('CSRF token mismatch');
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/photos');
         }
 
         $position = $_POST['banner_position'] ?? 'center';
@@ -610,7 +638,8 @@ class BusinessDashboardController extends Controller
     public function deleteBanner(): string
     {
         if (!$this->verifyCsrf()) {
-            die('CSRF token mismatch');
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/photos');
         }
 
         $bannerPath = $this->business['banner_image'] ?? null;
@@ -872,7 +901,10 @@ class BusinessDashboardController extends Controller
 
     public function updateProfile(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/profile');
+        }
 
         $data = [
             'company_name' => trim($_POST['company_name'] ?? ''),
@@ -991,7 +1023,10 @@ class BusinessDashboardController extends Controller
 
     public function respondToReview(): string
     {
-        if (!$this->verifyCsrf()) { die('CSRF token mismatch'); }
+        if (!$this->verifyCsrf()) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            return $this->redirect('/business/reviews');
+        }
 
         $reviewId = (int)($_POST['review_id'] ?? 0);
         $response = trim($_POST['response'] ?? '');

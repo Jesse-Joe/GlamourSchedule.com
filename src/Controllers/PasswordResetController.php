@@ -178,6 +178,7 @@ class PasswordResetController extends Controller
         $resetUrl = "https://glamourschedule.nl/reset-password/{$token}";
 
         $subject = "Wachtwoord herstellen - GlamourSchedule";
+        $currentYear = date('Y');
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -229,7 +230,7 @@ class PasswordResetController extends Controller
                     <!-- Footer -->
                     <tr>
                         <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -254,6 +255,7 @@ HTML;
     private function sendPasswordChangedEmail(string $email): void
     {
         $subject = "Je wachtwoord is gewijzigd - GlamourSchedule";
+        $currentYear = date('Y');
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -285,7 +287,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule</p>
+                            <p style="margin:0;color:#cccccc;font-size:12px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

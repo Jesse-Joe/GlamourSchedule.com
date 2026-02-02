@@ -155,6 +155,7 @@ class WebhookController extends Controller
                 : "";
 
             $subject = "Afspraak Bevestigd - " . $booking['company_name'];
+            $currentYear = date('Y');
             $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -195,7 +196,7 @@ class WebhookController extends Controller
                     </tr>
                     <tr>
                         <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; 2025 GlamourSchedule</p>
+                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -337,11 +338,18 @@ HTML;
         $webhookSecret = $this->config['stripe']['webhook_secret'] ?? '';
 
         try {
-            // Verify webhook signature if secret is configured
+            // Verify webhook signature - REQUIRED for security
             if ($webhookSecret) {
                 $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
             } else {
+                // WARNING: No webhook secret configured - this is a security risk!
+                error_log("SECURITY WARNING: Stripe webhook secret not configured. Webhook verification disabled.");
                 $event = json_decode($payload, false);
+                if (!$event || !isset($event->type)) {
+                    error_log("Stripe webhook: Invalid payload received");
+                    http_response_code(400);
+                    return json_encode(['error' => 'Invalid payload']);
+                }
             }
 
             // Handle the event
@@ -382,14 +390,16 @@ HTML;
             return;
         }
 
-        // Get booking
+        // Get booking (LEFT JOIN users to support guest bookings)
         $stmt = $this->db->query(
             "SELECT b.*, biz.email as business_email, biz.company_name as business_name,
-                    u.email as customer_email, u.name as customer_name,
+                    biz.language as business_language,
+                    COALESCE(u.email, b.guest_email) as customer_email,
+                    COALESCE(CONCAT(u.first_name, ' ', u.last_name), b.guest_name) as customer_name,
                     s.name as service_name
              FROM bookings b
              JOIN businesses biz ON b.business_id = biz.id
-             JOIN users u ON b.user_id = u.id
+             LEFT JOIN users u ON b.user_id = u.id
              JOIN services s ON b.service_id = s.id
              WHERE b.uuid = ?",
             [$bookingUuid]

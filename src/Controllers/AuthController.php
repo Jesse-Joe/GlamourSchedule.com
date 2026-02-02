@@ -64,6 +64,16 @@ class AuthController extends Controller
 
         // Check based on selected account type
         if ($accountType === 'business') {
+            // Check if this email exists as a customer account
+            $customerCheck = $this->db->query("SELECT id FROM users WHERE email = ?", [$email]);
+            if ($customerCheck->fetch()) {
+                return $this->view('pages/auth/login', [
+                    'pageTitle' => $this->t('page_login'),
+                    'error' => $this->t('auth_email_is_customer_account'),
+                    'email' => $email
+                ]);
+            }
+
             // Check businesses table directly (businesses have their own password)
             $stmt = $this->db->query(
                 "SELECT * FROM businesses WHERE email = ? AND status = 'active'",
@@ -92,6 +102,16 @@ class AuthController extends Controller
             return $this->view('pages/auth/login', [
                 'pageTitle' => $this->t('page_login'),
                 'error' => $this->t('auth_invalid_business_credentials'),
+                'email' => $email
+            ]);
+        }
+
+        // Personal account - check if this email exists as a business account
+        $businessCheck = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$email]);
+        if ($businessCheck->fetch()) {
+            return $this->view('pages/auth/login', [
+                'pageTitle' => $this->t('page_login'),
+                'error' => $this->t('auth_email_is_business_account'),
                 'email' => $email
             ]);
         }
@@ -167,7 +187,9 @@ class AuthController extends Controller
             ]);
         }
 
-        // Complete login
+        // Complete login - regenerate session ID to prevent session fixation attacks
+        session_regenerate_id(true);
+
         if (isset($_SESSION['pending_login']['user_id'])) {
             $_SESSION['user_id'] = $_SESSION['pending_login']['user_id'];
             $_SESSION['user_type'] = 'customer';

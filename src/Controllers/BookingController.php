@@ -51,8 +51,8 @@ class BookingController extends Controller
      */
     private function renderCreateForm(array $business): string
     {
-        // Check if business needs verification (no KVK and not admin verified)
-        if (empty($business['kvk_number']) && empty($business['is_verified'])) {
+        // Check if business needs verification (KVK not verified and not admin verified)
+        if (empty($business['kvk_verified']) && empty($business['is_verified'])) {
             return $this->view('pages/booking/pending-verification', [
                 'pageTitle' => $this->t('page_not_available'),
                 'business' => $business
@@ -95,9 +95,9 @@ class BookingController extends Controller
      */
     private function processBooking(array $business): string
     {
-        // Check if business needs verification (no KVK and not admin verified)
-        if (empty($business['kvk_number']) && empty($business['is_verified'])) {
-            return $this->json(['error' => 'Dit bedrijf is nog niet geverifieerd'], 403);
+        // Check if business needs verification (KVK not verified and not admin verified)
+        if (empty($business['kvk_verified']) && empty($business['is_verified'])) {
+            return $this->json(['error' => $this->t('error_business_not_verified')], 403);
         }
 
         if (!$this->verifyCsrf()) {
@@ -612,6 +612,7 @@ class BookingController extends Controller
             ? "<div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#991b1b;font-weight:600;'>Annulering binnen 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#991b1b;font-size:0.9rem;'>50% van het bedrag gaat naar de salon als compensatie.</p></div>"
             : "<div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#166534;font-weight:600;'>Annulering meer dan 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#166534;font-size:0.9rem;'>Je ontvangt het volledige bedrag terug, minus administratiekosten.</p></div>";
 
+        $currentYear = date('Y');
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -695,6 +696,7 @@ HTML;
         $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
         $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
 
+        $currentYear = date('Y');
         $feeNotice = '';
         if ($isLateCancel && $businessFee > 0) {
             $feeNotice = <<<HTML
@@ -785,7 +787,7 @@ HTML;
                     <!-- Footer -->
                     <tr>
                         <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #e5e7eb;">
-                            <p style="margin:0;color:#9ca3af;font-size:13px;">© 2025 GlamourSchedule - Beauty Booking Platform</p>
+                            <p style="margin:0;color:#9ca3af;font-size:13px;">© {$currentYear} GlamourSchedule - Beauty Booking Platform</p>
                         </td>
                     </tr>
                 </table>
@@ -933,10 +935,12 @@ HTML;
         $expectedCode = strtoupper(substr($hash, 0, 12));
         $expectedCode = substr($expectedCode, 0, 4) . '-' . substr($expectedCode, 4, 4) . '-' . substr($expectedCode, 8, 4);
 
+        // Normalize input: remove dashes, uppercase, then format like expected
+        $normalizedInput = strtoupper(str_replace('-', '', $verificationCode));
+        $formattedInput = substr($normalizedInput, 0, 4) . '-' . substr($normalizedInput, 4, 4) . '-' . substr($normalizedInput, 8, 4);
+
         // Timing-safe comparison
-        return hash_equals($expectedCode, strtoupper(str_replace('-', '', $verificationCode) !== $verificationCode
-            ? $verificationCode
-            : strtoupper($verificationCode)));
+        return hash_equals($expectedCode, $formattedInput);
     }
 
     /**
@@ -1622,6 +1626,7 @@ HTML;
     private function sendWaitlistConfirmationEmail(array $data): void
     {
         $dateFormatted = date('d-m-Y', strtotime($data['date']));
+        $currentYear = date('Y');
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -1680,7 +1685,7 @@ HTML;
                     </tr>
                     <tr>
                         <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">© 2025 GlamourSchedule - Beauty & Wellness Platform</p>
+                            <p style="margin:0;color:#cccccc;font-size:13px;">© {$currentYear} GlamourSchedule - Beauty & Wellness Platform</p>
                         </td>
                     </tr>
                 </table>
