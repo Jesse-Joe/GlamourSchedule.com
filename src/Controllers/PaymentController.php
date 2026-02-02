@@ -76,12 +76,14 @@ class PaymentController extends Controller
                 'method' => $method,
                 'country' => $country,
                 'provider' => $provider,
+                'business_id' => $booking['business_id'], // For split payment routing
                 'redirect_url' => "https://{$_SERVER['HTTP_HOST']}/payment/return/{$bookingUuid}",
                 'cancel_url' => "https://{$_SERVER['HTTP_HOST']}/booking/{$bookingUuid}",
                 'webhook_url' => "https://{$_SERVER['HTTP_HOST']}/api/webhooks/{$provider}",
                 'metadata' => [
                     'booking_uuid' => $bookingUuid,
-                    'booking_number' => $booking['booking_number']
+                    'booking_number' => $booking['booking_number'],
+                    'business_id' => $booking['business_id']
                 ]
             ]);
 

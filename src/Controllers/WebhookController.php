@@ -58,11 +58,31 @@ class WebhookController extends Controller
         }
 
         if ($payment->isPaid()) {
-            $this->db->query(
-                "UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE uuid = ?",
-                [$bookingUuid]
-            );
-            error_log("Mollie webhook: Payment confirmed for booking $bookingUuid");
+            // Check if this is a split payment
+            $isSplitPayment = $payment->metadata->split_payment ?? false;
+            $platformFee = $payment->metadata->platform_fee ?? 1.75;
+            $businessAmount = $payment->metadata->business_amount ?? null;
+
+            // Update booking with payment and split info
+            if ($isSplitPayment && $businessAmount !== null) {
+                $this->db->query(
+                    "UPDATE bookings
+                     SET payment_status = 'paid',
+                         status = 'confirmed',
+                         platform_fee = ?,
+                         business_payout = ?,
+                         payout_status = 'pending'
+                     WHERE uuid = ?",
+                    [$platformFee, $businessAmount, $bookingUuid]
+                );
+                error_log("Mollie webhook: Split payment confirmed for booking $bookingUuid (fee: €$platformFee, business: €$businessAmount)");
+            } else {
+                $this->db->query(
+                    "UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE uuid = ?",
+                    [$bookingUuid]
+                );
+                error_log("Mollie webhook: Payment confirmed for booking $bookingUuid");
+            }
 
             // Award loyalty points for completed booking
             $this->awardLoyaltyPoints($bookingUuid);

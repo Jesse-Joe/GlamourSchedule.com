@@ -690,6 +690,303 @@ class CronController extends Controller
     }
 
     /**
+     * Process automatic QR payouts - 24 hours after QR check-in
+     * Runs hourly: /cron/qr-payouts?key=glamour-cron-2024-secret
+     *
+     * This processes payments that used Mollie split payments:
+     * - Platform fee (€1.75) is already retained by platform at payment time
+     * - Business amount is held in Mollie until released
+     * - 24 hours after QR check-in, we release funds to business
+     */
+    public function qrPayouts(): string
+    {
+        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+            http_response_code(403);
+            return json_encode(['error' => 'Unauthorized']);
+        }
+
+        $logFile = BASE_PATH . '/storage/logs/cron-qr-payouts.log';
+        $log = function($msg) use ($logFile) {
+            $timestamp = date('Y-m-d H:i:s');
+            file_put_contents($logFile, "[$timestamp] $msg\n", FILE_APPEND);
+        };
+
+        $log('=== QR PAYOUT PROCESSING START ===');
+
+        try {
+            // Find bookings that:
+            // 1. Are checked in (QR scanned)
+            // 2. Were checked in more than 24 hours ago
+            // 3. Have payout_status = 'pending'
+            // 4. Business has Mollie Connect (split payment)
+            $stmt = $this->db->query(
+                "SELECT b.*,
+                        biz.id as biz_id,
+                        biz.company_name,
+                        biz.email as business_email,
+                        biz.mollie_account_id,
+                        biz.mollie_onboarding_status,
+                        s.name as service_name
+                 FROM bookings b
+                 JOIN businesses biz ON b.business_id = biz.id
+                 JOIN services s ON b.service_id = s.id
+                 WHERE b.status = 'checked_in'
+                   AND b.checked_in_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                   AND b.payout_status = 'pending'
+                   AND b.payment_status = 'paid'
+                   AND biz.mollie_account_id IS NOT NULL
+                   AND biz.mollie_onboarding_status = 'completed'
+                 ORDER BY b.checked_in_at ASC"
+            );
+            $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if (empty($bookings)) {
+                $log('No QR payouts to process');
+                return json_encode([
+                    'success' => true,
+                    'message' => 'No QR payouts to process',
+                    'timestamp' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            $log("Found " . count($bookings) . " bookings to process");
+
+            $processed = 0;
+            $failed = 0;
+            $results = [];
+
+            foreach ($bookings as $booking) {
+                try {
+                    // Calculate payout amount
+                    $totalAmount = (float)$booking['total_price'];
+                    $platformFee = self::PLATFORM_FEE;
+                    $businessAmount = $totalAmount - $platformFee;
+
+                    // For Mollie split payments, funds are already routed to business
+                    // We just need to mark as completed and notify
+                    $this->db->query(
+                        "UPDATE bookings
+                         SET payout_status = 'completed',
+                             payout_amount = ?,
+                             payout_date = CURDATE(),
+                             platform_fee = ?
+                         WHERE id = ?",
+                        [$businessAmount, $platformFee, $booking['id']]
+                    );
+
+                    // Send notification to business
+                    $this->sendQRPayoutNotification($booking, $businessAmount, $platformFee);
+
+                    $processed++;
+                    $results[] = [
+                        'booking_number' => $booking['booking_number'],
+                        'business' => $booking['company_name'],
+                        'amount' => $businessAmount,
+                        'status' => 'completed'
+                    ];
+
+                    $log("SUCCESS: {$booking['booking_number']} - €" . number_format($businessAmount, 2) . " to {$booking['company_name']}");
+
+                } catch (\Exception $e) {
+                    $failed++;
+                    $results[] = [
+                        'booking_number' => $booking['booking_number'],
+                        'error' => $e->getMessage(),
+                        'status' => 'failed'
+                    ];
+                    $log("FAILED: {$booking['booking_number']} - " . $e->getMessage());
+                }
+            }
+
+            $log("=== QR PAYOUT COMPLETE: Processed: $processed, Failed: $failed ===");
+
+            // Send admin summary if any payouts processed
+            if ($processed > 0) {
+                $this->sendQRPayoutAdminSummary($results, $processed, $failed);
+            }
+
+            return json_encode([
+                'success' => true,
+                'processed' => $processed,
+                'failed' => $failed,
+                'results' => $results,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            $log("ERROR: " . $e->getMessage());
+            return json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Send QR payout notification to business
+     */
+    private function sendQRPayoutNotification(array $booking, float $amount, float $platformFee): void
+    {
+        try {
+            $mailer = new Mailer();
+
+            $subject = "Uitbetaling voltooid - €" . number_format($amount, 2, ',', '.');
+            $totalAmount = number_format($booking['total_price'], 2, ',', '.');
+            $feeAmount = number_format($platformFee, 2, ',', '.');
+            $businessAmount = number_format($amount, 2, ',', '.');
+            $checkinDate = date('d-m-Y H:i', strtotime($booking['checked_in_at']));
+
+            $body = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:40px;text-align:center;color:#fff;">
+                            <div style="font-size:48px;margin-bottom:10px;">💰</div>
+                            <h1 style="margin:0;font-size:24px;">Automatische Uitbetaling</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px;color:#ffffff;">Beste {$booking['company_name']},</p>
+                            <p style="color:#cccccc;line-height:1.6;">
+                                24 uur na de QR check-in is de uitbetaling voor boeking <strong>{$booking['booking_number']}</strong> automatisch verwerkt.
+                            </p>
+
+                            <div style="background:#0a0a0a;border-radius:12px;padding:25px;margin:25px 0;">
+                                <p style="color:#888;margin:0 0 15px;font-size:14px;">📱 Check-in: {$checkinDate}</p>
+                                <table width="100%" style="color:#ffffff;">
+                                    <tr>
+                                        <td style="padding:8px 0;border-bottom:1px solid #333;">Dienst: {$booking['service_name']}</td>
+                                        <td style="padding:8px 0;border-bottom:1px solid #333;text-align:right;">€{$totalAmount}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:8px 0;border-bottom:1px solid #333;color:#dc2626;">Platformkosten</td>
+                                        <td style="padding:8px 0;border-bottom:1px solid #333;text-align:right;color:#dc2626;">-€{$feeAmount}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:12px 0;font-weight:bold;font-size:18px;">Jouw uitbetaling</td>
+                                        <td style="padding:12px 0;text-align:right;font-weight:bold;font-size:18px;color:#22c55e;">€{$businessAmount}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="background:#14532d;border-radius:8px;padding:15px;margin:20px 0;">
+                                <p style="color:#bbf7d0;margin:0;font-size:14px;">
+                                    ✓ Het bedrag is direct naar je gekoppelde Mollie account overgemaakt.
+                                </p>
+                            </div>
+
+                            <p style="color:#888;font-size:13px;margin-top:20px;">
+                                Bekijk al je uitbetalingen in je <a href="https://glamourschedule.com/business/payouts" style="color:#ffffff;">dashboard</a>.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
+                            <p style="margin:0;color:#666;font-size:12px;">© 2026 GlamourSchedule - Automatische Uitbetalingen</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+            $mailer->send($booking['business_email'], $subject, $body);
+
+        } catch (\Exception $e) {
+            error_log("Failed to send QR payout notification: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send admin summary of QR payouts
+     */
+    private function sendQRPayoutAdminSummary(array $results, int $processed, int $failed): void
+    {
+        try {
+            $mailer = new Mailer();
+
+            $totalAmount = array_sum(array_column(array_filter($results, fn($r) => $r['status'] === 'completed'), 'amount'));
+
+            $payoutsList = '';
+            foreach ($results as $r) {
+                $status = $r['status'] === 'completed'
+                    ? '<span style="color:#22c55e;">✓ Voltooid</span>'
+                    : '<span style="color:#dc2626;">✗ Mislukt</span>';
+                $amount = isset($r['amount']) ? '€' . number_format($r['amount'], 2, ',', '.') : '-';
+                $payoutsList .= "<tr>
+                    <td style='padding:8px;border-bottom:1px solid #eee;'>{$r['booking_number']}</td>
+                    <td style='padding:8px;border-bottom:1px solid #eee;'>{$r['business']}</td>
+                    <td style='padding:8px;border-bottom:1px solid #eee;text-align:right;'>{$amount}</td>
+                    <td style='padding:8px;border-bottom:1px solid #eee;text-align:center;'>{$status}</td>
+                </tr>";
+            }
+
+            $subject = "QR Uitbetalingen: {$processed} verwerkt - €" . number_format($totalAmount, 2, ',', '.');
+
+            $body = <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;">
+    <div style="max-width:700px;margin:0 auto;padding:20px;">
+        <h1 style="color:#333;">QR Uitbetalingen Verwerkt</h1>
+        <p>Automatische uitbetalingen 24 uur na QR check-in:</p>
+
+        <div style="display:flex;gap:20px;margin:20px 0;">
+            <div style="background:#f0fdf4;padding:15px;border-radius:8px;flex:1;">
+                <p style="margin:0;color:#166534;font-size:24px;font-weight:bold;">{$processed}</p>
+                <p style="margin:5px 0 0;color:#166534;">Verwerkt</p>
+            </div>
+            <div style="background:#fef2f2;padding:15px;border-radius:8px;flex:1;">
+                <p style="margin:0;color:#991b1b;font-size:24px;font-weight:bold;">{$failed}</p>
+                <p style="margin:5px 0 0;color:#991b1b;">Mislukt</p>
+            </div>
+            <div style="background:#eff6ff;padding:15px;border-radius:8px;flex:1;">
+                <p style="margin:0;color:#1e40af;font-size:24px;font-weight:bold;">€" . number_format($totalAmount, 2, ',', '.') . "</p>
+                <p style="margin:5px 0 0;color:#1e40af;">Totaal</p>
+            </div>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:20px;">
+            <thead>
+                <tr style="background:#f3f4f6;">
+                    <th style="padding:10px;text-align:left;">Boeking</th>
+                    <th style="padding:10px;text-align:left;">Bedrijf</th>
+                    <th style="padding:10px;text-align:right;">Bedrag</th>
+                    <th style="padding:10px;text-align:center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {$payoutsList}
+            </tbody>
+        </table>
+
+        <p style="color:#666;font-size:12px;margin-top:20px;">
+            Gegenereerd op " . date('d-m-Y H:i:s') . "
+        </p>
+    </div>
+</body>
+</html>
+HTML;
+
+            $mailer->send('admin@glamourschedule.com', $subject, $body);
+
+        } catch (\Exception $e) {
+            error_log("Failed to send QR payout admin summary: " . $e->getMessage());
+        }
+    }
+
+    /**
      * Process weekly payouts for businesses WITHOUT Mollie Connect
      * Runs every Wednesday 08:00: /cron/weekly-payouts?key=glamour-cron-2024-secret
      *

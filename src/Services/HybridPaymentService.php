@@ -11,6 +11,10 @@ class HybridPaymentService
     private MollieApiClient $mollie;
     private array $config;
     private bool $stripeEnabled;
+    private ?\PDO $db = null;
+
+    // Platform fee per booking (fixed)
+    public const PLATFORM_FEE = 1.75;
 
     // Landen waar Mollie de voorkeur heeft (Benelux + SEPA)
     private const MOLLIE_COUNTRIES = [
@@ -35,6 +39,21 @@ class HybridPaymentService
         $this->stripeEnabled = !empty($config['stripe']['secret_key']);
         if ($this->stripeEnabled) {
             Stripe::setApiKey($config['stripe']['secret_key']);
+        }
+
+        // Initialize database connection for split payment checks
+        if (isset($config['database'])) {
+            $dbConfig = $config['database'];
+            try {
+                $this->db = new \PDO(
+                    "mysql:host={$dbConfig['host']};dbname={$dbConfig['name']};charset={$dbConfig['charset']}",
+                    $dbConfig['user'],
+                    $dbConfig['pass'],
+                    [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
+                );
+            } catch (\Exception $e) {
+                // Database not available - split payments disabled
+            }
         }
     }
 
@@ -157,20 +176,55 @@ class HybridPaymentService
     }
 
     /**
-     * Create Mollie payment
+     * Create Mollie payment (with optional split payment for Mollie Connect businesses)
      */
     private function createMolliePayment(array $data): array
     {
+        $businessId = $data['business_id'] ?? null;
+        $amount = (float)$data['amount'];
+
+        // Check if business has Mollie Connect for split payments
+        $businessMollie = $this->getBusinessMollieInfo($businessId);
+        $useSplitPayment = $businessMollie && !empty($businessMollie['mollie_account_id'])
+                          && $businessMollie['mollie_onboarding_status'] === 'completed';
+
+        // Calculate split amounts
+        $platformFee = self::PLATFORM_FEE;
+        $businessAmount = $amount - $platformFee;
+
         $paymentData = [
             'amount' => [
                 'currency' => $data['currency'] ?? 'EUR',
-                'value' => number_format($data['amount'], 2, '.', '')
+                'value' => number_format($amount, 2, '.', '')
             ],
             'description' => $data['description'],
             'redirectUrl' => $data['redirect_url'],
             'webhookUrl' => $data['webhook_url'],
-            'metadata' => $data['metadata'] ?? []
+            'metadata' => array_merge($data['metadata'] ?? [], [
+                'split_payment' => $useSplitPayment,
+                'business_id' => $businessId,
+                'platform_fee' => $platformFee,
+                'business_amount' => $businessAmount
+            ])
         ];
+
+        // Add routing for split payment (funds go directly to business minus platform fee)
+        if ($useSplitPayment && $businessAmount > 0) {
+            $paymentData['routing'] = [
+                [
+                    'amount' => [
+                        'currency' => 'EUR',
+                        'value' => number_format($businessAmount, 2, '.', '')
+                    ],
+                    'destination' => [
+                        'type' => 'organization',
+                        'organizationId' => $businessMollie['mollie_account_id']
+                    ]
+                    // Note: releaseDate not set - funds available after settlement (T+1/T+2)
+                    // Actual release will happen 24h after QR check-in via cron
+                ]
+            ];
+        }
 
         // Add specific method if requested
         if (!empty($data['method']) && $data['method'] !== 'card') {
@@ -183,8 +237,32 @@ class HybridPaymentService
             'provider' => 'mollie',
             'payment_id' => $payment->id,
             'checkout_url' => $payment->getCheckoutUrl(),
-            'status' => $payment->status
+            'status' => $payment->status,
+            'split_payment' => $useSplitPayment,
+            'platform_fee' => $useSplitPayment ? $platformFee : null,
+            'business_amount' => $useSplitPayment ? $businessAmount : null
         ];
+    }
+
+    /**
+     * Get business Mollie Connect information
+     */
+    private function getBusinessMollieInfo(?int $businessId): ?array
+    {
+        if (!$businessId || !$this->db) {
+            return null;
+        }
+
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT id, mollie_account_id, mollie_profile_id, mollie_onboarding_status
+                 FROM businesses WHERE id = ?"
+            );
+            $stmt->execute([$businessId]);
+            return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
