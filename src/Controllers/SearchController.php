@@ -77,7 +77,8 @@ class SearchController extends Controller
             'filters' => $filters,
             'userLat' => $userLat,
             'userLng' => $userLng,
-            'locationSource' => $locationSource
+            'locationSource' => $locationSource,
+            'searchCountry' => $this->detectCountryFromLocation($location, $calcLat, $calcLng)
         ]);
     }
 
@@ -127,6 +128,117 @@ class SearchController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Detect country from location string or coordinates
+     * Used for auto-selecting map view on search page
+     */
+    private function detectCountryFromLocation(?string $location, ?float $lat, ?float $lng): string
+    {
+        // Only detect country if user actually entered a search location
+        // Don't use IP-based coordinates - let the frontend handle that with language fallback
+        $locationLower = strtolower(trim($location ?? ''));
+
+        if (empty($locationLower)) {
+            // No location search - return empty to let frontend use language-based default
+            return '';
+        }
+
+        // Dutch cities
+        $nlCities = ['amsterdam', 'rotterdam', 'den haag', 'the hague', 'utrecht', 'eindhoven',
+                     'tilburg', 'groningen', 'almere', 'breda', 'nijmegen', 'arnhem', 'haarlem',
+                     'enschede', 'maastricht', 'zwolle', 'leiden', 'dordrecht', 'zoetermeer',
+                     'amersfoort', 'delft', 'alkmaar', 'deventer', 'hilversum', 'apeldoorn',
+                     'leeuwarden', 'zaandam', 'den bosch', 's-hertogenbosch', 'venlo', 'assen', 'gouda'];
+
+        // Belgian cities
+        $beCities = ['brussel', 'brussels', 'antwerpen', 'antwerp', 'gent', 'ghent', 'brugge',
+                     'bruges', 'leuven', 'luik', 'liège', 'charleroi', 'namur', 'mons', 'oostende'];
+
+        // German cities
+        $deCities = ['berlin', 'münchen', 'munich', 'hamburg', 'köln', 'koln', 'cologne',
+                     'frankfurt', 'stuttgart', 'düsseldorf', 'dusseldorf', 'dortmund', 'essen',
+                     'leipzig', 'bremen', 'dresden', 'hannover', 'nürnberg', 'nuremberg'];
+
+        // French cities
+        $frCities = ['paris', 'marseille', 'lyon', 'toulouse', 'nice', 'nantes', 'strasbourg',
+                     'montpellier', 'bordeaux', 'lille', 'rennes', 'reims', 'saint-etienne'];
+
+        // Italian cities
+        $itCities = ['roma', 'rome', 'milano', 'milan', 'napoli', 'naples', 'torino', 'turin',
+                     'palermo', 'genova', 'genoa', 'bologna', 'firenze', 'florence', 'bari',
+                     'catania', 'venezia', 'venice', 'verona', 'messina', 'padova', 'trieste'];
+
+        // Spanish cities
+        $esCities = ['madrid', 'barcelona', 'valencia', 'sevilla', 'seville', 'zaragoza',
+                     'málaga', 'malaga', 'murcia', 'palma', 'bilbao', 'alicante', 'córdoba'];
+
+        // UK cities
+        $gbCities = ['london', 'birmingham', 'manchester', 'leeds', 'glasgow', 'liverpool',
+                     'bristol', 'sheffield', 'edinburgh', 'cardiff', 'belfast', 'nottingham'];
+
+        // US cities
+        $usCities = ['new york', 'los angeles', 'chicago', 'houston', 'phoenix', 'philadelphia',
+                     'san antonio', 'san diego', 'dallas', 'san jose', 'austin', 'miami', 'seattle'];
+
+        // Check for Dutch postal code (4 digits + optional 2 letters)
+        if (preg_match('/^\d{4}\s?[a-z]{0,2}$/i', $locationLower)) {
+            return 'NL';
+        }
+
+        // Country detection mapping
+        $countryMappings = [
+            'NL' => $nlCities,
+            'BE' => $beCities,
+            'DE' => $deCities,
+            'FR' => $frCities,
+            'IT' => $itCities,
+            'ES' => $esCities,
+            'GB' => $gbCities,
+            'US' => $usCities,
+        ];
+
+        // Check city names
+        foreach ($countryMappings as $country => $cities) {
+            foreach ($cities as $city) {
+                if (strpos($locationLower, $city) !== false) {
+                    return $country;
+                }
+            }
+        }
+
+        // No match found - return empty to use language-based default
+        return '';
+    }
+
+    /**
+     * Detect country from coordinates using bounding boxes
+     */
+    private function detectCountryFromCoordinates(?float $lat, ?float $lng): string
+    {
+        if (!$lat || !$lng) {
+            return '';
+        }
+
+        // Netherlands: lat 50.75-53.5, lng 3.3-7.2
+        if ($lat >= 50.75 && $lat <= 53.5 && $lng >= 3.3 && $lng <= 7.2) {
+            return 'NL';
+        }
+        // Belgium: lat 49.5-51.5, lng 2.5-6.4
+        if ($lat >= 49.5 && $lat <= 51.5 && $lng >= 2.5 && $lng <= 6.4) {
+            return 'BE';
+        }
+        // Germany: lat 47.3-55.1, lng 5.9-15.0
+        if ($lat >= 47.3 && $lat <= 55.1 && $lng >= 5.9 && $lng <= 15.0) {
+            return 'DE';
+        }
+        // France: lat 41.3-51.1, lng -5.1-9.6
+        if ($lat >= 41.3 && $lat <= 51.1 && $lng >= -5.1 && $lng <= 9.6) {
+            return 'FR';
+        }
+
+        return '';
     }
 
     /**
@@ -551,8 +663,7 @@ class SearchController extends Controller
             return [];
         }
 
-        // Only use explicit user location (GPS) for distance calculation
-        // Do NOT use IP-based location fallback - distance should only show when user explicitly shares location
+        // Use GPS coordinates if available
         if (!$userLat || !$userLng) {
             $userLat = !empty($_GET['lat']) ? (float)$_GET['lat'] : null;
             $userLng = !empty($_GET['lng']) ? (float)$_GET['lng'] : null;
@@ -565,6 +676,15 @@ class SearchController extends Controller
             if ($geocoded) {
                 $userLat = $geocoded['lat'];
                 $userLng = $geocoded['lng'];
+            }
+        }
+
+        // Fallback to IP-based location for distance calculation
+        if (!$userLat || !$userLng) {
+            $ipLocation = $this->getLocationFromIP();
+            if ($ipLocation) {
+                $userLat = $ipLocation['lat'];
+                $userLng = $ipLocation['lng'];
             }
         }
 
@@ -658,6 +778,20 @@ class SearchController extends Controller
     {
         $country = trim($_GET['country'] ?? '');
 
+        // Map country codes to full names (as stored in database)
+        $countryCodeToName = [
+            'NL' => 'Nederland',
+            'BE' => 'België',
+            'DE' => 'Duitsland',
+            'FR' => 'Frankrijk',
+            'GB' => 'United Kingdom',
+            'ES' => 'Spanje',
+            'IT' => 'Italië',
+            'PT' => 'Portugal',
+            'AT' => 'Oostenrijk',
+            'CH' => 'Zwitserland',
+        ];
+
         $sql = "SELECT b.id, b.company_name as name, b.slug, b.city, b.latitude as lat, b.longitude as lng, b.country,
                        COALESCE(AVG(r.rating), 0) as rating,
                        COUNT(DISTINCT r.id) as reviews
@@ -672,8 +806,12 @@ class SearchController extends Controller
         $params = [];
 
         if ($country) {
-            $sql .= " AND UPPER(b.country) = ?";
-            $params[] = strtoupper($country);
+            // Convert country code to full name if needed
+            $countryUpper = strtoupper($country);
+            $countryName = $countryCodeToName[$countryUpper] ?? $country;
+            $sql .= " AND (UPPER(b.country) = ? OR UPPER(b.country) = ?)";
+            $params[] = $countryUpper;
+            $params[] = strtoupper($countryName);
         }
 
         $sql .= " GROUP BY b.id ORDER BY rating DESC LIMIT 500";

@@ -1,6 +1,49 @@
 <?php ob_start(); ?>
 
 <style>
+    /* =============================================
+       AUTH PAGES - Theme Support
+       ============================================= */
+
+    /* Dark Theme (Default) */
+    .auth-wrapper,
+    [data-theme="dark"] .auth-wrapper {
+        --auth-bg: #000000;
+        --auth-surface: #111111;
+        --auth-border: #333333;
+        --auth-text: #ffffff;
+        --auth-text-muted: rgba(255, 255, 255, 0.7);
+        --auth-text-placeholder: rgba(255, 255, 255, 0.5);
+        --auth-input-border: rgba(255, 255, 255, 0.4);
+        --auth-input-focus: #ffffff;
+        --auth-btn-bg: #ffffff;
+        --auth-btn-text: #000000;
+        --auth-link: #ffffff;
+        --auth-shadow: rgba(0, 0, 0, 0.3);
+        --auth-tab-hover: rgba(255, 255, 255, 0.1);
+        --auth-alert-bg: rgba(255, 255, 255, 0.1);
+        --auth-alert-border: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] .auth-wrapper {
+        --auth-bg: #ffffff;
+        --auth-surface: #f5f5f5;
+        --auth-border: #e0e0e0;
+        --auth-text: #000000;
+        --auth-text-muted: rgba(0, 0, 0, 0.6);
+        --auth-text-placeholder: rgba(0, 0, 0, 0.5);
+        --auth-input-border: rgba(0, 0, 0, 0.3);
+        --auth-input-focus: #000000;
+        --auth-btn-bg: #000000;
+        --auth-btn-text: #ffffff;
+        --auth-link: #000000;
+        --auth-shadow: rgba(0, 0, 0, 0.1);
+        --auth-tab-hover: rgba(0, 0, 0, 0.05);
+        --auth-alert-bg: rgba(0, 0, 0, 0.05);
+        --auth-alert-border: rgba(0, 0, 0, 0.2);
+    }
+
     .register-container {
         max-width: 720px;
         margin: 1rem auto;
@@ -39,43 +82,44 @@
         }
     }
     .register-card {
-        background: #000000;
+        background: var(--auth-bg);
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        border: 2px solid #333333;
+        box-shadow: 0 10px 40px var(--auth-shadow);
+        border: 2px solid var(--auth-border);
+        transition: background 0.3s, border-color 0.3s;
     }
     .register-header {
-        background: #000000;
-        color: #ffffff;
+        background: var(--auth-bg);
+        color: var(--auth-text);
         padding: 3rem 2rem;
         text-align: center;
-        border-bottom: 2px solid #333333;
+        border-bottom: 2px solid var(--auth-border);
         border-radius: 0 0 30px 30px;
     }
     .register-header i {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
         display: block;
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .register-header h1 {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .register-header p {
         margin: 0.5rem 0 0 0;
         font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--auth-text-muted);
     }
 
     /* Account Type Tabs */
     .account-tabs {
         display: flex;
-        background: #000000;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        background: var(--auth-bg);
+        border-bottom: 2px solid var(--auth-input-border);
     }
     .account-tab {
         flex: 1;
@@ -87,20 +131,20 @@
         background: transparent;
         font-size: 0.95rem;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--auth-text-muted);
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.75rem;
     }
     .account-tab:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.9);
+        background: var(--auth-tab-hover);
+        color: var(--auth-text);
     }
     .account-tab.active {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        border-bottom: 3px solid #ffffff;
+        background: var(--auth-tab-hover);
+        color: var(--auth-text);
+        border-bottom: 3px solid var(--auth-text);
         margin-bottom: -2px;
     }
     .account-tab i {
@@ -120,7 +164,7 @@
 
     .register-body {
         padding: 2rem;
-        background: #000000;
+        background: var(--auth-bg);
     }
 
     /* Grid Layout */
@@ -136,14 +180,14 @@
         align-items: center;
         gap: 0.75rem;
         padding: 1rem 0;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 2px solid var(--auth-input-border);
         margin-bottom: 1.5rem;
     }
     .section-header i {
         width: 40px;
         height: 40px;
-        background: #ffffff;
-        color: #000000;
+        background: var(--auth-btn-bg);
+        color: var(--auth-btn-text);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -151,7 +195,7 @@
     }
     .section-header h4 {
         margin: 0;
-        color: #ffffff;
+        color: var(--auth-text);
         font-size: 1.1rem;
     }
 
@@ -165,10 +209,10 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
     }
     .form-group label i {
-        color: #ffffff;
+        color: var(--auth-text);
         font-size: 0.9rem;
     }
     .form-control {
@@ -176,25 +220,25 @@
         padding: 0.9rem 0;
         background: transparent;
         border: none;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+        border-bottom: 2px solid var(--auth-input-border);
         border-radius: 0;
         font-size: 1rem;
-        color: #ffffff;
+        color: var(--auth-text);
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-bottom-color: #ffffff;
+        border-bottom-color: var(--auth-input-focus);
         box-shadow: none;
     }
     .form-control:hover {
-        border-bottom-color: rgba(255, 255, 255, 0.7);
+        border-bottom-color: var(--auth-text-muted);
     }
     .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--auth-text-placeholder);
     }
     select.form-control {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 0 center;
         background-size: 1rem;
@@ -202,8 +246,8 @@
         cursor: pointer;
     }
     select.form-control option {
-        background: #000000;
-        color: #ffffff;
+        background: var(--auth-bg);
+        color: var(--auth-text);
     }
     textarea.form-control {
         resize: vertical;
@@ -213,8 +257,8 @@
     .btn-register {
         width: 100%;
         padding: 1.1rem;
-        background: #ffffff;
-        color: #000000;
+        background: var(--auth-btn-bg);
+        color: var(--auth-btn-text);
         border: none;
         border-radius: 50px;
         font-size: 1.05rem;
@@ -229,21 +273,21 @@
     }
     .btn-register:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+        box-shadow: 0 10px 30px var(--auth-shadow);
     }
 
     .register-footer {
         text-align: center;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid var(--auth-input-border);
         margin-top: 1.5rem;
     }
     .register-footer p {
         margin: 0.5rem 0;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--auth-text-muted);
     }
     .register-footer a {
-        color: #ffffff;
+        color: var(--auth-link);
         text-decoration: none;
         font-weight: 500;
     }
@@ -252,17 +296,17 @@
     }
 
     .alert-danger {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #ffffff;
+        background: var(--auth-alert-bg);
+        border: 1px solid var(--auth-alert-border);
+        color: var(--auth-text);
         padding: 1rem;
         border-radius: 12px;
         margin-bottom: 1.25rem;
     }
 
     .account-info {
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: var(--auth-alert-bg);
+        border: 2px solid var(--auth-alert-border);
         border-radius: 12px;
         padding: 0.75rem 1rem;
         margin-bottom: 1.5rem;
@@ -270,11 +314,11 @@
         align-items: center;
         gap: 0.75rem;
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
     }
     .account-info i {
         font-size: 1.25rem;
-        color: #ffffff;
+        color: var(--auth-text);
     }
 
     /* Password Toggle */
@@ -288,7 +332,7 @@
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--auth-text-muted);
         cursor: pointer;
         padding: 4px;
         display: flex;
@@ -296,7 +340,7 @@
         justify-content: center;
     }
     .password-toggle:hover {
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .password-wrapper .form-control {
         padding-right: 2rem;
@@ -304,7 +348,7 @@
 
     /* Terms checkbox */
     .terms-box {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--auth-alert-bg);
         border-radius: 12px;
         padding: 1rem 1.25rem;
         margin-top: 1.5rem;
@@ -317,25 +361,25 @@
         margin: 0;
     }
     .terms-box span {
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
         font-size: 0.9rem;
     }
     .terms-box a {
-        color: #ffffff;
+        color: var(--auth-link);
         font-weight: 500;
     }
     .terms-box input[type="checkbox"] {
         width: 22px;
         height: 22px;
-        accent-color: #ffffff;
+        accent-color: var(--auth-text);
         flex-shrink: 0;
         margin-top: 2px;
     }
 
     /* Pricing Card */
     .pricing-card {
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: var(--auth-alert-bg);
+        border: 2px solid var(--auth-alert-border);
         border-radius: 16px;
         padding: 1.5rem;
         margin: 1.5rem 0;
@@ -349,7 +393,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: #ffffff;
+        background: var(--auth-btn-bg);
     }
     .price-display {
         display: flex;
@@ -360,21 +404,21 @@
     .price-amount {
         font-size: 2rem;
         font-weight: 800;
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .price-period {
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--auth-text-muted);
         font-size: 0.9rem;
     }
     .price-note {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--auth-text-muted);
         font-size: 0.9rem;
     }
     .price-note i {
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .benefits-list {
         display: grid;
@@ -382,17 +426,17 @@
         gap: 0.75rem;
         margin-top: 1.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid var(--auth-input-border);
     }
     .benefit-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
     }
     .benefit-item i {
-        color: #ffffff;
+        color: var(--auth-text);
     }
 
     /* QR Warning */
@@ -400,8 +444,8 @@
         display: flex;
         align-items: flex-start;
         gap: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid #ffffff;
+        background: var(--auth-alert-bg);
+        border: 2px solid var(--auth-btn-bg);
         border-radius: 12px;
         padding: 1.25rem;
         margin: 1.5rem 0;
@@ -409,8 +453,8 @@
     .qr-warning-icon {
         width: 50px;
         height: 50px;
-        background: #ffffff;
-        color: #000000;
+        background: var(--auth-btn-bg);
+        color: var(--auth-btn-text);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -421,7 +465,7 @@
     .qr-warning-content h4 {
         margin: 0 0 0.5rem;
         font-size: 1rem;
-        color: #ffffff;
+        color: var(--auth-text);
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -432,11 +476,11 @@
     .qr-warning-content p {
         margin: 0;
         font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
         line-height: 1.5;
     }
     .qr-warning-content strong {
-        color: #ffffff;
+        color: var(--auth-text);
     }
 
     /* Tab content visibility */
@@ -448,6 +492,7 @@
     }
 </style>
 
+<div class="auth-wrapper">
 <div class="register-container">
     <div class="register-card">
         <div class="register-header">
@@ -710,6 +755,7 @@
         </div>
     </div>
 </div>
+</div><!-- End auth-wrapper -->
 
 <script>
 function switchTab(type) {

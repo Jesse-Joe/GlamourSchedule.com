@@ -480,6 +480,46 @@
             }
             #home-map { height: 300px; }
         }
+        /* Pink salon markers - Override Leaflet defaults */
+        .leaflet-marker-icon.salon-marker-pink,
+        .salon-marker-pink {
+            background: transparent !important;
+            border: none !important;
+            width: 30px !important;
+            height: 40px !important;
+            margin-left: -15px !important;
+            margin-top: -40px !important;
+        }
+        .salon-pin {
+            color: #ec4899;
+            font-size: 30px;
+            text-shadow: 0 2px 8px rgba(236, 72, 153, 0.5), 0 0 0 2px #ffffff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            line-height: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .salon-pin i {
+            display: block;
+        }
+        /* Pink cluster styling */
+        .salon-cluster {
+            background: transparent;
+        }
+        .salon-cluster-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4), 0 0 0 3px rgba(255,255,255,0.8);
+        }
     </style>
     <div class="section-header">
         <div class="section-tag"><i class="fas fa-map-marked-alt"></i> <?= $translations['map_label'] ?? 'Map' ?></div>
@@ -643,19 +683,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let leafletLoaded = false;
     function initHomeMap() {
-        const map = L.map('home-map', { scrollWheelZoom: false }).setView([51.5, 5.5], 7);
+        const map = L.map('home-map', { scrollWheelZoom: false }).setView([30, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap',
             maxZoom: 18
         }).addTo(map);
-        const markers = L.markerClusterGroup();
+
+        // Pink marker icon
+        const pinkMarkerIcon = L.divIcon({
+            className: 'salon-marker-pink',
+            html: '<div class="salon-pin"><i class="fas fa-map-marker-alt"></i></div>',
+            iconSize: [30, 40],
+            iconAnchor: [15, 40],
+            popupAnchor: [0, -40]
+        });
+
+        // Custom cluster icon
+        const markers = L.markerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                return L.divIcon({
+                    html: '<div class="salon-cluster-icon">' + count + '</div>',
+                    className: 'salon-cluster',
+                    iconSize: [40, 40]
+                });
+            }
+        });
 
         fetch('/api/salons/map')
             .then(r => r.json())
             .then(data => {
                 data.forEach(s => {
                     const stars = '\u2605'.repeat(Math.round(s.rating)) + '\u2606'.repeat(5 - Math.round(s.rating));
-                    const marker = L.marker([s.lat, s.lng]);
+                    const marker = L.marker([s.lat, s.lng], { icon: pinkMarkerIcon });
                     marker.bindPopup(
                         '<div style="min-width:180px">' +
                         '<strong style="font-size:1.05em">' + s.name.replace(/</g,'&lt;') + '</strong><br>' +
@@ -670,10 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     markers.addLayer(marker);
                 });
                 map.addLayer(markers);
-                if (data.length > 0) {
-                    const bounds = markers.getBounds();
-                    if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30] });
-                }
+                // Keep world view - don't zoom to markers
             })
             .catch(() => {});
     }

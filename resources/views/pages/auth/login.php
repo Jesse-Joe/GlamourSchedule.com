@@ -1,6 +1,49 @@
 <?php ob_start(); ?>
 
 <style>
+    /* =============================================
+       AUTH PAGES - Theme Support
+       ============================================= */
+
+    /* Dark Theme (Default) */
+    .auth-wrapper,
+    [data-theme="dark"] .auth-wrapper {
+        --auth-bg: #000000;
+        --auth-surface: #111111;
+        --auth-border: #333333;
+        --auth-text: #ffffff;
+        --auth-text-muted: rgba(255, 255, 255, 0.7);
+        --auth-text-placeholder: rgba(255, 255, 255, 0.5);
+        --auth-input-border: rgba(255, 255, 255, 0.4);
+        --auth-input-focus: #ffffff;
+        --auth-btn-bg: #ffffff;
+        --auth-btn-text: #000000;
+        --auth-link: #ffffff;
+        --auth-shadow: rgba(0, 0, 0, 0.3);
+        --auth-tab-hover: rgba(255, 255, 255, 0.1);
+        --auth-alert-bg: rgba(255, 255, 255, 0.1);
+        --auth-alert-border: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] .auth-wrapper {
+        --auth-bg: #ffffff;
+        --auth-surface: #f5f5f5;
+        --auth-border: #e0e0e0;
+        --auth-text: #000000;
+        --auth-text-muted: rgba(0, 0, 0, 0.6);
+        --auth-text-placeholder: rgba(0, 0, 0, 0.5);
+        --auth-input-border: rgba(0, 0, 0, 0.3);
+        --auth-input-focus: #000000;
+        --auth-btn-bg: #000000;
+        --auth-btn-text: #ffffff;
+        --auth-link: #000000;
+        --auth-shadow: rgba(0, 0, 0, 0.1);
+        --auth-tab-hover: rgba(0, 0, 0, 0.05);
+        --auth-alert-bg: rgba(0, 0, 0, 0.05);
+        --auth-alert-border: rgba(0, 0, 0, 0.2);
+    }
+
     .login-container {
         max-width: 480px;
         margin: 1rem auto;
@@ -36,38 +79,39 @@
         }
     }
     .login-card {
-        background: #000000;
+        background: var(--auth-bg);
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        border: 2px solid #333333;
+        box-shadow: 0 10px 40px var(--auth-shadow);
+        border: 2px solid var(--auth-border);
+        transition: background 0.3s, border-color 0.3s;
     }
     .login-header {
-        background: #000000;
-        color: #ffffff;
+        background: var(--auth-bg);
+        color: var(--auth-text);
         padding: 3rem 2rem;
         text-align: center;
-        border-bottom: 2px solid #333333;
+        border-bottom: 2px solid var(--auth-border);
         border-radius: 0 0 30px 30px;
     }
     .login-header i {
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
         display: block;
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .login-header h1 {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--auth-text);
     }
 
     /* Account Type Tabs */
     .account-tabs {
         display: flex;
-        background: #000000;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        background: var(--auth-bg);
+        border-bottom: 2px solid var(--auth-input-border);
     }
     .account-tab {
         flex: 1;
@@ -79,20 +123,20 @@
         background: transparent;
         font-size: 0.95rem;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--auth-text-muted);
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
     }
     .account-tab:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.9);
+        background: var(--auth-tab-hover);
+        color: var(--auth-text);
     }
     .account-tab.active {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        border-bottom: 3px solid #ffffff;
+        background: var(--auth-tab-hover);
+        color: var(--auth-text);
+        border-bottom: 3px solid var(--auth-text);
         margin-bottom: -2px;
     }
     .account-tab i {
@@ -111,7 +155,7 @@
 
     .login-body {
         padding: 2rem;
-        background: #000000;
+        background: var(--auth-bg);
     }
     .form-group {
         margin-bottom: 1.25rem;
@@ -123,10 +167,10 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
     }
     .form-group label i {
-        color: #ffffff;
+        color: var(--auth-text);
         font-size: 0.9rem;
     }
     .form-control {
@@ -134,40 +178,40 @@
         padding: 0.9rem 0;
         background: transparent;
         border: none;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+        border-bottom: 2px solid var(--auth-input-border);
         border-radius: 0;
         font-size: 1rem;
-        color: #ffffff;
+        color: var(--auth-text);
         transition: all 0.3s ease;
     }
     .form-control:focus {
         outline: none;
-        border-bottom-color: #ffffff;
+        border-bottom-color: var(--auth-input-focus);
         box-shadow: none;
     }
     .form-control:hover {
-        border-bottom-color: rgba(255, 255, 255, 0.7);
+        border-bottom-color: var(--auth-text-muted);
     }
     .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--auth-text-placeholder);
     }
     .forgot-link {
         display: block;
         text-align: right;
         margin-top: 0.5rem;
         font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--auth-text-muted);
         text-decoration: none;
         transition: color 0.3s ease;
     }
     .forgot-link:hover {
-        color: #ffffff;
+        color: var(--auth-link);
     }
     .btn-login {
         width: 100%;
         padding: 1.1rem;
-        background: #ffffff;
-        color: #000000;
+        background: var(--auth-btn-bg);
+        color: var(--auth-btn-text);
         border: none;
         border-radius: 50px;
         font-size: 1.05rem;
@@ -182,27 +226,27 @@
     }
     .btn-login:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+        box-shadow: 0 10px 30px var(--auth-shadow);
     }
     .btn-login.business {
-        background: #ffffff;
-        color: #000000;
+        background: var(--auth-btn-bg);
+        color: var(--auth-btn-text);
     }
     .btn-login.business:hover {
-        box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+        box-shadow: 0 10px 30px var(--auth-shadow);
     }
     .login-footer {
         text-align: center;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid var(--auth-input-border);
         margin-top: 1.5rem;
     }
     .login-footer p {
         margin: 0.5rem 0;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--auth-text-muted);
     }
     .login-footer a {
-        color: #ffffff;
+        color: var(--auth-link);
         text-decoration: none;
         font-weight: 500;
     }
@@ -218,24 +262,24 @@
         gap: 0.75rem;
     }
     .alert-success {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #ffffff;
+        background: var(--auth-alert-bg);
+        border: 1px solid var(--auth-alert-border);
+        color: var(--auth-text);
     }
     .alert-success i {
-        color: #ffffff;
+        color: #10b981;
     }
     .alert-danger {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #ffffff;
+        background: var(--auth-alert-bg);
+        border: 1px solid var(--auth-alert-border);
+        color: var(--auth-text);
     }
     .alert-danger i {
-        color: #ffffff;
+        color: #ef4444;
     }
     .account-info {
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: var(--auth-alert-bg);
+        border: 2px solid var(--auth-alert-border);
         border-radius: 12px;
         padding: 0.75rem 1rem;
         margin-bottom: 1.25rem;
@@ -243,18 +287,18 @@
         align-items: center;
         gap: 0.75rem;
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--auth-text);
     }
     .account-info i {
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .account-info.business {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: rgba(255, 255, 255, 0.9);
+        background: var(--auth-alert-bg);
+        border-color: var(--auth-alert-border);
+        color: var(--auth-text);
     }
     .account-info.business i {
-        color: #ffffff;
+        color: var(--auth-text);
     }
 
     /* Password Toggle */
@@ -268,7 +312,7 @@
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--auth-text-muted);
         cursor: pointer;
         padding: 4px;
         display: flex;
@@ -276,7 +320,7 @@
         justify-content: center;
     }
     .password-toggle:hover {
-        color: #ffffff;
+        color: var(--auth-text);
     }
     .password-wrapper .form-control {
         padding-right: 2rem;
@@ -289,14 +333,9 @@
     .tab-content.active {
         display: block;
     }
-
-    /* Dark Mode - Already dark so minimal changes needed */
-    [data-theme="dark"] .login-card {
-        background: #000000;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
 </style>
 
+<div class="auth-wrapper">
 <div class="login-container">
     <div class="login-card">
         <div class="login-header">
@@ -431,6 +470,7 @@
         </div>
     </div>
 </div>
+</div><!-- End auth-wrapper -->
 
 <script>
     function switchTab(type) {

@@ -1,28 +1,80 @@
 <?php ob_start(); ?>
 
 <style>
+/* =============================================
+   SEARCH PAGE - Theme Support
+   Responds to data-theme attribute on html element
+   ============================================= */
+
+/* Dark Theme (Default) */
+.search-page-wrapper,
+[data-theme="dark"] .search-page-wrapper {
+    --search-bg: #000000;
+    --search-surface: #1a1a1a;
+    --search-border: #333333;
+    --search-border-light: #444444;
+    --search-text: #ffffff;
+    --search-text-muted: rgba(255, 255, 255, 0.6);
+    --search-text-placeholder: rgba(255, 255, 255, 0.5);
+    --search-input-bg: rgba(255, 255, 255, 0.1);
+    --search-input-border: rgba(255, 255, 255, 0.2);
+    --search-input-focus: #ffffff;
+    --search-btn-bg: #ffffff;
+    --search-btn-text: #000000;
+    --search-card-bg: #1a1a1a;
+    --search-card-border: #444444;
+    --search-card-hover: #666666;
+    --search-checkbox-bg: rgba(255, 255, 255, 0.05);
+    --search-checkbox-selected: rgba(255, 255, 255, 0.25);
+    --search-shadow: rgba(0, 0, 0, 0.3);
+    --search-divider: rgba(255, 255, 255, 0.15);
+}
+
+/* Light Theme */
+[data-theme="light"] .search-page-wrapper {
+    --search-bg: #ffffff;
+    --search-surface: #f5f5f5;
+    --search-border: #e0e0e0;
+    --search-border-light: #d0d0d0;
+    --search-text: #000000;
+    --search-text-muted: rgba(0, 0, 0, 0.6);
+    --search-text-placeholder: rgba(0, 0, 0, 0.5);
+    --search-input-bg: rgba(0, 0, 0, 0.05);
+    --search-input-border: rgba(0, 0, 0, 0.2);
+    --search-input-focus: #000000;
+    --search-btn-bg: #000000;
+    --search-btn-text: #ffffff;
+    --search-card-bg: #ffffff;
+    --search-card-border: #e0e0e0;
+    --search-card-hover: #000000;
+    --search-checkbox-bg: rgba(0, 0, 0, 0.03);
+    --search-checkbox-selected: rgba(0, 0, 0, 0.1);
+    --search-shadow: rgba(0, 0, 0, 0.1);
+    --search-divider: rgba(0, 0, 0, 0.1);
+}
+
 /* !! CRITICAL v3 - Business Card Styles - Must override everything !! */
 .results-container .business-grid .biz-card,
 body .results-container .biz-card,
 html body .biz-card {
     display: flex !important;
     flex-direction: column !important;
-    background: #1a1a1a !important;
-    border: 2px solid #444 !important;
+    background: var(--search-card-bg) !important;
+    border: 2px solid var(--search-card-border) !important;
     border-radius: 16px !important;
     overflow: hidden !important;
     text-decoration: none !important;
-    color: #fff !important;
+    color: var(--search-text) !important;
     min-height: 340px !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s, border-color 0.3s !important;
 }
 .results-container .business-grid .biz-card:hover,
 body .results-container .biz-card:hover {
     transform: translateY(-4px) !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4) !important;
-    border-color: #666 !important;
+    box-shadow: 0 8px 30px var(--search-shadow) !important;
+    border-color: var(--search-card-hover) !important;
 }
 .biz-card * {
     box-sizing: border-box !important;
@@ -47,7 +99,7 @@ body .biz-card .biz-card-img {
     position: relative !important;
     width: 100% !important;
     height: 150px !important;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    background: linear-gradient(135deg, var(--search-surface) 0%, var(--search-bg) 100%) !important;
     overflow: hidden !important;
     flex-shrink: 0 !important;
 }
@@ -62,7 +114,7 @@ body .biz-card .biz-card-body {
 body .biz-card .biz-card-footer {
     margin-top: auto !important;
     padding-top: 12px !important;
-    border-top: 1px solid #333 !important;
+    border-top: 1px solid var(--search-border) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -89,19 +141,21 @@ body .biz-card .biz-card-footer {
 
 /* Search Card */
 .search-card {
-    background: #000000;
+    background: var(--search-bg);
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    border: 2px solid #333333;
+    box-shadow: 0 10px 40px var(--search-shadow);
+    border: 2px solid var(--search-border);
     margin-bottom: 1.5rem;
+    transition: background 0.3s, border-color 0.3s;
 }
 .search-header {
-    background: #000000;
-    color: #ffffff;
+    background: var(--search-bg);
+    color: var(--search-text);
     padding: 2rem;
     text-align: center;
-    border-bottom: 2px solid #333333;
+    border-bottom: 2px solid var(--search-border);
+    transition: background 0.3s, color 0.3s;
 }
 @media (min-width: 1024px) {
     .search-header {
@@ -122,22 +176,23 @@ body .biz-card .biz-card-footer {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     display: block;
-    color: #ffffff;
+    color: var(--search-text);
 }
 .search-header h1 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--search-text);
 }
 .search-header p {
     margin: 0.5rem 0 0 0;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--search-text-muted);
 }
 .search-body {
     padding: 2rem;
-    background: #000000;
+    background: var(--search-bg);
+    transition: background 0.3s;
 }
 @media (min-width: 1024px) {
     .search-body {
@@ -183,37 +238,37 @@ body .biz-card .biz-card-footer {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    color: #ffffff;
+    color: var(--search-text);
 }
 .search-bar-input input {
     width: 100%;
     padding: 0.85rem 0 0.85rem 1.75rem;
     border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 2px solid var(--search-input-border);
     border-radius: 0;
     font-size: 1rem;
     background: transparent;
-    color: #ffffff;
+    color: var(--search-text);
     transition: all 0.3s ease;
 }
 .search-bar-input input:focus {
     outline: none;
-    border-bottom-color: #ffffff;
+    border-bottom-color: var(--search-input-focus);
     box-shadow: none;
 }
 .search-bar-input input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--search-text-placeholder);
 }
 .search-bar-select select,
 .search-bar-select input {
     width: 100%;
     padding: 0.85rem 0;
     border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 2px solid var(--search-input-border);
     border-radius: 0;
     font-size: 1rem;
     background: transparent;
-    color: #ffffff;
+    color: var(--search-text);
     appearance: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -221,27 +276,27 @@ body .biz-card .biz-card-footer {
 .search-bar-select select:focus,
 .search-bar-select input:focus {
     outline: none;
-    border-bottom-color: #ffffff;
+    border-bottom-color: var(--search-input-focus);
     box-shadow: none;
 }
 .search-bar-select select::placeholder,
 .search-bar-select input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--search-text-placeholder);
 }
 .search-bar-select select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0 center;
 }
 .search-bar-select select option {
-    background: #000000;
-    color: #ffffff;
+    background: var(--search-bg);
+    color: var(--search-text);
 }
 .search-bar-btn {
     width: 100%;
     padding: 1rem;
-    background: #ffffff;
-    color: #000000;
+    background: var(--search-btn-bg);
+    color: var(--search-btn-text);
     border: none;
     border-radius: 50px;
     font-size: 1.05rem;
@@ -264,7 +319,7 @@ body .biz-card .biz-card-footer {
 }
 .search-bar-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px var(--search-shadow);
 }
 
 /* Advanced Filters Panel */
@@ -274,7 +329,7 @@ body .biz-card .biz-card-footer {
     border-radius: 0;
     margin-bottom: 0;
     overflow: hidden;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid var(--search-divider);
     padding-top: 1.5rem;
     margin-top: 1.5rem;
 }
@@ -289,11 +344,11 @@ body .biz-card .biz-card-footer {
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--search-text);
 }
 .filters-toggle i {
     transition: transform 0.3s;
-    color: #ffffff;
+    color: var(--search-text);
 }
 .filters-toggle.active i {
     transform: rotate(180deg);
@@ -325,7 +380,7 @@ body .biz-card .biz-card-footer {
     }
 }
 .filter-section h5 {
-    color: #ffffff;
+    color: var(--search-text);
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 0.75rem 0;
@@ -349,27 +404,27 @@ body .biz-card .biz-card-footer {
 .price-input-group label {
     display: block;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--search-text-muted);
     margin-bottom: 0.25rem;
 }
 .price-input-group input {
     width: 100%;
     padding: 0.6rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--search-input-bg);
+    border: 1px solid var(--search-input-border);
     border-radius: 8px;
-    color: #ffffff;
+    color: var(--search-text);
     font-size: 0.9rem;
 }
 .price-input-group input:focus {
     outline: none;
-    border-color: #ffffff;
+    border-color: var(--search-input-focus);
 }
 .price-input-group input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--search-text-placeholder);
 }
 .price-separator {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--search-text-muted);
     font-weight: 600;
     padding-top: 1.25rem;
 }
@@ -384,20 +439,20 @@ body .biz-card .biz-card-footer {
 .availability-options select {
     width: 100%;
     padding: 0.6rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--search-input-bg);
+    border: 1px solid var(--search-input-border);
     border-radius: 8px;
-    color: #ffffff;
+    color: var(--search-text);
     font-size: 0.9rem;
 }
 .availability-options input[type="date"]:focus,
 .availability-options select:focus {
     outline: none;
-    border-color: #ffffff;
+    border-color: var(--search-input-focus);
 }
 .availability-options select option {
-    background: #000000;
-    color: #ffffff;
+    background: var(--search-bg);
+    color: var(--search-text);
 }
 
 /* Filter Checkboxes */
@@ -412,22 +467,22 @@ body .biz-card .biz-card-footer {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--search-checkbox-bg);
+    border: 1px solid var(--search-input-border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--search-text-muted);
 }
 .filter-checkbox:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--search-border-light);
+    background: var(--search-input-bg);
 }
 .filter-checkbox.selected {
-    background: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.5);
+    background: var(--search-checkbox-selected);
+    color: var(--search-text);
+    border-color: var(--search-border-light);
 }
 .filter-checkbox input {
     display: none;
@@ -443,7 +498,7 @@ body .biz-card .biz-card-footer {
 
 .filter-divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--search-divider);
     margin: 1rem 0 1.5rem;
 }
 
@@ -454,19 +509,19 @@ body .biz-card .biz-card-footer {
     width: 100%;
     padding: 0.85rem 0;
     border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 2px solid var(--search-input-border);
     border-radius: 0;
     font-size: 0.95rem;
     background: transparent;
-    color: #ffffff;
+    color: var(--search-text);
     transition: all 0.3s ease;
 }
 .filter-search input:focus {
     outline: none;
-    border-bottom-color: #ffffff;
+    border-bottom-color: var(--search-input-focus);
 }
 .filter-search input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--search-text-placeholder);
 }
 
 /* Location Button */
@@ -477,13 +532,13 @@ body .biz-card .biz-card-footer {
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--search-text-muted);
     cursor: pointer;
     padding: 0.5rem;
     transition: all 0.2s;
 }
 .location-btn:hover {
-    color: #ffffff;
+    color: var(--search-text);
 }
 .location-btn.loading i {
     animation: spin 1s linear infinite;
@@ -748,14 +803,16 @@ body .biz-card .biz-card-footer {
 /* Results Container */
 .results-container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 0 auto 2rem;
     padding: 2rem 1rem;
-    background: #000000;
+    background: var(--search-bg);
+    transition: background 0.3s;
 }
 @media (min-width: 1024px) {
     .results-container {
         max-width: 1600px;
         padding: 3rem 2rem;
+        margin-bottom: 3rem;
     }
 }
 
@@ -832,7 +889,7 @@ body .biz-card .biz-card-footer {
     font-size: 1.25rem;
     font-weight: 700;
     margin: 0;
-    color: #ffffff;
+    color: var(--search-text);
 }
 @media (min-width: 1024px) {
     .results-title {
@@ -841,11 +898,11 @@ body .biz-card .biz-card-footer {
     }
 }
 .results-title i {
-    color: #ffffff;
+    color: var(--search-text);
 }
 .results-count {
-    background: #ffffff;
-    color: #000000;
+    background: var(--search-btn-bg);
+    color: var(--search-btn-text);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -863,25 +920,31 @@ body .biz-card .biz-card-footer {
     gap: 0.5rem;
 }
 .results-sort label {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--search-text-muted);
     font-size: 0.9rem;
 }
 .results-sort select {
     padding: 0.5rem 2rem 0.5rem 0.75rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--search-input-border);
     border-radius: 8px;
     font-size: 0.9rem;
-    background: transparent;
-    color: #ffffff;
+    background: var(--search-input-bg);
+    color: var(--search-text);
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.5rem center;
 }
+[data-theme="dark"] .results-sort select,
+.search-page-wrapper .results-sort select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+[data-theme="light"] .results-sort select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
 .results-sort select option {
-    background: #000000;
-    color: #ffffff;
+    background: var(--search-surface);
+    color: var(--search-text);
 }
 
 /* =============================================
@@ -941,7 +1004,7 @@ body .biz-card .biz-card-footer {
     position: relative !important;
     width: 100% !important;
     height: 150px !important;
-    background: #0d0d0d !important;
+    background: var(--search-surface) !important;
     overflow: hidden !important;
     flex-shrink: 0 !important;
 }
@@ -964,7 +1027,7 @@ body .biz-card .biz-card-footer {
 }
 .results-container .biz-card-img-placeholder i {
     font-size: 3rem !important;
-    color: #333 !important;
+    color: var(--search-border) !important;
 }
 .results-container .biz-card-letter {
     font-size: 4rem !important;
@@ -1023,7 +1086,7 @@ body .biz-card .biz-card-footer {
     font-size: 16px !important;
     font-weight: 700 !important;
     margin: 0 0 8px 0 !important;
-    color: #fff !important;
+    color: var(--search-text) !important;
     line-height: 1.3 !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
@@ -1037,12 +1100,12 @@ body .biz-card .biz-card-footer {
     align-items: center !important;
     gap: 6px !important;
     font-size: 13px !important;
-    color: #aaa !important;
+    color: var(--search-text-muted) !important;
     margin-bottom: 10px !important;
 }
 .results-container .biz-card-location i {
     font-size: 11px !important;
-    color: #888 !important;
+    color: var(--search-text-muted) !important;
     flex-shrink: 0 !important;
 }
 .results-container .biz-card-distance {
@@ -1072,15 +1135,15 @@ body .biz-card .biz-card-footer {
     color: #fbbf24 !important;
 }
 .results-container .biz-card-stars i.empty {
-    color: #444 !important;
+    color: var(--search-border) !important;
 }
 .results-container .biz-card-rating-text {
     font-size: 13px !important;
-    color: #888 !important;
+    color: var(--search-text-muted) !important;
 }
 .results-container .biz-card-rating-score {
     font-weight: 700 !important;
-    color: #fff !important;
+    color: var(--search-text) !important;
 }
 
 /* Services Tags */
@@ -1092,19 +1155,19 @@ body .biz-card .biz-card-footer {
     flex: 1 !important;
 }
 .results-container .biz-service-tag {
-    background: #2a2a2a !important;
-    color: #bbb !important;
+    background: var(--search-surface) !important;
+    color: var(--search-text-muted) !important;
     padding: 4px 10px !important;
     border-radius: 4px !important;
     font-size: 11px !important;
-    border: 1px solid #3a3a3a !important;
+    border: 1px solid var(--search-border) !important;
 }
 
 /* Footer with Price & Button */
 .results-container .biz-card-footer {
     margin-top: auto !important;
     padding-top: 12px !important;
-    border-top: 1px solid #333 !important;
+    border-top: 1px solid var(--search-border) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -1112,26 +1175,26 @@ body .biz-card .biz-card-footer {
 }
 .results-container .biz-card-price {
     font-size: 13px !important;
-    color: #888 !important;
+    color: var(--search-text-muted) !important;
 }
 .results-container .biz-card-price strong {
     font-size: 15px !important;
-    color: #fff !important;
+    color: var(--search-text) !important;
     font-weight: 700 !important;
 }
 .results-container .biz-card-cta {
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--search-btn-bg) !important;
+    color: var(--search-btn-text) !important;
     padding: 10px 16px !important;
     border-radius: 25px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
     text-decoration: none !important;
     white-space: nowrap !important;
-    transition: background 0.2s ease !important;
+    transition: background 0.2s ease, color 0.2s ease !important;
 }
 .results-container .biz-card:hover .biz-card-cta {
-    background: #e0e0e0 !important;
+    opacity: 0.85 !important;
 }
 
 /* Route Button */
@@ -1209,20 +1272,22 @@ body .biz-card .biz-card-footer {
 /* Salon Map */
 .salon-map-section {
     max-width: 1400px;
-    margin: 0 auto 2rem;
+    margin: 2rem auto 2rem;
     padding: 0 1rem;
 }
 @media (min-width: 1024px) {
     .salon-map-section {
         max-width: 1600px;
         padding: 0 2rem;
+        margin: 3rem auto 3rem;
     }
 }
 .salon-map-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--search-checkbox-bg);
+    border: 2px solid var(--search-input-border);
     border-radius: 16px;
     overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
 }
 .salon-map-header {
     display: flex;
@@ -1231,7 +1296,7 @@ body .biz-card .biz-card-footer {
     flex-wrap: wrap;
     gap: 1rem;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid var(--search-divider);
 }
 .salon-map-title {
     display: flex;
@@ -1239,40 +1304,98 @@ body .biz-card .biz-card-footer {
     gap: 0.75rem;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--search-text);
     margin: 0;
 }
 .salon-map-title i {
     color: #60a5fa;
 }
-.country-filter-btns {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
+.country-filter-select {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
-.country-filter-btn {
-    padding: 0.4rem 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+.country-filter-select select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--search-input-bg);
+    border: 1px solid var(--search-input-border);
     border-radius: 20px;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.8rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    color: var(--search-text);
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    min-width: 160px;
 }
-.country-filter-btn:hover {
-    border-color: #ffffff;
-    color: #ffffff;
+.country-filter-select select:hover {
+    border-color: var(--search-input-focus);
+    background: var(--search-checkbox-selected);
 }
-.country-filter-btn.active {
-    background: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+.country-filter-select select:focus {
+    outline: none;
+    border-color: var(--search-input-focus);
+    background: var(--search-checkbox-selected);
+}
+.country-filter-select select option {
+    background: var(--search-surface);
+    color: var(--search-text);
+    padding: 0.5rem;
+}
+.country-filter-select::after {
+    content: '\f107';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 12px;
+    pointer-events: none;
+    color: var(--search-text-muted);
+    font-size: 0.8rem;
 }
 #salon-map {
     height: 450px;
-    background: #111111;
+    background: var(--search-surface);
+}
+/* Pink salon markers - Override Leaflet defaults */
+.leaflet-marker-icon.salon-marker-pink,
+.salon-marker-pink {
+    background: transparent !important;
+    border: none !important;
+    width: 30px !important;
+    height: 40px !important;
+    margin-left: -15px !important;
+    margin-top: -40px !important;
+}
+.salon-pin {
+    color: #ec4899;
+    font-size: 30px;
+    text-shadow: 0 2px 8px rgba(236, 72, 153, 0.5), 0 0 0 2px #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    line-height: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.salon-pin i {
+    display: block;
+}
+/* Pink cluster styling */
+.salon-cluster {
+    background: transparent;
+}
+.salon-cluster-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4), 0 0 0 3px rgba(255,255,255,0.8);
 }
 @media (min-width: 1024px) {
     #salon-map {
@@ -1384,6 +1507,7 @@ body .biz-card .biz-card-footer {
 }
 </style>
 
+<div class="search-page-wrapper">
 <div class="search-page">
     <!-- Search Card -->
     <div class="search-card">
@@ -1681,7 +1805,7 @@ body .biz-card .biz-card-footer {
                 $isNew = isset($biz['created_at']) && strtotime($biz['created_at']) > strtotime('-30 days');
                 $isPopular = ($biz['review_count'] ?? 0) >= 10;
             ?>
-                <div class="biz-card" onclick="window.location='/business/<?= htmlspecialchars($biz['slug']) ?>'" style="display:flex !important; flex-direction:column !important; background:#1a1a1a !important; border:2px solid #444 !important; border-radius:16px !important; overflow:hidden !important; text-decoration:none !important; color:#fff !important; min-height:340px !important; cursor:pointer !important;">
+                <div class="biz-card" onclick="window.location='/business/<?= htmlspecialchars($biz['slug']) ?>'" style="display:flex !important; flex-direction:column !important; border-radius:16px !important; overflow:hidden !important; text-decoration:none !important; min-height:340px !important; cursor:pointer !important;">
                     <!-- Banner/Image Section -->
                     <div class="biz-card-img" style="position:relative !important; width:100% !important; height:150px !important; background:linear-gradient(135deg,#1a1a2e,#16213e) !important; overflow:hidden !important; flex-shrink:0 !important;">
                         <?php
@@ -1735,7 +1859,7 @@ body .biz-card .biz-card-footer {
 
                     <!-- Body -->
                     <div class="biz-card-body" style="padding:14px !important; display:flex !important; flex-direction:column !important; flex:1 !important;">
-                        <h3 class="biz-card-name" style="margin:0 0 8px 0 !important; font-size:1.1rem !important; font-weight:600 !important; color:#fff !important;"><?= htmlspecialchars($biz['name']) ?></h3>
+                        <h3 class="biz-card-name" style="margin:0 0 8px 0 !important; font-size:1.1rem !important; font-weight:600 !important;"><?= htmlspecialchars($biz['name']) ?></h3>
 
                         <?php if (!empty($biz['city'])): ?>
                             <div class="biz-card-location">
@@ -1778,7 +1902,7 @@ body .biz-card .biz-card-footer {
                         <?php endif; ?>
 
                         <!-- Footer -->
-                        <div class="biz-card-footer" style="margin-top:auto !important; padding-top:12px !important; border-top:1px solid #333 !important; display:flex !important; align-items:center !important; justify-content:space-between !important;">
+                        <div class="biz-card-footer" style="margin-top:auto !important; padding-top:12px !important; display:flex !important; align-items:center !important; justify-content:space-between !important;">
                             <?php if (!empty($biz['min_price'])): ?>
                                 <span class="biz-card-price">
                                     <?= $translations['from_price'] ?? 'From' ?> <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
@@ -1810,17 +1934,83 @@ body .biz-card .biz-card-footer {
     <div class="salon-map-card">
         <div class="salon-map-header">
             <h3 class="salon-map-title"><i class="fas fa-globe-europe"></i> <?= $translations['salon_map_title'] ?? 'Salons on the Map' ?></h3>
-            <div class="country-filter-btns">
-                <button class="country-filter-btn active" data-country="" onclick="filterMapCountry(this)"><?= $translations['all'] ?? 'All' ?></button>
-                <button class="country-filter-btn" data-country="NL" onclick="filterMapCountry(this)">NL</button>
-                <button class="country-filter-btn" data-country="BE" onclick="filterMapCountry(this)">BE</button>
-                <button class="country-filter-btn" data-country="DE" onclick="filterMapCountry(this)">DE</button>
-                <button class="country-filter-btn" data-country="FR" onclick="filterMapCountry(this)">FR</button>
+            <div class="country-filter-select">
+                <select id="country-filter" onchange="filterMapCountry(this.value)">
+                    <option value=""><?= $translations['all_countries'] ?? 'All Countries' ?> 🌍</option>
+                    <optgroup label="<?= $translations['europe'] ?? 'Europe' ?>">
+                        <option value="NL">🇳🇱 Nederland</option>
+                        <option value="BE">🇧🇪 België</option>
+                        <option value="DE">🇩🇪 Deutschland</option>
+                        <option value="FR">🇫🇷 France</option>
+                        <option value="GB">🇬🇧 United Kingdom</option>
+                        <option value="ES">🇪🇸 España</option>
+                        <option value="IT">🇮🇹 Italia</option>
+                        <option value="PT">🇵🇹 Portugal</option>
+                        <option value="AT">🇦🇹 Österreich</option>
+                        <option value="CH">🇨🇭 Schweiz</option>
+                        <option value="PL">🇵🇱 Polska</option>
+                        <option value="SE">🇸🇪 Sverige</option>
+                        <option value="NO">🇳🇴 Norge</option>
+                        <option value="DK">🇩🇰 Danmark</option>
+                        <option value="FI">🇫🇮 Suomi</option>
+                        <option value="IE">🇮🇪 Ireland</option>
+                        <option value="GR">🇬🇷 Ελλάδα</option>
+                        <option value="CZ">🇨🇿 Česko</option>
+                        <option value="HU">🇭🇺 Magyarország</option>
+                        <option value="RO">🇷🇴 România</option>
+                        <option value="BG">🇧🇬 България</option>
+                        <option value="HR">🇭🇷 Hrvatska</option>
+                        <option value="SK">🇸🇰 Slovensko</option>
+                        <option value="SI">🇸🇮 Slovenija</option>
+                        <option value="LU">🇱🇺 Luxembourg</option>
+                        <option value="RU">🇷🇺 Россия</option>
+                        <option value="UA">🇺🇦 Україна</option>
+                        <option value="EE">🇪🇪 Eesti</option>
+                        <option value="LV">🇱🇻 Latvija</option>
+                        <option value="LT">🇱🇹 Lietuva</option>
+                    </optgroup>
+                    <optgroup label="<?= $translations['americas'] ?? 'Americas' ?>">
+                        <option value="US">🇺🇸 United States</option>
+                        <option value="CA">🇨🇦 Canada</option>
+                        <option value="MX">🇲🇽 México</option>
+                        <option value="BR">🇧🇷 Brasil</option>
+                        <option value="AR">🇦🇷 Argentina</option>
+                        <option value="CO">🇨🇴 Colombia</option>
+                        <option value="CL">🇨🇱 Chile</option>
+                    </optgroup>
+                    <optgroup label="<?= $translations['asia_pacific'] ?? 'Asia & Pacific' ?>">
+                        <option value="AU">🇦🇺 Australia</option>
+                        <option value="NZ">🇳🇿 New Zealand</option>
+                        <option value="JP">🇯🇵 日本</option>
+                        <option value="KR">🇰🇷 한국</option>
+                        <option value="CN">🇨🇳 中国</option>
+                        <option value="SG">🇸🇬 Singapore</option>
+                        <option value="MY">🇲🇾 Malaysia</option>
+                        <option value="TH">🇹🇭 ไทย</option>
+                        <option value="ID">🇮🇩 Indonesia</option>
+                        <option value="PH">🇵🇭 Philippines</option>
+                        <option value="IN">🇮🇳 India</option>
+                        <option value="AE">🇦🇪 UAE</option>
+                        <option value="SA">🇸🇦 السعودية</option>
+                        <option value="TR">🇹🇷 Türkiye</option>
+                        <option value="IL">🇮🇱 ישראל</option>
+                        <option value="VN">🇻🇳 Việt Nam</option>
+                        <option value="IR">🇮🇷 ایران</option>
+                    </optgroup>
+                    <optgroup label="<?= $translations['africa'] ?? 'Africa' ?>">
+                        <option value="ZA">🇿🇦 South Africa</option>
+                        <option value="EG">🇪🇬 مصر</option>
+                        <option value="MA">🇲🇦 المغرب</option>
+                        <option value="NG">🇳🇬 Nigeria</option>
+                        <option value="KE">🇰🇪 Kenya</option>
+                    </optgroup>
+                </select>
             </div>
         </div>
         <div id="salon-map"></div>
     </div>
 </div>
+</div><!-- End search-page-wrapper -->
 
 <script>
 function sortResults(value) {
@@ -2265,21 +2455,102 @@ let salonMap = null;
 let salonMarkers = null;
 let allSalonData = [];
 const detectedLang = '<?= $lang ?? 'nl' ?>';
-const langCountryDefaults = { nl: 'NL', de: 'DE', fr: 'FR', en: '' };
+const searchCountry = '<?= $searchCountry ?? '' ?>';
+
+// Language to country mapping - comprehensive list
+const langCountryDefaults = {
+    // Western Europe
+    nl: 'NL', de: 'DE', fr: 'FR', es: 'ES', it: 'IT', pt: 'PT', en: 'GB',
+    // Northern Europe
+    sv: 'SE', da: 'DK', fi: 'FI', no: 'NO',
+    // Eastern Europe
+    pl: 'PL', cs: 'CZ', hu: 'HU', ro: 'RO', bg: 'BG', hr: 'HR', sk: 'SK',
+    sl: 'SI', ru: 'RU', uk: 'UA', et: 'EE', lv: 'LV', lt: 'LT',
+    // Southern Europe
+    el: 'GR',
+    // Asia
+    ja: 'JP', ko: 'KR', zh: 'CN', th: 'TH', id: 'ID', vi: 'VN', ms: 'MY',
+    hi: 'IN', tl: 'PH',
+    // Middle East
+    tr: 'TR', ar: 'SA', he: 'IL', fa: 'IR',
+    // Africa
+    sw: 'KE', af: 'ZA'
+};
 
 // Country map views: [lat, lng, zoom]
 const countryMapViews = {
     '': [30, 0, 2],           // World view (All)
+    // Europe
     'NL': [52.2, 5.3, 7],     // Netherlands
     'BE': [50.5, 4.5, 8],     // Belgium
     'DE': [51.2, 10.4, 6],    // Germany
-    'FR': [46.6, 2.5, 6]      // France
+    'FR': [46.6, 2.5, 6],     // France
+    'GB': [54.0, -2.0, 6],    // United Kingdom
+    'ES': [40.0, -3.7, 6],    // Spain
+    'IT': [42.5, 12.5, 6],    // Italy
+    'PT': [39.5, -8.0, 7],    // Portugal
+    'AT': [47.5, 14.5, 7],    // Austria
+    'CH': [46.8, 8.2, 8],     // Switzerland
+    'PL': [52.0, 19.5, 6],    // Poland
+    'SE': [62.0, 15.0, 5],    // Sweden
+    'NO': [64.0, 10.0, 5],    // Norway
+    'DK': [56.0, 10.0, 7],    // Denmark
+    'FI': [64.0, 26.0, 5],    // Finland
+    'IE': [53.4, -8.0, 7],    // Ireland
+    'GR': [39.0, 22.0, 6],    // Greece
+    'CZ': [49.8, 15.5, 7],    // Czech Republic
+    'HU': [47.2, 19.5, 7],    // Hungary
+    'RO': [45.9, 25.0, 6],    // Romania
+    'BG': [42.7, 25.5, 7],    // Bulgaria
+    'HR': [45.1, 16.0, 7],    // Croatia
+    'SK': [48.7, 19.7, 7],    // Slovakia
+    'SI': [46.2, 14.8, 8],    // Slovenia
+    'LU': [49.6, 6.1, 9],     // Luxembourg
+    'RU': [61.5, 105.3, 3],   // Russia
+    'UA': [48.4, 31.2, 6],    // Ukraine
+    'EE': [58.6, 25.0, 7],    // Estonia
+    'LV': [56.9, 24.1, 7],    // Latvia
+    'LT': [55.2, 23.9, 7],    // Lithuania
+    // Americas
+    'US': [39.8, -98.5, 4],   // United States
+    'CA': [56.0, -96.0, 4],   // Canada
+    'MX': [23.6, -102.5, 5],  // Mexico
+    'BR': [-14.0, -51.9, 4],  // Brazil
+    'AR': [-38.4, -63.6, 4],  // Argentina
+    'CO': [4.6, -74.1, 5],    // Colombia
+    'CL': [-35.7, -71.5, 4],  // Chile
+    // Asia & Pacific
+    'AU': [-25.3, 133.8, 4],  // Australia
+    'NZ': [-41.3, 174.9, 5],  // New Zealand
+    'JP': [36.2, 138.3, 5],   // Japan
+    'KR': [35.9, 127.8, 7],   // South Korea
+    'CN': [35.9, 104.2, 4],   // China
+    'SG': [1.4, 103.8, 11],   // Singapore
+    'MY': [4.2, 101.9, 6],    // Malaysia
+    'TH': [15.9, 100.9, 6],   // Thailand
+    'ID': [-2.5, 118.0, 4],   // Indonesia
+    'PH': [12.9, 121.8, 6],   // Philippines
+    'IN': [20.6, 79.0, 5],    // India
+    'AE': [23.4, 53.8, 7],    // UAE
+    'SA': [23.9, 45.1, 5],    // Saudi Arabia
+    'TR': [39.0, 35.2, 6],    // Turkey
+    'IL': [31.0, 34.8, 8],    // Israel
+    'VN': [14.1, 108.3, 5],   // Vietnam
+    'IR': [32.4, 53.7, 5],    // Iran
+    // Africa
+    'ZA': [-30.6, 22.9, 5],   // South Africa
+    'EG': [26.8, 30.8, 6],    // Egypt
+    'MA': [31.8, -7.1, 6],    // Morocco
+    'NG': [9.1, 8.7, 6],      // Nigeria
+    'KE': [1.0, 38.0, 6]      // Kenya
 };
 
-function filterMapCountry(btn) {
-    document.querySelectorAll('.country-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const country = btn.dataset.country;
+function filterMapCountry(country) {
+    // Update dropdown selection
+    const select = document.getElementById('country-filter');
+    if (select && select.value !== country) {
+        select.value = country;
+    }
 
     // Set map view based on country
     if (salonMap && countryMapViews[country]) {
@@ -2300,16 +2571,15 @@ function loadMapMarkers(country) {
             salonMarkers.clearLayers();
             data.forEach(s => {
                 const stars = '\u2605'.repeat(Math.round(s.rating)) + '\u2606'.repeat(5 - Math.round(s.rating));
-                const marker = L.marker([s.lat, s.lng]);
+                const marker = L.marker([s.lat, s.lng], { icon: pinkMarkerIcon });
                 marker.bindPopup(
-                    '<div style="min-width:180px">' +
-                    '<strong style="font-size:1.05em">' + s.name.replace(/</g,'&lt;') + '</strong><br>' +
-                    '<span style="color:#666">' + (s.city || '').replace(/</g,'&lt;') + '</span><br>' +
-                    '<span style="color:#f59e0b">' + stars + '</span> ' +
-                    '<small>(' + s.reviews + ')</small><br>' +
-                    '<div style="margin-top:8px;display:flex;gap:6px">' +
-                    '<a href="/business/' + encodeURIComponent(s.slug) + '" style="padding:5px 12px;background:#000;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">' + (detectedLang === 'nl' ? 'Bekijk' : 'View') + '</a>' +
-                    '<a href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '" target="_blank" rel="noopener" style="padding:5px 12px;background:#3b82f6;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">Route</a>' +
+                    '<div style="min-width:200px;font-family:system-ui,-apple-system,sans-serif">' +
+                    '<strong style="font-size:1.1em;color:#1a1a1a">' + s.name.replace(/</g,'&lt;') + '</strong><br>' +
+                    '<span style="color:#666;font-size:0.9em"><i class="fas fa-map-marker-alt" style="color:#ec4899"></i> ' + (s.city || '').replace(/</g,'&lt;') + '</span><br>' +
+                    '<div style="margin:6px 0"><span style="color:#f59e0b">' + stars + '</span> <small style="color:#888">(' + s.reviews + ')</small></div>' +
+                    '<div style="margin-top:10px;display:flex;gap:8px">' +
+                    '<a href="/business/' + encodeURIComponent(s.slug) + '" style="padding:6px 14px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600;box-shadow:0 2px 8px rgba(236,72,153,0.3)">' + (detectedLang === 'nl' ? 'Bekijk' : 'View') + '</a>' +
+                    '<a href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '" target="_blank" rel="noopener" style="padding:6px 14px;background:#1a1a1a;color:#fff;border-radius:20px;text-decoration:none;font-size:0.8rem;font-weight:600">Route</a>' +
                     '</div></div>'
                 );
                 salonMarkers.addLayer(marker);
@@ -2324,11 +2594,23 @@ function loadMapMarkers(country) {
         .catch(() => {});
 }
 
+// Pink marker icon - defined inside initSalonMap after Leaflet loads
+let pinkMarkerIcon = null;
+
 function initSalonMap() {
     if (salonMap) return;
 
-    // Auto-select country filter based on detected language
-    const defaultCountry = langCountryDefaults[detectedLang] || '';
+    // Create pink marker icon now that Leaflet is loaded
+    pinkMarkerIcon = L.divIcon({
+        className: 'salon-marker-pink',
+        html: '<div class="salon-pin"><i class="fas fa-map-marker-alt"></i></div>',
+        iconSize: [30, 40],
+        iconAnchor: [15, 40],
+        popupAnchor: [0, -40]
+    });
+
+    // Priority: search location > language default > world view
+    const defaultCountry = searchCountry || langCountryDefaults[detectedLang] || '';
 
     // Get initial view based on default country
     const [lat, lng, zoom] = countryMapViews[defaultCountry] || countryMapViews[''];
@@ -2338,16 +2620,44 @@ function initSalonMap() {
         attribution: '&copy; OpenStreetMap',
         maxZoom: 18
     }).addTo(salonMap);
-    salonMarkers = L.markerClusterGroup();
-
-    if (defaultCountry) {
-        const btn = document.querySelector('.country-filter-btn[data-country="' + defaultCountry + '"]');
-        if (btn) {
-            document.querySelectorAll('.country-filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    salonMarkers = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
+            return L.divIcon({
+                html: '<div class="salon-cluster-icon">' + count + '</div>',
+                className: 'salon-cluster',
+                iconSize: [40, 40]
+            });
         }
+    });
+
+    // Set dropdown to default country
+    const select = document.getElementById('country-filter');
+    if (select && defaultCountry) {
+        select.value = defaultCountry;
     }
+
     loadMapMarkers(defaultCountry);
+
+    // Try to detect country from IP if no search country and permission granted
+    if (!searchCountry && !langCountryDefaults[detectedLang]) {
+        detectCountryFromIP();
+    }
+}
+
+// Detect country from IP address using free geoip service
+function detectCountryFromIP() {
+    fetch('https://ipapi.co/json/')
+        .then(r => r.json())
+        .then(data => {
+            if (data.country_code && countryMapViews[data.country_code]) {
+                const select = document.getElementById('country-filter');
+                if (select && !select.value) {
+                    filterMapCountry(data.country_code);
+                }
+            }
+        })
+        .catch(() => {});
 }
 
 // Lazy load Leaflet CSS/JS when map section is visible

@@ -205,7 +205,7 @@ return [
     'no_results' => 'Geen resultaten gevonden',
     'try_different' => 'Probeer andere zoektermen',
     'reviews' => 'reviews',
-    'nearest' => 'Dichtstbijzijnd',
+    'nearest' => 'Dichtstbijzijnde',
     'best_rated' => 'Beste beoordeeld',
     'most_reviews' => 'Meeste reviews',
     'price_low_high' => 'Prijs laag-hoog',
