@@ -34,9 +34,12 @@ class Application
         // Public pages
         $this->router->get('/', 'HomeController@index');
         $this->router->get('/search', 'SearchController@index');
+        $this->router->get('/zoeken', 'SearchController@index'); // Dutch alias
         $this->router->get('/terms', 'PagesController@terms');
+        $this->router->get('/algemene-voorwaarden', 'PagesController@terms'); // Dutch alias
         $this->router->get('/privacy', 'PagesController@privacy');
         $this->router->get('/about', 'PagesController@about');
+        $this->router->get('/over-ons', 'PagesController@about'); // Dutch alias
         $this->router->get('/marketing', 'PagesController@marketing');
         $this->router->get('/contact', 'PagesController@contact');
         $this->router->post('/contact', 'PagesController@submitContact');
@@ -85,11 +88,15 @@ class Application
 
         // Password reset
         $this->router->get('/forgot-password', 'PasswordResetController@showForgotForm');
+        $this->router->get('/wachtwoord-vergeten', 'PasswordResetController@showForgotForm'); // Dutch alias
         $this->router->post('/forgot-password', 'PasswordResetController@sendResetLink');
+        $this->router->post('/wachtwoord-vergeten', 'PasswordResetController@sendResetLink'); // Dutch alias
         $this->router->get('/reset-password/{token}', 'PasswordResetController@showResetForm');
         $this->router->post('/reset-password', 'PasswordResetController@resetPassword');
 
-        // Business registration (before /business/{slug})
+        // Business registration and login (before /business/{slug})
+        $this->router->get('/business/login', 'AuthController@showBusinessLogin');
+        $this->router->post('/business/login', 'AuthController@login');
         $this->router->get('/business/register', 'BusinessRegisterController@show');
         $this->router->post('/business/register', 'BusinessRegisterController@register');
 

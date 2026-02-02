@@ -448,10 +448,13 @@
         sessionStorage.setItem('loginTab', type);
     }
 
-    // Restore tab preference
+    // Restore tab preference or use server-provided default
     document.addEventListener('DOMContentLoaded', function() {
+        const serverTab = '<?= $accountType ?? '' ?>';
         const savedTab = sessionStorage.getItem('loginTab');
-        if (savedTab) {
+        if (serverTab === 'business') {
+            switchTab('business');
+        } else if (savedTab) {
             switchTab(savedTab);
         }
     });

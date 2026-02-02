@@ -25,6 +25,18 @@ class AuthController extends Controller
         return $this->view('pages/auth/login', ['pageTitle' => $this->t('page_login')]);
     }
 
+    public function showBusinessLogin(): string
+    {
+        // Redirect to dashboard if already logged in as business
+        if (isset($_SESSION['business_id'])) {
+            return $this->redirect('/business/dashboard');
+        }
+        return $this->view('pages/auth/login', [
+            'pageTitle' => $this->t('page_login'),
+            'accountType' => 'business'
+        ]);
+    }
+
     public function login(): string
     {
         if (!$this->verifyCsrf()) {
