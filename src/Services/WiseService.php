@@ -315,6 +315,43 @@ class WiseService
     }
 
     /**
+     * Get all transfers with a specific status
+     * Statuses: incoming_payment_waiting, processing, funds_converted, outgoing_payment_sent, cancelled, etc.
+     */
+    public function getTransfersByStatus(string $status = 'incoming_payment_waiting', int $limit = 50): array
+    {
+        $response = $this->request('GET', "/v1/transfers?profile={$this->profileId}&status={$status}&limit={$limit}");
+
+        if ($response && is_array($response)) {
+            $transfers = [];
+            foreach ($response as $transfer) {
+                $transfers[] = [
+                    'transfer_id' => $transfer['id'],
+                    'status' => $transfer['status'],
+                    'source_currency' => $transfer['sourceCurrency'],
+                    'source_amount' => $transfer['sourceValue'],
+                    'target_currency' => $transfer['targetCurrency'],
+                    'target_amount' => $transfer['targetValue'],
+                    'reference' => $transfer['reference'] ?? '',
+                    'created' => $transfer['created'],
+                    'recipient_name' => $transfer['details']['recipient']['name'] ?? 'Unknown'
+                ];
+            }
+            return $transfers;
+        }
+
+        return [];
+    }
+
+    /**
+     * Get all pending transfers (waiting for funding)
+     */
+    public function getPendingTransfers(): array
+    {
+        return $this->getTransfersByStatus('incoming_payment_waiting');
+    }
+
+    /**
      * Generate unique transaction ID (UUID v4 format required by Wise)
      */
     private function generateTransactionId(): string

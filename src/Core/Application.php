@@ -367,6 +367,7 @@ class Application
         $this->router->get('/cron/weekly-payouts', 'CronController@weeklyPayouts');
         $this->router->get('/cron/sales-payouts', 'CronController@salesPayouts');
         $this->router->get('/cron/qr-payouts', 'CronController@qrPayouts'); // 24h after QR check-in auto-payout
+        $this->router->get('/cron/payout-reminder', 'CronController@payoutReminder'); // Daily reminder for pending payouts
         $this->router->get('/cron/waitlist-expire', 'CronController@waitlistExpire');
         $this->router->get('/cron/process-reminders', 'CronController@processReminders');
 

@@ -2814,4 +2814,212 @@ HTML;
         $timestamp = date('Y-m-d H:i:s');
         file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
     }
+
+    /**
+     * Send reminder email if there are pending payouts that need manual approval
+     * Run daily: /cron/payout-reminder?key=glamour-cron-2024-secret
+     */
+    public function payoutReminder(): string
+    {
+        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+            http_response_code(403);
+            return json_encode(['error' => 'Unauthorized']);
+        }
+
+        $this->logPayout('=== PAYOUT REMINDER CHECK ===');
+
+        try {
+            $pendingItems = [];
+            $totalAmount = 0;
+
+            // Check Wise pending transfers
+            $wise = new WiseService();
+            $wiseTransfers = [];
+            if ($wise->isConfigured()) {
+                $wiseTransfers = $wise->getPendingTransfers();
+                if (!empty($wiseTransfers)) {
+                    $wiseTotal = array_sum(array_column($wiseTransfers, 'source_amount'));
+                    $pendingItems[] = [
+                        'type' => 'Wise Transfers',
+                        'count' => count($wiseTransfers),
+                        'amount' => $wiseTotal,
+                        'action' => 'Goedkeuren in Wise dashboard'
+                    ];
+                    $totalAmount += $wiseTotal;
+                }
+            }
+
+            // Check pending business payouts
+            $stmt = $this->db->query(
+                "SELECT COUNT(*) as count, COALESCE(SUM(b.service_price - COALESCE(b.platform_fee, 1.75)), 0) as total
+                 FROM bookings b
+                 JOIN businesses bus ON b.business_id = bus.id
+                 WHERE b.payment_status = 'paid'
+                   AND b.payout_status IN ('pending', 'processing')
+                   AND (bus.mollie_account_id IS NULL OR bus.mollie_account_id = '')"
+            );
+            $businessPending = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($businessPending['count'] > 0) {
+                $pendingItems[] = [
+                    'type' => 'Bedrijfsuitbetalingen',
+                    'count' => $businessPending['count'],
+                    'amount' => $businessPending['total'],
+                    'action' => 'Handmatig overboeken'
+                ];
+                $totalAmount += $businessPending['total'];
+            }
+
+            // Check pending sales payouts
+            $stmt = $this->db->query(
+                "SELECT COUNT(DISTINCT su.id) as count, COALESCE(SUM(sr.commission), 0) as total
+                 FROM sales_users su
+                 JOIN sales_referrals sr ON sr.sales_user_id = su.id
+                 WHERE su.status = 'active'
+                   AND sr.status = 'converted'
+                   AND su.iban IS NOT NULL AND su.iban != ''
+                 GROUP BY NULL
+                 HAVING total >= 49.99"
+            );
+            $salesPending = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($salesPending && $salesPending['count'] > 0) {
+                $pendingItems[] = [
+                    'type' => 'Sales Commissies',
+                    'count' => $salesPending['count'],
+                    'amount' => $salesPending['total'],
+                    'action' => 'Handmatig overboeken'
+                ];
+                $totalAmount += $salesPending['total'];
+            }
+
+            // If nothing pending, no email needed
+            if (empty($pendingItems)) {
+                $this->logPayout('No pending payouts, no reminder needed');
+                return json_encode([
+                    'success' => true,
+                    'message' => 'No pending payouts',
+                    'timestamp' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // Send reminder email
+            $this->sendPayoutReminderEmail($pendingItems, $totalAmount, $wiseTransfers);
+
+            $this->logPayout("Reminder sent: " . count($pendingItems) . " categories, €" . number_format($totalAmount, 2));
+
+            return json_encode([
+                'success' => true,
+                'pending_categories' => count($pendingItems),
+                'total_amount' => $totalAmount,
+                'email_sent' => true,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logPayout("Error: " . $e->getMessage());
+            return json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Send payout reminder email to admin
+     */
+    private function sendPayoutReminderEmail(array $pendingItems, float $totalAmount, array $wiseTransfers = []): void
+    {
+        $mailer = new Mailer();
+        $adminEmail = 'jjt-services@outlook.com';
+
+        // Build pending items table
+        $itemsHtml = '';
+        foreach ($pendingItems as $item) {
+            $itemsHtml .= "<tr>
+                <td style='padding:12px;border-bottom:1px solid #333;'>{$item['type']}</td>
+                <td style='padding:12px;border-bottom:1px solid #333;text-align:center;'>{$item['count']}</td>
+                <td style='padding:12px;border-bottom:1px solid #333;text-align:right;font-weight:600;'>€" . number_format($item['amount'], 2, ',', '.') . "</td>
+                <td style='padding:12px;border-bottom:1px solid #333;'>{$item['action']}</td>
+            </tr>";
+        }
+
+        // Build Wise transfers detail if any
+        $wiseDetailHtml = '';
+        if (!empty($wiseTransfers)) {
+            $wiseDetailHtml = "
+            <div style='margin-top:20px;padding:15px;background:#332700;border:1px solid #f59e0b;border-radius:8px;'>
+                <h3 style='margin:0 0 15px;color:#f59e0b;font-size:16px;'>
+                    <i class='fas fa-exclamation-triangle'></i> Wise Transfers Wachtend op Goedkeuring
+                </h3>
+                <table style='width:100%;border-collapse:collapse;font-size:14px;'>
+                    <thead>
+                        <tr style='background:#1a1a1a;'>
+                            <th style='padding:8px;text-align:left;'>Ontvanger</th>
+                            <th style='padding:8px;text-align:left;'>Omschrijving</th>
+                            <th style='padding:8px;text-align:right;'>Bedrag</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+            foreach ($wiseTransfers as $t) {
+                $wiseDetailHtml .= "<tr>
+                    <td style='padding:8px;border-bottom:1px solid #333;'>" . htmlspecialchars($t['recipient_name']) . "</td>
+                    <td style='padding:8px;border-bottom:1px solid #333;'>" . htmlspecialchars($t['reference']) . "</td>
+                    <td style='padding:8px;border-bottom:1px solid #333;text-align:right;'>€" . number_format($t['source_amount'], 2, ',', '.') . "</td>
+                </tr>";
+            }
+            $wiseDetailHtml .= "
+                    </tbody>
+                </table>
+                <p style='margin:15px 0 0;'>
+                    <a href='https://wise.com/transactions' style='display:inline-block;padding:10px 20px;background:#f59e0b;color:#000;text-decoration:none;border-radius:6px;font-weight:600;'>
+                        Goedkeuren in Wise →
+                    </a>
+                </p>
+            </div>";
+        }
+
+        $subject = "Actie Vereist: €" . number_format($totalAmount, 2, ',', '.') . " aan uitbetalingen wachtend";
+
+        $body = "
+        <div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;'>
+            <div style='background:#dc2626;padding:25px;text-align:center;'>
+                <h1 style='color:#fff;margin:0;font-size:20px;'>Uitbetalingen Wachtend</h1>
+            </div>
+            <div style='padding:25px;background:#1a1a1a;color:#fff;'>
+                <p>Beste Admin,</p>
+
+                <p>Er zijn uitbetalingen die handmatige actie vereisen:</p>
+
+                <div style='background:#0a0a0a;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
+                    <p style='margin:0;font-size:32px;font-weight:bold;color:#f59e0b;'>€" . number_format($totalAmount, 2, ',', '.') . "</p>
+                    <p style='margin:5px 0 0;color:#999;font-size:14px;'>Totaal wachtend</p>
+                </div>
+
+                <table style='width:100%;border-collapse:collapse;margin:20px 0;'>
+                    <thead>
+                        <tr style='background:#0a0a0a;'>
+                            <th style='padding:12px;text-align:left;'>Type</th>
+                            <th style='padding:12px;text-align:center;'>Aantal</th>
+                            <th style='padding:12px;text-align:right;'>Bedrag</th>
+                            <th style='padding:12px;text-align:left;'>Actie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $itemsHtml
+                    </tbody>
+                </table>
+
+                $wiseDetailHtml
+
+                <div style='margin-top:25px;padding:15px;background:#0a0a0a;border-radius:8px;text-align:center;'>
+                    <a href='https://glamourschedule.com/admin/payouts' style='display:inline-block;padding:12px 30px;background:#fff;color:#000;text-decoration:none;border-radius:6px;font-weight:600;'>
+                        Bekijk in Admin Dashboard
+                    </a>
+                </div>
+
+                <p style='margin-top:25px;color:#999;font-size:12px;'>
+                    Dit is een automatische herinnering van GlamourSchedule.<br>
+                    Verzonden op " . date('d-m-Y H:i') . "
+                </p>
+            </div>
+        </div>";
+
+        $mailer->send($adminEmail, $subject, $body);
+    }
 }

@@ -8,26 +8,73 @@
 
 <div class="stats-grid">
     <div class="stat-card warning">
+        <div class="stat-label">Wise Wachtend</div>
+        <div class="stat-value">&euro;<?= number_format($totalWiseAmount ?? 0, 2, ',', '.') ?></div>
+        <div class="stat-sub"><?= count($wiseTransfers ?? []) ?> transfer(s) te keuren</div>
+    </div>
+    <div class="stat-card info">
         <div class="stat-label">Te Betalen (Bedrijven)</div>
         <div class="stat-value">&euro;<?= number_format($totalBusinessAmount, 2, ',', '.') ?></div>
         <div class="stat-sub"><?= count($businessPayouts) ?> bedrijf/bedrijven</div>
     </div>
-    <div class="stat-card info">
+    <div class="stat-card secondary">
         <div class="stat-label">Te Betalen (Sales)</div>
         <div class="stat-value">&euro;<?= number_format($totalSalesAmount, 2, ',', '.') ?></div>
         <div class="stat-sub"><?= count($salesPayouts) ?> partner(s)</div>
     </div>
-    <div class="stat-card danger">
-        <div class="stat-label">Totaal Handmatig</div>
-        <div class="stat-value">&euro;<?= number_format($totalAmount, 2, ',', '.') ?></div>
-        <div class="stat-sub">Over te maken</div>
-    </div>
     <div class="stat-card primary">
         <div class="stat-label">Wise Saldo</div>
-        <div class="stat-value" id="wise-balance">Laden...</div>
+        <div class="stat-value">&euro;<?= $wiseBalance !== null ? number_format($wiseBalance, 2, ',', '.') : 'N/A' ?></div>
         <div class="stat-sub">EUR balans</div>
     </div>
 </div>
+
+<!-- Wise Pending Transfers -->
+<?php if (!empty($wiseTransfers)): ?>
+<div class="card" style="margin-top:1.5rem;border:2px solid var(--warning);">
+    <div class="card-header" style="background:var(--warning);color:#000;">
+        <h3 class="card-title" style="color:#000;"><i class="fas fa-exclamation-triangle"></i> Wise Transfers - Goedkeuring Nodig</h3>
+        <a href="https://wise.com/transactions" target="_blank" class="btn btn-sm" style="background:#000;color:#fff;">
+            <i class="fas fa-external-link-alt"></i> Open Wise
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Transfer ID</th>
+                    <th>Ontvanger</th>
+                    <th>Omschrijving</th>
+                    <th>Aangemaakt</th>
+                    <th style="text-align:right;">Bedrag</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($wiseTransfers as $transfer): ?>
+                <tr>
+                    <td><code><?= $transfer['transfer_id'] ?></code></td>
+                    <td><?= htmlspecialchars($transfer['recipient_name']) ?></td>
+                    <td><?= htmlspecialchars($transfer['reference']) ?></td>
+                    <td><?= date('d-m-Y H:i', strtotime($transfer['created'])) ?></td>
+                    <td style="text-align:right;">
+                        <strong>&euro;<?= number_format($transfer['source_amount'], 2, ',', '.') ?></strong>
+                    </td>
+                    <td><span class="badge badge-warning">Wacht op funding</span></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <div style="padding:1rem;background:var(--bg);border-top:1px solid var(--border);">
+        <p style="margin:0;color:var(--text-light);">
+            <i class="fas fa-info-circle"></i>
+            Deze transfers zijn aangemaakt maar wachten op goedkeuring in je Wise account.
+            <a href="https://wise.com/transactions" target="_blank" style="color:var(--warning);">Klik hier om ze goed te keuren →</a>
+        </p>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Business Payouts -->
 <div class="card" style="margin-top:1.5rem;">
@@ -279,17 +326,6 @@ function toggleDetails(id) {
     row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
 }
 
-// Load Wise balance
-fetch('/api/wise/balance')
-    .then(r => r.json())
-    .then(data => {
-        document.getElementById('wise-balance').innerHTML = data.balance
-            ? '&euro;' + parseFloat(data.balance).toFixed(2).replace('.', ',')
-            : 'N/A';
-    })
-    .catch(() => {
-        document.getElementById('wise-balance').innerHTML = 'N/A';
-    });
 </script>
 
 <?php $content = ob_get_clean(); ?>

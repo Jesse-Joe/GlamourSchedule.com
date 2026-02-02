@@ -478,15 +478,33 @@ class AdminController extends Controller
         $totalBusinessAmount = array_sum(array_column($businessPayouts, 'total_amount'));
         $totalSalesAmount = array_sum(array_column($salesPayouts, 'total_commission'));
 
+        // Get Wise pending transfers (waiting for funding/approval)
+        $wiseTransfers = [];
+        $wiseBalance = null;
+        try {
+            $wise = new \GlamourSchedule\Services\WiseService();
+            if ($wise->isConfigured()) {
+                $wiseTransfers = $wise->getPendingTransfers();
+                $wiseBalance = $wise->getEurBalance();
+            }
+        } catch (\Exception $e) {
+            // Wise not available, continue without
+        }
+
+        $totalWiseAmount = array_sum(array_column($wiseTransfers, 'source_amount'));
+
         return $this->view('pages/admin/payouts', [
             'pageTitle' => 'Handmatige Uitbetalingen - Admin',
             'admin' => $admin,
             'businessPayouts' => $businessPayouts,
             'salesPayouts' => $salesPayouts,
             'payoutRecords' => $payoutRecords,
+            'wiseTransfers' => $wiseTransfers,
+            'wiseBalance' => $wiseBalance,
             'totalBusinessAmount' => $totalBusinessAmount,
             'totalSalesAmount' => $totalSalesAmount,
-            'totalAmount' => $totalBusinessAmount + $totalSalesAmount
+            'totalWiseAmount' => $totalWiseAmount,
+            'totalAmount' => $totalBusinessAmount + $totalSalesAmount + $totalWiseAmount
         ]);
     }
 
