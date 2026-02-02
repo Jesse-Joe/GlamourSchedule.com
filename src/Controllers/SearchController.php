@@ -102,8 +102,8 @@ class SearchController extends Controller
             $businesses = $this->getFeaturedBusinesses($sort, $filters);
         }
 
-        // Enrich businesses with additional data
-        $businesses = $this->enrichBusinessData($businesses);
+        // Enrich businesses with additional data (pass calculated coordinates for distance)
+        $businesses = $this->enrichBusinessData($businesses, $calcLat, $calcLng);
 
         return $this->view('pages/search/index', [
             'pageTitle' => $this->t('search'),
