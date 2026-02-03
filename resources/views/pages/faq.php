@@ -7,10 +7,11 @@
         padding: 0 1.5rem;
     }
     .faq-card {
-        background: var(--white);
+        background: var(--card-bg);
         border-radius: 20px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         overflow: hidden;
+        border: 1px solid var(--card-border);
     }
     .faq-header {
         background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
@@ -28,356 +29,255 @@
         opacity: 0.9;
     }
     .faq-body {
-        padding: 2.5rem;
+        padding: 2rem;
     }
     .faq-section {
         margin-bottom: 2rem;
     }
-    .faq-section-title {
-        color: #000000;
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #f5f5f5;
+    .faq-section h2 {
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
-    .faq-section-title i {
-        color: #000000;
+    .faq-section h2 i {
+        color: var(--business-primary, #635bff);
     }
     .faq-item {
-        background: #fafafa;
+        background: var(--input-bg);
+        border: 1px solid var(--card-border);
         border-radius: 12px;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         overflow: hidden;
-        border: 1px solid #e5e7eb;
-        transition: all 0.3s ease;
-    }
-    .faq-item:hover {
-        border-color: #000000;
     }
     .faq-question {
-        padding: 1.25rem 1.5rem;
+        padding: 1rem 1.25rem;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
-        color: #374151;
+        color: var(--text-primary);
+        transition: background 0.2s;
     }
     .faq-question:hover {
-        background: #f5f5f5;
+        background: var(--service-hover);
     }
     .faq-question i {
-        transition: transform 0.3s ease;
-        color: #6b7280;
+        transition: transform 0.3s;
+        color: var(--text-secondary);
     }
-    .faq-item.active .faq-question i {
+    .faq-item.open .faq-question i {
         transform: rotate(180deg);
     }
     .faq-answer {
-        display: none;
-        padding: 0 1.5rem 1.25rem;
-        color: #4b5563;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+        max-height: 500px;
+    }
+    .faq-answer-content {
+        padding: 0 1.25rem 1.25rem;
+        color: var(--text-secondary);
         line-height: 1.7;
     }
-    .faq-item.active .faq-answer {
-        display: block;
-    }
-    .faq-answer ul {
-        margin: 0.5rem 0;
-        padding-left: 1.5rem;
-    }
-    .faq-answer li {
-        margin-bottom: 0.5rem;
-    }
     .faq-contact {
-        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-        border-radius: 16px;
-        padding: 2rem;
+        background: linear-gradient(135deg, #635bff 0%, #8b5cf6 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
         text-align: center;
+        color: white;
         margin-top: 2rem;
     }
     .faq-contact h3 {
-        color: white;
-        margin: 0 0 0.5rem;
-        font-size: 1.25rem;
+        margin: 0 0 0.5rem 0;
     }
     .faq-contact p {
-        color: rgba(255,255,255,0.8);
-        margin: 0 0 1.5rem;
+        margin: 0 0 1rem 0;
+        opacity: 0.9;
     }
-    .faq-contact-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
+    .faq-contact a {
+        display: inline-block;
         background: white;
-        color: #000000;
-        padding: 0.875rem 1.75rem;
-        border-radius: 50px;
+        color: #635bff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
         text-decoration: none;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: transform 0.2s;
     }
-    .faq-contact-btn:hover {
+    .faq-contact a:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-    @media (max-width: 768px) {
-        .faq-header h1 {
-            font-size: 1.5rem;
-        }
-        .faq-body {
-            padding: 1.5rem;
-        }
-        .faq-question {
-            padding: 1rem 1.25rem;
-            font-size: 0.95rem;
-        }
     }
 </style>
 
 <div class="faq-container">
     <div class="faq-card">
         <div class="faq-header">
-            <h1><?= $lang === 'nl' ? 'Veelgestelde Vragen' : 'Frequently Asked Questions' ?></h1>
-            <p><?= $lang === 'nl' ? 'Vind snel antwoorden op je vragen' : 'Find quick answers to your questions' ?></p>
+            <h1><i class="fas fa-question-circle"></i> <?= $translations['faq_title'] ?? 'Veelgestelde Vragen' ?></h1>
+            <p><?= $translations['faq_subtitle'] ?? 'Vind snel antwoord op je vragen' ?></p>
         </div>
 
         <div class="faq-body">
             <!-- Voor Klanten -->
             <div class="faq-section">
-                <h2 class="faq-section-title">
-                    <i class="fas fa-user"></i>
-                    <?= $lang === 'nl' ? 'Voor Klanten' : 'For Customers' ?>
-                </h2>
+                <h2><i class="fas fa-user"></i> <?= $translations['faq_for_customers'] ?? 'Voor Klanten' ?></h2>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Hoe boek ik een afspraak?' : 'How do I book an appointment?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q1'] ?? 'Hoe boek ik een afspraak?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Een afspraak boeken is eenvoudig:</p>
-                        <ul>
-                            <li>Zoek een salon via onze zoekpagina</li>
-                            <li>Kies een dienst en selecteer een beschikbare tijd</li>
-                            <li>Vul je gegevens in en bevestig de boeking</li>
-                            <li>Je ontvangt een bevestigingsmail met alle details</li>
-                        </ul>
-                        <?php else: ?>
-                        <p>Booking an appointment is easy:</p>
-                        <ul>
-                            <li>Search for a salon via our search page</li>
-                            <li>Choose a service and select an available time</li>
-                            <li>Fill in your details and confirm the booking</li>
-                            <li>You will receive a confirmation email with all details</li>
-                        </ul>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a1'] ?? 'Zoek een salon via de zoekpagina, kies een dienst en selecteer een beschikbare datum en tijd. Vul je gegevens in en bevestig de boeking. Je ontvangt een bevestigingsmail met alle details.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Kan ik mijn afspraak annuleren of wijzigen?' : 'Can I cancel or change my appointment?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q2'] ?? 'Kan ik mijn afspraak annuleren of wijzigen?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Ja, je kunt je afspraak tot 24 uur voor de geplande tijd kosteloos annuleren of wijzigen. Gebruik de link in je bevestigingsmail of log in op je account. Bij annulering binnen 24 uur kunnen annuleringskosten in rekening worden gebracht.</p>
-                        <?php else: ?>
-                        <p>Yes, you can cancel or change your appointment free of charge up to 24 hours before the scheduled time. Use the link in your confirmation email or log in to your account. Cancellation fees may apply for cancellations within 24 hours.</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a2'] ?? 'Ja, je kunt je afspraak tot 24 uur van tevoren kosteloos annuleren via de link in je bevestigingsmail. Bij annulering binnen 24 uur kunnen kosten in rekening worden gebracht.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Welke betaalmethodes worden geaccepteerd?' : 'What payment methods are accepted?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q3'] ?? 'Hoe werkt de QR-code check-in?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Wij accepteren diverse betaalmethodes via onze betalingspartner Mollie:</p>
-                        <ul>
-                            <li>iDEAL</li>
-                            <li>Creditcard (Visa, Mastercard, American Express)</li>
-                            <li>Apple Pay & Google Pay</li>
-                            <li>Bancontact</li>
-                            <li>Contant betalen bij de salon (indien aangeboden)</li>
-                        </ul>
-                        <?php else: ?>
-                        <p>We accept various payment methods via our payment partner Mollie:</p>
-                        <ul>
-                            <li>iDEAL</li>
-                            <li>Credit card (Visa, Mastercard, American Express)</li>
-                            <li>Apple Pay & Google Pay</li>
-                            <li>Bancontact</li>
-                            <li>Cash payment at the salon (if offered)</li>
-                        </ul>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a3'] ?? 'Bij aankomst in de salon scan je de QR-code om je aanwezigheid te bevestigen. Dit zorgt ervoor dat de salon weet dat je bent gearriveerd en de betaling kan worden vrijgegeven.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Wat is de QR-code in mijn bevestiging?' : 'What is the QR code in my confirmation?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q4'] ?? 'Welke betaalmethodes worden geaccepteerd?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>De QR-code dient als digitale bevestiging van je boeking. Toon deze bij aankomst in de salon voor een snelle check-in. De medewerker scant de code en ziet direct je afspraakgegevens.</p>
-                        <?php else: ?>
-                        <p>The QR code serves as digital confirmation of your booking. Show it upon arrival at the salon for quick check-in. The staff will scan the code and immediately see your appointment details.</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a4'] ?? 'We accepteren iDEAL, creditcard, Bancontact, PayPal, Apple Pay, Google Pay en meer. De beschikbare methodes kunnen per land verschillen.' ?>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Voor Salons -->
             <div class="faq-section">
-                <h2 class="faq-section-title">
-                    <i class="fas fa-store"></i>
-                    <?= $lang === 'nl' ? 'Voor Salons' : 'For Salons' ?>
-                </h2>
+                <h2><i class="fas fa-store"></i> <?= $translations['faq_for_businesses'] ?? 'Voor Salons' ?></h2>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Wat kost het om mijn salon te registreren?' : 'What does it cost to register my salon?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q5'] ?? 'Hoe registreer ik mijn salon?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>De registratie kost eenmalig slechts &euro;0,99. Daarna betaal je alleen een klein percentage per boeking. Er zijn geen maandelijkse abonnementskosten.</p>
-                        <?php else: ?>
-                        <p>Registration costs only &euro;0.99 one-time. After that, you only pay a small percentage per booking. There are no monthly subscription fees.</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a5'] ?? 'Klik op "Registreren" en kies voor een zakelijk account. Vul je salongegevens in, voeg je diensten toe en je bent klaar om boekingen te ontvangen.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Hoe ontvang ik mijn betalingen?' : 'How do I receive my payments?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q6'] ?? 'Wat kost het om GlamourSchedule te gebruiken?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Betalingen worden wekelijks automatisch naar je bankrekening overgemaakt via Mollie. Je kunt je uitbetalingsoverzicht bekijken in je dashboard onder "Uitbetalingen".</p>
-                        <?php else: ?>
-                        <p>Payments are automatically transferred to your bank account weekly via Mollie. You can view your payout overview in your dashboard under "Payouts".</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a6'] ?? 'We rekenen €1,75 per voltooide boeking. Er zijn geen maandelijkse kosten of opstartkosten. Je betaalt alleen wanneer je daadwerkelijk klanten ontvangt.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Kan ik meerdere medewerkers toevoegen?' : 'Can I add multiple employees?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q7'] ?? 'Hoe ontvang ik mijn uitbetalingen?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Ja, je kunt onbeperkt medewerkers toevoegen aan je salon. Elke medewerker kan eigen diensten, beschikbaarheid en werktijden hebben. Beheer dit via je dashboard onder "Medewerkers".</p>
-                        <?php else: ?>
-                        <p>Yes, you can add unlimited employees to your salon. Each employee can have their own services, availability, and working hours. Manage this via your dashboard under "Employees".</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a7'] ?? 'Koppel je Mollie of Stripe account voor automatische uitbetalingen. Het bedrag wordt automatisch gesplitst: jij ontvangt je deel direct, wij houden €1,75 platformkosten in.' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Hoe verhoog ik mijn zichtbaarheid?' : 'How do I increase my visibility?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q8'] ?? 'Kan ik mijn eigen openingstijden instellen?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Er zijn verschillende manieren om je zichtbaarheid te verhogen:</p>
-                        <ul>
-                            <li>Voeg professionele foto's toe aan je profiel</li>
-                            <li>Vraag klanten om reviews achter te laten</li>
-                            <li>Houd je diensten en prijzen up-to-date</li>
-                            <li>Gebruik de Boost-functie voor tijdelijke extra zichtbaarheid</li>
-                        </ul>
-                        <?php else: ?>
-                        <p>There are several ways to increase your visibility:</p>
-                        <ul>
-                            <li>Add professional photos to your profile</li>
-                            <li>Ask customers to leave reviews</li>
-                            <li>Keep your services and prices up-to-date</li>
-                            <li>Use the Boost feature for temporary extra visibility</li>
-                        </ul>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a8'] ?? 'Ja, in je dashboard kun je per dag je openingstijden instellen. Je kunt ook specifieke dagen blokkeren voor vakanties of andere redenen.' ?>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Algemeen -->
+            <!-- Betalingen & Veiligheid -->
             <div class="faq-section">
-                <h2 class="faq-section-title">
-                    <i class="fas fa-info-circle"></i>
-                    <?= $lang === 'nl' ? 'Algemeen' : 'General' ?>
-                </h2>
+                <h2><i class="fas fa-shield-alt"></i> <?= $translations['faq_payments_security'] ?? 'Betalingen & Veiligheid' ?></h2>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Is mijn data veilig?' : 'Is my data secure?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q9'] ?? 'Is mijn betaling veilig?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Ja, wij nemen beveiliging zeer serieus. Alle gegevens worden versleuteld opgeslagen en verzonden via SSL. Wij voldoen aan de AVG/GDPR en verkopen nooit je gegevens aan derden. Lees meer in ons <a href="/privacy">privacybeleid</a>.</p>
-                        <?php else: ?>
-                        <p>Yes, we take security very seriously. All data is stored encrypted and transmitted via SSL. We comply with GDPR and never sell your data to third parties. Read more in our <a href="/privacy">privacy policy</a>.</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a9'] ?? 'Ja, alle betalingen worden verwerkt via Mollie en Stripe, gecertificeerde betaalproviders die voldoen aan de hoogste beveiligingsstandaarden (PCI-DSS).' ?>
+                        </div>
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <?= $lang === 'nl' ? 'Hoe kan ik contact opnemen met support?' : 'How can I contact support?' ?>
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <?= $translations['faq_q10'] ?? 'Hoe worden mijn gegevens beschermd?' ?>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <?php if ($lang === 'nl'): ?>
-                        <p>Je kunt ons bereiken via het <a href="/contact">contactformulier</a> of direct via e-mail op support@glamourschedule.com. We streven ernaar binnen 24 uur te reageren.</p>
-                        <?php else: ?>
-                        <p>You can reach us via the <a href="/contact">contact form</a> or directly via email at support@glamourschedule.com. We aim to respond within 24 hours.</p>
-                        <?php endif; ?>
+                        <div class="faq-answer-content">
+                            <?= $translations['faq_a10'] ?? 'We gebruiken SSL-encryptie voor alle communicatie. Je gegevens worden opgeslagen volgens de AVG/GDPR-richtlijnen. Lees ons privacybeleid voor meer informatie.' ?>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Contact CTA -->
+            <!-- Contact -->
             <div class="faq-contact">
-                <h3><?= $lang === 'nl' ? 'Vraag niet beantwoord?' : 'Question not answered?' ?></h3>
-                <p><?= $lang === 'nl' ? 'Neem gerust contact met ons op, we helpen je graag!' : 'Feel free to contact us, we are happy to help!' ?></p>
-                <a href="/contact" class="faq-contact-btn">
-                    <i class="fas fa-envelope"></i>
-                    <?= $lang === 'nl' ? 'Contact opnemen' : 'Contact us' ?>
-                </a>
+                <h3><i class="fas fa-headset"></i> <?= $translations['faq_still_questions'] ?? 'Nog vragen?' ?></h3>
+                <p><?= $translations['faq_contact_text'] ?? 'Ons supportteam helpt je graag verder' ?></p>
+                <a href="/contact"><i class="fas fa-envelope"></i> <?= $translations['contact_us'] ?? 'Neem contact op' ?></a>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-document.querySelectorAll('.faq-question').forEach(function(question) {
-    question.addEventListener('click', function() {
-        const item = this.closest('.faq-item');
-        const wasActive = item.classList.contains('active');
+function toggleFaq(element) {
+    const item = element.parentElement;
+    item.classList.toggle('open');
+}
 
-        // Close all items
-        document.querySelectorAll('.faq-item').forEach(function(i) {
-            i.classList.remove('active');
-        });
-
-        // Toggle clicked item
-        if (!wasActive) {
-            item.classList.add('active');
-        }
-    });
+// Open first item by default
+document.addEventListener('DOMContentLoaded', function() {
+    const firstItem = document.querySelector('.faq-item');
+    if (firstItem) firstItem.classList.add('open');
 });
 </script>
 

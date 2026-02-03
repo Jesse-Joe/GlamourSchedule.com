@@ -27,6 +27,13 @@ class PagesController extends Controller
         ]);
     }
 
+    public function faq(): string
+    {
+        return $this->view('pages/faq', [
+            'pageTitle' => $this->getTranslations()['faq'] ?? 'FAQ'
+        ]);
+    }
+
     public function marketing(): string
     {
         return $this->view('pages/marketing', [

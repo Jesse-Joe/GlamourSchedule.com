@@ -40,6 +40,8 @@ class Application
         $this->router->get('/privacy', 'PagesController@privacy');
         $this->router->get('/about', 'PagesController@about');
         $this->router->get('/over-ons', 'PagesController@about'); // Dutch alias
+        $this->router->get('/faq', 'PagesController@faq');
+        $this->router->get('/veelgestelde-vragen', 'PagesController@faq'); // Dutch alias
         $this->router->get('/marketing', 'PagesController@marketing');
         $this->router->get('/contact', 'PagesController@contact');
         $this->router->post('/contact', 'PagesController@submitContact');
