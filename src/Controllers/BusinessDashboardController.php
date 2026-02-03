@@ -3,6 +3,7 @@ namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\GlamoriManager;
+use GlamourSchedule\Services\BookingSignatureService;
 
 class BusinessDashboardController extends Controller
 {
@@ -1877,6 +1878,17 @@ HTML;
 
         if (!$booking) {
             return json_encode(['success' => false, 'error' => 'Boeking niet gevonden of behoort niet tot uw bedrijf']);
+        }
+
+        // Verify cryptographic signature (prevents forged bookings)
+        $signatureService = new BookingSignatureService();
+        if (!$signatureService->verifyBooking($this->business['id'], $booking)) {
+            error_log("Signature verification failed for booking {$booking['booking_number']} at business {$this->business['id']}");
+            return json_encode([
+                'success' => false,
+                'error' => 'Ongeldige boeking - handtekening verificatie mislukt',
+                'error_code' => 'SIGNATURE_INVALID'
+            ]);
         }
 
         // Check if already checked in

@@ -2,6 +2,7 @@
 namespace GlamourSchedule\Controllers;
 
 use GlamourSchedule\Core\Controller;
+use GlamourSchedule\Services\BookingSignatureService;
 
 /**
  * QR Code scanning API controller
@@ -65,6 +66,18 @@ class QrController extends Controller
                 'success' => false,
                 'error' => 'Deze boeking hoort niet bij uw salon',
                 'error_code' => 'BUSINESS_MISMATCH'
+            ]);
+        }
+
+        // Verify cryptographic signature (prevents forged bookings)
+        $signatureService = new BookingSignatureService();
+        $targetBusinessId = $businessId ?? (int)$booking['business_id'];
+        if (!$signatureService->verifyBooking($targetBusinessId, $booking)) {
+            error_log("QR signature verification failed for booking {$booking['booking_number']}");
+            return json_encode([
+                'success' => false,
+                'error' => 'Ongeldige boeking - handtekening verificatie mislukt',
+                'error_code' => 'SIGNATURE_INVALID'
             ]);
         }
 

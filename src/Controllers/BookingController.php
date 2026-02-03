@@ -5,6 +5,7 @@ use GlamourSchedule\Core\Controller;
 use GlamourSchedule\Core\Mailer;
 use GlamourSchedule\Core\PushNotification;
 use GlamourSchedule\Services\LoyaltyService;
+use GlamourSchedule\Services\BookingSignatureService;
 
 class BookingController extends Controller
 {
@@ -382,6 +383,18 @@ class BookingController extends Controller
         $customerIdentifier = $bookingData['user_id'] ?? $bookingData['guest_email'] ?? '';
         $verificationCode = $this->generateVerificationCode($business['id'], $customerIdentifier, $uuid);
 
+        // Generate cryptographic signature using per-business HMAC-SHA256
+        $signatureService = new BookingSignatureService();
+        $signatureData = $signatureService->signBooking(
+            $business['id'],
+            $uuid,
+            $bookingNumber,
+            $bookingData['date'],
+            $bookingData['time']
+        );
+        $signature = $signatureData['signature'] ?? null;
+        $signatureVersion = $signatureData['version'] ?? 1;
+
         // Get current platform language for email personalization
         $bookingLanguage = $_SESSION['lang'] ?? 'nl';
         $validLangs = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl', 'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv', 'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'];
@@ -393,15 +406,15 @@ class BookingController extends Controller
             "INSERT INTO bookings (uuid, booking_number, business_id, employee_id, user_id, service_id,
              guest_name, guest_email, guest_phone, appointment_date, appointment_time,
              duration_minutes, service_price, admin_fee, total_price, platform_fee, business_payout,
-             qr_code_hash, verification_code, customer_notes,
+             qr_code_hash, verification_code, signature, signature_version, customer_notes,
              language, terms_accepted_at, terms_version, status, loyalty_discount, loyalty_points_redeemed)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '1.0', 'pending', ?, ?)",
             [
                 $uuid, $bookingNumber, $business['id'], $bookingData['employee_id'], $bookingData['user_id'], $bookingData['service_id'],
                 $bookingData['guest_name'] ?: null, $bookingData['guest_email'] ?: null, $bookingData['guest_phone'] ?: null,
                 $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'],
                 $servicePrice, 0.00, $totalPrice, $platformFee, $businessPayout,
-                $qrCodeHash, $verificationCode, $bookingData['notes'] ?: null,
+                $qrCodeHash, $verificationCode, $signature, $signatureVersion, $bookingData['notes'] ?: null,
                 $bookingLanguage, $loyaltyDiscount, $loyaltyPointsRedeemed
             ]
         );
