@@ -14,12 +14,15 @@ class HomeController extends Controller
         $categories = $this->getCategories();
         $stats = $this->getPlatformStats();
 
+        $countryStats = $this->getCountryStats();
+
         return $this->view('pages/home', [
             'pageTitle' => 'Home',
             'boostedBusinesses' => $boostedBusinesses,
             'featuredBusinesses' => $featuredBusinesses,
             'categories' => $categories,
-            'stats' => $stats
+            'stats' => $stats,
+            'countryStats' => $countryStats
         ]);
     }
 
@@ -105,5 +108,125 @@ class HomeController extends Controller
             'bookings' => $bookings,
             'users' => $users
         ];
+    }
+
+    /**
+     * Get salon count per country for the map legend
+     */
+    private function getCountryStats(): array
+    {
+        // Country code to flag and name mapping
+        $countryInfo = [
+            'NL' => ['flag' => '🇳🇱', 'name' => 'Nederland'],
+            'BE' => ['flag' => '🇧🇪', 'name' => 'België'],
+            'DE' => ['flag' => '🇩🇪', 'name' => 'Duitsland'],
+            'FR' => ['flag' => '🇫🇷', 'name' => 'Frankrijk'],
+            'GB' => ['flag' => '🇬🇧', 'name' => 'United Kingdom'],
+            'ES' => ['flag' => '🇪🇸', 'name' => 'España'],
+            'IT' => ['flag' => '🇮🇹', 'name' => 'Italia'],
+            'PT' => ['flag' => '🇵🇹', 'name' => 'Portugal'],
+            'AT' => ['flag' => '🇦🇹', 'name' => 'Österreich'],
+            'CH' => ['flag' => '🇨🇭', 'name' => 'Schweiz'],
+            'LU' => ['flag' => '🇱🇺', 'name' => 'Luxembourg'],
+            'PL' => ['flag' => '🇵🇱', 'name' => 'Polska'],
+            'CZ' => ['flag' => '🇨🇿', 'name' => 'Česko'],
+            'DK' => ['flag' => '🇩🇰', 'name' => 'Danmark'],
+            'SE' => ['flag' => '🇸🇪', 'name' => 'Sverige'],
+            'NO' => ['flag' => '🇳🇴', 'name' => 'Norge'],
+            'FI' => ['flag' => '🇫🇮', 'name' => 'Suomi'],
+            'IE' => ['flag' => '🇮🇪', 'name' => 'Ireland'],
+            'GR' => ['flag' => '🇬🇷', 'name' => 'Ελλάδα'],
+            'TR' => ['flag' => '🇹🇷', 'name' => 'Türkiye'],
+            'US' => ['flag' => '🇺🇸', 'name' => 'United States'],
+            'CA' => ['flag' => '🇨🇦', 'name' => 'Canada'],
+            'AU' => ['flag' => '🇦🇺', 'name' => 'Australia'],
+            'ZA' => ['flag' => '🇿🇦', 'name' => 'South Africa'],
+            'MA' => ['flag' => '🇲🇦', 'name' => 'المغرب'],
+            'AE' => ['flag' => '🇦🇪', 'name' => 'الإمارات'],
+        ];
+
+        // Also map common Dutch names to codes
+        $nameToCode = [
+            'Nederland' => 'NL', 'Netherlands' => 'NL',
+            'België' => 'BE', 'Belgium' => 'BE', 'Belgique' => 'BE',
+            'Duitsland' => 'DE', 'Germany' => 'DE', 'Deutschland' => 'DE',
+            'Frankrijk' => 'FR', 'France' => 'FR',
+            'United Kingdom' => 'GB', 'UK' => 'GB', 'England' => 'GB',
+            'Spanje' => 'ES', 'Spain' => 'ES', 'España' => 'ES',
+            'Italië' => 'IT', 'Italy' => 'IT', 'Italia' => 'IT',
+            'Portugal' => 'PT',
+            'Oostenrijk' => 'AT', 'Austria' => 'AT', 'Österreich' => 'AT',
+            'Zwitserland' => 'CH', 'Switzerland' => 'CH', 'Schweiz' => 'CH', 'Suisse' => 'CH',
+            'Luxemburg' => 'LU', 'Luxembourg' => 'LU',
+            'Polen' => 'PL', 'Poland' => 'PL', 'Polska' => 'PL',
+            'Tsjechië' => 'CZ', 'Czech Republic' => 'CZ', 'Česko' => 'CZ',
+            'Denemarken' => 'DK', 'Denmark' => 'DK', 'Danmark' => 'DK',
+            'Zweden' => 'SE', 'Sweden' => 'SE', 'Sverige' => 'SE',
+            'Noorwegen' => 'NO', 'Norway' => 'NO', 'Norge' => 'NO',
+            'Finland' => 'FI', 'Suomi' => 'FI',
+            'Ierland' => 'IE', 'Ireland' => 'IE',
+            'Griekenland' => 'GR', 'Greece' => 'GR', 'Ελλάδα' => 'GR',
+            'Turkije' => 'TR', 'Turkey' => 'TR', 'Türkiye' => 'TR',
+            'Verenigde Staten' => 'US', 'United States' => 'US', 'USA' => 'US',
+            'Canada' => 'CA', 'Kanada' => 'CA',
+            'Australië' => 'AU', 'Australia' => 'AU',
+            'Zuid-Afrika' => 'ZA', 'South Africa' => 'ZA',
+            'Marokko' => 'MA', 'Morocco' => 'MA', 'المغرب' => 'MA',
+            'Verenigde Arabische Emiraten' => 'AE', 'UAE' => 'AE', 'الإمارات' => 'AE',
+        ];
+
+        $stmt = $this->db->query(
+            "SELECT country, COUNT(*) as salon_count
+             FROM businesses
+             WHERE status = 'active'
+               AND country IS NOT NULL
+               AND country != ''
+             GROUP BY country
+             ORDER BY salon_count DESC"
+        );
+        $rawStats = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Normalize and aggregate counts
+        $aggregated = [];
+        foreach ($rawStats as $row) {
+            $country = trim($row['country']);
+            $count = (int)$row['salon_count'];
+
+            // Try to find the country code
+            $code = strtoupper($country);
+            if (strlen($code) > 2 || !isset($countryInfo[$code])) {
+                // Look up by name
+                $code = $nameToCode[$country] ?? null;
+            }
+
+            if ($code && isset($countryInfo[$code])) {
+                if (!isset($aggregated[$code])) {
+                    $aggregated[$code] = [
+                        'code' => $code,
+                        'flag' => $countryInfo[$code]['flag'],
+                        'name' => $countryInfo[$code]['name'],
+                        'count' => 0
+                    ];
+                }
+                $aggregated[$code]['count'] += $count;
+            } else {
+                // Unknown country - add with generic flag
+                $key = 'OTHER_' . $country;
+                if (!isset($aggregated[$key])) {
+                    $aggregated[$key] = [
+                        'code' => '',
+                        'flag' => '🌍',
+                        'name' => $country,
+                        'count' => 0
+                    ];
+                }
+                $aggregated[$key]['count'] += $count;
+            }
+        }
+
+        // Sort by count descending
+        usort($aggregated, fn($a, $b) => $b['count'] - $a['count']);
+
+        return $aggregated;
     }
 }

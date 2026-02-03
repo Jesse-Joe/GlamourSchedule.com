@@ -473,6 +473,68 @@
             font-size: 14px;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4), 0 0 0 3px rgba(255,255,255,0.8);
         }
+        /* Country Legend Styles */
+        .country-legend {
+            padding: 1rem 1.5rem 1.5rem;
+            border-top: 1px solid var(--border, #333333);
+        }
+        .country-legend-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary, #999999);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .country-legend-title i {
+            color: #ec4899;
+        }
+        .country-legend-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .country-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg, #0a0a0a);
+            border: 1px solid var(--border, #333333);
+            border-radius: 20px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-primary, #ffffff);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .country-legend-item:hover {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.1);
+            transform: translateY(-1px);
+        }
+        .country-legend-item .flag {
+            font-size: 1rem;
+        }
+        .country-legend-item .count {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            min-width: 1.4rem;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .country-legend {
+                padding: 1rem;
+            }
+            .country-legend-item {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
     </style>
     <div class="section-header">
         <div class="section-tag"><i class="fas fa-map-marked-alt"></i> <?= $translations['map_label'] ?? 'Map' ?></div>
@@ -485,6 +547,23 @@
             <h3><?= $translations['salon_locations'] ?? 'Salon Locations' ?></h3>
         </div>
         <div id="home-map"></div>
+        <?php if (!empty($countryStats)): ?>
+        <div class="country-legend">
+            <div class="country-legend-title">
+                <i class="fas fa-map-marker-alt"></i>
+                <?= $translations['salons_per_country'] ?? 'Salons per Country' ?>
+            </div>
+            <div class="country-legend-grid">
+                <?php foreach ($countryStats as $country): ?>
+                <a href="/search?country=<?= htmlspecialchars($country['code'] ?: $country['name']) ?>" class="country-legend-item">
+                    <span class="flag"><?= $country['flag'] ?></span>
+                    <span class="name"><?= htmlspecialchars($country['name']) ?></span>
+                    <span class="count"><?= $country['count'] ?></span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 
