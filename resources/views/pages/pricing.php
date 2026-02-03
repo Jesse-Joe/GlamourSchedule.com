@@ -585,7 +585,7 @@
                 <div class="transaction-fee-item">
                     <i class="fas fa-check-circle"></i>
                     <div>
-                        <h4>&euro;1,75 <?= $translations['per_booking'] ?? 'per boeking' ?></h4>
+                        <h4><?= $promo['fee_display'] ?? '€1,75' ?> <?= $translations['per_booking'] ?? 'per boeking' ?></h4>
                         <p><?= $translations['booking_fee_desc'] ?? 'Alleen wanneer een klant betaalt via het platform. Geen boeking = geen kosten.' ?></p>
                     </div>
                 </div>

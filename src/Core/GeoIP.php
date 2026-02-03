@@ -264,6 +264,10 @@ class GeoIP
             $promo = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 
+        // Get transaction fee (variable per country)
+        $transactionFee = (float)($promo['transaction_fee'] ?? 1.75);
+        $currencyCode = $promo['currency_code'] ?? 'EUR';
+
         if ($promo && $promo['current_registrations'] < $promo['max_promo_registrations']) {
             return [
                 'price' => (float)$promo['promo_price'],
@@ -271,7 +275,9 @@ class GeoIP
                 'is_promo' => true,
                 'spots_left' => $promo['max_promo_registrations'] - $promo['current_registrations'],
                 'early_bird_number' => $promo['current_registrations'] + 1,
-                'country' => $promo['country_name']
+                'country' => $promo['country_name'],
+                'transaction_fee' => $transactionFee,
+                'currency_code' => $currencyCode
             ];
         }
 
@@ -282,7 +288,9 @@ class GeoIP
             'is_promo' => false,
             'spots_left' => 0,
             'early_bird_number' => null,
-            'country' => $promo['country_name'] ?? $countryCode
+            'country' => $promo['country_name'] ?? $countryCode,
+            'transaction_fee' => $transactionFee,
+            'currency_code' => $currencyCode
         ];
     }
 
@@ -298,6 +306,7 @@ class GeoIP
             $currencyService = new \GlamourSchedule\Services\CurrencyService();
             $localPrice = $currencyService->getDisplayPrice($promo['price'], $countryCode);
             $localOriginal = $currencyService->getDisplayPrice($promo['original_price'], $countryCode);
+            $localFee = $currencyService->getDisplayPrice($promo['transaction_fee'], $countryCode);
 
             $promo['local_price'] = $localPrice['local_formatted'];
             $promo['local_original'] = $localOriginal['local_formatted'];
@@ -306,6 +315,13 @@ class GeoIP
             $promo['eur_price'] = $localPrice['eur_formatted'];
             $promo['eur_original'] = $localOriginal['eur_formatted'];
             $promo['show_dual'] = ($localPrice['local_currency'] !== 'EUR');
+
+            // Transaction fee in local currency
+            $promo['local_fee'] = $localFee['local_formatted'];
+            $promo['eur_fee'] = $localFee['eur_formatted'];
+            $promo['fee_display'] = $promo['show_dual']
+                ? $localFee['local_formatted'] . ' (' . $localFee['eur_formatted'] . ')'
+                : $localFee['eur_formatted'];
         } catch (\Exception $e) {
             // Fallback to EUR only
             $promo['local_price'] = '€' . number_format($promo['price'], 2, ',', '.');
@@ -315,6 +331,9 @@ class GeoIP
             $promo['eur_price'] = $promo['local_price'];
             $promo['eur_original'] = $promo['local_original'];
             $promo['show_dual'] = false;
+            $promo['local_fee'] = '€' . number_format($promo['transaction_fee'], 2, ',', '.');
+            $promo['eur_fee'] = $promo['local_fee'];
+            $promo['fee_display'] = $promo['local_fee'];
         }
 
         return $promo;

@@ -17,26 +17,29 @@ class CurrencyService
         'IT' => 'EUR', 'PT' => 'EUR', 'AT' => 'EUR', 'IE' => 'EUR', 'FI' => 'EUR',
         'GR' => 'EUR', 'LU' => 'EUR', 'MT' => 'EUR', 'CY' => 'EUR', 'SK' => 'EUR',
         'SI' => 'EUR', 'EE' => 'EUR', 'LV' => 'EUR', 'LT' => 'EUR', 'HR' => 'EUR',
+        'MC' => 'EUR', 'SM' => 'EUR', 'VA' => 'EUR', 'AD' => 'EUR',
         'GB' => 'GBP', 'US' => 'USD', 'CA' => 'CAD', 'AU' => 'AUD', 'NZ' => 'NZD',
-        'CH' => 'CHF', 'SE' => 'SEK', 'NO' => 'NOK', 'DK' => 'DKK', 'PL' => 'PLN',
-        'CZ' => 'CZK', 'HU' => 'HUF', 'RO' => 'RON', 'BG' => 'BGN', 'JP' => 'JPY',
-        'CN' => 'CNY', 'IN' => 'INR', 'BR' => 'BRL', 'MX' => 'MXN', 'ZA' => 'ZAR',
-        'RU' => 'RUB', 'KR' => 'KRW', 'SG' => 'SGD', 'HK' => 'HKD', 'TW' => 'TWD',
-        'TH' => 'THB', 'MY' => 'MYR', 'ID' => 'IDR', 'PH' => 'PHP', 'VN' => 'VND',
-        'TR' => 'TRY', 'IL' => 'ILS', 'AE' => 'AED', 'SA' => 'SAR', 'EG' => 'EGP',
-        'NG' => 'NGN', 'KE' => 'KES', 'AR' => 'ARS', 'CL' => 'CLP', 'CO' => 'COP',
-        'PE' => 'PEN', 'UA' => 'UAH', 'PK' => 'PKR', 'BD' => 'BDT'
+        'CH' => 'CHF', 'LI' => 'CHF', 'SE' => 'SEK', 'NO' => 'NOK', 'DK' => 'DKK',
+        'IS' => 'ISK', 'PL' => 'PLN', 'CZ' => 'CZK', 'HU' => 'HUF', 'RO' => 'RON',
+        'BG' => 'BGN', 'JP' => 'JPY', 'CN' => 'CNY', 'IN' => 'INR', 'BR' => 'BRL',
+        'MX' => 'MXN', 'ZA' => 'ZAR', 'RU' => 'RUB', 'KR' => 'KRW', 'SG' => 'SGD',
+        'HK' => 'HKD', 'TW' => 'TWD', 'TH' => 'THB', 'MY' => 'MYR', 'ID' => 'IDR',
+        'PH' => 'PHP', 'VN' => 'VND', 'TR' => 'TRY', 'IL' => 'ILS', 'AE' => 'AED',
+        'SA' => 'SAR', 'QA' => 'QAR', 'KW' => 'KWD', 'BH' => 'BHD', 'OM' => 'OMR',
+        'EG' => 'EGP', 'NG' => 'NGN', 'KE' => 'KES', 'AR' => 'ARS', 'CL' => 'CLP',
+        'CO' => 'COP', 'PE' => 'PEN', 'UA' => 'UAH', 'PK' => 'PKR', 'BD' => 'BDT'
     ];
 
     // Currency symbols
     private array $currencySymbols = [
         'EUR' => '€', 'USD' => '$', 'GBP' => '£', 'JPY' => '¥', 'CHF' => 'CHF',
         'CAD' => 'C$', 'AUD' => 'A$', 'NZD' => 'NZ$', 'SEK' => 'kr', 'NOK' => 'kr',
-        'DKK' => 'kr', 'PLN' => 'zł', 'CZK' => 'Kč', 'HUF' => 'Ft', 'RON' => 'lei',
-        'BGN' => 'лв', 'CNY' => '¥', 'INR' => '₹', 'BRL' => 'R$', 'MXN' => 'MX$',
-        'ZAR' => 'R', 'RUB' => '₽', 'KRW' => '₩', 'SGD' => 'S$', 'HKD' => 'HK$',
-        'TWD' => 'NT$', 'THB' => '฿', 'MYR' => 'RM', 'IDR' => 'Rp', 'PHP' => '₱',
-        'VND' => '₫', 'TRY' => '₺', 'ILS' => '₪', 'AED' => 'د.إ', 'SAR' => '﷼',
+        'DKK' => 'kr', 'ISK' => 'kr', 'PLN' => 'zł', 'CZK' => 'Kč', 'HUF' => 'Ft',
+        'RON' => 'lei', 'BGN' => 'лв', 'CNY' => '¥', 'INR' => '₹', 'BRL' => 'R$',
+        'MXN' => 'MX$', 'ZAR' => 'R', 'RUB' => '₽', 'KRW' => '₩', 'SGD' => 'S$',
+        'HKD' => 'HK$', 'TWD' => 'NT$', 'THB' => '฿', 'MYR' => 'RM', 'IDR' => 'Rp',
+        'PHP' => '₱', 'VND' => '₫', 'TRY' => '₺', 'ILS' => '₪', 'AED' => 'د.إ',
+        'SAR' => '﷼', 'QAR' => 'ر.ق', 'KWD' => 'د.ك', 'BHD' => 'د.ب', 'OMR' => 'ر.ع',
         'EGP' => 'E£', 'NGN' => '₦', 'KES' => 'KSh', 'ARS' => 'AR$', 'CLP' => 'CL$',
         'COP' => 'CO$', 'PEN' => 'S/', 'UAH' => '₴', 'PKR' => '₨', 'BDT' => '৳'
     ];
@@ -232,12 +235,14 @@ class CurrencyService
                 'EUR_USD' => 1.08, 'EUR_GBP' => 0.86, 'EUR_JPY' => 162.0,
                 'EUR_CHF' => 0.95, 'EUR_CAD' => 1.47, 'EUR_AUD' => 1.65,
                 'EUR_NZD' => 1.78, 'EUR_SEK' => 11.20, 'EUR_NOK' => 11.50,
-                'EUR_DKK' => 7.46, 'EUR_PLN' => 4.32, 'EUR_CZK' => 25.0,
-                'EUR_HUF' => 395.0, 'EUR_RON' => 4.97, 'EUR_BGN' => 1.96,
-                'EUR_CNY' => 7.85, 'EUR_INR' => 90.0, 'EUR_BRL' => 5.35,
-                'EUR_MXN' => 18.5, 'EUR_ZAR' => 20.0, 'EUR_RUB' => 98.0,
-                'EUR_KRW' => 1420.0, 'EUR_SGD' => 1.45, 'EUR_HKD' => 8.45,
-                'EUR_TRY' => 35.0, 'EUR_AED' => 3.97, 'EUR_SAR' => 4.05
+                'EUR_DKK' => 7.46, 'EUR_ISK' => 150.0, 'EUR_PLN' => 4.32,
+                'EUR_CZK' => 25.0, 'EUR_HUF' => 395.0, 'EUR_RON' => 4.97,
+                'EUR_BGN' => 1.96, 'EUR_CNY' => 7.85, 'EUR_INR' => 90.0,
+                'EUR_BRL' => 5.35, 'EUR_MXN' => 18.5, 'EUR_ZAR' => 20.0,
+                'EUR_RUB' => 98.0, 'EUR_KRW' => 1420.0, 'EUR_SGD' => 1.45,
+                'EUR_HKD' => 8.45, 'EUR_TRY' => 35.0, 'EUR_AED' => 3.97,
+                'EUR_SAR' => 4.05, 'EUR_QAR' => 3.93, 'EUR_KWD' => 0.33,
+                'EUR_BHD' => 0.41, 'EUR_OMR' => 0.42
             ],
             'updated_at' => time()
         ];

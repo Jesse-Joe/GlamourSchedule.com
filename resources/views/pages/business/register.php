@@ -704,7 +704,7 @@
                     </div>
                     <div class="price-note">
                         <i class="fas fa-info-circle"></i>
-                        <span>Geen maandelijkse kosten, alleen €1,75 per boeking</span>
+                        <span>Geen maandelijkse kosten, alleen <?= $feeDisplay ?? '€1,75' ?> per boeking</span>
                     </div>
                     <?php if ($isEarlyAdopter): ?>
                     <div class="price-note" style="font-size: 0.8rem; opacity: 0.7;">

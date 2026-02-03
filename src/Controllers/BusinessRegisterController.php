@@ -84,7 +84,10 @@ class BusinessRegisterController extends Controller
             'localCurrency' => $promoInfo['local_currency'],
             'eurPrice' => $promoInfo['eur_price'],
             'eurOriginal' => $promoInfo['eur_original'],
-            'showDualCurrency' => $promoInfo['show_dual']
+            'showDualCurrency' => $promoInfo['show_dual'],
+            // Transaction fee per country
+            'transactionFee' => $promoInfo['transaction_fee'],
+            'feeDisplay' => $promoInfo['fee_display'] ?? '€1,75'
         ]);
     }
 
@@ -126,7 +129,7 @@ class BusinessRegisterController extends Controller
             // Get user location for country-based pricing
             $location = $this->geoIP->lookup();
             $countryCode = $location['country_code'];
-            $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
+            $promoInfo = $this->geoIP->getPromotionPriceWithCurrency($countryCode);
 
             $referralCode = trim($_POST['referral_code'] ?? '');
             $hasValidReferral = false;
@@ -159,7 +162,12 @@ class BusinessRegisterController extends Controller
                 'promoPrice' => $promoInfo['price'],
                 'spotsLeft' => $promoInfo['spots_left'],
                 'isPromo' => $promoInfo['is_promo'],
-                'detectedLanguage' => $location['language']
+                'detectedLanguage' => $location['language'],
+                'localPrice' => $promoInfo['local_price'],
+                'localOriginal' => $promoInfo['local_original'],
+                'showDualCurrency' => $promoInfo['show_dual'],
+                'transactionFee' => $promoInfo['transaction_fee'],
+                'feeDisplay' => $promoInfo['fee_display'] ?? '€1,75'
             ]);
         }
 
@@ -351,8 +359,11 @@ class BusinessRegisterController extends Controller
             $this->db->rollBack();
             error_log("Business registration error: " . $e->getMessage());
 
-            $earlyAdopterCount = $this->getEarlyAdopterCount();
-            $isEarlyAdopter = $earlyAdopterCount < 100;
+            // Get location for fee display
+            $location = $this->geoIP->lookup();
+            $countryCode = $location['country_code'];
+            $promoInfo = $this->geoIP->getPromotionPriceWithCurrency($countryCode);
+
             $referralCode = trim($_POST['referral_code'] ?? '');
             $hasValidReferral = false;
 
@@ -369,14 +380,19 @@ class BusinessRegisterController extends Controller
                 'categories' => $this->getCategories(),
                 'errors' => ['general' => 'Er is een fout opgetreden bij de registratie. Probeer het opnieuw.'],
                 'data' => $data,
-                'isEarlyAdopter' => $isEarlyAdopter,
-                'earlyAdopterSpots' => 100 - $earlyAdopterCount,
-                'regFee' => $isEarlyAdopter ? 0.99 : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE),
+                'isEarlyAdopter' => $promoInfo['is_promo'],
+                'earlyAdopterSpots' => $promoInfo['spots_left'],
+                'regFee' => $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE),
                 'standardFee' => self::REGISTRATION_FEE,
                 'discountedFee' => self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT,
                 'hasValidReferral' => $hasValidReferral,
                 'referralCode' => $referralCode,
-                'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT
+                'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT,
+                'localPrice' => $promoInfo['local_price'],
+                'localOriginal' => $promoInfo['local_original'],
+                'showDualCurrency' => $promoInfo['show_dual'],
+                'transactionFee' => $promoInfo['transaction_fee'],
+                'feeDisplay' => $promoInfo['fee_display'] ?? '€1,75'
             ]);
         }
     }
