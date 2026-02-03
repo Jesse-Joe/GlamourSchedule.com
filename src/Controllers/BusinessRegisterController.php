@@ -397,9 +397,27 @@ class BusinessRegisterController extends Controller
         }
     }
 
-    private function sendVerificationEmail(string $email, string $companyName, string $code): void
+    private function sendVerificationEmail(string $email, string $companyName, string $code, string $lang = null): void
     {
-        $subject = "Bevestig je GlamourSchedule account - Code: {$code}";
+        $lang = $lang ?? $this->lang ?? 'nl';
+
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
+        $subject = $t('email_verify_subject', ['code' => $code]);
+        $title = $t('email_verify_title');
+        $dear = $t('email_verify_dear');
+        $useCode = $t('email_verify_use_code');
+        $valid10min = $t('email_verify_valid_10min');
+        $notRequested = $t('email_verify_not_requested');
+        $year = date('Y');
 
         $htmlBody = "
         <!DOCTYPE html>
@@ -414,25 +432,25 @@ class BusinessRegisterController extends Controller
                         <table width='500' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
                             <tr>
                                 <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
-                                    <h1 style='margin:0;font-size:24px;'>Bevestig je account</h1>
+                                    <h1 style='margin:0;font-size:24px;'>{$title}</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td style='padding:40px;text-align:center;'>
-                                    <p style='font-size:16px;color:#ffffff;margin-bottom:10px;'>Beste <strong>{$companyName}</strong>,</p>
-                                    <p style='font-size:16px;color:#ffffff;margin-bottom:30px;'>Gebruik onderstaande code om je account te bevestigen:</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:10px;'>{$dear} <strong>{$companyName}</strong>,</p>
+                                    <p style='font-size:16px;color:#ffffff;margin-bottom:30px;'>{$useCode}</p>
 
                                     <div style='background:#000000;border:2px solid #333333;border-radius:10px;padding:30px;margin:20px 0;'>
                                         <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
                                     </div>
 
-                                    <p style='font-size:14px;color:#cccccc;margin-top:30px;'>Deze code is 10 minuten geldig.</p>
-                                    <p style='font-size:14px;color:#cccccc;'>Heb je deze code niet aangevraagd? Negeer dan deze email.</p>
+                                    <p style='font-size:14px;color:#cccccc;margin-top:30px;'>{$valid10min}</p>
+                                    <p style='font-size:14px;color:#cccccc;'>{$notRequested}</p>
                                 </td>
                             </tr>
                             <tr>
                                 <td style='background:#0a0a0a;padding:20px;text-align:center;color:#cccccc;font-size:12px;'>
-                                    <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule</p>
+                                    <p style='margin:0;'>&copy; {$year} GlamourSchedule</p>
                                 </td>
                             </tr>
                         </table>
@@ -444,23 +462,23 @@ class BusinessRegisterController extends Controller
         ";
 
         $textBody = "
-Bevestig je GlamourSchedule account
+{$title}
 
-Beste {$companyName},
+{$dear} {$companyName},
 
-Gebruik onderstaande code om je account te bevestigen:
+{$useCode}
 
 {$code}
 
-Deze code is 10 minuten geldig.
+{$valid10min}
 
-Heb je deze code niet aangevraagd? Negeer dan deze email.
+{$notRequested}
 
 GlamourSchedule
         ";
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($lang);
             $mailer->send($email, $subject, $htmlBody, $textBody);
         } catch (\Exception $e) {
             error_log("Failed to send verification email: " . $e->getMessage());
@@ -1070,54 +1088,81 @@ GlamourSchedule
     /**
      * Send completion email with link to finish registration
      */
-    private function sendCompletionEmail(string $email, string $firstName, string $companyName, string $token): void
+    private function sendCompletionEmail(string $email, string $firstName, string $companyName, string $token, string $lang = null): void
     {
-        $completionUrl = "https://glamourschedule.nl/partner/complete/{$token}";
+        $lang = $lang ?? $this->lang ?? 'nl';
+        $completionUrl = "https://glamourschedule.com/partner/complete/{$token}";
+
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
+        $subject = $t('email_completion_subject');
+        $welcomeTitle = $t('email_completion_welcome');
+        $dear = $t('email_verify_dear');
+        $almostDone = $t('email_completion_almost_done', ['company' => $companyName]);
+        $trialStarts = $t('email_completion_trial_starts');
+        $trialInfo = $t('email_completion_trial_info');
+        $completeNow = $t('email_completion_complete_now');
+        $clickButton = $t('email_completion_click_button');
+        $buttonText = $t('email_completion_button');
+        $copyLink = $t('email_completion_copy_link');
+        $whatYouNeed = $t('email_completion_what_you_need');
+        $needPassword = $t('email_completion_need_password');
+        $needAddress = $t('email_completion_need_address');
+        $needPhone = $t('email_completion_need_phone');
+        $needKvk = $t('email_completion_need_kvk');
 
         $html = "
         <div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto'>
             <div style='background:linear-gradient(135deg,#000000,#1a1a1a);padding:2rem;text-align:center;border-radius:12px 12px 0 0'>
-                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>Welkom bij GlamourSchedule!</h1>
+                <h1 style='color:#ffffff;margin:0;font-size:1.5rem'>{$welcomeTitle}</h1>
             </div>
             <div style='background:#0a0a0a;padding:2rem;border:1px solid #333;border-top:none;border-radius:0 0 12px 12px'>
-                <p style='color:#374151;font-size:1.1rem;margin-top:0'>Beste {$firstName},</p>
+                <p style='color:#374151;font-size:1.1rem;margin-top:0'>{$dear} {$firstName},</p>
                 <p style='color:#374151;line-height:1.6'>
-                    Welkom! Je registratie voor <strong>{$companyName}</strong> is bijna compleet.
+                    {$almostDone}
                 </p>
 
                 <div style='background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
                     <p style='margin:0;color:#92400e;font-weight:600;font-size:1rem'>
-                        Je proefperiode van 14 dagen start nu!
+                        {$trialStarts}
                     </p>
                     <p style='margin:0.75rem 0 0 0;color:#92400e;font-size:0.9rem'>
-                        Probeer GlamourSchedule 14 dagen gratis. Je hoeft pas te betalen na de proefperiode.
+                        {$trialInfo}
                     </p>
                 </div>
 
                 <div style='background:#ecfdf5;border:2px solid #333333;border-radius:12px;padding:1.5rem;margin:1.5rem 0'>
-                    <p style='margin:0 0 1rem 0;color:#ffffff;font-weight:600'>Voltooi nu je registratie:</p>
+                    <p style='margin:0 0 1rem 0;color:#ffffff;font-weight:600'>{$completeNow}</p>
                     <p style='margin:0;color:#374151;font-size:0.95rem'>
-                        Klik op de knop hieronder om je wachtwoord in te stellen en je bedrijfsgegevens aan te vullen.
+                        {$clickButton}
                     </p>
                 </div>
 
                 <div style='text-align:center;margin:2rem 0'>
                     <a href='{$completionUrl}' style='display:inline-block;background:linear-gradient(135deg,#333333,#000000);color:white;text-decoration:none;padding:1rem 2rem;border-radius:10px;font-weight:600;font-size:1.1rem'>
-                        Registratie Afronden
+                        {$buttonText}
                     </a>
                 </div>
 
                 <p style='color:#6b7280;font-size:0.9rem'>
-                    Of kopieer deze link: <span style='color:#ffffff'>{$completionUrl}</span>
+                    {$copyLink} <span style='color:#ffffff'>{$completionUrl}</span>
                 </p>
 
                 <div style='border-top:1px solid #e5e7eb;margin-top:1.5rem;padding-top:1.5rem'>
                     <p style='color:#6b7280;font-size:0.85rem;margin:0'>
-                        <strong>Wat je nodig hebt:</strong><br>
-                        - Een nieuw wachtwoord<br>
-                        - Je bedrijfsadres<br>
-                        - Je telefoonnummer (optioneel)<br>
-                        - Je KvK-nummer (optioneel)
+                        <strong>{$whatYouNeed}</strong><br>
+                        {$needPassword}<br>
+                        {$needAddress}<br>
+                        {$needPhone}<br>
+                        {$needKvk}
                     </p>
                 </div>
             </div>
@@ -1125,8 +1170,8 @@ GlamourSchedule
         ";
 
         try {
-            $mailer = new Mailer();
-            $mailer->send($email, 'Voltooi je registratie - GlamourSchedule', $html);
+            $mailer = new Mailer($lang);
+            $mailer->send($email, $subject, $html);
         } catch (\Exception $e) {
             error_log('Completion email failed: ' . $e->getMessage());
         }

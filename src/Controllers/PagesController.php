@@ -92,23 +92,26 @@ class PagesController extends Controller
         $subject = trim($_POST['subject'] ?? '');
         $message = trim($_POST['message'] ?? '');
 
+        // Get translations
+        $trans = $this->getTranslations();
+
         // Validation
         $errors = [];
-        if (empty($name)) $errors[] = 'Naam is verplicht';
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Geldig e-mailadres is verplicht';
-        if (empty($type)) $errors[] = 'Type melding is verplicht';
-        if (empty($subject)) $errors[] = 'Onderwerp is verplicht';
-        if (empty($message)) $errors[] = 'Bericht is verplicht';
+        if (empty($name)) $errors[] = $trans['contact_name_required'] ?? 'Name is required';
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = $trans['contact_email_required'] ?? 'Email is required';
+        if (empty($type)) $errors[] = $trans['contact_type_required'] ?? 'Type is required';
+        if (empty($subject)) $errors[] = $trans['contact_subject_required'] ?? 'Subject is required';
+        if (empty($message)) $errors[] = $trans['contact_message_required'] ?? 'Message is required';
 
         // Additional spam validation on content
         if ($this->isSpamContent($name, $email, $subject, $message)) {
             error_log("Contact form spam content blocked - IP: " . $this->getClientIp() . " Email: " . $email);
-            $errors[] = 'Je bericht is gedetecteerd als spam';
+            $errors[] = $trans['contact_spam_detected'] ?? 'Your message was detected as spam';
         }
 
         if (!empty($errors)) {
             return $this->view('pages/contact', [
-                'pageTitle' => $this->getTranslations()['contact'] ?? 'Contact',
+                'pageTitle' => $trans['contact'] ?? 'Contact',
                 'csrfToken' => $this->csrf(),
                 'error' => implode(', ', $errors),
                 'formData' => compact('name', 'email', 'type', 'subject', 'message')
@@ -118,25 +121,28 @@ class PagesController extends Controller
         // Generate ticket number
         $ticketNumber = 'GS-' . strtoupper(substr(md5(uniqid()), 0, 8));
 
-        // Type labels
+        // Type labels (translated)
         $typeLabels = [
-            'bug' => 'Bug / Fout',
-            'request' => 'Verzoek / Feature',
-            'problem' => 'Probleem / Hulp',
-            'other' => 'Overig'
+            'bug' => $trans['contact_type_bug'] ?? 'Bug / Error',
+            'request' => $trans['contact_type_request'] ?? 'Request / Feature',
+            'problem' => $trans['contact_type_problem'] ?? 'Problem / Help',
+            'other' => $trans['contact_type_other'] ?? 'Other'
         ];
         $typeLabel = $typeLabels[$type] ?? $type;
 
         // Send email to support
         $this->sendSupportEmail($ticketNumber, $name, $email, $typeLabel, $subject, $message);
 
-        // Send confirmation to user
-        $this->sendConfirmationEmail($ticketNumber, $name, $email, $typeLabel, $subject, $message);
+        // Send confirmation to user (in user's language)
+        $this->sendConfirmationEmail($ticketNumber, $name, $email, $typeLabel, $subject, $message, $this->lang ?? 'nl');
+
+        // Success message translated
+        $successMsg = str_replace('{ticket}', $ticketNumber, $trans['contact_success'] ?? 'Thank you for your message! Your ticket number is: {ticket}. We will contact you as soon as possible.');
 
         return $this->view('pages/contact', [
-            'pageTitle' => $this->getTranslations()['contact'] ?? 'Contact',
+            'pageTitle' => $trans['contact'] ?? 'Contact',
             'csrfToken' => $this->csrf(),
-            'success' => "Bedankt voor je bericht! Je ticketnummer is: {$ticketNumber}. We nemen zo snel mogelijk contact met je op."
+            'success' => $successMsg
         ]);
     }
 
@@ -196,8 +202,30 @@ HTML;
         }
     }
 
-    private function sendConfirmationEmail(string $ticket, string $name, string $email, string $type, string $subject, string $message): void
+    private function sendConfirmationEmail(string $ticket, string $name, string $email, string $type, string $subject, string $message, string $lang = 'nl'): void
     {
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
+        $thanksTitle = $t('email_contact_thanks');
+        $dearText = $t('email_contact_dear', ['name' => $name]);
+        $receivedText = $t('email_contact_received');
+        $ticketLabel = $t('email_contact_ticket_number');
+        $saveTicketText = $t('email_contact_save_ticket');
+        $typeLabel = $t('email_contact_type');
+        $subjectLabel = $t('email_contact_subject');
+        $yourMessageLabel = $t('email_contact_your_message');
+        $regardsText = $t('email_contact_regards');
+        $teamText = $t('email_contact_team');
+        $emailSubject = $t('email_contact_confirmation_subject', ['ticket' => $ticket]);
+
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -205,47 +233,50 @@ HTML;
 <body style="margin:0;padding:20px;font-family:Arial,sans-serif;background:#0a0a0a;">
     <div style="max-width:600px;margin:0 auto;background:#1a1a1a;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
         <div style="background:linear-gradient(135deg,#000000,#000000);color:white;padding:25px;text-align:center;">
-            <h1 style="margin:0;font-size:22px;">Bedankt voor je bericht!</h1>
+            <h1 style="margin:0;font-size:22px;">{$thanksTitle}</h1>
         </div>
         <div style="padding:30px;color:#ffffff;">
-            <p style="font-size:16px;color:#ffffff;">Beste {$name},</p>
+            <p style="font-size:16px;color:#ffffff;">{$dearText}</p>
 
             <p style="color:#cccccc;line-height:1.6;">
-                Bedankt voor het contact opnemen met GlamourSchedule. We hebben je bericht ontvangen en zullen zo snel mogelijk reageren.
+                {$receivedText}
             </p>
 
             <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:20px;margin:25px 0;text-align:center;">
-                <p style="margin:0;color:#166534;font-weight:600;">Je ticketnummer:</p>
+                <p style="margin:0;color:#166534;font-weight:600;">{$ticketLabel}</p>
                 <p style="margin:10px 0 0;font-size:24px;font-weight:700;color:#ffffff;">{$ticket}</p>
             </div>
 
             <p style="color:#cccccc;font-size:14px;line-height:1.6;">
-                Bewaar dit ticketnummer voor je administratie. Je kunt dit nummer gebruiken als je contact met ons opneemt over deze melding.
+                {$saveTicketText}
             </p>
 
             <div style="background:#0a0a0a;border-radius:8px;padding:15px;margin-top:20px;">
-                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>Type:</strong> {$type}</p>
-                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>Onderwerp:</strong> {$subject}</p>
-                <p style="margin:0;color:#cccccc;font-size:14px;"><strong>Je bericht:</strong></p>
+                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>{$typeLabel}</strong> {$type}</p>
+                <p style="margin:0 0 10px;color:#cccccc;font-size:14px;"><strong>{$subjectLabel}</strong> {$subject}</p>
+                <p style="margin:0;color:#cccccc;font-size:14px;"><strong>{$yourMessageLabel}</strong></p>
                 <p style="margin:10px 0 0;color:#cccccc;font-size:14px;white-space:pre-wrap;">{$message}</p>
             </div>
 
             <p style="margin-top:25px;color:#cccccc;line-height:1.6;">
-                Met vriendelijke groet,<br>
-                <strong>Het GlamourSchedule Team</strong>
+                {$regardsText}<br>
+                <strong>{$teamText}</strong>
             </p>
         </div>
         <div style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-            <p style="margin:0;color:#9ca3af;font-size:12px;">&copy; 2026 GlamourSchedule - Beauty & Wellness Booking Platform</p>
+            <p style="margin:0;color:#9ca3af;font-size:12px;">&copy; {$year} GlamourSchedule - Beauty & Wellness Booking Platform</p>
         </div>
     </div>
 </body>
 </html>
 HTML;
 
+        $year = date('Y');
+        $htmlBody = str_replace('{$year}', $year, $htmlBody);
+
         try {
-            $mailer = new Mailer();
-            $mailer->send($email, "Bevestiging: Je bericht is ontvangen [{$ticket}]", $htmlBody);
+            $mailer = new Mailer($lang);
+            $mailer->send($email, $emailSubject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send confirmation email: " . $e->getMessage());
         }

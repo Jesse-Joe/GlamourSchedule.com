@@ -131,23 +131,26 @@ class CronController extends Controller
         $isEarlyAdopter = !empty($business['is_early_adopter']);
         $price = number_format($business['subscription_price'], 2, ',', '.');
 
-        // Translations
-        $translations = $this->getTrialExpiryTranslations($lang, $isEarlyAdopter);
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
-        $subject = $translations['subject'];
-        $priceLabel = $translations['price_label'];
-        $priceSubtext = $translations['price_subtext'];
-        $activateText = $translations['activate_text'];
-        $greeting = $translations['greeting'];
-        $trialEndsText = str_replace(
-            ['{company}'],
-            [$business['company_name']],
-            $translations['trial_ends']
-        );
-        $warningText = $translations['warning'];
-        $buttonText = $translations['button'];
-        $questionsText = $translations['questions'];
-        $copyrightText = $translations['copyright'];
+        $subject = $t('email_trial_expiry_subject');
+        $priceLabel = $isEarlyAdopter ? $t('email_price_label_early') : $t('email_price_label_normal');
+        $priceSubtext = $isEarlyAdopter ? $t('email_price_subtext_early') : $t('email_price_subtext_normal');
+        $activateText = $isEarlyAdopter ? $t('email_activate_text_early') : $t('email_activate_text_normal');
+        $greeting = $t('email_trial_greeting');
+        $trialEndsText = $t('email_trial_ends', ['company' => $business['company_name']]);
+        $warningText = $t('email_trial_warning');
+        $buttonText = $t('email_activate_button');
+        $questionsText = $t('email_questions_contact');
+        $copyrightText = $t('email_copyright', ['year' => date('Y')]);
 
         $body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -179,7 +182,7 @@ class CronController extends Controller
                 </p>
 
                 <div style='text-align: center; margin: 30px 0;'>
-                    <a href='https://glamourschedule.nl/business/dashboard'
+                    <a href='https://glamourschedule.com/business/dashboard'
                        style='display: inline-block; background: #000000; color: #ffffff;
                               padding: 15px 30px; text-decoration: none; border-radius: 25px;
                               font-weight: bold;'>
@@ -203,96 +206,28 @@ class CronController extends Controller
         $mailer->send($business['email'], $subject, $body);
     }
 
-    private function getTrialExpiryTranslations(string $lang, bool $isEarlyAdopter): array
-    {
-        $translations = [
-            'nl' => [
-                'subject' => 'Je proefperiode bij GlamourSchedule eindigt vandaag',
-                'greeting' => 'Hallo',
-                'trial_ends' => 'Je 14-daagse proefperiode voor <strong>{company}</strong> eindigt vandaag.',
-                'price_label_early' => 'Early Bird aanmeldkosten',
-                'price_label_normal' => 'Maandelijks abonnement',
-                'price_subtext_early' => 'eenmalig',
-                'price_subtext_normal' => 'per maand',
-                'activate_text_early' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om je Early Bird aanmelding af te ronden.',
-                'activate_text_normal' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het maandelijkse abonnement te activeren.',
-                'warning' => 'Let op: Als je niet binnen 3 dagen activeert, wordt je account gedeactiveerd.',
-                'button' => 'Abonnement Activeren',
-                'questions' => 'Heb je vragen? Neem contact op via info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle rechten voorbehouden.',
-            ],
-            'en' => [
-                'subject' => 'Your GlamourSchedule trial ends today',
-                'greeting' => 'Hello',
-                'trial_ends' => 'Your 14-day trial for <strong>{company}</strong> ends today.',
-                'price_label_early' => 'Early Bird registration fee',
-                'price_label_normal' => 'Monthly subscription',
-                'price_subtext_early' => 'one-time',
-                'price_subtext_normal' => 'per month',
-                'activate_text_early' => 'To continue using GlamourSchedule, please complete your Early Bird registration.',
-                'activate_text_normal' => 'To continue using GlamourSchedule, please activate your monthly subscription.',
-                'warning' => 'Note: If you don\'t activate within 3 days, your account will be deactivated.',
-                'button' => 'Activate Subscription',
-                'questions' => 'Questions? Contact us at info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. All rights reserved.',
-            ],
-            'de' => [
-                'subject' => 'Ihre GlamourSchedule Testphase endet heute',
-                'greeting' => 'Hallo',
-                'trial_ends' => 'Ihre 14-tägige Testphase für <strong>{company}</strong> endet heute.',
-                'price_label_early' => 'Early Bird Anmeldegebühr',
-                'price_label_normal' => 'Monatliches Abonnement',
-                'price_subtext_early' => 'einmalig',
-                'price_subtext_normal' => 'pro Monat',
-                'activate_text_early' => 'Um GlamourSchedule weiterhin zu nutzen, schließen Sie bitte Ihre Early Bird Anmeldung ab.',
-                'activate_text_normal' => 'Um GlamourSchedule weiterhin zu nutzen, aktivieren Sie bitte Ihr monatliches Abonnement.',
-                'warning' => 'Hinweis: Wenn Sie nicht innerhalb von 3 Tagen aktivieren, wird Ihr Konto deaktiviert.',
-                'button' => 'Abonnement Aktivieren',
-                'questions' => 'Fragen? Kontaktieren Sie uns unter info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle Rechte vorbehalten.',
-            ],
-            'fr' => [
-                'subject' => 'Votre période d\'essai GlamourSchedule se termine aujourd\'hui',
-                'greeting' => 'Bonjour',
-                'trial_ends' => 'Votre période d\'essai de 14 jours pour <strong>{company}</strong> se termine aujourd\'hui.',
-                'price_label_early' => 'Frais d\'inscription Early Bird',
-                'price_label_normal' => 'Abonnement mensuel',
-                'price_subtext_early' => 'unique',
-                'price_subtext_normal' => 'par mois',
-                'activate_text_early' => 'Pour continuer à utiliser GlamourSchedule, veuillez finaliser votre inscription Early Bird.',
-                'activate_text_normal' => 'Pour continuer à utiliser GlamourSchedule, veuillez activer votre abonnement mensuel.',
-                'warning' => 'Attention: Si vous n\'activez pas dans les 3 jours, votre compte sera désactivé.',
-                'button' => 'Activer l\'Abonnement',
-                'questions' => 'Des questions? Contactez-nous à info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Tous droits réservés.',
-            ],
-        ];
-
-        $t = $translations[$lang] ?? $translations['nl'];
-
-        return [
-            'subject' => $t['subject'],
-            'greeting' => $t['greeting'],
-            'trial_ends' => $t['trial_ends'],
-            'price_label' => $isEarlyAdopter ? $t['price_label_early'] : $t['price_label_normal'],
-            'price_subtext' => $isEarlyAdopter ? $t['price_subtext_early'] : $t['price_subtext_normal'],
-            'activate_text' => $isEarlyAdopter ? $t['activate_text_early'] : $t['activate_text_normal'],
-            'warning' => $t['warning'],
-            'button' => $t['button'],
-            'questions' => $t['questions'],
-            'copyright' => $t['copyright'],
-        ];
-    }
-
     private function sendDeactivationEmail(array $business): void
     {
         $lang = $business['language'] ?? 'nl';
         $mailer = new Mailer($lang);
 
-        $t = $this->getDeactivationTranslations($lang);
-        $subject = $t['subject'];
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
-        $deactivatedText = str_replace('{company}', $business['company_name'], $t['deactivated']);
+        $subject = $t('email_deactivation_subject');
+        $greeting = $t('email_trial_greeting');
+        $deactivatedText = $t('email_deactivated_text', ['company' => $business['company_name']]);
+        $reactivateInfo = $t('email_reactivate_info');
+        $buttonText = $t('email_reactivate_button');
+        $questionsText = $t('email_questions_contact');
+        $copyrightText = $t('email_copyright', ['year' => date('Y')]);
 
         $body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -301,83 +236,39 @@ class CronController extends Controller
             </div>
 
             <div style='padding: 30px; background: #ffffff;'>
-                <h2 style='color: #333333;'>{$t['greeting']} {$business['first_name']},</h2>
+                <h2 style='color: #333333;'>{$greeting} {$business['first_name']},</h2>
 
                 <p style='color: #666666; line-height: 1.6;'>
                     {$deactivatedText}
                 </p>
 
                 <p style='color: #666666; line-height: 1.6;'>
-                    {$t['reactivate_info']}
+                    {$reactivateInfo}
                 </p>
 
                 <div style='text-align: center; margin: 30px 0;'>
-                    <a href='https://glamourschedule.nl/business/login'
+                    <a href='https://glamourschedule.com/business/login'
                        style='display: inline-block; background: #000000; color: #ffffff;
                               padding: 15px 30px; text-decoration: none; border-radius: 25px;
                               font-weight: bold;'>
-                        {$t['button']}
+                        {$buttonText}
                     </a>
                 </div>
 
                 <p style='color: #999999; font-size: 0.9rem;'>
-                    {$t['questions']}
+                    {$questionsText}
                 </p>
             </div>
 
             <div style='background: #f5f5f5; padding: 20px; text-align: center;'>
                 <p style='color: #999999; font-size: 0.8rem; margin: 0;'>
-                    {$t['copyright']}
+                    {$copyrightText}
                 </p>
             </div>
         </div>
         ";
 
         $mailer->send($business['email'], $subject, $body);
-    }
-
-    private function getDeactivationTranslations(string $lang): array
-    {
-        $translations = [
-            'nl' => [
-                'subject' => 'Je GlamourSchedule account is gedeactiveerd',
-                'greeting' => 'Hallo',
-                'deactivated' => 'Je account voor <strong>{company}</strong> is gedeactiveerd omdat de proefperiode is verlopen zonder activatie van het abonnement.',
-                'reactivate_info' => 'Je kunt je account op elk moment opnieuw activeren door in te loggen en het abonnement te activeren.',
-                'button' => 'Opnieuw Activeren',
-                'questions' => 'Heb je vragen? Neem contact op via info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle rechten voorbehouden.',
-            ],
-            'en' => [
-                'subject' => 'Your GlamourSchedule account has been deactivated',
-                'greeting' => 'Hello',
-                'deactivated' => 'Your account for <strong>{company}</strong> has been deactivated because the trial period expired without subscription activation.',
-                'reactivate_info' => 'You can reactivate your account at any time by logging in and activating your subscription.',
-                'button' => 'Reactivate Account',
-                'questions' => 'Questions? Contact us at info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. All rights reserved.',
-            ],
-            'de' => [
-                'subject' => 'Ihr GlamourSchedule Konto wurde deaktiviert',
-                'greeting' => 'Hallo',
-                'deactivated' => 'Ihr Konto für <strong>{company}</strong> wurde deaktiviert, da die Testphase ohne Abonnement-Aktivierung abgelaufen ist.',
-                'reactivate_info' => 'Sie können Ihr Konto jederzeit reaktivieren, indem Sie sich anmelden und Ihr Abonnement aktivieren.',
-                'button' => 'Konto Reaktivieren',
-                'questions' => 'Fragen? Kontaktieren Sie uns unter info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Alle Rechte vorbehalten.',
-            ],
-            'fr' => [
-                'subject' => 'Votre compte GlamourSchedule a été désactivé',
-                'greeting' => 'Bonjour',
-                'deactivated' => 'Votre compte pour <strong>{company}</strong> a été désactivé car la période d\'essai a expiré sans activation de l\'abonnement.',
-                'reactivate_info' => 'Vous pouvez réactiver votre compte à tout moment en vous connectant et en activant votre abonnement.',
-                'button' => 'Réactiver le Compte',
-                'questions' => 'Des questions? Contactez-nous à info@glamourschedule.nl',
-                'copyright' => '&copy; ' . date('Y') . ' GlamourSchedule. Tous droits réservés.',
-            ],
-        ];
-
-        return $translations[$lang] ?? $translations['nl'];
     }
 
     private function logCron(string $message): void
@@ -417,6 +308,7 @@ class CronController extends Controller
                         bus.company_name,
                         bus.email as business_email,
                         bus.iban as business_iban,
+                        bus.language as business_language,
                         s.name as service_name
                  FROM bookings b
                  JOIN businesses bus ON b.business_id = bus.id
@@ -449,6 +341,7 @@ class CronController extends Controller
                         'company_name' => $booking['company_name'],
                         'email' => $booking['business_email'],
                         'iban' => $booking['business_iban'],
+                        'language' => $booking['business_language'] ?? 'nl',
                         'bookings' => [],
                         'total_service_amount' => 0,
                         'total_platform_fee' => 0,
@@ -1026,6 +919,7 @@ HTML;
                         bus.company_name,
                         bus.email as business_email,
                         bus.iban as business_iban,
+                        bus.language as business_language,
                         s.name as service_name
                  FROM bookings b
                  JOIN businesses bus ON b.business_id = bus.id
@@ -1058,6 +952,7 @@ HTML;
                         'company_name' => $booking['company_name'],
                         'email' => $booking['business_email'],
                         'iban' => $booking['business_iban'],
+                        'language' => $booking['business_language'] ?? 'nl',
                         'bookings' => [],
                         'total_service_amount' => 0,
                         'total_platform_fee' => 0,
@@ -1266,7 +1161,18 @@ HTML;
      */
     private function sendWeeklyPayoutEmail(array $payout, int $payoutId, bool $isAutomatic = false, string $paymentMethod = 'manual'): void
     {
-        $mailer = new Mailer();
+        $lang = $payout['language'] ?? 'nl';
+        $mailer = new Mailer($lang);
+
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
         $bookingsList = '';
         foreach ($payout['bookings'] as $b) {
@@ -1277,38 +1183,49 @@ HTML;
             </tr>";
         }
 
-        // Payment method display name
-        $methodName = $paymentMethod === 'bunq' ? 'Bunq' : ($paymentMethod === 'wise' ? 'Wise' : 'handmatig');
-
         // Delivery time based on method
-        $deliveryTime = $paymentMethod === 'bunq' ? '1 werkdag' : ($paymentMethod === 'wise' ? '1-2 werkdagen' : '1-3 werkdagen');
+        $deliveryTime = $paymentMethod === 'bunq' ? $t('email_payout_1_business_day') : ($paymentMethod === 'wise' ? $t('email_payout_1_2_business_days') : $t('email_payout_1_3_business_days'));
+
+        $amountFormatted = '€' . number_format($payout['total_payout'], 2, ',', '.');
+        $bookingsCount = count($payout['bookings']);
+        $bookingLabel = $t('email_payout_booking');
+        $serviceLabel = $t('email_payout_service');
+        $amountLabel = $t('email_payout_amount');
+        $bankAccountLabel = $t('email_payout_bank_account');
+        $dear = $t('email_trial_greeting');
 
         if ($isAutomatic) {
-            $subject = "Uitbetaling voltooid - €" . number_format($payout['total_payout'], 2, ',', '.');
+            $subject = $t('email_payout_completed_subject', ['amount' => $amountFormatted]);
             $headerBg = '#22c55e';
-            $headerText = 'Uitbetaling Voltooid';
+            $headerText = $t('email_payout_completed');
+            $autoViaText = $t('email_payout_automatic_via', ['count' => $bookingsCount, 'method' => ucfirst($paymentMethod)]);
             $statusBox = "
                 <div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
-                    <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</p>
-                    <p style='margin:5px 0 0;color:#166534;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Automatisch via $methodName</p>
+                    <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>{$amountFormatted}</p>
+                    <p style='margin:5px 0 0;color:#166534;font-size:14px;'>{$autoViaText}</p>
                 </div>";
-            $statusMessage = "<p style='color:#166534;'>Het bedrag is automatisch overgemaakt naar je bankrekening. Je ontvangt het binnen $deliveryTime.</p>";
+            $transferredText = $t('email_payout_auto_transferred', ['time' => $deliveryTime]);
+            $statusMessage = "<p style='color:#166534;'>{$transferredText}</p>";
             $tipBox = "";
         } else {
-            $subject = "Wekelijkse uitbetaling in verwerking - €" . number_format($payout['total_payout'], 2, ',', '.');
+            $subject = $t('email_weekly_payout_processing', ['amount' => $amountFormatted]);
             $headerBg = '#000';
-            $headerText = 'Wekelijkse Uitbetaling';
+            $headerText = $t('email_weekly_payout');
+            $countText = $t('email_payout_bookings_count', ['count' => $bookingsCount, 'id' => $payoutId]);
             $statusBox = "
                 <div style='background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
-                    <p style='margin:0;font-size:28px;font-weight:bold;color:#d97706;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</p>
-                    <p style='margin:5px 0 0;color:#92400e;font-size:14px;'>" . count($payout['bookings']) . " boeking(en)</p>
+                    <p style='margin:0;font-size:28px;font-weight:bold;color:#d97706;'>{$amountFormatted}</p>
+                    <p style='margin:5px 0 0;color:#92400e;font-size:14px;'>{$countText}</p>
                 </div>";
-            $statusMessage = "<p><strong>Verwachte verwerkingstijd:</strong> 1-3 werkdagen</p>";
+            $expectedTime = $t('email_payout_expected_time');
+            $statusMessage = "<p><strong>{$expectedTime}</strong></p>";
+            $tipText = $t('email_payout_tip');
+            $connectNow = $t('email_payout_connect_now');
             $tipBox = "
                 <div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;margin:20px 0;'>
                     <p style='margin:0;font-size:14px;color:#166534;'>
-                        <strong>Tip:</strong> Koppel je Mollie account om automatisch binnen 24 uur na elke boeking uitbetaald te worden!
-                        <a href='https://glamourschedule.com/business/mollie/connect' style='color:#166534;'>Koppel nu →</a>
+                        <strong>Tip:</strong> {$tipText}
+                        <a href='https://glamourschedule.com/business/mollie/connect' style='color:#166534;'>{$connectNow} →</a>
                     </p>
                 </div>";
         }
@@ -1319,16 +1236,16 @@ HTML;
                 <h1 style='color:#fff;margin:0;font-size:20px;'>{$headerText}</h1>
             </div>
             <div style='padding:25px;background:#1a1a1a;'>
-                <p>Beste {$payout['company_name']},</p>
+                <p>{$dear} {$payout['company_name']},</p>
 
                 {$statusBox}
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;'>
                     <thead>
                         <tr style='background:#0a0a0a;'>
-                            <th style='padding:10px;text-align:left;'>Boeking</th>
-                            <th style='padding:10px;text-align:left;'>Service</th>
-                            <th style='padding:10px;text-align:right;'>Bedrag</th>
+                            <th style='padding:10px;text-align:left;'>{$bookingLabel}</th>
+                            <th style='padding:10px;text-align:left;'>{$serviceLabel}</th>
+                            <th style='padding:10px;text-align:right;'>{$amountLabel}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1336,7 +1253,7 @@ HTML;
                     </tbody>
                 </table>
 
-                <p><strong>Bankrekening:</strong> {$payout['iban']}</p>
+                <p><strong>{$bankAccountLabel}</strong> {$payout['iban']}</p>
                 {$statusMessage}
                 {$tipBox}
             </div>
@@ -1483,7 +1400,18 @@ HTML;
 
     private function sendBusinessPayoutEmail(array $payout, int $payoutId): void
     {
-        $mailer = new Mailer();
+        $lang = $payout['language'] ?? 'nl';
+        $mailer = new Mailer($lang);
+
+        // Use central translation system
+        $translations = $this->loadTranslationsForLang($lang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
         $bookingsList = '';
         foreach ($payout['bookings'] as $b) {
@@ -1496,30 +1424,45 @@ HTML;
             </tr>";
         }
 
-        $subject = "Uitbetaling voltooid - €" . number_format($payout['total_payout'], 2, ',', '.');
+        $amountFormatted = '€' . number_format($payout['total_payout'], 2, ',', '.');
+        $subject = $t('email_payout_completed_subject', ['amount' => $amountFormatted]);
+        $headerText = $t('email_payout_completed');
+        $greatNews = $t('email_payout_great_news');
+        $bookingsCount = $t('email_payout_bookings_count', ['count' => count($payout['bookings']), 'id' => $payoutId]);
+        $bookingLabel = $t('email_payout_booking');
+        $serviceLabel = $t('email_payout_service');
+        $amountLabel = $t('email_payout_amount');
+        $feeLabel = $t('email_payout_fee');
+        $payoutLabel = $t('email_payout_payout');
+        $totalLabel = $t('email_payout_total');
+        $detailsLabel = $t('email_payout_details');
+        $transferredText = $t('email_payout_transferred');
+        $viewAllText = $t('email_payout_view_all');
+        $dashboardText = $t('email_payout_dashboard');
+        $dear = $t('email_trial_greeting');
 
         $body = "
         <div style='font-family:Arial,sans-serif;max-width:650px;margin:0 auto;'>
             <div style='background:#000;padding:25px;text-align:center;'>
-                <h1 style='color:#fff;margin:0;font-size:20px;'>Uitbetaling Voltooid</h1>
+                <h1 style='color:#fff;margin:0;font-size:20px;'>{$headerText}</h1>
             </div>
             <div style='padding:25px;background:#1a1a1a;'>
-                <p>Beste {$payout['company_name']},</p>
-                <p>Geweldig nieuws! Je uitbetaling is automatisch verwerkt via Mollie Connect.</p>
+                <p>{$dear} {$payout['company_name']},</p>
+                <p>{$greatNews}</p>
 
                 <div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:20px;margin:20px 0;text-align:center;'>
-                    <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</p>
-                    <p style='margin:5px 0 0;color:#cccccc;font-size:14px;'>" . count($payout['bookings']) . " boeking(en) - Payout #$payoutId</p>
+                    <p style='margin:0;font-size:28px;font-weight:bold;color:#22c55e;'>{$amountFormatted}</p>
+                    <p style='margin:5px 0 0;color:#cccccc;font-size:14px;'>{$bookingsCount}</p>
                 </div>
 
                 <table style='width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;'>
                     <thead>
                         <tr style='background:#0a0a0a;'>
-                            <th style='padding:10px;text-align:left;'>Boeking</th>
-                            <th style='padding:10px;text-align:left;'>Service</th>
-                            <th style='padding:10px;text-align:right;'>Bedrag</th>
-                            <th style='padding:10px;text-align:right;'>Fee</th>
-                            <th style='padding:10px;text-align:right;'>Uitbetaling</th>
+                            <th style='padding:10px;text-align:left;'>{$bookingLabel}</th>
+                            <th style='padding:10px;text-align:left;'>{$serviceLabel}</th>
+                            <th style='padding:10px;text-align:right;'>{$amountLabel}</th>
+                            <th style='padding:10px;text-align:right;'>{$feeLabel}</th>
+                            <th style='padding:10px;text-align:right;'>{$payoutLabel}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1527,21 +1470,21 @@ HTML;
                     </tbody>
                     <tfoot>
                         <tr style='background:#f9fafb;font-weight:bold;'>
-                            <td colspan='2' style='padding:10px;'>Totaal</td>
+                            <td colspan='2' style='padding:10px;'>{$totalLabel}</td>
                             <td style='padding:10px;text-align:right;'>€" . number_format($payout['total_service_amount'], 2, ',', '.') . "</td>
                             <td style='padding:10px;text-align:right;color:#dc2626;'>-€" . number_format($payout['total_platform_fee'], 2, ',', '.') . "</td>
-                            <td style='padding:10px;text-align:right;color:#22c55e;'>€" . number_format($payout['total_payout'], 2, ',', '.') . "</td>
+                            <td style='padding:10px;text-align:right;color:#22c55e;'>{$amountFormatted}</td>
                         </tr>
                     </tfoot>
                 </table>
 
                 <div style='background:#f9fafb;padding:15px;border-radius:8px;margin:20px 0;'>
-                    <p style='margin:0 0 5px;font-weight:600;'>Uitbetalingsdetails:</p>
-                    <p style='margin:0;color:#cccccc;font-size:14px;'>Het bedrag is overgemaakt naar je gekoppelde Mollie account en wordt automatisch doorgeboekt naar je bankrekening.</p>
+                    <p style='margin:0 0 5px;font-weight:600;'>{$detailsLabel}</p>
+                    <p style='margin:0;color:#cccccc;font-size:14px;'>{$transferredText}</p>
                 </div>
 
                 <p style='color:#cccccc;font-size:13px;'>
-                    Bekijk al je uitbetalingen in je <a href='https://glamourschedule.com/business/payouts' style='color:#000;'>dashboard</a>.
+                    {$viewAllText} <a href='https://glamourschedule.com/business/payouts' style='color:#000;'>{$dashboardText}</a>.
                 </p>
             </div>
             <div style='background:#0a0a0a;padding:15px;text-align:center;border-top:1px solid #333;'>

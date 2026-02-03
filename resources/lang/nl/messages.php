@@ -1909,4 +1909,111 @@ return [
     // Footer
     'concept_all_systems_online' => 'Alle Systemen Online',
     'concept_home' => 'Home',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TRIAL & SUBSCRIPTION EMAILS
+    // ═══════════════════════════════════════════════════════════════════════
+    'email_trial_expiry_subject' => 'Je proefperiode bij GlamourSchedule eindigt vandaag',
+    'email_trial_greeting' => 'Hallo',
+    'email_trial_ends' => 'Je 14-daagse proefperiode voor <strong>{company}</strong> eindigt vandaag.',
+    'email_price_label_early' => 'Early Bird aanmeldkosten',
+    'email_price_label_normal' => 'Maandelijks abonnement',
+    'email_price_subtext_early' => 'eenmalig',
+    'email_price_subtext_normal' => 'per maand',
+    'email_activate_text_early' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om je Early Bird aanmelding af te ronden.',
+    'email_activate_text_normal' => 'Om verder gebruik te maken van GlamourSchedule verzoeken wij je om het maandelijkse abonnement te activeren.',
+    'email_trial_warning' => 'Let op: Als je niet binnen 3 dagen activeert, wordt je account gedeactiveerd.',
+    'email_activate_button' => 'Abonnement Activeren',
+    'email_questions_contact' => 'Heb je vragen? Neem contact op via info@glamourschedule.nl',
+    'email_copyright' => '&copy; {year} GlamourSchedule. Alle rechten voorbehouden.',
+
+    // Deactivation email
+    'email_deactivation_subject' => 'Je GlamourSchedule account is gedeactiveerd',
+    'email_deactivated_text' => 'Je account voor <strong>{company}</strong> is gedeactiveerd omdat de proefperiode is verlopen zonder activatie van het abonnement.',
+    'email_reactivate_info' => 'Je kunt je account op elk moment opnieuw activeren door in te loggen en het abonnement te activeren.',
+    'email_reactivate_button' => 'Opnieuw Activeren',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAYOUT EMAILS
+    // ═══════════════════════════════════════════════════════════════════════
+    'email_payout_completed' => 'Uitbetaling Voltooid',
+    'email_payout_completed_subject' => 'Uitbetaling voltooid - {amount}',
+    'email_payout_great_news' => 'Geweldig nieuws! Je uitbetaling is automatisch verwerkt via Mollie Connect.',
+    'email_payout_bookings_count' => '{count} boeking(en) - Uitbetaling #{id}',
+    'email_payout_booking' => 'Boeking',
+    'email_payout_service' => 'Service',
+    'email_payout_amount' => 'Bedrag',
+    'email_payout_fee' => 'Fee',
+    'email_payout_payout' => 'Uitbetaling',
+    'email_payout_total' => 'Totaal',
+    'email_payout_details' => 'Uitbetalingsdetails:',
+    'email_payout_transferred' => 'Het bedrag is overgemaakt naar je gekoppelde Mollie account en wordt automatisch doorgeboekt naar je bankrekening.',
+    'email_payout_view_all' => 'Bekijk al je uitbetalingen in je',
+    'email_payout_dashboard' => 'dashboard',
+
+    // Weekly payout
+    'email_weekly_payout' => 'Wekelijkse Uitbetaling',
+    'email_weekly_payout_processing' => 'Wekelijkse uitbetaling in verwerking - {amount}',
+    'email_payout_automatic_via' => '{count} boeking(en) - Automatisch via {method}',
+    'email_payout_auto_transferred' => 'Het bedrag is automatisch overgemaakt naar je bankrekening. Je ontvangt het binnen {time}.',
+    'email_payout_expected_time' => 'Verwachte verwerkingstijd: 1-3 werkdagen',
+    'email_payout_bank_account' => 'Bankrekening:',
+    'email_payout_tip' => 'Tip: Koppel je Mollie account om automatisch binnen 24 uur na elke boeking uitbetaald te worden!',
+    'email_payout_connect_now' => 'Koppel nu',
+    'email_payout_1_business_day' => '1 werkdag',
+    'email_payout_1_2_business_days' => '1-2 werkdagen',
+    'email_payout_1_3_business_days' => '1-3 werkdagen',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CONTACT FORM & SUPPORT EMAILS
+    // ═══════════════════════════════════════════════════════════════════════
+    'contact_type_bug' => 'Bug / Fout',
+    'contact_type_request' => 'Verzoek / Feature',
+    'contact_type_problem' => 'Probleem / Hulp',
+    'contact_type_other' => 'Overig',
+    'contact_name_required' => 'Naam is verplicht',
+    'contact_email_required' => 'E-mailadres is verplicht',
+    'contact_subject_required' => 'Onderwerp is verplicht',
+    'contact_message_required' => 'Bericht is verplicht',
+    'contact_spam_detected' => 'Je bericht is gedetecteerd als spam',
+    'contact_success' => 'Bedankt voor je bericht! Je ticketnummer is: {ticket}. We nemen zo snel mogelijk contact met je op.',
+    'email_contact_thanks' => 'Bedankt voor je bericht!',
+    'email_contact_dear' => 'Beste {name},',
+    'email_contact_received' => 'Bedankt voor het contact opnemen met GlamourSchedule. We hebben je bericht ontvangen en zullen zo snel mogelijk reageren.',
+    'email_contact_ticket_number' => 'Je ticketnummer:',
+    'email_contact_save_ticket' => 'Bewaar dit ticketnummer voor je administratie. Je kunt dit nummer gebruiken als je contact met ons opneemt over deze melding.',
+    'email_contact_type' => 'Type:',
+    'email_contact_subject' => 'Onderwerp:',
+    'email_contact_your_message' => 'Je bericht:',
+    'email_contact_regards' => 'Met vriendelijke groet,',
+    'email_contact_team' => 'Het GlamourSchedule Team',
+    'email_contact_confirmation_subject' => 'Bevestiging: Je bericht is ontvangen [{ticket}]',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS REGISTRATION EMAILS
+    // ═══════════════════════════════════════════════════════════════════════
+    'email_verify_subject' => 'Bevestig je GlamourSchedule account - Code: {code}',
+    'email_verify_title' => 'Bevestig je account',
+    'email_verify_dear' => 'Beste',
+    'email_verify_use_code' => 'Gebruik onderstaande code om je account te bevestigen:',
+    'email_verify_valid_10min' => 'Deze code is 10 minuten geldig.',
+    'email_verify_not_requested' => 'Heb je deze code niet aangevraagd? Negeer dan deze email.',
+    'email_completion_subject' => 'Voltooi je registratie - GlamourSchedule',
+    'email_completion_welcome' => 'Welkom bij GlamourSchedule!',
+    'email_completion_almost_done' => 'Welkom! Je registratie voor <strong>{company}</strong> is bijna compleet.',
+    'email_completion_trial_starts' => 'Je proefperiode van 14 dagen start nu!',
+    'email_completion_trial_info' => 'Probeer GlamourSchedule 14 dagen gratis. Je hoeft pas te betalen na de proefperiode.',
+    'email_completion_complete_now' => 'Voltooi nu je registratie:',
+    'email_completion_click_button' => 'Klik op de knop hieronder om je wachtwoord in te stellen en je bedrijfsgegevens aan te vullen.',
+    'email_completion_button' => 'Registratie Afronden',
+    'email_completion_copy_link' => 'Of kopieer deze link:',
+    'email_completion_what_you_need' => 'Wat je nodig hebt:',
+    'email_completion_need_password' => '- Een nieuw wachtwoord',
+    'email_completion_need_address' => '- Je bedrijfsadres',
+    'email_completion_need_phone' => '- Je telefoonnummer (optioneel)',
+    'email_completion_need_kvk' => '- Je KvK-nummer (optioneel)',
+    'email_welcome_title' => 'Welkom!',
+    'email_welcome_trial_started' => 'Je 14-daagse gratis proefperiode is gestart.',
+    'email_welcome_explore' => 'Ontdek alle functies van GlamourSchedule en begin met het ontvangen van online boekingen.',
+    'email_welcome_dashboard_button' => 'Naar Dashboard',
 ];
