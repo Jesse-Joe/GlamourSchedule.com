@@ -26,9 +26,14 @@ abstract class Controller
     protected function detectLanguage(): string
     {
         $availableLangs = [
-            'nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh', 'ar', 'tr', 'pl',
-            'sv', 'no', 'da', 'fi', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et', 'lv',
-            'lt', 'uk', 'hi', 'th', 'vi', 'id', 'ms', 'tl', 'he', 'fa', 'sw', 'af'
+            'nl', 'en', 'us', 'de', 'fr', 'es', 'pt', 'it', 'ru', 'pl', 'uk', 'be',
+            'sv', 'no', 'da', 'fi', 'is', 'el', 'cs', 'hu', 'ro', 'bg', 'hr', 'sr',
+            'bs', 'sk', 'sl', 'mk', 'sq', 'et', 'lv', 'lt', 'mt', 'lb', 'cy', 'ga',
+            'ca', 'eu', 'gl', 'ja', 'ko', 'zh', 'hi', 'bn', 'pa', 'ur', 'ta', 'te',
+            'mr', 'gu', 'kn', 'ml', 'th', 'vi', 'id', 'ms', 'tl', 'my', 'km', 'lo',
+            'ne', 'si', 'mn', 'ka', 'hy', 'az', 'kk', 'uz', 'ky', 'tg', 'tk', 'ps',
+            'ku', 'ar', 'he', 'fa', 'tr', 'sw', 'af', 'am', 'ha', 'yo', 'ig', 'zu',
+            'xh', 'so', 'mg', 'rw'
         ];
         $currentDomain = Router::getCurrentDomain();
 
