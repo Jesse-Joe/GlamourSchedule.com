@@ -455,18 +455,33 @@ class BookingController extends Controller
     }
 
     /**
-     * Schedule both 24h and 1h reminders
+     * Schedule both 24h and 1h reminders in business timezone
      */
-    private function scheduleReminders(string $date, string $time, string $uuid): void
+    private function scheduleReminders(string $date, string $time, string $uuid, ?int $businessId = null): void
     {
         try {
-            // Get booking ID
-            $stmt = $this->db->query("SELECT id FROM bookings WHERE uuid = ?", [$uuid]);
+            // Get booking ID and business timezone
+            $stmt = $this->db->query(
+                "SELECT b.id, biz.timezone
+                 FROM bookings b
+                 JOIN businesses biz ON b.business_id = biz.id
+                 WHERE b.uuid = ?",
+                [$uuid]
+            );
             $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!$booking) return;
 
-            $appointmentDateTime = new \DateTime("{$date} {$time}");
+            // Use business timezone (default to Europe/Amsterdam)
+            $businessTimezone = new \DateTimeZone($booking['timezone'] ?? 'Europe/Amsterdam');
+            $serverTimezone = new \DateTimeZone(date_default_timezone_get());
+
+            // Create appointment datetime in business timezone
+            $appointmentDateTime = new \DateTime("{$date} {$time}", $businessTimezone);
+
+            // Convert to server timezone for storage (so NOW() comparison works)
+            $appointmentDateTime->setTimezone($serverTimezone);
+
             $now = new \DateTime();
 
             // Schedule 24-hour reminder

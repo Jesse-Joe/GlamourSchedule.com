@@ -233,19 +233,22 @@ class BusinessRegisterController extends Controller
             // Business has its own password_hash - separate from customer accounts
             $earlyBirdNumber = $isPromo ? ($promoInfo['early_bird_number'] ?? null) : null;
 
+            // Get timezone for this country
+            $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($countryCode);
+
             $this->db->query(
                 "INSERT INTO businesses (
                     uuid, company_name, slug, email, password_hash, phone,
-                    street, house_number, postal_code, city, language,
+                    street, house_number, postal_code, city, country, timezone, language,
                     description, kvk_number,
                     is_early_adopter, is_early_bird, early_bird_number, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner,
                     registration_country, registration_ip, promo_applied
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
-                    $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $detectedLanguage,
+                    $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $countryCode, $businessTimezone, $detectedLanguage,
                     $data['description'], $data['kvk_number'],
                     $isPromo ? 1 : 0, $isPromo ? 1 : 0, $earlyBirdNumber,
                     $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
@@ -798,16 +801,20 @@ GlamourSchedule
             $verificationToken = bin2hex(random_bytes(32));
             $trialEndsAt = date('Y-m-d', strtotime('+14 days'));
 
+            // Get timezone and country for this business
+            $countryCode = $location['country_code'] ?? 'NL';
+            $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($countryCode);
+
             // Business has its own password_hash - separate from customer accounts
             $this->db->query(
                 "INSERT INTO businesses (
-                    uuid, company_name, slug, email, password_hash, language,
+                    uuid, company_name, slug, email, password_hash, country, timezone, language,
                     is_early_adopter, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner, verification_token
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
                 [
-                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $detectedLanguage,
+                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $countryCode, $businessTimezone, $detectedLanguage,
                     $isSalesEarlyAdopter ? 1 : 0,
                     $trialEndsAt, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy, $verificationToken
                 ]

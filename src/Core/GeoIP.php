@@ -28,6 +28,52 @@ class GeoIP
         'IE' => 'en',
     ];
 
+    // Country to timezone mapping (default timezone per country)
+    private array $countryTimezones = [
+        'NL' => 'Europe/Amsterdam',
+        'BE' => 'Europe/Brussels',
+        'DE' => 'Europe/Berlin',
+        'AT' => 'Europe/Vienna',
+        'CH' => 'Europe/Zurich',
+        'FR' => 'Europe/Paris',
+        'LU' => 'Europe/Luxembourg',
+        'MC' => 'Europe/Monaco',
+        'GB' => 'Europe/London',
+        'IE' => 'Europe/Dublin',
+        'US' => 'America/New_York',
+        'CA' => 'America/Toronto',
+        'AU' => 'Australia/Sydney',
+        'NZ' => 'Pacific/Auckland',
+        'ES' => 'Europe/Madrid',
+        'IT' => 'Europe/Rome',
+        'PT' => 'Europe/Lisbon',
+        'PL' => 'Europe/Warsaw',
+        'CZ' => 'Europe/Prague',
+        'SE' => 'Europe/Stockholm',
+        'NO' => 'Europe/Oslo',
+        'DK' => 'Europe/Copenhagen',
+        'FI' => 'Europe/Helsinki',
+        'GR' => 'Europe/Athens',
+        'TR' => 'Europe/Istanbul',
+        'RU' => 'Europe/Moscow',
+        'JP' => 'Asia/Tokyo',
+        'CN' => 'Asia/Shanghai',
+        'KR' => 'Asia/Seoul',
+        'IN' => 'Asia/Kolkata',
+        'SG' => 'Asia/Singapore',
+        'HK' => 'Asia/Hong_Kong',
+        'AE' => 'Asia/Dubai',
+        'SA' => 'Asia/Riyadh',
+        'IL' => 'Asia/Jerusalem',
+        'ZA' => 'Africa/Johannesburg',
+        'EG' => 'Africa/Cairo',
+        'BR' => 'America/Sao_Paulo',
+        'MX' => 'America/Mexico_City',
+        'AR' => 'America/Argentina/Buenos_Aires',
+        'CL' => 'America/Santiago',
+        'CO' => 'America/Bogota',
+    ];
+
     public function __construct(Database $db)
     {
         $this->db = $db;
@@ -140,6 +186,14 @@ class GeoIP
     public function getLanguageForCountry(string $countryCode): string
     {
         return $this->countryLanguages[strtoupper($countryCode)] ?? 'en';
+    }
+
+    /**
+     * Get timezone for country code
+     */
+    public function getTimezoneForCountry(string $countryCode): string
+    {
+        return $this->countryTimezones[strtoupper($countryCode)] ?? 'Europe/Amsterdam';
     }
 
     /**
