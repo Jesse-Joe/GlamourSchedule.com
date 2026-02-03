@@ -479,6 +479,17 @@ HTML;
     {
         $viewPath = BASE_PATH . '/resources/views/' . $view . '.php';
         if (file_exists($viewPath)) {
+            // Inject translations for concept pages
+            $translations = $this->getTranslations();
+            $__ = function($key, $replacements = []) use ($translations) {
+                $text = $translations[$key] ?? $key;
+                foreach ($replacements as $search => $replace) {
+                    $text = str_replace(':' . $search, $replace, $text);
+                }
+                return $text;
+            };
+            $lang = $this->lang;
+
             ob_start();
             include $viewPath;
             return ob_get_clean();

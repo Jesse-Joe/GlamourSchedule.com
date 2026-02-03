@@ -9,6 +9,16 @@
 define('GLAMOUR_LOADED', true);
 define('GLAMOUR_START', microtime(true));
 
+// Security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: geolocation=(self), microphone=(), camera=()');
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+}
+
 // Error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -27,15 +37,15 @@ $dotenv->safeLoad();
 // Load configuration
 $config = require BASE_PATH . '/config/config.php';
 
-// Configure session for 30 days
-ini_set('session.gc_maxlifetime', 2592000); // 30 dagen
-ini_set('session.cookie_lifetime', 2592000); // 30 dagen
+// Configure session for 24 hours (security best practice)
+ini_set('session.gc_maxlifetime', 86400); // 24 uur
+ini_set('session.cookie_lifetime', 86400); // 24 uur
 session_set_cookie_params([
-    'lifetime' => 2592000, // 30 dagen
+    'lifetime' => 86400, // 24 uur
     'path' => '/',
     'secure' => true,
     'httponly' => true,
-    'samesite' => 'Lax'
+    'samesite' => 'Strict'
 ]);
 
 // Start session

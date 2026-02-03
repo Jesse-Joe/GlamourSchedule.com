@@ -599,6 +599,25 @@ HTML;
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        // Rate limiting (5 attempts, 15 minute lockout)
+        $cacheKey = 'sales_login_attempts_' . md5($ipAddress . $email);
+        $attempts = $_SESSION[$cacheKey] ?? ['count' => 0, 'first_attempt' => time()];
+
+        // Reset if lockout period passed (15 minutes)
+        if (time() - $attempts['first_attempt'] > 900) {
+            $attempts = ['count' => 0, 'first_attempt' => time()];
+        }
+
+        if ($attempts['count'] >= 5) {
+            $minutesRemaining = ceil((900 - (time() - $attempts['first_attempt'])) / 60);
+            return $this->view('pages/sales/login', [
+                'pageTitle' => 'Sales Login',
+                'error' => "Te veel inlogpogingen. Probeer over $minutesRemaining minuten opnieuw.",
+                'csrfToken' => $this->csrf()
+            ]);
+        }
 
         $stmt = $this->db->query(
             "SELECT * FROM sales_users WHERE email = ?",
@@ -607,12 +626,18 @@ HTML;
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$user || !password_verify($password, $user['password'])) {
+            // Record failed attempt
+            $attempts['count']++;
+            $_SESSION[$cacheKey] = $attempts;
             return $this->view('pages/sales/login', [
                 'pageTitle' => 'Sales Login',
                 'error' => 'Ongeldige inloggegevens',
                 'csrfToken' => $this->csrf()
             ]);
         }
+
+        // Clear rate limit on success
+        unset($_SESSION[$cacheKey]);
 
         if ($user['status'] !== 'active') {
             return $this->view('pages/sales/login', [

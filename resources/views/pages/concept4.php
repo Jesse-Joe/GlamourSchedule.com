@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,16 +20,16 @@
             <li><a href="/concept4">Concept 4</a></li>
             <li><a href="/concept5">Concept 5</a></li>
         </ul>
-        <a href="/register" class="btn-nature">Get Started</a>
+        <a href="/register" class="btn-nature"><?= $__('concept_get_started') ?></a>
     </nav>
 
     <section class="hero-nature">
         <div>
-            <h1>Natural Beauty,<br><span>Naturally Booked</span></h1>
-            <p>Connect with eco-conscious salons that care about you and the planet. Sustainable beauty starts here.</p>
+            <h1><?= $__('concept_natural_beauty') ?></h1>
+            <p><?= $__('concept_natural_beauty_desc') ?></p>
             <form class="search-nature">
-                <input type="text" placeholder="Find your perfect treatment...">
-                <button type="submit">Search</button>
+                <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+                <button type="submit"><?= $__('concept_search') ?></button>
             </form>
         </div>
         <div class="hero-image-nature">
@@ -39,38 +39,38 @@
 
     <section class="section-nature">
         <div class="section-title-nature">
-            <span>Our Services</span>
-            <h2>Treatments for Body & Soul</h2>
+            <span><?= $__('concept_our_services') ?></span>
+            <h2><?= $__('concept_premium_treatments') ?></h2>
         </div>
         <div class="grid-nature">
             <div class="card-nature">
                 <div class="card-img-nature"><i class="fas fa-cut"></i></div>
                 <div class="card-body-nature">
-                    <h3>Hair Care</h3>
-                    <p>Organic products, sustainable styling</p>
+                    <h3><?= $__('concept_hair_care') ?></h3>
+                    <p><?= $__('concept_hair_desc') ?></p>
                 </div>
             </div>
             <div class="card-nature">
                 <div class="card-img-nature"><i class="fas fa-leaf"></i></div>
                 <div class="card-body-nature">
-                    <h3>Skincare</h3>
-                    <p>Natural facials and treatments</p>
+                    <h3><?= $__('concept_skincare') ?></h3>
+                    <p><?= $__('concept_skincare_desc') ?></p>
                 </div>
             </div>
             <div class="card-nature">
                 <div class="card-img-nature"><i class="fas fa-hands"></i></div>
                 <div class="card-body-nature">
-                    <h3>Massage</h3>
-                    <p>Holistic relaxation therapy</p>
+                    <h3><?= $__('concept_massage') ?></h3>
+                    <p><?= $__('concept_massage_desc') ?></p>
                 </div>
             </div>
         </div>
     </section>
 
     <div class="cta-nature">
-        <h2>Join Our Green Community</h2>
-        <p>Register your eco-friendly salon and connect with conscious clients.</p>
-        <a href="/business/register" class="btn-nature">Register Now</a>
+        <h2><?= $__('concept_green_community') ?></h2>
+        <p><?= $__('concept_green_community_desc') ?></p>
+        <a href="/business/register" class="btn-nature"><?= $__('concept_register') ?></a>
     </div>
 
     <footer class="footer-nature">

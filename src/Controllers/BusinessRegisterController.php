@@ -544,6 +544,10 @@ GlamourSchedule
 
         if (empty($data['password']) || strlen($data['password']) < 8) {
             $errors['password'] = 'Wachtwoord moet minimaal 8 karakters zijn';
+        } elseif (!preg_match('/[A-Z]/', $data['password']) ||
+                  !preg_match('/[a-z]/', $data['password']) ||
+                  !preg_match('/[0-9]/', $data['password'])) {
+            $errors['password'] = 'Wachtwoord moet minimaal 1 hoofdletter, 1 kleine letter en 1 cijfer bevatten';
         }
 
         if ($data['password'] !== $data['password_confirm']) {
@@ -836,8 +840,8 @@ GlamourSchedule
             $this->db->commit();
 
             // Store session data (business accounts are separate - no user_id needed)
+            // Note: Don't store temp password in session - it's sent via email only
             $_SESSION['partner_register_business_id'] = $businessId;
-            $_SESSION['partner_register_temp_password'] = $tempPassword;
             $_SESSION['partner_register_email'] = $data['email'];
             $_SESSION['partner_register_name'] = $data['first_name'];
 

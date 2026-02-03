@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
             <li><a href="/concept19">XIX</a></li>
             <li><a href="/concept20">XX</a></li>
         </ul>
-        <a href="/register" class="btn-zen">Book</a>
+        <a href="/register" class="btn-zen"><?= $__('concept_book_now') ?></a>
     </nav>
 
     <section class="hero-zen">
@@ -26,20 +26,20 @@
         <div class="hero-zen-line"></div>
         <p>Find and book premium beauty services with effortless elegance. Less noise, more beauty.</p>
         <form class="search-zen">
-            <input type="text" placeholder="Search...">
-            <button type="submit">Find</button>
+            <input type="text" placeholder="<?= $__('search') ?>...">
+            <button type="submit"><?= $__('concept_find') ?></button>
         </form>
     </section>
 
     <section class="section-zen">
-        <h2>Services</h2>
+        <h2><?= $__('concept_services') ?></h2>
         <div class="grid-zen">
             <div class="card-zen">
                 <div class="card-zen-left">
                     <span class="card-number">01</span>
                     <div>
-                        <h3>Hair Care</h3>
-                        <p>Cuts, colors, and styling</p>
+                        <h3><?= $__('concept_hair_care') ?></h3>
+                        <p><?= $__('concept_hair_desc') ?></p>
                     </div>
                 </div>
                 <span class="card-arrow">&rarr;</span>
@@ -48,8 +48,8 @@
                 <div class="card-zen-left">
                     <span class="card-number">02</span>
                     <div>
-                        <h3>Nail Art</h3>
-                        <p>Manicures and pedicures</p>
+                        <h3><?= $__('concept_nail_art') ?></h3>
+                        <p><?= $__('concept_nails_desc') ?></p>
                     </div>
                 </div>
                 <span class="card-arrow">&rarr;</span>
@@ -58,8 +58,8 @@
                 <div class="card-zen-left">
                     <span class="card-number">03</span>
                     <div>
-                        <h3>Skincare</h3>
-                        <p>Facials and treatments</p>
+                        <h3><?= $__('concept_skincare') ?></h3>
+                        <p><?= $__('concept_skincare_desc') ?></p>
                     </div>
                 </div>
                 <span class="card-arrow">&rarr;</span>
@@ -68,8 +68,8 @@
                 <div class="card-zen-left">
                     <span class="card-number">04</span>
                     <div>
-                        <h3>Wellness</h3>
-                        <p>Massage and relaxation</p>
+                        <h3><?= $__('concept_wellness') ?></h3>
+                        <p><?= $__('concept_massage_desc') ?></p>
                     </div>
                 </div>
                 <span class="card-arrow">&rarr;</span>
@@ -78,14 +78,14 @@
     </section>
 
     <section class="cta-zen">
-        <h2>For Professionals</h2>
-        <p>Join the most refined beauty platform.</p>
-        <a href="/business/register" class="btn-zen-filled">Apply</a>
+        <h2><?= $__('concept_for_professionals') ?></h2>
+        <p><?= $__('concept_for_professionals_desc') ?></p>
+        <a href="/business/register" class="btn-zen-filled"><?= $__('concept_apply') ?></a>
     </section>
 
     <footer class="footer-zen">
         <p>&copy; 2026 GlamourSchedule</p>
-        <a href="/">Home</a>
+        <a href="/"><?= $__('home') ?></a>
     </footer>
 </body>
 </html>

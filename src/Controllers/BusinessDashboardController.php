@@ -400,15 +400,32 @@ class BusinessDashboardController extends Controller
         }
 
         $file = $_FILES['photo'];
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-        if (!in_array($file['type'], $allowedTypes)) {
+        // Validate file extension (whitelist)
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowedExtensions, true)) {
             $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Alleen JPG, PNG, WebP en GIF bestanden zijn toegestaan.'];
             return $this->redirect('/business/photos');
         }
 
+        // Validate file size
         if ($file['size'] > 5 * 1024 * 1024) {
             $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Bestand is te groot. Maximaal 5MB.'];
+            return $this->redirect('/business/photos');
+        }
+
+        // Validate actual image using getimagesize (checks magic bytes)
+        $imageInfo = getimagesize($file['tmp_name']);
+        if ($imageInfo === false) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldig afbeeldingsbestand.'];
+            return $this->redirect('/business/photos');
+        }
+
+        // Validate MIME type from actual file content (not from client header)
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!in_array($imageInfo['mime'], $allowedMimes, true)) {
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Alleen JPG, PNG, WebP en GIF bestanden zijn toegestaan.'];
             return $this->redirect('/business/photos');
         }
 
@@ -418,8 +435,7 @@ class BusinessDashboardController extends Controller
             mkdir($uploadDir, 0755, true);
         }
 
-        // Generate unique filename
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        // Generate unique filename with validated extension
         $filename = uniqid() . '_' . time() . '.' . $ext;
         $filepath = $uploadDir . '/' . $filename;
 
@@ -672,25 +688,32 @@ class BusinessDashboardController extends Controller
         $maxWidth = 1200;
         $maxHeight = 400;
 
-        // Get original dimensions
-        list($origWidth, $origHeight) = @getimagesize($sourcePath);
-        if (!$origWidth || !$origHeight) {
+        // Get original dimensions with proper error handling
+        $imageInfo = getimagesize($sourcePath);
+        if ($imageInfo === false) {
+            error_log("Failed to get image size for: $sourcePath");
             return move_uploaded_file($sourcePath, $destPath);
         }
+        list($origWidth, $origHeight) = $imageInfo;
 
-        // Create source image based on type
-        switch ($mimeType) {
-            case 'image/jpeg':
-                $sourceImage = @imagecreatefromjpeg($sourcePath);
-                break;
-            case 'image/png':
-                $sourceImage = @imagecreatefrompng($sourcePath);
-                break;
-            case 'image/webp':
-                $sourceImage = @imagecreatefromwebp($sourcePath);
-                break;
-            default:
-                return move_uploaded_file($sourcePath, $destPath);
+        // Create source image based on type with proper error handling
+        $sourceImage = false;
+        try {
+            switch ($mimeType) {
+                case 'image/jpeg':
+                    $sourceImage = imagecreatefromjpeg($sourcePath);
+                    break;
+                case 'image/png':
+                    $sourceImage = imagecreatefrompng($sourcePath);
+                    break;
+                case 'image/webp':
+                    $sourceImage = imagecreatefromwebp($sourcePath);
+                    break;
+                default:
+                    return move_uploaded_file($sourcePath, $destPath);
+            }
+        } catch (\Throwable $e) {
+            error_log("Failed to create image from: $sourcePath - " . $e->getMessage());
         }
 
         if (!$sourceImage) {

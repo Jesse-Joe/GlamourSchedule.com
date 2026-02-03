@@ -85,11 +85,36 @@ abstract class Controller
      */
     protected function detectCountryFromIP(): array
     {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        // Only trust proxy headers if request comes from known proxy IPs
+        $trustedProxies = ['127.0.0.1', '::1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'];
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
 
-        // Handle multiple IPs in X-Forwarded-For
+        $isTrustedProxy = false;
+        foreach ($trustedProxies as $proxy) {
+            if (str_contains($proxy, '/')) {
+                // CIDR notation - simplified check for common ranges
+                $isTrustedProxy = str_starts_with($remoteAddr, explode('.', $proxy)[0] . '.');
+            } else {
+                $isTrustedProxy = ($remoteAddr === $proxy);
+            }
+            if ($isTrustedProxy) break;
+        }
+
+        // Only use forwarded headers from trusted proxies
+        if ($isTrustedProxy) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $remoteAddr;
+        } else {
+            $ip = $remoteAddr;
+        }
+
+        // Handle multiple IPs in X-Forwarded-For (take the first/client IP)
         if (str_contains($ip, ',')) {
             $ip = trim(explode(',', $ip)[0]);
+        }
+
+        // Validate IP format
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $ip = $remoteAddr;
         }
 
         // Skip for local IPs
@@ -314,7 +339,10 @@ abstract class Controller
         if (file_exists($viewPath)) {
             include $viewPath;
         } else {
-            echo "View not found: $template";
+            // Don't expose internal paths - log error instead
+            error_log("View not found: $template");
+            http_response_code(500);
+            echo "Er is een fout opgetreden. Probeer het later opnieuw.";
         }
         return ob_get_clean();
     }

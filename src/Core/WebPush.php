@@ -219,6 +219,10 @@ class WebPush
      */
     private function base64UrlDecode(string $data): string
     {
-        return base64_decode(strtr($data, '-_', '+/'));
+        $decoded = base64_decode(strtr($data, '-_', '+/'), true);
+        if ($decoded === false) {
+            throw new \InvalidArgumentException('Invalid base64 data');
+        }
+        return $decoded;
     }
 }

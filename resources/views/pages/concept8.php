@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@
             <li><a href="/concept9">IX</a></li>
             <li><a href="/concept10">X</a></li>
         </ul>
-        <a href="/register" class="btn-emerald">Get Started</a>
+        <a href="/register" class="btn-emerald"><?= $__('concept_get_started') ?></a>
     </nav>
 
     <section class="hero-emerald">
@@ -28,8 +28,8 @@
             <h1>Natural Beauty,<br><span>Elevated.</span></h1>
             <p>Connect with premium beauty professionals who understand the art of looking and feeling your best.</p>
             <form class="search-emerald">
-                <input type="text" placeholder="Search treatments...">
-                <button type="submit">Find</button>
+                <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+                <button type="submit"><?= $__('concept_find') ?></button>
             </form>
         </div>
     </section>
@@ -37,57 +37,57 @@
     <div class="stats-emerald">
         <div class="stat-emerald">
             <h3>500+</h3>
-            <p>Salons</p>
+            <p><?= $__('concept_salons') ?></p>
         </div>
         <div class="stat-emerald">
             <h3>50K+</h3>
-            <p>Bookings</p>
+            <p><?= $__('concept_bookings') ?></p>
         </div>
         <div class="stat-emerald">
             <h3>4.9</h3>
-            <p>Rating</p>
+            <p><?= $__('concept_rating') ?></p>
         </div>
     </div>
 
     <section class="section-emerald">
         <div class="section-title-emerald">
-            <span>Services</span>
-            <h2>What We Offer</h2>
+            <span><?= $__('concept_services') ?></span>
+            <h2><?= $__('concept_what_we_offer') ?></h2>
         </div>
     </section>
 
     <div class="grid-emerald">
         <div class="card-emerald">
             <div class="card-icon-emerald"><i class="fas fa-cut"></i></div>
-            <h3>Hair Care</h3>
-            <p>Professional styling and treatments.</p>
+            <h3><?= $__('concept_hair_care') ?></h3>
+            <p><?= $__('concept_hair_desc') ?></p>
         </div>
         <div class="card-emerald">
             <div class="card-icon-emerald"><i class="fas fa-hand-sparkles"></i></div>
-            <h3>Nail Care</h3>
-            <p>Manicures, pedicures, and nail art.</p>
+            <h3><?= $__('concept_nail_care') ?></h3>
+            <p><?= $__('concept_nails_desc') ?></p>
         </div>
         <div class="card-emerald">
             <div class="card-icon-emerald"><i class="fas fa-spa"></i></div>
-            <h3>Skin Care</h3>
-            <p>Facials and skin treatments.</p>
+            <h3><?= $__('concept_skincare') ?></h3>
+            <p><?= $__('concept_skincare_desc') ?></p>
         </div>
         <div class="card-emerald">
             <div class="card-icon-emerald"><i class="fas fa-magic"></i></div>
-            <h3>Makeup</h3>
-            <p>Professional makeup services.</p>
+            <h3><?= $__('concept_makeup') ?></h3>
+            <p><?= $__('concept_makeup_desc') ?></p>
         </div>
     </div>
 
     <section class="cta-emerald">
-        <h2>Grow Your Business</h2>
-        <p>Join our platform and reach thousands of new clients looking for quality beauty services.</p>
-        <a href="/business/register" class="btn-emerald">Join Now</a>
+        <h2><?= $__('concept_grow_business') ?></h2>
+        <p><?= $__('concept_grow_business_desc') ?></p>
+        <a href="/business/register" class="btn-emerald"><?= $__('concept_join_now') ?></a>
     </section>
 
     <footer class="footer-emerald">
         <p>&copy; 2026 GlamourSchedule</p>
-        <a href="/">Home</a>
+        <a href="/"><?= $__('home') ?></a>
     </footer>
 </body>
 </html>

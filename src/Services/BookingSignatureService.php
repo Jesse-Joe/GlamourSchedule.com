@@ -205,7 +205,11 @@ class BookingSignatureService
      */
     private function verifyLegacyVerificationCode(int $businessId, array $booking): bool
     {
-        $secretKey = $_ENV['APP_KEY'] ?? 'glamourschedule-secret-key-2025';
+        $secretKey = $_ENV['APP_KEY'] ?? null;
+        if (!$secretKey) {
+            error_log('SECURITY WARNING: APP_KEY environment variable not set');
+            return false;
+        }
         $customerIdentifier = $booking['user_id'] ?? $booking['guest_email'] ?? '';
 
         $dataString = sprintf(

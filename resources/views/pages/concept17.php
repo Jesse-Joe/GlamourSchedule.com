@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,50 +18,50 @@
             <li><a href="/concept19">XIX</a></li>
             <li><a href="/concept20">XX</a></li>
         </ul>
-        <a href="/register" class="btn-mono">Book</a>
+        <a href="/register" class="btn-mono"><?= $__('concept_book_now') ?></a>
     </nav>
 
     <section class="hero-mono">
         <h1>Beauty<span>Redefined for the modern age</span></h1>
         <p>Connect with premium salons. Book instantly. Experience excellence.</p>
         <form class="search-mono">
-            <input type="text" placeholder="What are you looking for?">
-            <button type="submit">Search</button>
+            <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+            <button type="submit"><?= $__('search') ?></button>
         </form>
     </section>
 
     <section class="section-white">
-        <h2>Services</h2>
+        <h2><?= $__('concept_services') ?></h2>
         <p>Discover the full range of beauty treatments available through our curated network of professionals.</p>
     </section>
 
     <div class="grid-mono">
         <div class="card-mono">
             <div class="card-icon-mono"><i class="fas fa-cut"></i></div>
-            <h3>Hair</h3>
-            <p>Cuts, colors, and styling from expert professionals.</p>
+            <h3><?= $__('concept_hair') ?></h3>
+            <p><?= $__('concept_hair_desc') ?></p>
         </div>
         <div class="card-mono">
             <div class="card-icon-mono"><i class="fas fa-gem"></i></div>
-            <h3>Nails</h3>
-            <p>Manicures, pedicures, and creative nail art.</p>
+            <h3><?= $__('concept_nails') ?></h3>
+            <p><?= $__('concept_nails_desc') ?></p>
         </div>
         <div class="card-mono">
             <div class="card-icon-mono"><i class="fas fa-spa"></i></div>
-            <h3>Wellness</h3>
-            <p>Facials, massages, and rejuvenating treatments.</p>
+            <h3><?= $__('concept_wellness') ?></h3>
+            <p><?= $__('concept_wellness_desc') ?></p>
         </div>
     </div>
 
     <section class="cta-mono">
-        <h2>Join Us</h2>
-        <p>Become part of the leading beauty booking platform.</p>
-        <a href="/business/register" class="btn-mono">Get Started</a>
+        <h2><?= $__('concept_join_platform') ?></h2>
+        <p><?= $__('concept_join_platform_desc') ?></p>
+        <a href="/business/register" class="btn-mono"><?= $__('concept_get_started') ?></a>
     </section>
 
     <footer class="footer-mono">
         <p>&copy; 2026 GlamourSchedule</p>
-        <a href="/">Home</a>
+        <a href="/"><?= $__('home') ?></a>
     </footer>
 </body>
 </html>

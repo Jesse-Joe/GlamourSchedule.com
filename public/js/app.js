@@ -702,7 +702,7 @@ class FormValidator {
 
         if (!isValid) {
             e.preventDefault();
-            Toast.error('Controleer de gemarkeerde velden');
+            Toast.error(window.__?.('validation_check_fields') || 'Controleer de gemarkeerde velden');
         }
     }
 
@@ -712,7 +712,7 @@ class FormValidator {
 
         // Required check
         if (input.required && !value) {
-            this.showError(input, 'Dit veld is verplicht');
+            this.showError(input, window.__?.('validation_field_required') || 'Dit veld is verplicht');
             return false;
         }
 
@@ -720,7 +720,7 @@ class FormValidator {
         if (input.type === 'email' && value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(value)) {
-                this.showError(input, 'Voer een geldig e-mailadres in');
+                this.showError(input, window.__?.('validation_valid_email_required') || 'Voer een geldig e-mailadres in');
                 return false;
             }
         }
@@ -729,14 +729,15 @@ class FormValidator {
         if (input.type === 'tel' && value) {
             const phoneRegex = /^[\d\s\-+()]{10,}$/;
             if (!phoneRegex.test(value)) {
-                this.showError(input, 'Voer een geldig telefoonnummer in');
+                this.showError(input, window.__?.('validation_valid_phone_required') || 'Voer een geldig telefoonnummer in');
                 return false;
             }
         }
 
         // Min length
         if (input.minLength && value.length < input.minLength) {
-            this.showError(input, `Minimaal ${input.minLength} tekens vereist`);
+            const minLengthMsg = window.__?.('validation_min_length') || 'Minimaal {count} tekens vereist';
+            this.showError(input, minLengthMsg.replace('{count}', input.minLength));
             return false;
         }
 

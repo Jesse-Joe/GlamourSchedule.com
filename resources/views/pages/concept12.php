@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
             <li><a href="/concept14">XIV</a></li>
             <li><a href="/concept15">XV</a></li>
         </ul>
-        <a href="/register" class="btn-pearl">Reserveren</a>
+        <a href="/register" class="btn-pearl"><?= $__('concept_register') ?></a>
     </nav>
 
     <section class="hero-pearl">
@@ -27,46 +27,46 @@
             <div class="hero-divider-pearl"></div>
             <p>Experience the finest beauty treatments from passionate professionals dedicated to making you shine.</p>
             <form class="search-pearl">
-                <input type="text" placeholder="Zoek behandelingen...">
-                <button type="submit">Zoeken</button>
+                <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+                <button type="submit"><?= $__('search') ?></button>
             </form>
         </div>
     </section>
 
     <section class="section-pearl">
         <div class="section-title-pearl">
-            <span>Onze Diensten</span>
-            <h2>Premium Behandelingen</h2>
+            <span><?= $__('concept_our_services') ?></span>
+            <h2><?= $__('concept_premium_treatments') ?></h2>
         </div>
     </section>
 
     <div class="grid-pearl">
         <div class="card-pearl">
             <div class="card-icon-pearl"><i class="fas fa-cut"></i></div>
-            <h3>Hair Styling</h3>
-            <p>Expert cuts, colors, and treatments from top stylists.</p>
+            <h3><?= $__('concept_hair_styling') ?></h3>
+            <p><?= $__('concept_hair_desc') ?></p>
         </div>
         <div class="card-pearl">
             <div class="card-icon-pearl"><i class="fas fa-gem"></i></div>
-            <h3>Nail Care</h3>
-            <p>Luxurious manicures, pedicures, and nail art.</p>
+            <h3><?= $__('concept_nail_care') ?></h3>
+            <p><?= $__('concept_nails_desc') ?></p>
         </div>
         <div class="card-pearl">
             <div class="card-icon-pearl"><i class="fas fa-spa"></i></div>
-            <h3>Skincare</h3>
-            <p>Advanced facials and rejuvenating treatments.</p>
+            <h3><?= $__('concept_skincare') ?></h3>
+            <p><?= $__('concept_skincare_desc') ?></p>
         </div>
     </div>
 
     <section class="cta-pearl">
-        <h2>Word Partner</h2>
-        <p>Laat je salon groeien met het meest elegante boekingsplatform van Nederland.</p>
-        <a href="/business/register" class="btn-pearl">Aanmelden</a>
+        <h2><?= $__('concept_join_platform') ?></h2>
+        <p><?= $__('concept_join_platform_desc') ?></p>
+        <a href="/business/register" class="btn-pearl"><?= $__('concept_register_salon') ?></a>
     </section>
 
     <footer class="footer-pearl">
         <p>&copy; 2026 GlamourSchedule</p>
-        <a href="/">Home</a>
+        <a href="/"><?= $__('home') ?></a>
     </footer>
 </body>
 </html>

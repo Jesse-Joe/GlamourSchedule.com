@@ -64,7 +64,13 @@ class Database
                 // Set MySQL session timezone to match PHP timezone (Europe/Amsterdam)
                 // This ensures NOW() returns the same time as PHP DateTime
                 $timezone = $this->config['timezone'] ?? 'Europe/Amsterdam';
-                self::$instance->exec("SET time_zone = '{$timezone}'");
+                // Validate timezone to prevent SQL injection
+                $validTimezones = timezone_identifiers_list();
+                if (!in_array($timezone, $validTimezones, true)) {
+                    $timezone = 'Europe/Amsterdam';
+                }
+                $stmt = self::$instance->prepare("SET time_zone = ?");
+                $stmt->execute([$timezone]);
             } catch (PDOException $e) {
                 throw new \Exception('Database connection failed: ' . $e->getMessage());
             }

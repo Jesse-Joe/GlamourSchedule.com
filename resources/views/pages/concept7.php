@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@
             <li><a href="/concept9">IX</a></li>
             <li><a href="/concept10">X</a></li>
         </ul>
-        <a href="/register" class="btn-sapphire">Book Now</a>
+        <a href="/register" class="btn-sapphire"><?= $__('concept_book_now') ?></a>
     </nav>
 
     <section class="hero-sapphire">
@@ -28,51 +28,51 @@
             <h1>Beauty That<br><span>Shines Bright</span></h1>
             <p>Discover exceptional beauty services from the best professionals. Your perfect look is just a click away.</p>
             <form class="search-sapphire">
-                <input type="text" placeholder="Find your beauty service...">
-                <button type="submit">Search</button>
+                <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+                <button type="submit"><?= $__('search') ?></button>
             </form>
         </div>
     </section>
 
     <section class="section-sapphire">
         <div class="section-title-sapphire">
-            <span>What We Offer</span>
-            <h2>Exceptional Services</h2>
+            <span><?= $__('concept_what_we_offer') ?></span>
+            <h2><?= $__('concept_exceptional_services') ?></h2>
         </div>
     </section>
 
     <div class="grid-sapphire">
         <div class="card-sapphire">
             <div class="card-icon-sapphire"><i class="fas fa-cut"></i></div>
-            <h3>Hair Excellence</h3>
-            <p>From classic cuts to bold transformations, our stylists deliver perfection.</p>
+            <h3><?= $__('concept_hair_excellence') ?></h3>
+            <p><?= $__('concept_hair_desc') ?></p>
         </div>
         <div class="card-sapphire">
             <div class="card-icon-sapphire"><i class="fas fa-gem"></i></div>
-            <h3>Nail Artistry</h3>
-            <p>Stunning nail designs and premium care for beautiful hands.</p>
+            <h3><?= $__('concept_nail_artistry') ?></h3>
+            <p><?= $__('concept_nails_desc') ?></p>
         </div>
         <div class="card-sapphire">
             <div class="card-icon-sapphire"><i class="fas fa-spa"></i></div>
-            <h3>Spa & Wellness</h3>
-            <p>Rejuvenating treatments for mind, body, and soul.</p>
+            <h3><?= $__('concept_wellness') ?></h3>
+            <p><?= $__('concept_wellness_desc') ?></p>
         </div>
         <div class="card-sapphire">
             <div class="card-icon-sapphire"><i class="fas fa-eye"></i></div>
-            <h3>Lash & Brow</h3>
-            <p>Perfect your look with expert lash and brow treatments.</p>
+            <h3><?= $__('concept_lashes') ?></h3>
+            <p><?= $__('concept_lashes_desc') ?></p>
         </div>
     </div>
 
     <section class="cta-sapphire">
-        <h2>Elevate Your Business</h2>
-        <p>Join the leading beauty platform and connect with clients who appreciate quality.</p>
-        <a href="/business/register" class="btn-sapphire">Partner With Us</a>
+        <h2><?= $__('concept_elevate_salon') ?></h2>
+        <p><?= $__('concept_elevate_salon_desc') ?></p>
+        <a href="/business/register" class="btn-sapphire"><?= $__('concept_partner_with_us') ?></a>
     </section>
 
     <footer class="footer-sapphire">
         <p>&copy; 2026 GlamourSchedule. All rights reserved.</p>
-        <a href="/">Return Home</a>
+        <a href="/"><?= $__('concept_home') ?></a>
     </footer>
 </body>
 </html>

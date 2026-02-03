@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= $lang ?? 'nl' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,46 +20,46 @@
             <li><a href="/concept4">Concept 4</a></li>
             <li><a href="/concept5">Concept 5</a></li>
         </ul>
-        <a href="/register" class="btn-cyber">Join Now</a>
+        <a href="/register" class="btn-cyber"><?= $__('concept_join_now') ?></a>
     </nav>
 
     <section class="hero-cyber">
         <div>
-            <h1>Book Your<br>Future</h1>
-            <p>Enter the next generation of beauty booking. Instant. Digital. Revolutionary.</p>
+            <h1><?= $__('concept_book_your_future') ?></h1>
+            <p><?= $__('concept_book_your_future_desc') ?></p>
             <form class="search-cyber">
-                <input type="text" placeholder="Search treatments...">
-                <button type="submit">Scan</button>
+                <input type="text" placeholder="<?= $__('concept_search_placeholder') ?>">
+                <button type="submit"><?= $__('concept_scan') ?></button>
             </form>
         </div>
     </section>
 
     <section class="section-cyber">
         <div class="section-title-cyber">
-            <h2>Categories</h2>
+            <h2><?= $__('concept_categories') ?></h2>
         </div>
         <div class="grid-cyber">
             <div class="card-cyber">
-                <h3><i class="fas fa-cut"></i> Hair</h3>
-                <p>Advanced hair styling and treatments using cutting-edge techniques.</p>
+                <h3><i class="fas fa-cut"></i> <?= $__('concept_hair') ?></h3>
+                <p><?= $__('concept_hair_desc') ?></p>
             </div>
             <div class="card-cyber">
-                <h3><i class="fas fa-hand-sparkles"></i> Nails</h3>
-                <p>Futuristic nail art and professional manicure services.</p>
+                <h3><i class="fas fa-hand-sparkles"></i> <?= $__('concept_nails') ?></h3>
+                <p><?= $__('concept_nails_desc') ?></p>
             </div>
             <div class="card-cyber">
-                <h3><i class="fas fa-spa"></i> Skincare</h3>
-                <p>Next-gen skincare treatments for the digital age.</p>
+                <h3><i class="fas fa-spa"></i> <?= $__('concept_skincare') ?></h3>
+                <p><?= $__('concept_skincare_desc') ?></p>
             </div>
             <div class="card-cyber">
-                <h3><i class="fas fa-hands"></i> Massage</h3>
-                <p>Therapeutic massage experiences with modern techniques.</p>
+                <h3><i class="fas fa-hands"></i> <?= $__('concept_massage') ?></h3>
+                <p><?= $__('concept_massage_desc') ?></p>
             </div>
         </div>
     </section>
 
     <footer class="footer-cyber">
-        <p>&copy; 2026 GlamourSchedule // All Systems Online</p>
+        <p>&copy; 2026 GlamourSchedule // <?= $__('concept_all_systems_online') ?></p>
     </footer>
 </body>
 </html>

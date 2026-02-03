@@ -46,6 +46,22 @@ class AdminController extends Controller
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        // Rate limiting for admin login (stricter: 3 attempts, 30 minute lockout)
+        $cacheKey = 'admin_login_attempts_' . md5($ipAddress . $email);
+        $attempts = $_SESSION[$cacheKey] ?? ['count' => 0, 'first_attempt' => time()];
+
+        // Reset if lockout period passed (30 minutes)
+        if (time() - $attempts['first_attempt'] > 1800) {
+            $attempts = ['count' => 0, 'first_attempt' => time()];
+        }
+
+        if ($attempts['count'] >= 3) {
+            $minutesRemaining = ceil((1800 - (time() - $attempts['first_attempt'])) / 60);
+            error_log("Admin login blocked for IP: $ipAddress, email: $email");
+            return $this->redirect('/admin/login?error=blocked&minutes=' . $minutesRemaining);
+        }
 
         if (empty($email) || empty($password)) {
             return $this->redirect('/admin/login?error=empty');
@@ -58,8 +74,15 @@ class AdminController extends Controller
         $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$admin || !password_verify($password, $admin['password_hash'])) {
+            // Record failed attempt
+            $attempts['count']++;
+            $_SESSION[$cacheKey] = $attempts;
+            error_log("Failed admin login attempt for: $email from IP: $ipAddress");
             return $this->redirect('/admin/login?error=invalid');
         }
+
+        // Clear rate limit on success
+        unset($_SESSION[$cacheKey]);
 
         // Update last login
         $this->db->query(

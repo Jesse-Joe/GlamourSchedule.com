@@ -26,26 +26,27 @@ if (file_exists($envFile)) {
 
 return [
     // ═══════════════════════════════════════════════════════════════════════
-    // APPLICATIE SETTINGS
+    // APPLICATIE SETTINGS (loaded from .env for security)
     // ═══════════════════════════════════════════════════════════════════════
     'app' => [
         'name' => 'GlamourSchedule',
         'version' => '2.1.0',
-        'url' => 'https://glamourschedule.com',
-        'debug' => false,
+        'url' => getenv('APP_URL') ?: 'https://glamourschedule.com',
+        'debug' => getenv('APP_DEBUG') === 'true',
         'timezone' => 'Europe/Amsterdam',
         'locale' => 'nl',
+        'key' => getenv('APP_KEY') ?: '',
     ],
     
     // ═══════════════════════════════════════════════════════════════════════
-    // DATABASE SETTINGS
+    // DATABASE SETTINGS (loaded from .env for security)
     // ═══════════════════════════════════════════════════════════════════════
     'database' => [
-        'host' => 'localhost',
-        'port' => 3306,
-        'name' => 'glamourschedule_db',
-        'user' => 'glamour_user',
-        'pass' => '+AtQ3Vs2Vd6FYcyTPMRX7UhLsG0B6MLX9q05Cg8l32E=',
+        'host' => getenv('DB_HOST') ?: 'localhost',
+        'port' => (int)(getenv('DB_PORT') ?: 3306),
+        'name' => getenv('DB_DATABASE') ?: '',
+        'user' => getenv('DB_USERNAME') ?: '',
+        'pass' => getenv('DB_PASSWORD') ?: '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
         'timezone' => 'Europe/Amsterdam',
