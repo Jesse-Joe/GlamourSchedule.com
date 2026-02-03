@@ -187,15 +187,28 @@ class GeoIP
 
     /**
      * Get promotion price for country
+     * Auto-creates country entry if not exists (100 early bird spots)
      */
     public function getPromotionPrice(string $countryCode): array
     {
+        $countryCode = strtoupper($countryCode);
+
         $stmt = $this->db->query(
             "SELECT * FROM country_promotions WHERE country_code = ? AND is_active = 1",
-            [strtoupper($countryCode)]
+            [$countryCode]
         );
 
         $promo = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // Auto-create country if not exists
+        if (!$promo) {
+            $this->createCountryPromotion($countryCode);
+            $stmt = $this->db->query(
+                "SELECT * FROM country_promotions WHERE country_code = ?",
+                [$countryCode]
+            );
+            $promo = $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
 
         if ($promo && $promo['current_registrations'] < $promo['max_promo_registrations']) {
             return [
@@ -203,18 +216,37 @@ class GeoIP
                 'original_price' => (float)$promo['normal_price'],
                 'is_promo' => true,
                 'spots_left' => $promo['max_promo_registrations'] - $promo['current_registrations'],
+                'early_bird_number' => $promo['current_registrations'] + 1,
                 'country' => $promo['country_name']
             ];
         }
 
-        // Default pricing if country not found or promo exhausted
+        // Promo exhausted
         return [
-            'price' => 99.99,
-            'original_price' => 99.99,
+            'price' => 29.99,
+            'original_price' => 29.99,
             'is_promo' => false,
             'spots_left' => 0,
-            'country' => $countryCode
+            'early_bird_number' => null,
+            'country' => $promo['country_name'] ?? $countryCode
         ];
+    }
+
+    /**
+     * Create country promotion entry (100 early bird spots)
+     */
+    private function createCountryPromotion(string $countryCode): void
+    {
+        try {
+            $this->db->query(
+                "INSERT IGNORE INTO country_promotions
+                 (country_code, country_name, promo_price, normal_price, max_promo_registrations, current_registrations, is_active)
+                 VALUES (?, ?, 0.99, 29.99, 100, 0, 1)",
+                [$countryCode, $countryCode]
+            );
+        } catch (\Exception $e) {
+            error_log("Failed to create country promotion: " . $e->getMessage());
+        }
     }
 
     /**

@@ -223,21 +223,23 @@ class BusinessRegisterController extends Controller
 
             // Create business (pending status until verified) with detected language
             // Business has its own password_hash - separate from customer accounts
+            $earlyBirdNumber = $isPromo ? ($promoInfo['early_bird_number'] ?? null) : null;
+
             $this->db->query(
                 "INSERT INTO businesses (
                     uuid, company_name, slug, email, password_hash, phone,
                     street, house_number, postal_code, city, language,
                     description, kvk_number,
-                    is_early_adopter, registration_fee_paid, status,
+                    is_early_adopter, is_early_bird, early_bird_number, registration_fee_paid, status,
                     trial_ends_at, subscription_status, subscription_price, welcome_discount,
                     referral_code, referred_by_sales_partner,
                     registration_country, registration_ip, promo_applied
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
                     $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $detectedLanguage,
                     $data['description'], $data['kvk_number'],
-                    $isPromo ? 1 : 0,
+                    $isPromo ? 1 : 0, $isPromo ? 1 : 0, $earlyBirdNumber,
                     $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
                     $countryCode, $location['ip'], $isPromo ? 1 : 0
                 ]
