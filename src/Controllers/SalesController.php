@@ -186,7 +186,7 @@ class SalesController extends Controller
         }
 
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/sales/early-birds');
         }
 
@@ -236,7 +236,7 @@ class SalesController extends Controller
             $_SESSION['flash'] = ['type' => 'success', 'message' => 'Early Bird geregistreerd! Uitnodiging verstuurd naar ' . $contactEmail];
         } catch (\Exception $e) {
             error_log("Early bird registration error: " . $e->getMessage());
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Er ging iets mis bij het registreren'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_registration_failed')];
         }
 
         return $this->redirect('/sales/early-birds');
@@ -1065,21 +1065,22 @@ HTML;
         ];
 
         $errors = [];
+        $t = $this->getTranslations();
 
         if (empty($data['first_name'])) {
-            $errors['first_name'] = 'Voornaam is verplicht';
+            $errors['first_name'] = $t['validation_first_name_required'] ?? 'First name is required';
         }
 
         if (empty($data['last_name'])) {
-            $errors['last_name'] = 'Achternaam is verplicht';
+            $errors['last_name'] = $t['validation_last_name_required'] ?? 'Last name is required';
         }
 
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Geldig e-mailadres is verplicht';
+            $errors['email'] = $t['validation_email_required'] ?? 'Valid email is required';
         }
 
         if (!$data['terms']) {
-            $errors['terms'] = 'Je moet akkoord gaan met de algemene voorwaarden';
+            $errors['terms'] = $t['validation_terms_required'] ?? 'You must agree to the terms';
         }
 
         // Check if email exists
@@ -1087,7 +1088,7 @@ HTML;
         $existing = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($existing) {
             if ($existing['registration_paid']) {
-                $errors['email'] = 'Dit e-mailadres is al in gebruik';
+                $errors['email'] = $this->t('error_already_exists');
             } else {
                 // Existing unpaid registration
                 $_SESSION['sales_register_id'] = $existing['id'];
@@ -1479,7 +1480,7 @@ HTML;
             return $this->view('pages/sales/payment', [
                 'pageTitle' => 'Registratie Voltooien',
                 'user' => $user,
-                'error' => 'Er ging iets mis met de betaling. Probeer het opnieuw.',
+                'error' => $this->t('error_payment_failed'),
                 'csrfToken' => $this->csrf()
             ]);
         }
@@ -1844,24 +1845,25 @@ HTML;
         ];
 
         $errors = [];
+        $t = $this->getTranslations();
 
         if (empty($data['first_name'])) {
-            $errors['first_name'] = 'Voornaam is verplicht';
+            $errors['first_name'] = $t['validation_first_name_required'] ?? 'First name is required';
         }
 
         if (empty($data['last_name'])) {
-            $errors['last_name'] = 'Achternaam is verplicht';
+            $errors['last_name'] = $t['validation_last_name_required'] ?? 'Last name is required';
         }
 
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Geldig e-mailadres is verplicht';
+            $errors['email'] = $t['validation_email_required'] ?? 'Valid email is required';
         }
 
         // Check if email is taken by another user
         if ($data['email'] !== $this->salesUser['email']) {
             $stmt = $this->db->query("SELECT id FROM sales_users WHERE email = ? AND id != ?", [$data['email'], $this->salesUser['id']]);
             if ($stmt->fetch()) {
-                $errors['email'] = 'Dit e-mailadres is al in gebruik';
+                $errors['email'] = $this->t('error_already_exists');
             }
         }
 
@@ -1961,7 +1963,7 @@ HTML;
         }
 
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/sales/account');
         }
 
@@ -2030,7 +2032,7 @@ HTML;
         }
 
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/sales/account');
         }
 

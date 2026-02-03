@@ -93,7 +93,7 @@ class MollieConnectController extends Controller
 
         $businessId = $_SESSION['mollie_oauth_business_id'] ?? null;
         if (!$businessId) {
-            return $this->redirectWithError('/business/mollie/connect', 'Sessie verlopen. Log opnieuw in.');
+            return $this->redirectWithError('/business/mollie/connect', $this->t('error_session_expired'));
         }
 
         // Exchange code for tokens

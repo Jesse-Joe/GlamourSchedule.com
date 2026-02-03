@@ -294,7 +294,7 @@
                             <button type="button" class="btn btn-secondary btn-sm" onclick="manageHours(<?= $employee['id'] ?>, '<?= htmlspecialchars($employee['name'], ENT_QUOTES) ?>')">
                                 <i class="fas fa-clock"></i>
                             </button>
-                            <form method="POST" action="/business/employees" style="display:inline" onsubmit="return confirm('Weet je zeker dat je deze medewerker wilt verwijderen?')">
+                            <form method="POST" action="/business/employees" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_employee'] ?? 'Are you sure you want to delete this employee?' ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="employee_id" value="<?= $employee['id'] ?>">

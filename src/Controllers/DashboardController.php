@@ -166,7 +166,7 @@ class DashboardController extends Controller
         $language = $_POST['language'] ?? 'nl';
 
         if (empty($firstName)) {
-            return ['message' => 'Voornaam is verplicht.', 'type' => 'danger'];
+            return ['message' => $this->t('validation_first_name_required'), 'type' => 'danger'];
         }
 
         // Validate language

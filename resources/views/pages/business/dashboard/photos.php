@@ -294,7 +294,7 @@
             </form>
 
             <!-- Delete Button -->
-            <form method="POST" action="/business/banner/delete" style="display:inline" onsubmit="return confirm('Weet je zeker dat je de banner wilt verwijderen?')">
+            <form method="POST" action="/business/banner/delete" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_banner'] ?? 'Are you sure you want to delete the banner?' ?>')">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <button type="submit" class="banner-delete-btn">
                     <i class="fas fa-trash-alt"></i> Verwijderen
@@ -429,7 +429,7 @@
                             <p style="color:white;font-size:0.85rem;margin-bottom:0.5rem"><?= htmlspecialchars($image['caption']) ?></p>
                         <?php endif; ?>
                         <div class="photo-item-actions">
-                            <form method="POST" action="/business/photos/delete" style="flex:1" onsubmit="return confirm('Weet je zeker dat je deze foto wilt verwijderen?')">
+                            <form method="POST" action="/business/photos/delete" style="flex:1" onsubmit="return confirm('<?= $translations['confirm_delete_photo'] ?? 'Are you sure you want to delete this photo?' ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="image_id" value="<?= $image['id'] ?>">
                                 <button type="submit" class="btn-delete" style="width:100%">

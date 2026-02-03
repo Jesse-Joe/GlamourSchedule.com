@@ -370,7 +370,7 @@ ob_start();
                     <i class="fas fa-external-link-alt"></i> Open Stripe Dashboard
                 </a>
                 <a href="/business/payouts" class="btn btn-outline">Bekijk Uitbetalingen</a>
-                <form action="/business/stripe-connect/disconnect" method="POST" class="disconnect-form" onsubmit="return confirm('Weet je zeker dat je de koppeling wilt verbreken?');">
+                <form action="/business/stripe-connect/disconnect" method="POST" class="disconnect-form" onsubmit="return confirm('<?= $translations['confirm_disconnect_stripe'] ?? 'Are you sure you want to disconnect the connection?' ?>');">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                     <button type="submit" class="btn btn-outline-danger" style="width:100%;">Koppeling Verbreken</button>
                 </form>

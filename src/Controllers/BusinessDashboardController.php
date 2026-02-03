@@ -338,7 +338,7 @@ class BusinessDashboardController extends Controller
     public function updateWebsite(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/website');
         }
 
@@ -390,7 +390,7 @@ class BusinessDashboardController extends Controller
     public function uploadPhoto(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/photos');
         }
 
@@ -465,7 +465,7 @@ class BusinessDashboardController extends Controller
 
             $_SESSION['flash'] = ['type' => 'success', 'message' => 'Foto succesvol geüpload!'];
         } else {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Er is een fout opgetreden bij het uploaden.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_upload_failed')];
         }
 
         return $this->redirect('/business/photos');
@@ -474,7 +474,7 @@ class BusinessDashboardController extends Controller
     public function deletePhoto(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/photos');
         }
 
@@ -545,7 +545,7 @@ class BusinessDashboardController extends Controller
     public function uploadBanner(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/photos');
         }
 
@@ -619,7 +619,7 @@ class BusinessDashboardController extends Controller
 
             $_SESSION['flash'] = ['type' => 'success', 'message' => $this->t('banner_uploaded') ?? 'Banner succesvol geüpload!'];
         } else {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_upload_error') ?? 'Er is een fout opgetreden bij het verwerken van de banner.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_upload_error') ?? $this->t('error_upload_failed')];
         }
 
         return $this->redirect('/business/photos');
@@ -631,7 +631,7 @@ class BusinessDashboardController extends Controller
     public function updateBannerPosition(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/photos');
         }
 
@@ -655,7 +655,7 @@ class BusinessDashboardController extends Controller
     public function deleteBanner(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/photos');
         }
 
@@ -893,7 +893,7 @@ class BusinessDashboardController extends Controller
             $_SESSION['flash'] = ['type' => 'success', 'message' => 'Thema instellingen opgeslagen!'];
         } catch (\Exception $e) {
             error_log('Theme update error: ' . $e->getMessage());
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Er ging iets mis bij het opslaan. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_save_failed')];
         }
 
         return $this->redirect('/business/theme');
@@ -926,7 +926,7 @@ class BusinessDashboardController extends Controller
     public function updateProfile(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/profile');
         }
 
@@ -979,7 +979,7 @@ class BusinessDashboardController extends Controller
     public function deleteBusiness(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/profile');
         }
 
@@ -1048,7 +1048,7 @@ class BusinessDashboardController extends Controller
     public function respondToReview(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'danger', 'message' => 'Ongeldige aanvraag. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/reviews');
         }
 
@@ -1249,7 +1249,7 @@ class BusinessDashboardController extends Controller
     public function updateLanguage(): string
     {
         if (!$this->verifyCsrf()) {
-            return $this->json(['success' => false, 'message' => 'Ongeldige aanvraag']);
+            return $this->json(['success' => false, 'message' => $this->t('error_invalid_request')]);
         }
 
         $language = $_POST['language'] ?? 'nl';
@@ -1334,7 +1334,7 @@ class BusinessDashboardController extends Controller
     public function addIban(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/profile');
         }
 
@@ -1523,7 +1523,7 @@ class BusinessDashboardController extends Controller
     public function verifyIbanChange(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/profile');
         }
 
@@ -1584,7 +1584,7 @@ class BusinessDashboardController extends Controller
     public function saveManualIban(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/payouts');
         }
 
@@ -2123,7 +2123,7 @@ HTML;
     public function activateBoost(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/boost');
         }
 
@@ -2293,7 +2293,7 @@ HTML;
     public function activateSubscription(): string
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return $this->redirect('/business/subscription');
         }
 
@@ -2566,7 +2566,7 @@ HTML;
     private function handleEmployeeAction(): void
     {
         if (!$this->verifyCsrf()) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Ongeldige aanvraag'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_invalid_request')];
             return;
         }
 

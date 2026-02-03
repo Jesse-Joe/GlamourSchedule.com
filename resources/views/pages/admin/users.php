@@ -62,7 +62,7 @@
                                     </button>
                                 <?php endif; ?>
                             </form>
-                            <form method="POST" action="/admin/user/<?= $user['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?');">
+                            <form method="POST" action="/admin/user/<?= $user['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_delete_user'] ?? 'Are you sure you want to delete this user?' ?>');">
                                 <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Verwijderen">
                                     <i class="fas fa-trash"></i>

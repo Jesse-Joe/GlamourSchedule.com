@@ -2016,4 +2016,178 @@ return [
     'email_welcome_trial_started' => 'Je 14-daagse gratis proefperiode is gestart.',
     'email_welcome_explore' => 'Ontdek alle functies van GlamourSchedule en begin met het ontvangen van online boekingen.',
     'email_welcome_dashboard_button' => 'Naar Dashboard',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // VALIDATION MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'validation_first_name_required' => 'Voornaam is verplicht',
+    'validation_last_name_required' => 'Achternaam is verplicht',
+    'validation_email_required' => 'Geldig e-mailadres is verplicht',
+    'validation_email_invalid' => 'Voer een geldig e-mailadres in',
+    'validation_password_required' => 'Wachtwoord is verplicht',
+    'validation_password_min' => 'Wachtwoord moet minimaal 8 tekens bevatten',
+    'validation_password_mismatch' => 'Wachtwoorden komen niet overeen',
+    'validation_terms_required' => 'Je moet akkoord gaan met de algemene voorwaarden',
+    'validation_phone_required' => 'Telefoonnummer is verplicht',
+    'validation_company_required' => 'Bedrijfsnaam is verplicht',
+    'validation_address_required' => 'Adres is verplicht',
+    'validation_city_required' => 'Plaats is verplicht',
+    'validation_postal_required' => 'Postcode is verplicht',
+    'validation_iban_required' => 'IBAN is verplicht',
+    'validation_iban_invalid' => 'Voer een geldige IBAN in',
+    'validation_amount_required' => 'Bedrag is verplicht',
+    'validation_amount_invalid' => 'Voer een geldig bedrag in',
+    'validation_date_required' => 'Datum is verplicht',
+    'validation_time_required' => 'Tijd is verplicht',
+    'validation_service_required' => 'Selecteer een dienst',
+    'validation_category_required' => 'Selecteer een categorie',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ERROR MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'error_generic' => 'Er ging iets mis. Probeer het opnieuw.',
+    'error_invalid_request' => 'Ongeldige aanvraag. Probeer het opnieuw.',
+    'error_session_expired' => 'Sessie verlopen. Log opnieuw in.',
+    'error_unauthorized' => 'Je hebt geen toegang om deze actie uit te voeren.',
+    'error_not_found' => 'Het gevraagde item is niet gevonden.',
+    'error_registration_failed' => 'Er is een fout opgetreden bij de registratie. Probeer het opnieuw.',
+    'error_login_failed' => 'Inloggen mislukt. Controleer je gegevens.',
+    'error_save_failed' => 'Opslaan mislukt. Probeer het opnieuw.',
+    'error_delete_failed' => 'Verwijderen mislukt. Probeer het opnieuw.',
+    'error_upload_failed' => 'Er is een fout opgetreden bij het uploaden.',
+    'error_payment_failed' => 'Betaling kon niet worden voltooid. Probeer het opnieuw.',
+    'error_payment_start_failed' => 'Betaling kon niet worden gestart. Probeer het opnieuw.',
+    'error_connection_failed' => 'Verbinding mislukt. Probeer het opnieuw.',
+    'error_email_failed' => 'E-mail verzenden mislukt. Probeer het opnieuw.',
+    'error_code_invalid' => 'Ongeldige of verlopen code.',
+    'error_code_expired' => 'Code is verlopen. Vraag een nieuwe aan.',
+    'error_link_invalid' => 'Ongeldige of verlopen link.',
+    'error_link_expired' => 'Deze link is verlopen.',
+    'error_already_exists' => 'Dit item bestaat al.',
+    'error_limit_reached' => 'Limiet bereikt. Probeer het later opnieuw.',
+    'error_file_too_large' => 'Bestand is te groot.',
+    'error_file_type_invalid' => 'Ongeldig bestandstype.',
+    'error_location_denied' => 'Locatietoegang geweigerd. Sta locatie toe in je browser.',
+    'error_location_denied_detailed' => 'Locatietoegang geweigerd.\n\nOm salons bij jou in de buurt te vinden:\n1. Klik op het slot-icoon in je adresbalk\n2. Sta locatie toe voor deze website\n3. Ververs de pagina',
+    'error_chat_failed' => 'Sorry, er ging iets mis. Probeer het opnieuw.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SUCCESS MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'success_saved' => 'Succesvol opgeslagen!',
+    'success_deleted' => 'Succesvol verwijderd!',
+    'success_updated' => 'Succesvol bijgewerkt!',
+    'success_sent' => 'Succesvol verzonden!',
+    'success_uploaded' => 'Succesvol geüpload!',
+    'success_payment_link_sent' => 'Betalingslink verzonden naar {email}',
+    'success_verification_sent' => 'Verificatie-e-mail verzonden naar {email}',
+    'success_password_changed' => 'Wachtwoord succesvol gewijzigd!',
+    'success_settings_saved' => 'Instellingen opgeslagen!',
+    'success_profile_saved' => 'Profiel opgeslagen!',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CONFIRMATION DIALOGS
+    // ═══════════════════════════════════════════════════════════════════════
+    'confirm_delete' => 'Weet je zeker dat je dit wilt verwijderen?',
+    'confirm_delete_user' => 'Weet je zeker dat je deze gebruiker wilt verwijderen?',
+    'confirm_delete_business' => 'Weet je zeker dat je dit bedrijf wilt verwijderen? Dit verwijdert ook alle gerelateerde data.',
+    'confirm_delete_employee' => 'Weet je zeker dat je deze medewerker wilt verwijderen?',
+    'confirm_delete_service' => 'Weet je zeker dat je deze dienst wilt verwijderen?',
+    'confirm_delete_product' => 'Weet je zeker dat je dit product wilt verwijderen?',
+    'confirm_delete_photo' => 'Weet je zeker dat je deze foto wilt verwijderen?',
+    'confirm_delete_banner' => 'Weet je zeker dat je de banner wilt verwijderen?',
+    'confirm_delete_partner' => 'Weet je zeker dat je deze sales partner wilt verwijderen?',
+    'confirm_cancel_booking' => 'Weet je zeker dat je deze afspraak wilt annuleren? De online betaling wordt teruggestort.',
+    'confirm_disconnect' => 'Weet je zeker dat je de koppeling wilt verbreken?',
+    'confirm_disconnect_mollie' => 'Weet je zeker dat je de koppeling wilt verbreken? Je ontvangt dan geen automatische uitbetalingen meer.',
+    'confirm_disconnect_stripe' => 'Weet je zeker dat je de koppeling wilt verbreken?',
+    'confirm_reset_theme' => 'Weet je zeker dat je alle thema instellingen wilt resetten naar standaard?',
+    'confirm_mark_completed' => 'Weet je zeker dat je deze uitbetaling als voltooid wilt markeren?',
+    'confirm_mark_paid' => 'Weet je zeker dat je deze commissie als uitbetaald wilt markeren?',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // UI LABELS & BUTTONS
+    // ═══════════════════════════════════════════════════════════════════════
+    'btn_save' => 'Opslaan',
+    'btn_save_profile' => 'Profiel Opslaan',
+    'btn_save_password' => 'Wachtwoord Opslaan',
+    'btn_save_services' => 'Diensten Opslaan',
+    'btn_save_hours' => 'Werktijden Opslaan',
+    'btn_saving' => 'Opslaan...',
+    'btn_delete' => 'Verwijderen',
+    'btn_cancel' => 'Annuleren',
+    'btn_confirm' => 'Bevestigen',
+    'btn_close' => 'Sluiten',
+    'btn_back' => 'Terug',
+    'btn_next' => 'Volgende',
+    'btn_submit' => 'Versturen',
+    'btn_send' => 'Verzenden',
+    'btn_upload' => 'Uploaden',
+    'btn_start_verification' => 'Start Verificatie',
+    'btn_to_dashboard' => 'Naar Dashboard',
+    'btn_to_admin_dashboard' => 'Naar Admin Dashboard',
+    'btn_click_verification_link' => 'Klik op de verificatie-link',
+    'btn_click_email_link' => 'Klik op de link in de e-mail',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BOOKING & APPOINTMENTS
+    // ═══════════════════════════════════════════════════════════════════════
+    'booking_confirmation_sent' => 'Bevestiging verzonden naar',
+    'booking_confirmation_sent_email' => 'je e-mail',
+    'booking_enjoy_treatment' => 'Veel plezier met je behandeling!',
+    'booking_refund_processing' => 'Terugbetaling in behandeling',
+    'booking_no_access_cancel' => 'Je hebt geen toegang om deze boeking te annuleren.',
+    'booking_page_expired' => 'Sessie verlopen. Ververs de pagina en probeer opnieuw.',
+    'booking_cancel_refund_note' => 'Bij annuleren wordt de online betaling teruggestort',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // DASHBOARD & FORMS
+    // ═══════════════════════════════════════════════════════════════════════
+    'form_employee_color_hint' => 'Deze kleur wordt gebruikt in de agenda om afspraken van deze medewerker te onderscheiden.',
+    'form_employee_hours_hint' => 'Stel de werktijden van deze medewerker in:',
+    'form_product_usage_hint' => 'Hoeveel van dit product wordt verbruikt per behandeling',
+    'form_iban_verification_note' => 'Let op: De €0,01 wordt niet teruggestort. Dit is nodig om je bankgegevens veilig te verifiëren.',
+    'form_payout_example' => 'Voorbeeld: Een boeking op vrijdag 10 januari...',
+    'form_commission_note' => 'Jouw €49,99 commissie wordt toegevoegd aan je saldo',
+    'form_deduct_cash_note' => 'Dit bedrag wordt afgetrokken van uw openstaande cash saldo.',
+    'form_reminders_description' => 'Ontvang herinneringen voor afspraken',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAYMENT & VERIFICATION
+    // ═══════════════════════════════════════════════════════════════════════
+    'payment_failed_explanation' => 'De betaling kon niet worden voltooid. Dit kan verschillende oorzaken hebben, zoals een geannuleerde transactie of onvoldoende saldo.',
+    'verification_use_code' => 'Gebruik deze code om je e-mailadres te verifiëren:',
+    'verification_iban_change_code' => 'Je wilt je IBAN wijzigen. Gebruik deze code om door te gaan:',
+    'verification_click_button' => 'Klik op een knop om het bedrijf te verifiëren of af te wijzen:',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAGE TITLES
+    // ═══════════════════════════════════════════════════════════════════════
+    'page_verify_email' => 'Verifieer je e-mail',
+    'page_invalid_link' => 'Ongeldige Link',
+    'page_complete_registration' => 'Registratie Voltooien',
+    'page_error' => 'Er ging iets mis',
+    'page_error_title' => 'Er ging iets mis - GlamourSchedule',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAIL CONTENT (Mailer)
+    // ═══════════════════════════════════════════════════════════════════════
+    'email_booking_dear' => 'Beste {name},',
+    'email_booking_success' => 'Je afspraak is succesvol geboekt! Hieronder vind je alle details.',
+    'email_booking_salon' => 'Salon:',
+    'email_booking_treatment' => 'Behandeling:',
+    'email_booking_datetime' => 'Datum & Tijd:',
+    'email_booking_price' => 'Prijs:',
+    'email_booking_at' => 'om',
+    'email_booking_cancel_policy_title' => '24-uurs annuleringsbeleid',
+    'email_booking_cancel_policy_text' => 'Gratis annuleren tot 24 uur voor de afspraak. Binnen 24 uur: 50% annuleringskosten.',
+    'email_booking_qr_instruction' => 'Toon de QR code hieronder bij aankomst. De salon scant deze om je aanwezigheid te bevestigen.',
+    'email_booking_reminder_note' => 'Je ontvangt een herinnering 24 uur en 1 uur voor je afspraak.',
+    'email_new_booking_notification' => '{customer} heeft {service} geboekt op {date} om {time}.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CRITICAL ERROR ALERTS (Admin)
+    // ═══════════════════════════════════════════════════════════════════════
+    'alert_critical_error' => 'Kritieke Fout:',
+    'alert_bunq_api_error' => 'Kritieke Fout: Bunq API',
 ];

@@ -667,7 +667,7 @@ class ApiController extends Controller
             return $this->json(['success' => true, 'message' => 'PIN opgeslagen']);
         } catch (\Exception $e) {
             error_log('Error saving security PIN: ' . $e->getMessage());
-            return $this->json(['success' => false, 'message' => 'Er ging iets mis']);
+            return $this->json(['success' => false, 'message' => $this->t('error_generic')]);
         }
     }
 

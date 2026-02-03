@@ -379,6 +379,7 @@ abstract class Controller
 
     /**
      * Get a single translation string
+     * Supports both :key and {key} placeholder formats
      */
     protected function t(string $key, array $replacements = [], ?string $default = null): string
     {
@@ -386,7 +387,9 @@ abstract class Controller
         $text = $translations[$key] ?? $default ?? $key;
 
         foreach ($replacements as $search => $replace) {
+            // Support both :key and {key} formats
             $text = str_replace(':' . $search, $replace, $text);
+            $text = str_replace('{' . $search . '}', $replace, $text);
         }
 
         return $text;

@@ -268,7 +268,7 @@
                         </button>
                     </td>
                     <td>
-                        <form method="POST" action="/admin/payouts/mark/business/<?= $payout['business_id'] ?>" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je deze uitbetaling als voltooid wilt markeren?');">
+                        <form method="POST" action="/admin/payouts/mark/business/<?= $payout['business_id'] ?>" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_mark_completed'] ?? 'Are you sure you want to mark this payout as completed?' ?>');">
                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fas fa-check"></i> Voltooid
@@ -376,7 +376,7 @@
                         </strong>
                     </td>
                     <td>
-                        <form method="POST" action="/admin/payouts/mark/sales/<?= $partner['sales_user_id'] ?>" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je deze commissie als uitbetaald wilt markeren?');">
+                        <form method="POST" action="/admin/payouts/mark/sales/<?= $partner['sales_user_id'] ?>" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_mark_paid'] ?? 'Are you sure you want to mark this commission as paid?' ?>');">
                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                             <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fas fa-check"></i> Voltooid

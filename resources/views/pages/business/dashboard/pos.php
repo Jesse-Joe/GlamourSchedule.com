@@ -1454,7 +1454,7 @@ function addNewCustomer() {
 
 // Booking Actions
 function resendPaymentLink(uuid) {
-    if (!confirm('Betalingslink opnieuw versturen?')) return;
+    if (!confirm('<?= $translations['confirm_resend_link'] ?? 'Resend payment link?' ?>')) return;
 
     fetch('/business/pos/send-payment-link', {
         method: 'POST',
@@ -1475,7 +1475,7 @@ function resendPaymentLink(uuid) {
 }
 
 function markCompleted(uuid) {
-    if (!confirm('Afspraak als voltooid markeren?')) return;
+    if (!confirm('<?= $translations['confirm_mark_completed'] ?? 'Mark appointment as completed?' ?>')) return;
 
     fetch('/business/pos/booking/status', {
         method: 'POST',
@@ -1497,7 +1497,7 @@ function markCompleted(uuid) {
 }
 
 function cancelBooking(uuid) {
-    if (!confirm('Weet je zeker dat je deze afspraak wilt annuleren? De online betaling wordt teruggestort.')) return;
+    if (!confirm('<?= $translations['confirm_cancel_booking'] ?? 'Are you sure you want to cancel this appointment? Online payment will be refunded.' ?>')) return;
 
     fetch('/business/pos/booking/cancel', {
         method: 'POST',

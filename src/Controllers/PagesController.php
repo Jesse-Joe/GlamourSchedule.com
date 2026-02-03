@@ -71,7 +71,7 @@ class PagesController extends Controller
             return $this->view('pages/contact', [
                 'pageTitle' => $this->getTranslations()['contact'] ?? 'Contact',
                 'csrfToken' => $this->csrf(),
-                'error' => 'Ongeldige aanvraag. Probeer opnieuw.'
+                'error' => $this->t('error_invalid_request')
             ]);
         }
 

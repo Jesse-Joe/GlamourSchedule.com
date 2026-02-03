@@ -118,11 +118,11 @@ class BusinessRegisterController extends Controller
         // Check if email already exists (1 email = 1 account, either customer or business)
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = 'Dit e-mailadres is al in gebruik';
+            $errors['email'] = $this->t('error_already_exists');
         }
         $stmt = $this->db->query("SELECT id FROM users WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = 'Dit e-mailadres is al in gebruik';
+            $errors['email'] = $this->t('error_already_exists');
         }
 
         if (!empty($errors)) {
@@ -378,7 +378,7 @@ class BusinessRegisterController extends Controller
             return $this->view('pages/business/register', [
                 'pageTitle' => 'Bedrijf Registreren',
                 'categories' => $this->getCategories(),
-                'errors' => ['general' => 'Er is een fout opgetreden bij de registratie. Probeer het opnieuw.'],
+                'errors' => ['general' => $this->t('error_registration_failed')],
                 'data' => $data,
                 'isEarlyAdopter' => $promoInfo['is_promo'],
                 'earlyAdopterSpots' => $promoInfo['spots_left'],
@@ -580,50 +580,51 @@ GlamourSchedule
     private function validateRegistration(array $data): array
     {
         $errors = [];
+        $t = $this->getTranslations();
 
         if (empty($data['company_name']) || strlen($data['company_name']) < 2) {
-            $errors['name'] = 'Bedrijfsnaam is verplicht (minimaal 2 karakters)';
+            $errors['name'] = $t['validation_company_required'] ?? 'Company name is required';
         }
 
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Voer een geldig e-mailadres in';
+            $errors['email'] = $t['validation_email_invalid'] ?? 'Please enter a valid email';
         }
 
         if (empty($data['password']) || strlen($data['password']) < 8) {
-            $errors['password'] = 'Wachtwoord moet minimaal 8 karakters zijn';
+            $errors['password'] = $t['validation_password_min'] ?? 'Password must be at least 8 characters';
         } elseif (!preg_match('/[A-Z]/', $data['password']) ||
                   !preg_match('/[a-z]/', $data['password']) ||
                   !preg_match('/[0-9]/', $data['password'])) {
-            $errors['password'] = 'Wachtwoord moet minimaal 1 hoofdletter, 1 kleine letter en 1 cijfer bevatten';
+            $errors['password'] = $t['validation_password_requirements'] ?? 'Password must contain uppercase, lowercase and number';
         }
 
         if ($data['password'] !== $data['password_confirm']) {
-            $errors['password_confirm'] = 'Wachtwoorden komen niet overeen';
+            $errors['password_confirm'] = $t['validation_password_mismatch'] ?? 'Passwords do not match';
         }
 
         if (empty($data['street'])) {
-            $errors['address'] = 'Adres is verplicht';
+            $errors['address'] = $t['validation_address_required'] ?? 'Address is required';
         }
 
         if (empty($data['city'])) {
-            $errors['city'] = 'Plaats is verplicht';
+            $errors['city'] = $t['validation_city_required'] ?? 'City is required';
         }
 
         if (empty($data['postal_code'])) {
-            $errors['postal_code'] = 'Postcode is verplicht';
+            $errors['postal_code'] = $t['validation_postal_required'] ?? 'Postal code is required';
         }
 
         if (!$data['terms_accepted']) {
-            $errors['terms'] = 'Je moet akkoord gaan met de algemene voorwaarden';
+            $errors['terms'] = $t['validation_terms_required'] ?? 'You must agree to the terms';
         }
 
         if (empty($data['category_id']) || $data['category_id'] < 1) {
-            $errors['category_id'] = 'Selecteer een categorie';
+            $errors['category_id'] = $t['validation_category_required'] ?? 'Please select a category';
         }
 
         // KVK is optional but if provided, must be 8 digits
         if (!empty($data['kvk_number']) && !preg_match('/^\d{8}$/', $data['kvk_number'])) {
-            $errors['kvk_number'] = 'KVK-nummer moet 8 cijfers bevatten';
+            $errors['kvk_number'] = $t['validation_kvk_invalid'] ?? 'Registration number must be 8 digits';
         }
 
         return $errors;
@@ -747,31 +748,32 @@ GlamourSchedule
         ];
 
         $errors = [];
+        $t = $this->getTranslations();
 
         if (empty($data['company_name'])) {
-            $errors['company_name'] = 'Salonnaam is verplicht';
+            $errors['company_name'] = $t['validation_company_required'] ?? 'Company name is required';
         }
         if (empty($data['first_name'])) {
-            $errors['first_name'] = 'Voornaam is verplicht';
+            $errors['first_name'] = $t['validation_first_name_required'] ?? 'First name is required';
         }
         if (empty($data['last_name'])) {
-            $errors['last_name'] = 'Achternaam is verplicht';
+            $errors['last_name'] = $t['validation_last_name_required'] ?? 'Last name is required';
         }
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Geldig e-mailadres is verplicht';
+            $errors['email'] = $t['validation_email_required'] ?? 'Valid email is required';
         }
         if (!$data['terms']) {
-            $errors['terms'] = 'Je moet akkoord gaan met de algemene voorwaarden';
+            $errors['terms'] = $t['validation_terms_required'] ?? 'You must agree to the terms';
         }
 
         // Check if email exists (1 email = 1 account, either customer or business)
         $stmt = $this->db->query("SELECT id FROM businesses WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = 'Dit e-mailadres is al in gebruik';
+            $errors['email'] = $t['error_already_exists'] ?? 'This email is already in use';
         }
         $stmt = $this->db->query("SELECT id FROM users WHERE email = ?", [$data['email']]);
         if ($stmt->fetch()) {
-            $errors['email'] = 'Dit e-mailadres is al in gebruik';
+            $errors['email'] = $t['error_already_exists'] ?? 'This email is already in use';
         }
 
         // Get sales partner info
@@ -922,7 +924,7 @@ GlamourSchedule
 
             return $this->view('pages/business/register-sales', [
                 'pageTitle' => 'Registreer met Korting - GlamourSchedule',
-                'errors' => ['general' => 'Er is een fout opgetreden. Probeer het opnieuw.'],
+                'errors' => ['general' => $this->t('error_generic')],
                 'data' => $data,
                 'referralCode' => $referralCode,
                 'salesPartner' => $salesPartner,
@@ -1331,7 +1333,7 @@ GlamourSchedule
                 'pageTitle' => 'Registratie Voltooien',
                 'business' => $business,
                 'token' => $token,
-                'errors' => ['general' => 'Er is een fout opgetreden. Probeer het opnieuw.'],
+                'errors' => ['general' => $this->t('error_generic')],
                 'data' => $data,
                 'csrfToken' => $this->csrf()
             ]);

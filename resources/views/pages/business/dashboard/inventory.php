@@ -312,7 +312,7 @@
                             <button type="button" class="btn btn-sm btn-secondary" onclick="openLinkModal(<?= $item['id'] ?>, '<?= htmlspecialchars($item['name'], ENT_QUOTES) ?>', '<?= htmlspecialchars($item['service_links'] ?? '', ENT_QUOTES) ?>')">
                                 <i class="fas fa-link"></i>
                             </button>
-                            <form method="POST" action="/business/inventory" style="display:inline" onsubmit="return confirm('Weet je zeker dat je dit product wilt verwijderen?')">
+                            <form method="POST" action="/business/inventory" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_product'] ?? 'Are you sure you want to delete this product?' ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="inventory_id" value="<?= $item['id'] ?>">

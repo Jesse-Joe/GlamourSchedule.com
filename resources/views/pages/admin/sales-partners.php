@@ -119,7 +119,7 @@
                             <a href="/sales/<?= htmlspecialchars($partner['referral_code']) ?>" target="_blank" class="btn btn-sm btn-secondary" title="Referral Link">
                                 <i class="fas fa-link"></i>
                             </a>
-                            <form method="POST" action="/admin/sales-partner/<?= $partner['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je deze sales partner wilt verwijderen?');">
+                            <form method="POST" action="/admin/sales-partner/<?= $partner['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_delete_partner'] ?? 'Are you sure you want to delete this sales partner?' ?>');">
                                 <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Verwijderen">
                                     <i class="fas fa-trash"></i>

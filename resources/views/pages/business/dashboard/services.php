@@ -169,7 +169,7 @@
                             &euro;<?= number_format($service['price'], 2, ',', '.') ?>
                         </div>
                         <div class="service-actions">
-                            <form method="POST" action="/business/services" onsubmit="return confirm('Weet je zeker dat je deze dienst wilt verwijderen?')">
+                            <form method="POST" action="/business/services" onsubmit="return confirm('<?= $translations['confirm_delete_service'] ?? 'Are you sure you want to delete this service?' ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="service_id" value="<?= $service['id'] ?>">

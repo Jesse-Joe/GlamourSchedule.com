@@ -917,7 +917,7 @@
 
     // Reset to defaults
     function resetToDefaults() {
-        if (confirm('Weet je zeker dat je alle thema instellingen wilt resetten naar standaard?')) {
+        if (confirm('<?= $translations['confirm_reset_theme'] ?? 'Are you sure you want to reset all theme settings to default?' ?>')) {
             document.getElementById('primaryColor').value = '#000000';
             document.getElementById('primaryColorPicker').value = '#000000';
             document.getElementById('secondaryColor').value = '#333333';

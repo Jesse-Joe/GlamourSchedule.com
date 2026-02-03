@@ -100,7 +100,7 @@
                             <a href="/salon/<?= htmlspecialchars($biz['slug']) ?>" target="_blank" class="btn btn-sm btn-secondary" title="Bekijken">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <form method="POST" action="/admin/business/<?= $biz['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je dit bedrijf wilt verwijderen? Dit verwijdert ook alle gerelateerde data.');">
+                            <form method="POST" action="/admin/business/<?= $biz['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_delete_business'] ?? 'Are you sure you want to delete this business? This will also delete all related data.' ?>');">
                                 <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Verwijderen">
                                     <i class="fas fa-trash"></i>

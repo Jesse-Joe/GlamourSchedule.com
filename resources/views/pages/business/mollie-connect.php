@@ -63,7 +63,7 @@ ob_start();
 
             <div class="actions">
                 <a href="/business/payouts" class="btn btn-primary">Bekijk Uitbetalingen</a>
-                <form action="/business/mollie/disconnect" method="POST" class="disconnect-form" onsubmit="return confirm('Weet je zeker dat je de koppeling wilt verbreken? Je ontvangt dan geen automatische uitbetalingen meer.');">
+                <form action="/business/mollie/disconnect" method="POST" class="disconnect-form" onsubmit="return confirm('<?= $translations['confirm_disconnect_mollie'] ?? 'Are you sure you want to disconnect? You will no longer receive automatic payouts.' ?>');">
                     <button type="submit" class="btn btn-outline-danger">Koppeling Verbreken</button>
                 </form>
             </div>

@@ -2023,4 +2023,178 @@ return [
     'email_welcome_trial_started' => 'Your 14-day free trial has started.',
     'email_welcome_explore' => 'Explore all features of GlamourSchedule and start receiving online bookings.',
     'email_welcome_dashboard_button' => 'Go to Dashboard',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // VALIDATION MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'validation_first_name_required' => 'First name is required',
+    'validation_last_name_required' => 'Last name is required',
+    'validation_email_required' => 'Valid email address is required',
+    'validation_email_invalid' => 'Please enter a valid email address',
+    'validation_password_required' => 'Password is required',
+    'validation_password_min' => 'Password must be at least 8 characters',
+    'validation_password_mismatch' => 'Passwords do not match',
+    'validation_terms_required' => 'You must agree to the terms and conditions',
+    'validation_phone_required' => 'Phone number is required',
+    'validation_company_required' => 'Company name is required',
+    'validation_address_required' => 'Address is required',
+    'validation_city_required' => 'City is required',
+    'validation_postal_required' => 'Postal code is required',
+    'validation_iban_required' => 'IBAN is required',
+    'validation_iban_invalid' => 'Please enter a valid IBAN',
+    'validation_amount_required' => 'Amount is required',
+    'validation_amount_invalid' => 'Please enter a valid amount',
+    'validation_date_required' => 'Date is required',
+    'validation_time_required' => 'Time is required',
+    'validation_service_required' => 'Please select a service',
+    'validation_category_required' => 'Please select a category',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ERROR MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'error_generic' => 'Something went wrong. Please try again.',
+    'error_invalid_request' => 'Invalid request. Please try again.',
+    'error_session_expired' => 'Session expired. Please log in again.',
+    'error_unauthorized' => 'You are not authorized to perform this action.',
+    'error_not_found' => 'The requested item was not found.',
+    'error_registration_failed' => 'An error occurred during registration. Please try again.',
+    'error_login_failed' => 'Login failed. Please check your credentials.',
+    'error_save_failed' => 'Failed to save. Please try again.',
+    'error_delete_failed' => 'Failed to delete. Please try again.',
+    'error_upload_failed' => 'An error occurred while uploading.',
+    'error_payment_failed' => 'Payment could not be completed. Please try again.',
+    'error_payment_start_failed' => 'Payment could not be started. Please try again.',
+    'error_connection_failed' => 'Connection failed. Please try again.',
+    'error_email_failed' => 'Failed to send email. Please try again.',
+    'error_code_invalid' => 'Invalid or expired code.',
+    'error_code_expired' => 'Code has expired. Please request a new one.',
+    'error_link_invalid' => 'Invalid or expired link.',
+    'error_link_expired' => 'This link has expired.',
+    'error_already_exists' => 'This item already exists.',
+    'error_limit_reached' => 'Limit reached. Please try again later.',
+    'error_file_too_large' => 'File is too large.',
+    'error_file_type_invalid' => 'Invalid file type.',
+    'error_location_denied' => 'Location access denied. Please allow location in your browser.',
+    'error_location_denied_detailed' => 'Location access denied.\n\nTo find salons near you:\n1. Click the lock icon in your address bar\n2. Allow location for this website\n3. Refresh the page',
+    'error_chat_failed' => 'Sorry, something went wrong. Please try again.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SUCCESS MESSAGES
+    // ═══════════════════════════════════════════════════════════════════════
+    'success_saved' => 'Successfully saved!',
+    'success_deleted' => 'Successfully deleted!',
+    'success_updated' => 'Successfully updated!',
+    'success_sent' => 'Successfully sent!',
+    'success_uploaded' => 'Successfully uploaded!',
+    'success_payment_link_sent' => 'Payment link sent to {email}',
+    'success_verification_sent' => 'Verification email sent to {email}',
+    'success_password_changed' => 'Password changed successfully!',
+    'success_settings_saved' => 'Settings saved!',
+    'success_profile_saved' => 'Profile saved!',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CONFIRMATION DIALOGS
+    // ═══════════════════════════════════════════════════════════════════════
+    'confirm_delete' => 'Are you sure you want to delete this?',
+    'confirm_delete_user' => 'Are you sure you want to delete this user?',
+    'confirm_delete_business' => 'Are you sure you want to delete this business? This will also delete all related data.',
+    'confirm_delete_employee' => 'Are you sure you want to delete this employee?',
+    'confirm_delete_service' => 'Are you sure you want to delete this service?',
+    'confirm_delete_product' => 'Are you sure you want to delete this product?',
+    'confirm_delete_photo' => 'Are you sure you want to delete this photo?',
+    'confirm_delete_banner' => 'Are you sure you want to delete the banner?',
+    'confirm_delete_partner' => 'Are you sure you want to delete this sales partner?',
+    'confirm_cancel_booking' => 'Are you sure you want to cancel this appointment? The online payment will be refunded.',
+    'confirm_disconnect' => 'Are you sure you want to disconnect?',
+    'confirm_disconnect_mollie' => 'Are you sure you want to disconnect? You will no longer receive automatic payouts.',
+    'confirm_disconnect_stripe' => 'Are you sure you want to disconnect the connection?',
+    'confirm_reset_theme' => 'Are you sure you want to reset all theme settings to default?',
+    'confirm_mark_completed' => 'Are you sure you want to mark this payout as completed?',
+    'confirm_mark_paid' => 'Are you sure you want to mark this commission as paid?',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // UI LABELS & BUTTONS
+    // ═══════════════════════════════════════════════════════════════════════
+    'btn_save' => 'Save',
+    'btn_save_profile' => 'Save Profile',
+    'btn_save_password' => 'Save Password',
+    'btn_save_services' => 'Save Services',
+    'btn_save_hours' => 'Save Hours',
+    'btn_saving' => 'Saving...',
+    'btn_delete' => 'Delete',
+    'btn_cancel' => 'Cancel',
+    'btn_confirm' => 'Confirm',
+    'btn_close' => 'Close',
+    'btn_back' => 'Back',
+    'btn_next' => 'Next',
+    'btn_submit' => 'Submit',
+    'btn_send' => 'Send',
+    'btn_upload' => 'Upload',
+    'btn_start_verification' => 'Start Verification',
+    'btn_to_dashboard' => 'Go to Dashboard',
+    'btn_to_admin_dashboard' => 'Go to Admin Dashboard',
+    'btn_click_verification_link' => 'Click the verification link',
+    'btn_click_email_link' => 'Click the link in the email',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BOOKING & APPOINTMENTS
+    // ═══════════════════════════════════════════════════════════════════════
+    'booking_confirmation_sent' => 'Confirmation sent to',
+    'booking_confirmation_sent_email' => 'your email',
+    'booking_enjoy_treatment' => 'Enjoy your treatment!',
+    'booking_refund_processing' => 'Refund in progress',
+    'booking_no_access_cancel' => 'You do not have access to cancel this booking.',
+    'booking_page_expired' => 'Session expired. Please refresh the page and try again.',
+    'booking_cancel_refund_note' => 'When cancelling, the online payment will be refunded',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // DASHBOARD & FORMS
+    // ═══════════════════════════════════════════════════════════════════════
+    'form_employee_color_hint' => 'This color is used in the calendar to distinguish this employee\'s appointments.',
+    'form_employee_hours_hint' => 'Set the working hours for this employee:',
+    'form_product_usage_hint' => 'How much of this product is used per treatment',
+    'form_iban_verification_note' => 'Note: The €0.01 will not be refunded. This is necessary to securely verify your bank details.',
+    'form_payout_example' => 'Example: A booking on Friday January 10th...',
+    'form_commission_note' => 'Your €49.99 commission will be added to your balance',
+    'form_deduct_cash_note' => 'This amount will be deducted from your outstanding cash balance.',
+    'form_reminders_description' => 'Receive reminders for appointments',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAYMENT & VERIFICATION
+    // ═══════════════════════════════════════════════════════════════════════
+    'payment_failed_explanation' => 'The payment could not be completed. This can have various causes, such as a cancelled transaction or insufficient balance.',
+    'verification_use_code' => 'Use this code to verify your email address:',
+    'verification_iban_change_code' => 'You want to change your IBAN. Use this code to continue:',
+    'verification_click_button' => 'Click a button to verify or reject the business:',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PAGE TITLES
+    // ═══════════════════════════════════════════════════════════════════════
+    'page_verify_email' => 'Verify your email',
+    'page_invalid_link' => 'Invalid Link',
+    'page_complete_registration' => 'Complete Registration',
+    'page_error' => 'Something went wrong',
+    'page_error_title' => 'Something went wrong - GlamourSchedule',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAIL CONTENT (Mailer)
+    // ═══════════════════════════════════════════════════════════════════════
+    'email_booking_dear' => 'Dear {name},',
+    'email_booking_success' => 'Your appointment has been successfully booked! Below you will find all the details.',
+    'email_booking_salon' => 'Salon:',
+    'email_booking_treatment' => 'Treatment:',
+    'email_booking_datetime' => 'Date & Time:',
+    'email_booking_price' => 'Price:',
+    'email_booking_at' => 'at',
+    'email_booking_cancel_policy_title' => '24-hour cancellation policy',
+    'email_booking_cancel_policy_text' => 'Free cancellation up to 24 hours before the appointment. Within 24 hours: 50% cancellation fee.',
+    'email_booking_qr_instruction' => 'Show the QR code below upon arrival. The salon scans this to confirm your presence.',
+    'email_booking_reminder_note' => 'You will receive a reminder 24 hours and 1 hour before your appointment.',
+    'email_new_booking_notification' => '{customer} has booked {service} on {date} at {time}.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CRITICAL ERROR ALERTS (Admin)
+    // ═══════════════════════════════════════════════════════════════════════
+    'alert_critical_error' => 'Critical Error:',
+    'alert_bunq_api_error' => 'Critical Error: Bunq API',
 ];

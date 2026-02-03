@@ -130,7 +130,7 @@ class PosPaymentController extends Controller
 
         } catch (\Exception $e) {
             error_log("POS Payment error: " . $e->getMessage());
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling kon niet worden gestart. Probeer het opnieuw.'];
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_payment_start_failed')];
             return $this->redirect('/pay/' . $uuid);
         }
     }
@@ -176,7 +176,7 @@ class PosPaymentController extends Controller
                         return $this->redirect('/pay/' . $uuid . '/success');
 
                     } elseif ($payment->isFailed() || $payment->isCanceled() || $payment->isExpired()) {
-                        $_SESSION['flash'] = ['type' => 'error', 'message' => 'Betaling niet gelukt. Probeer het opnieuw.'];
+                        $_SESSION['flash'] = ['type' => 'error', 'message' => $this->t('error_payment_failed')];
                         return $this->redirect('/pay/' . $uuid);
                     }
                 } catch (\Exception $e) {
