@@ -154,8 +154,7 @@ class PaymentController extends Controller
                         [$bookingUuid]
                     );
 
-                    // Send confirmation email
-                    $this->sendBookingConfirmation($booking);
+                    // Note: Confirmation emails are sent via webhook to avoid duplicates
 
                     return $this->view('pages/payment/success', [
                         'pageTitle' => $this->t('payment_successful'),
@@ -226,42 +225,6 @@ class PaymentController extends Controller
         }
 
         return $booking ?: null;
-    }
-
-    private function sendBookingConfirmation(array $booking): void
-    {
-        try {
-            // Get customer info - check user_id first, then guest info
-            $customerEmail = $booking['guest_email'];
-            $customerName = $booking['guest_name'] ?? 'Klant';
-
-            if (!empty($booking['user_id'])) {
-                $stmt = $this->db->query(
-                    "SELECT email, first_name, last_name FROM users WHERE id = ?",
-                    [$booking['user_id']]
-                );
-                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
-                if ($user) {
-                    $customerEmail = $user['email'];
-                    $customerName = trim($user['first_name'] . ' ' . $user['last_name']);
-                }
-            }
-
-            // Prepare booking data with expected field names
-            $bookingData = array_merge($booking, [
-                'customer_email' => $customerEmail,
-                'customer_name' => $customerName,
-                'date' => $booking['appointment_date'],
-                'time' => date('H:i', strtotime($booking['appointment_time'])),
-                'price' => $booking['total_price']
-            ]);
-
-            $mailer = new \GlamourSchedule\Core\Mailer($_SESSION['lang'] ?? 'nl');
-            $mailer->sendBookingConfirmation($bookingData);
-            $mailer->sendBookingNotificationToBusiness($bookingData);
-        } catch (\Exception $e) {
-            error_log("Failed to send booking confirmation: " . $e->getMessage());
-        }
     }
 
 }

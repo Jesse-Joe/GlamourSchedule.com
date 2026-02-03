@@ -259,6 +259,12 @@ HTML;
                 return;
             }
 
+            // Check if confirmation email was already sent (prevent duplicates on refresh/retry)
+            if (!empty($booking['confirmation_email_sent'])) {
+                error_log("Mollie webhook: Confirmation email already sent for $bookingUuid, skipping");
+                return;
+            }
+
             // Get business settings for email theming
             $settings = $this->getBusinessSettings($booking['business_id']);
 
@@ -299,6 +305,12 @@ HTML;
                 $mailerBusiness->sendBookingNotificationToBusiness($bookingData, $settings);
                 error_log("Mollie webhook: Notification email sent to business for $bookingUuid (lang: $businessLang)");
             }
+
+            // Mark confirmation email as sent to prevent duplicates
+            $this->db->query(
+                "UPDATE bookings SET confirmation_email_sent = 1 WHERE uuid = ?",
+                [$bookingUuid]
+            );
 
         } catch (\Exception $e) {
             error_log("Mollie webhook: Email sending failed for $bookingUuid: " . $e->getMessage());
@@ -437,6 +449,12 @@ HTML;
             [$session->id, $bookingUuid]
         );
 
+        // Check if confirmation email was already sent (prevent duplicates on refresh/retry)
+        if (!empty($booking['confirmation_email_sent'])) {
+            error_log("Stripe webhook: Confirmation email already sent for $bookingUuid, skipping");
+            return;
+        }
+
         // Send confirmation emails
         try {
             $lang = $booking['language'] ?? 'nl';
@@ -447,6 +465,12 @@ HTML;
 
             // Business notification
             $mailer->sendBookingNotificationToBusiness($booking);
+
+            // Mark confirmation email as sent to prevent duplicates
+            $this->db->query(
+                "UPDATE bookings SET confirmation_email_sent = 1 WHERE uuid = ?",
+                [$bookingUuid]
+            );
 
             error_log("Stripe webhook: Emails sent for booking $bookingUuid");
         } catch (\Exception $e) {
