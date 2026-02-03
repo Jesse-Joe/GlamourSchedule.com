@@ -266,6 +266,11 @@ $accentColor = $settings['accent_color'] ?? '#000000';
     gap: 1rem;
     margin-top: 1.25rem;
 }
+.datetime-grid .form-group {
+    overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
+}
 .form-label {
     font-size: 1rem;
     font-weight: 600;
@@ -281,6 +286,8 @@ $accentColor = $settings['accent_color'] ?? '#000000';
 /* Form Input - Dark Mode Default */
 .form-input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 0.9rem 0;
     border: none;
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
@@ -289,6 +296,14 @@ $accentColor = $settings['accent_color'] ?? '#000000';
     background: transparent;
     transition: all 0.3s ease;
     color: var(--text-primary);
+}
+/* Date/Time inputs - prevent overflow */
+input[type="date"].form-input,
+input[type="time"].form-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    min-width: 0;
 }
 .form-input:focus {
     outline: none;
@@ -548,7 +563,7 @@ select.form-input {
     }
     .datetime-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 1.5rem;
     }
     .guest-fields {
