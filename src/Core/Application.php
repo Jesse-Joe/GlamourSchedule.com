@@ -45,6 +45,8 @@ class Application
         $this->router->get('/marketing', 'PagesController@marketing');
         $this->router->get('/contact', 'PagesController@contact');
         $this->router->post('/contact', 'PagesController@submitContact');
+        $this->router->get('/pricing', 'PagesController@pricing');
+        $this->router->get('/prijzen', 'PagesController@pricing'); // Dutch alias
 
         // Design Concepts
         $this->router->get('/concept1', 'PagesController@concept1');
