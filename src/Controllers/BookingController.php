@@ -519,7 +519,8 @@ class BookingController extends Controller
 
         return $this->view('pages/booking/show', [
             'pageTitle' => $this->t('page_booking_number') . $booking['booking_number'],
-            'booking' => $booking
+            'booking' => $booking,
+            'csrfToken' => $this->csrf()
         ]);
     }
 
@@ -542,14 +543,9 @@ class BookingController extends Controller
             return $this->redirect("/?error=not_found");
         }
 
-        $userId = $_SESSION['user_id'] ?? null;
-        // Allow cancel if: logged in user owns booking, OR guest email matches
-        $canCancel = ($booking['user_id'] && $booking['user_id'] == $userId) ||
-                     (!$booking['user_id'] && $booking['guest_email']);
-
-        if (!$canCancel && $booking['user_id']) {
-            return $this->redirect("/booking/$uuid?error=unauthorized");
-        }
+        // Anyone with the booking UUID link can cancel
+        // The UUID is secret and only shared via confirmation email
+        // No additional authorization check needed
 
         // Check if already cancelled
         if ($booking['status'] === 'cancelled') {
@@ -583,16 +579,63 @@ class BookingController extends Controller
             }
         }
 
-        // Update booking status
+        // Process Mollie refund if payment was made
+        $refundProcessed = false;
+        $mollieRefundId = null;
+
+        if ($booking['payment_status'] === 'paid' && !empty($booking['mollie_payment_id']) && $refundAmount > 0) {
+            $mollieApiKey = $this->config['mollie']['api_key'] ?? '';
+
+            if (!empty($mollieApiKey)) {
+                try {
+                    $mollie = new \Mollie\Api\MollieApiClient();
+                    $mollie->setApiKey($mollieApiKey);
+
+                    // Get the payment
+                    $payment = $mollie->payments->get($booking['mollie_payment_id']);
+
+                    // Check if payment can be refunded
+                    if ($payment->canBeRefunded() && floatval($payment->amountRemaining->value) >= $refundAmount) {
+                        // Create refund for the calculated amount
+                        $refund = $payment->refund([
+                            'amount' => [
+                                'currency' => 'EUR',
+                                'value' => number_format($refundAmount, 2, '.', '')
+                            ],
+                            'description' => 'Afspraak geannuleerd - GlamourSchedule #' . $booking['booking_number']
+                        ]);
+
+                        $refundProcessed = true;
+                        $mollieRefundId = $refund->id;
+
+                    } elseif ($payment->canBePartiallyRefunded()) {
+                        // Try partial refund with remaining amount
+                        $refund = $payment->refund([
+                            'description' => 'Afspraak geannuleerd - GlamourSchedule #' . $booking['booking_number']
+                        ]);
+                        $refundProcessed = true;
+                        $mollieRefundId = $refund->id;
+                    }
+
+                } catch (\Exception $e) {
+                    error_log("Booking cancellation refund error for {$uuid}: " . $e->getMessage());
+                }
+            }
+        }
+
+        // Update booking status and refund info
+        $paymentStatus = $refundProcessed ? 'refunded' : $booking['payment_status'];
+
         $this->db->query(
             "UPDATE bookings SET
                 status = 'cancelled',
                 cancelled_at = NOW(),
                 cancellation_fee = ?,
                 refund_amount = ?,
-                platform_cancellation_fee = ?
+                payment_status = ?,
+                mollie_refund_id = ?
              WHERE uuid = ?",
-            [$businessFee, $refundAmount, $platformFee, $uuid]
+            [$businessFee, $refundAmount, $paymentStatus, $mollieRefundId, $uuid]
         );
 
         // Send cancellation email to customer
@@ -609,7 +652,9 @@ class BookingController extends Controller
         // Check waitlist and notify first person
         $this->notifyWaitlistForCancellation($booking);
 
-        return $this->redirect("/booking/$uuid");
+        // Redirect with success message
+        $successParam = $refundProcessed ? 'cancelled_refund' : 'cancelled';
+        return $this->redirect("/booking/$uuid?success=$successParam");
     }
 
     /**

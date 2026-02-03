@@ -559,6 +559,29 @@
 </style>
 
 <div class="booking-page">
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'cancelled_refund'): ?>
+    <div style="max-width:500px;margin:0 auto 1rem;background:#065f46;border:1px solid #10b981;border-radius:12px;padding:1rem;text-align:center;">
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> Boeking succesvol geannuleerd</p>
+        <p style="margin:0.5rem 0 0;color:#a7f3d0;font-size:0.9rem;">Je terugbetaling wordt binnen 3-5 werkdagen verwerkt.</p>
+    </div>
+    <?php elseif (isset($_GET['success']) && $_GET['success'] === 'cancelled'): ?>
+    <div style="max-width:500px;margin:0 auto 1rem;background:#065f46;border:1px solid #10b981;border-radius:12px;padding:1rem;text-align:center;">
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> Boeking succesvol geannuleerd</p>
+    </div>
+    <?php elseif (isset($_GET['error'])): ?>
+    <div style="max-width:500px;margin:0 auto 1rem;background:#7f1d1d;border:1px solid #ef4444;border-radius:12px;padding:1rem;text-align:center;">
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-exclamation-circle"></i> Er ging iets mis</p>
+        <p style="margin:0.5rem 0 0;color:#fca5a5;font-size:0.9rem;">
+            <?php
+            $error = $_GET['error'];
+            if ($error === 'csrf') echo 'Sessie verlopen. Ververs de pagina en probeer opnieuw.';
+            elseif ($error === 'unauthorized') echo 'Je hebt geen toegang om deze boeking te annuleren.';
+            else echo 'Probeer het opnieuw.';
+            ?>
+        </p>
+    </div>
+    <?php endif; ?>
+
     <div class="booking-card">
         <!-- Header with Status -->
         <div class="booking-header">
@@ -765,7 +788,7 @@
                 <p style="color:#888;margin-bottom:1.5rem">Je afspraak wordt definitief geannuleerd</p>
             <?php endif; ?>
             <form method="POST" action="/booking/<?= $booking['uuid'] ?>/cancel">
-                <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
                 <input type="hidden" name="confirm_cancel" value="1">
                 <?php if ($isWithin24Hours): ?><input type="hidden" name="late_cancel" value="1"><?php endif; ?>
                 <div class="booking-actions">
