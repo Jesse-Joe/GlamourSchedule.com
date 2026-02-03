@@ -692,10 +692,10 @@
                     <div class="price-display">
                         <?php if ($showDualCurrency ?? false): ?>
                             <span class="price-amount"><?= $localPrice ?></span>
-                            <span class="price-period">(<?= $eurPrice ?>) na 14 dagen proeftijd</span>
+                            <span class="price-period">(<?= $eurPrice ?>) eenmalig na 14 dagen proeftijd</span>
                         <?php else: ?>
                             <span class="price-amount"><?= $eurPrice ?></span>
-                            <span class="price-period">na 14 dagen proeftijd</span>
+                            <span class="price-period">eenmalig na 14 dagen proeftijd</span>
                         <?php endif; ?>
                     </div>
                     <div class="price-note" id="employee-price-note" style="display:none; color: #fbbf24;">
