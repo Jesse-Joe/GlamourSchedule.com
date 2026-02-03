@@ -147,6 +147,52 @@
             </ul>
         </div>
 
+        <!-- Payment Provider Connections -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-link"></i> Automatische Uitbetalingen</h3>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;margin-bottom:1rem">Koppel je betaalaccount voor automatische splits bij elke boeking.</p>
+
+            <!-- Mollie Connect Status -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--secondary);border-radius:10px;margin-bottom:0.75rem">
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                    <img src="https://www.mollie.com/external/icons/mollie-logo.svg" alt="Mollie" style="height:24px" onerror="this.innerHTML='Mollie'">
+                    <div>
+                        <strong>Mollie Connect</strong>
+                        <span style="font-size:0.8rem;color:var(--text-muted);display:block">iDEAL, Bancontact, SOFORT</span>
+                    </div>
+                </div>
+                <?php if (!empty($business['mollie_account_id']) && $business['mollie_onboarding_status'] === 'completed'): ?>
+                    <span style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem">
+                        <i class="fas fa-check"></i> Actief
+                    </span>
+                <?php else: ?>
+                    <a href="/business/mollie/connect" class="btn btn-sm" style="background:#000;color:#fff">Koppelen</a>
+                <?php endif; ?>
+            </div>
+
+            <!-- Stripe Connect Status -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:var(--secondary);border-radius:10px">
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                    <svg viewBox="0 0 60 25" style="height:20px;width:auto">
+                        <path fill="#635bff" d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.02 1.04-.06 1.48zm-6.3-5.63c-1.03 0-1.93.76-2.12 2.39h4.25c-.1-1.46-.78-2.39-2.13-2.39zM37.6 19.52h-4.14V7.24l4.14-.89v13.17zM37.6 6.07h-4.14V2.3l4.14-.86V6.07zM31.12 15.64V5.3h4.14v9.49c0 1.19.58 1.54 1.4 1.54.28 0 .6-.04.95-.14v3.36c-.61.2-1.43.3-2.36.3-2.69 0-4.13-1.48-4.13-4.21zM22.68 5.3h3.18v1.38a4.05 4.05 0 0 1 3.33-1.63c2.75 0 4.08 1.94 4.08 4.88v9.59h-4.14v-8.42c0-1.67-.64-2.3-1.84-2.3-1.3 0-2.47.86-2.47 2.79v7.93h-4.14V5.3z"/>
+                    </svg>
+                    <div>
+                        <strong>Stripe Connect</strong>
+                        <span style="font-size:0.8rem;color:var(--text-muted);display:block">Creditcard, Apple Pay, Google Pay</span>
+                    </div>
+                </div>
+                <?php if (!empty($business['stripe_account_id']) && $business['stripe_onboarding_status'] === 'completed'): ?>
+                    <span style="background:#10b981;color:white;padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem">
+                        <i class="fas fa-check"></i> Actief
+                    </span>
+                <?php else: ?>
+                    <a href="/business/stripe-connect" class="btn btn-sm" style="background:#635bff;color:#fff">Koppelen</a>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <div class="card" style="background:linear-gradient(135deg,#000000,#1a1a1a);border:1px solid #333333;color:#ffffff">
             <h4 style="margin-bottom:0.5rem;color:#ffffff"><i class="fas fa-question-circle"></i> Vragen?</h4>
             <p style="font-size:0.9rem;color:#999999">Neem contact op met onze klantenservice als je vragen hebt over uitbetalingen.</p>

@@ -185,8 +185,12 @@ class HybridPaymentService
 
         // Check if business has Mollie Connect for split payments
         $businessMollie = $this->getBusinessMollieInfo($businessId);
-        $useSplitPayment = $businessMollie && !empty($businessMollie['mollie_account_id'])
-                          && $businessMollie['mollie_onboarding_status'] === 'completed';
+        // Only use split payment if business has a valid (non-test) Mollie account ID
+        $useSplitPayment = $businessMollie
+                          && !empty($businessMollie['mollie_account_id'])
+                          && $businessMollie['mollie_onboarding_status'] === 'completed'
+                          && strpos($businessMollie['mollie_account_id'], 'org_test_') === false
+                          && strpos($businessMollie['mollie_account_id'], 'org_') === 0;
 
         // Calculate split amounts
         $platformFee = self::PLATFORM_FEE;
@@ -266,11 +270,47 @@ class HybridPaymentService
     }
 
     /**
-     * Create Stripe payment
+     * Get business Stripe Connect information
+     */
+    private function getBusinessStripeInfo(?int $businessId): ?array
+    {
+        if (!$businessId || !$this->db) {
+            return null;
+        }
+
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT id, stripe_account_id, stripe_onboarding_status, stripe_charges_enabled, stripe_payouts_enabled
+                 FROM businesses WHERE id = ?"
+            );
+            $stmt->execute([$businessId]);
+            return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Create Stripe payment (with optional split payment for Stripe Connect businesses)
      */
     private function createStripePayment(array $data): array
     {
-        $session = StripeSession::create([
+        $businessId = $data['business_id'] ?? null;
+        $amount = (float)$data['amount'];
+        $amountCents = (int)($amount * 100);
+
+        // Check if business has Stripe Connect for split payments
+        $businessStripe = $this->getBusinessStripeInfo($businessId);
+        $useSplitPayment = $businessStripe
+                          && !empty($businessStripe['stripe_account_id'])
+                          && $businessStripe['stripe_onboarding_status'] === 'completed'
+                          && $businessStripe['stripe_charges_enabled'] == 1;
+
+        // Calculate split amounts
+        $platformFeeCents = (int)(self::PLATFORM_FEE * 100);
+        $businessAmountCents = $amountCents - $platformFeeCents;
+
+        $sessionData = [
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
@@ -278,21 +318,46 @@ class HybridPaymentService
                     'product_data' => [
                         'name' => $data['description']
                     ],
-                    'unit_amount' => (int)($data['amount'] * 100)
+                    'unit_amount' => $amountCents
                 ],
                 'quantity' => 1
             ]],
             'mode' => 'payment',
             'success_url' => $data['redirect_url'] . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => $data['cancel_url'] ?? $data['redirect_url'] . '?cancelled=1',
-            'metadata' => $data['metadata'] ?? []
-        ]);
+            'metadata' => array_merge($data['metadata'] ?? [], [
+                'split_payment' => $useSplitPayment ? 'true' : 'false',
+                'business_id' => $businessId,
+                'platform_fee' => self::PLATFORM_FEE,
+                'business_amount' => $amount - self::PLATFORM_FEE
+            ])
+        ];
+
+        // Add Stripe Connect split payment (destination charge)
+        if ($useSplitPayment && $businessAmountCents > 0) {
+            $sessionData['payment_intent_data'] = [
+                'application_fee_amount' => $platformFeeCents,
+                'transfer_data' => [
+                    'destination' => $businessStripe['stripe_account_id']
+                ],
+                'metadata' => [
+                    'business_id' => $businessId,
+                    'split_payment' => 'true',
+                    'platform' => 'glamourschedule'
+                ]
+            ];
+        }
+
+        $session = StripeSession::create($sessionData);
 
         return [
             'provider' => 'stripe',
             'payment_id' => $session->id,
             'checkout_url' => $session->url,
-            'status' => $session->payment_status
+            'status' => $session->payment_status,
+            'split_payment' => $useSplitPayment,
+            'platform_fee' => $useSplitPayment ? self::PLATFORM_FEE : null,
+            'business_amount' => $useSplitPayment ? ($amount - self::PLATFORM_FEE) : null
         ];
     }
 

@@ -33,9 +33,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <link rel="stylesheet" href="/css/mobile-friendly.css?v=<?= time() ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Critical Mobile Navigation CSS (inline to avoid caching issues) -->
+    <!-- Critical Mobile/Tablet Navigation CSS (inline to avoid caching issues) -->
     <style>
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         .nav-toggle {
             display: flex !important;
             align-items: center;
@@ -200,46 +200,105 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <?php
             // Build language URLs for mobile that preserve current query parameters
             $mobileLangFlags = [
-                'en' => ['code' => 'EN', 'color' => '#003399', 'name' => 'English'],
+                // Europe - Western
                 'nl' => ['code' => 'NL', 'color' => '#FF6B00', 'name' => 'Nederlands'],
+                'en' => ['code' => 'GB', 'color' => '#003399', 'name' => 'English (UK)'],
+                'us' => ['code' => 'US', 'color' => '#3C3B6E', 'name' => 'English (US)'],
                 'de' => ['code' => 'DE', 'color' => '#DD0000', 'name' => 'Deutsch'],
                 'fr' => ['code' => 'FR', 'color' => '#0055A4', 'name' => 'Français'],
                 'es' => ['code' => 'ES', 'color' => '#AA151B', 'name' => 'Español'],
-                'it' => ['code' => 'IT', 'color' => '#009246', 'name' => 'Italiano'],
                 'pt' => ['code' => 'PT', 'color' => '#006600', 'name' => 'Português'],
-                'ru' => ['code' => 'RU', 'color' => '#0039A6', 'name' => 'Русский'],
-                'ja' => ['code' => 'JA', 'color' => '#BC002D', 'name' => '日本語'],
-                'ko' => ['code' => 'KO', 'color' => '#003478', 'name' => '한국어'],
-                'zh' => ['code' => 'ZH', 'color' => '#DE2910', 'name' => '中文'],
-                'ar' => ['code' => 'AR', 'color' => '#006C35', 'name' => 'العربية'],
-                'tr' => ['code' => 'TR', 'color' => '#E30A17', 'name' => 'Türkçe'],
-                'pl' => ['code' => 'PL', 'color' => '#DC143C', 'name' => 'Polski'],
+                'it' => ['code' => 'IT', 'color' => '#009246', 'name' => 'Italiano'],
+                'ca' => ['code' => 'CA', 'color' => '#FCDD09', 'name' => 'Català'],
+                'eu' => ['code' => 'EU', 'color' => '#D52B1E', 'name' => 'Euskara'],
+                'gl' => ['code' => 'GL', 'color' => '#75AADB', 'name' => 'Galego'],
+                'cy' => ['code' => 'CY', 'color' => '#00AB39', 'name' => 'Cymraeg'],
+                'ga' => ['code' => 'GA', 'color' => '#169B62', 'name' => 'Gaeilge'],
+                'lb' => ['code' => 'LB', 'color' => '#00A1DE', 'name' => 'Lëtzebuergesch'],
+                'mt' => ['code' => 'MT', 'color' => '#CF142B', 'name' => 'Malti'],
+                // Europe - Nordic
                 'sv' => ['code' => 'SV', 'color' => '#006AA7', 'name' => 'Svenska'],
                 'no' => ['code' => 'NO', 'color' => '#BA0C2F', 'name' => 'Norsk'],
                 'da' => ['code' => 'DA', 'color' => '#C8102E', 'name' => 'Dansk'],
                 'fi' => ['code' => 'FI', 'color' => '#003580', 'name' => 'Suomi'],
-                'el' => ['code' => 'EL', 'color' => '#0D5EAF', 'name' => 'Ελληνικά'],
-                'cs' => ['code' => 'CS', 'color' => '#11457E', 'name' => 'Čeština'],
+                'is' => ['code' => 'IS', 'color' => '#02529C', 'name' => 'Íslenska'],
+                // Europe - Eastern
+                'ru' => ['code' => 'RU', 'color' => '#0039A6', 'name' => 'Русский'],
+                'uk' => ['code' => 'UA', 'color' => '#005BBB', 'name' => 'Українська'],
+                'be' => ['code' => 'BY', 'color' => '#C8313E', 'name' => 'Беларуская'],
+                'pl' => ['code' => 'PL', 'color' => '#DC143C', 'name' => 'Polski'],
+                'cs' => ['code' => 'CZ', 'color' => '#11457E', 'name' => 'Čeština'],
+                'sk' => ['code' => 'SK', 'color' => '#0B4EA2', 'name' => 'Slovenčina'],
                 'hu' => ['code' => 'HU', 'color' => '#436F4D', 'name' => 'Magyar'],
                 'ro' => ['code' => 'RO', 'color' => '#002B7F', 'name' => 'Română'],
                 'bg' => ['code' => 'BG', 'color' => '#00966E', 'name' => 'Български'],
+                'mk' => ['code' => 'MK', 'color' => '#D20000', 'name' => 'Македонски'],
+                // Europe - Balkan
                 'hr' => ['code' => 'HR', 'color' => '#FF0000', 'name' => 'Hrvatski'],
-                'sk' => ['code' => 'SK', 'color' => '#0B4EA2', 'name' => 'Slovenčina'],
-                'sl' => ['code' => 'SL', 'color' => '#005DA4', 'name' => 'Slovenščina'],
-                'et' => ['code' => 'ET', 'color' => '#0072CE', 'name' => 'Eesti'],
+                'sr' => ['code' => 'RS', 'color' => '#C6363C', 'name' => 'Српски'],
+                'bs' => ['code' => 'BA', 'color' => '#002395', 'name' => 'Bosanski'],
+                'sl' => ['code' => 'SI', 'color' => '#005DA4', 'name' => 'Slovenščina'],
+                'sq' => ['code' => 'AL', 'color' => '#E41E20', 'name' => 'Shqip'],
+                'el' => ['code' => 'GR', 'color' => '#0D5EAF', 'name' => 'Ελληνικά'],
+                // Europe - Baltic
+                'et' => ['code' => 'EE', 'color' => '#0072CE', 'name' => 'Eesti'],
                 'lv' => ['code' => 'LV', 'color' => '#9E3039', 'name' => 'Latviešu'],
                 'lt' => ['code' => 'LT', 'color' => '#006A44', 'name' => 'Lietuvių'],
-                'uk' => ['code' => 'UK', 'color' => '#005BBB', 'name' => 'Українська'],
+                // Asia - East
+                'ja' => ['code' => 'JP', 'color' => '#BC002D', 'name' => '日本語'],
+                'ko' => ['code' => 'KR', 'color' => '#003478', 'name' => '한국어'],
+                'zh' => ['code' => 'CN', 'color' => '#DE2910', 'name' => '中文'],
+                'mn' => ['code' => 'MN', 'color' => '#C4272F', 'name' => 'Монгол'],
+                // Asia - South
                 'hi' => ['code' => 'HI', 'color' => '#FF9933', 'name' => 'हिन्दी'],
+                'bn' => ['code' => 'BN', 'color' => '#006A4E', 'name' => 'বাংলা'],
+                'pa' => ['code' => 'PA', 'color' => '#FF9933', 'name' => 'ਪੰਜਾਬੀ'],
+                'ur' => ['code' => 'UR', 'color' => '#01411C', 'name' => 'اردو'],
+                'ta' => ['code' => 'TA', 'color' => '#FF9933', 'name' => 'தமிழ்'],
+                'te' => ['code' => 'TE', 'color' => '#FF9933', 'name' => 'తెలుగు'],
+                'mr' => ['code' => 'MR', 'color' => '#FF9933', 'name' => 'मराठी'],
+                'gu' => ['code' => 'GU', 'color' => '#FF9933', 'name' => 'ગુજરાતી'],
+                'kn' => ['code' => 'KN', 'color' => '#FF9933', 'name' => 'ಕನ್ನಡ'],
+                'ml' => ['code' => 'ML', 'color' => '#FF9933', 'name' => 'മലയാളം'],
+                'ne' => ['code' => 'NP', 'color' => '#DC143C', 'name' => 'नेपाली'],
+                'si' => ['code' => 'LK', 'color' => '#8D153A', 'name' => 'සිංහල'],
+                // Asia - Southeast
                 'th' => ['code' => 'TH', 'color' => '#2D2A4A', 'name' => 'ไทย'],
-                'vi' => ['code' => 'VI', 'color' => '#DA251D', 'name' => 'Tiếng Việt'],
+                'vi' => ['code' => 'VN', 'color' => '#DA251D', 'name' => 'Tiếng Việt'],
                 'id' => ['code' => 'ID', 'color' => '#FF0000', 'name' => 'Bahasa Indonesia'],
-                'ms' => ['code' => 'MS', 'color' => '#010066', 'name' => 'Bahasa Melayu'],
-                'tl' => ['code' => 'TL', 'color' => '#0038A8', 'name' => 'Tagalog'],
-                'he' => ['code' => 'HE', 'color' => '#0038B8', 'name' => 'עברית'],
-                'fa' => ['code' => 'FA', 'color' => '#239F40', 'name' => 'فارسی'],
+                'ms' => ['code' => 'MY', 'color' => '#010066', 'name' => 'Bahasa Melayu'],
+                'tl' => ['code' => 'PH', 'color' => '#0038A8', 'name' => 'Tagalog'],
+                'my' => ['code' => 'MM', 'color' => '#FECB00', 'name' => 'မြန်မာ'],
+                'km' => ['code' => 'KH', 'color' => '#032EA1', 'name' => 'ភាសាខ្មែរ'],
+                'lo' => ['code' => 'LA', 'color' => '#CE1126', 'name' => 'ລາວ'],
+                // Asia - Caucasus & Central
+                'ka' => ['code' => 'GE', 'color' => '#FF0000', 'name' => 'ქართული'],
+                'hy' => ['code' => 'AM', 'color' => '#D90012', 'name' => 'Հdelays'],
+                'az' => ['code' => 'AZ', 'color' => '#00B5E2', 'name' => 'Azərbaycan'],
+                'kk' => ['code' => 'KZ', 'color' => '#00AFCA', 'name' => 'Қазақ'],
+                'uz' => ['code' => 'UZ', 'color' => '#1EB53A', 'name' => 'Oʻzbek'],
+                'ky' => ['code' => 'KG', 'color' => '#E8112D', 'name' => 'Кыргызча'],
+                'tg' => ['code' => 'TJ', 'color' => '#006600', 'name' => 'Тоҷикӣ'],
+                'tk' => ['code' => 'TM', 'color' => '#00843D', 'name' => 'Türkmen'],
+                'ps' => ['code' => 'AF', 'color' => '#000000', 'name' => 'پښتو'],
+                'ku' => ['code' => 'KU', 'color' => '#009639', 'name' => 'Kurdî'],
+                // Middle East
+                'ar' => ['code' => 'AR', 'color' => '#006C35', 'name' => 'العربية'],
+                'he' => ['code' => 'IL', 'color' => '#0038B8', 'name' => 'עברית'],
+                'fa' => ['code' => 'IR', 'color' => '#239F40', 'name' => 'فارسی'],
+                'tr' => ['code' => 'TR', 'color' => '#E30A17', 'name' => 'Türkçe'],
+                // Africa
                 'sw' => ['code' => 'SW', 'color' => '#006600', 'name' => 'Kiswahili'],
-                'af' => ['code' => 'AF', 'color' => '#007A4D', 'name' => 'Afrikaans']
+                'af' => ['code' => 'ZA', 'color' => '#007A4D', 'name' => 'Afrikaans'],
+                'am' => ['code' => 'ET', 'color' => '#078930', 'name' => 'አማርኛ'],
+                'ha' => ['code' => 'NG', 'color' => '#008751', 'name' => 'Hausa'],
+                'yo' => ['code' => 'YO', 'color' => '#008751', 'name' => 'Yorùbá'],
+                'ig' => ['code' => 'IG', 'color' => '#008751', 'name' => 'Igbo'],
+                'zu' => ['code' => 'ZU', 'color' => '#007A4D', 'name' => 'isiZulu'],
+                'xh' => ['code' => 'XH', 'color' => '#007A4D', 'name' => 'isiXhosa'],
+                'so' => ['code' => 'SO', 'color' => '#4189DD', 'name' => 'Soomaali'],
+                'mg' => ['code' => 'MG', 'color' => '#007E3A', 'name' => 'Malagasy'],
+                'rw' => ['code' => 'RW', 'color' => '#00A1DE', 'name' => 'Kinyarwanda']
             ];
             $currentLangMobile = $lang ?? 'en';
 

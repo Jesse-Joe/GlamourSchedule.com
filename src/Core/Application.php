@@ -214,6 +214,15 @@ class Application
             $router->get('/business/mollie/connect', 'MollieConnectController@showOnboarding');
             $router->get('/business/mollie/authorize', 'MollieConnectController@startAuthorization');
             $router->post('/business/mollie/disconnect', 'MollieConnectController@disconnect');
+
+            // Stripe Connect - Automatic Payouts (International)
+            $router->get('/business/stripe-connect', 'StripeConnectController@setup');
+            $router->get('/business/stripe-connect/connect', 'StripeConnectController@connect');
+            $router->get('/business/stripe-connect/return', 'StripeConnectController@returnUrl');
+            $router->get('/business/stripe-connect/refresh', 'StripeConnectController@refresh');
+            $router->get('/business/stripe-connect/dashboard', 'StripeConnectController@dashboard');
+            $router->post('/business/stripe-connect/disconnect', 'StripeConnectController@disconnect');
+            $router->get('/api/stripe-connect/status', 'StripeConnectController@status');
         });
 
         // Business page by UUID (primary - short URL)
