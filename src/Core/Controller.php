@@ -349,18 +349,32 @@ abstract class Controller
 
     protected function getTranslations(): array
     {
+        return $this->loadTranslationsForLang($this->lang);
+    }
+
+    /**
+     * Load translations for a specific language
+     */
+    protected function loadTranslationsForLang(string $lang): array
+    {
         static $cache = [];
-        if (isset($cache[$this->lang])) {
-            return $cache[$this->lang];
+        if (isset($cache[$lang])) {
+            return $cache[$lang];
         }
 
-        $langFile = BASE_PATH . '/resources/lang/' . $this->lang . '/messages.php';
+        $langFile = BASE_PATH . '/resources/lang/' . $lang . '/messages.php';
         if (file_exists($langFile)) {
-            $cache[$this->lang] = require $langFile;
-            return $cache[$this->lang];
+            $cache[$lang] = require $langFile;
+            return $cache[$lang];
         }
-        $cache[$this->lang] = require BASE_PATH . '/resources/lang/nl/messages.php';
-        return $cache[$this->lang];
+        // Fallback to English, then Dutch
+        $enFile = BASE_PATH . '/resources/lang/en/messages.php';
+        if (file_exists($enFile)) {
+            $cache[$lang] = require $enFile;
+            return $cache[$lang];
+        }
+        $cache[$lang] = require BASE_PATH . '/resources/lang/nl/messages.php';
+        return $cache[$lang];
     }
 
     /**

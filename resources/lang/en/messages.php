@@ -1474,6 +1474,17 @@ return [
     'email_refund_of' => 'Your refund of',
     'email_make_new_appointment' => 'Make a new appointment',
     'email_booking_cancelled_subject' => 'Booking cancelled - #{booking_number}',
+    'email_50_percent_to_salon' => '50% of the amount goes to the salon as compensation.',
+    'email_full_refund_minus_admin' => 'You will receive the full amount back, minus administration fees.',
+    'email_admin_fee_explanation' => 'The administration fee of {amount} covers the processing of your cancellation and refund. We recommend thinking carefully before booking, so you can avoid these costs in the future.',
+    'email_refund_within_days' => 'Your refund of {amount} will be deposited in your account within 5-10 business days.',
+    'email_late_cancel_compensation' => 'Late cancellation compensation',
+    'email_amount_credited_next_payout' => 'This amount will be credited to your next payout.',
+    'email_customer_cancelled' => 'A customer has cancelled a booking',
+    'email_treatment_label' => 'Treatment:',
+    'email_time_label' => 'Time:',
+    'email_price_label' => 'Price:',
+    'email_find_details_below' => 'Below you will find the details of your appointment.',
 
     // Email - Business Cancellation Notice
     'email_customer_cancelled_booking' => 'A customer has cancelled the following booking',

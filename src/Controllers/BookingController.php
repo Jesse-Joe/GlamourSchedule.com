@@ -677,6 +677,16 @@ class BookingController extends Controller
      */
     private function sendCancellationEmail(array $booking, string $email, float $refundAmount, float $businessFee, float $platformFee, bool $isLateCancel): void
     {
+        $customerLang = $booking['language'] ?? $this->lang ?? 'nl';
+        $translations = $this->loadTranslationsForLang($customerLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
         $totalPrice = $booking['total_price'];
         $refundFormatted = number_format($refundAmount, 2, ',', '.');
         $businessFeeFormatted = number_format($businessFee, 2, ',', '.');
@@ -685,20 +695,23 @@ class BookingController extends Controller
 
         // Build cost breakdown
         $breakdownRows = '';
-        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>Origineel bedrag:</td><td style='padding:8px 0;text-align:right;'>EUR {$totalFormatted}</td></tr>";
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>{$t('email_original_amount')}</td><td style='padding:8px 0;text-align:right;'>EUR {$totalFormatted}</td></tr>";
 
         if ($isLateCancel && $businessFee > 0) {
-            $breakdownRows .= "<tr><td style='padding:8px 0;color:#dc2626;'>Naar salon (annulering binnen 24u):</td><td style='padding:8px 0;text-align:right;color:#dc2626;'>- EUR {$businessFeeFormatted}</td></tr>";
+            $breakdownRows .= "<tr><td style='padding:8px 0;color:#dc2626;'>{$t('email_to_salon_within_24h')}</td><td style='padding:8px 0;text-align:right;color:#dc2626;'>- EUR {$businessFeeFormatted}</td></tr>";
         }
 
-        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>Administratiekosten:</td><td style='padding:8px 0;text-align:right;color:#cccccc;'>- EUR {$platformFeeFormatted}</td></tr>";
-        $breakdownRows .= "<tr style='border-top:2px solid #e5e7eb;'><td style='padding:12px 0 0;font-weight:600;color:#22c55e;'>Terugbetaling:</td><td style='padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:1.1rem;'>EUR {$refundFormatted}</td></tr>";
+        $breakdownRows .= "<tr><td style='padding:8px 0;color:#cccccc;'>{$t('email_admin_fee')}</td><td style='padding:8px 0;text-align:right;color:#cccccc;'>- EUR {$platformFeeFormatted}</td></tr>";
+        $breakdownRows .= "<tr style='border-top:2px solid #e5e7eb;'><td style='padding:12px 0 0;font-weight:600;color:#22c55e;'>{$t('email_refund')}</td><td style='padding:12px 0 0;text-align:right;font-weight:700;color:#22c55e;font-size:1.1rem;'>EUR {$refundFormatted}</td></tr>";
 
         $cancelTypeNotice = $isLateCancel
-            ? "<div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#991b1b;font-weight:600;'>Annulering binnen 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#991b1b;font-size:0.9rem;'>50% van het bedrag gaat naar de salon als compensatie.</p></div>"
-            : "<div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#166534;font-weight:600;'>Annulering meer dan 24 uur voor de afspraak</p><p style='margin:8px 0 0;color:#166534;font-size:0.9rem;'>Je ontvangt het volledige bedrag terug, minus administratiekosten.</p></div>";
+            ? "<div style='background:#fef2f2;border:1px solid #dc2626;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#991b1b;font-weight:600;'>{$t('email_cancel_notice_within_24h')}</p><p style='margin:8px 0 0;color:#991b1b;font-size:0.9rem;'>{$t('email_50_percent_to_salon')}</p></div>"
+            : "<div style='background:#f0fdf4;border:1px solid #22c55e;border-radius:8px;padding:15px;margin-bottom:20px;'><p style='margin:0;color:#166534;font-weight:600;'>{$t('email_cancel_notice_after_24h')}</p><p style='margin:8px 0 0;color:#166534;font-size:0.9rem;'>{$t('email_full_refund_minus_admin')}</p></div>";
 
-        $currentYear = date('Y');
+        $adminFeeExplanation = $t('email_admin_fee_explanation', ['amount' => "EUR {$platformFeeFormatted}"]);
+        $refundWithinDays = $t('email_refund_within_days', ['amount' => "EUR {$refundFormatted}"]);
+        $subject = $t('email_booking_cancelled_subject', ['booking_number' => $booking['booking_number']]);
+
         $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -710,21 +723,21 @@ class BookingController extends Controller
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background:#000;padding:30px;text-align:center;color:#fff;">
-                            <h1 style="margin:0;font-size:22px;">Boeking geannuleerd</h1>
+                            <h1 style="margin:0;font-size:22px;">{$t('email_booking_cancelled_heading')}</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:30px;">
                             <div style="background:#0a0a0a;border-radius:12px;padding:20px;margin-bottom:20px;">
-                                <p style="margin:0;color:#cccccc;font-size:0.9rem;"><strong>Boeking:</strong> #{$booking['booking_number']}</p>
-                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>Salon:</strong> {$booking['business_name']}</p>
-                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>Datum:</strong> {$booking['appointment_date']}</p>
+                                <p style="margin:0;color:#cccccc;font-size:0.9rem;"><strong>{$t('email_booking_label')}</strong> #{$booking['booking_number']}</p>
+                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>{$t('email_salon_label')}</strong> {$booking['business_name']}</p>
+                                <p style="margin:8px 0 0;color:#cccccc;font-size:0.9rem;"><strong>{$t('email_date_label')}</strong> {$booking['appointment_date']}</p>
                             </div>
 
                             {$cancelTypeNotice}
 
                             <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:20px 0;">
-                                <p style="margin:0 0 15px;font-weight:600;color:#ffffff;">Overzicht terugbetaling</p>
+                                <p style="margin:0 0 15px;font-weight:600;color:#ffffff;">{$t('email_refund_overview')}</p>
                                 <table style="width:100%;font-size:0.9rem;">
                                     {$breakdownRows}
                                 </table>
@@ -732,18 +745,18 @@ class BookingController extends Controller
 
                             <div style="background:#1a1a1a;border:1px solid #f59e0b;border-radius:8px;padding:15px;margin:20px 0;">
                                 <p style="margin:0;color:#92400e;font-size:0.85rem;">
-                                    <strong>Waarom administratiekosten?</strong><br>
-                                    De administratiekosten van EUR {$platformFeeFormatted} dekken de verwerking van je annulering en terugbetaling. We raden aan om goed na te denken voordat je boekt, zodat je deze kosten in de toekomst kunt vermijden.
+                                    <strong>{$t('email_why_admin_fee')}</strong><br>
+                                    {$adminFeeExplanation}
                                 </p>
                             </div>
 
                             <p style="color:#cccccc;font-size:0.9rem;margin:20px 0;">
-                                Je terugbetaling van <strong>EUR {$refundFormatted}</strong> wordt binnen 5-10 werkdagen op je rekening gestort.
+                                {$refundWithinDays}
                             </p>
 
                             <p style="text-align:center;margin-top:25px;">
-                                <a href="https://glamourschedule.nl/search" style="display:inline-block;background:#000;color:#fff;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:600;">
-                                    Nieuwe afspraak maken
+                                <a href="https://glamourschedule.com/search" style="display:inline-block;background:#000;color:#fff;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:600;">
+                                    {$t('email_make_new_appointment')}
                                 </a>
                             </p>
                         </td>
@@ -762,9 +775,8 @@ class BookingController extends Controller
 HTML;
 
         try {
-            $customerLang = $booking['language'] ?? $this->lang ?? 'nl';
             $mailer = new Mailer($customerLang);
-            $mailer->send($email, "Boeking geannuleerd - #{$booking['booking_number']}", $htmlBody);
+            $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send cancellation email: " . $e->getMessage());
         }
@@ -775,10 +787,20 @@ HTML;
      */
     private function sendBusinessCancellationNotice(array $booking, float $businessFee, bool $isLateCancel): void
     {
+        $businessLang = $booking['business_language'] ?? $this->lang ?? 'nl';
+        $translations = $this->loadTranslationsForLang($businessLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
         $feeFormatted = number_format($businessFee, 2, ',', '.');
         $priceFormatted = number_format($booking['total_price'], 2, ',', '.');
-        $customerName = $booking['guest_name'] ?? 'Klant';
-        $serviceName = $booking['service_name'] ?? 'Dienst';
+        $customerName = $booking['guest_name'] ?? $t('customer');
+        $serviceName = $booking['service_name'] ?? $t('service');
         $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
         $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
 
@@ -788,15 +810,17 @@ HTML;
             $feeNotice = <<<HTML
 <div style="background:#f0fdf4;border:2px solid #333333;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
     <p style="margin:0;color:#ffffff;font-weight:600;font-size:16px;">
-        💰 Late annulering vergoeding
+        💰 {$t('email_late_cancel_compensation')}
     </p>
     <p style="margin:10px 0 0;color:#ffffff;font-size:1.75rem;font-weight:700;">€{$feeFormatted}</p>
     <p style="margin:10px 0 0;color:#ffffff;font-size:0.9rem;">
-        Dit bedrag wordt aan uw uitbetaling toegevoegd
+        {$t('email_amount_credited_next_payout')}
     </p>
 </div>
 HTML;
         }
+
+        $subject = $t('email_booking_cancelled_subject', ['booking_number' => $booking['booking_number']]);
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -813,7 +837,7 @@ HTML;
                             <div style="width:80px;height:80px;background:rgba(255,255,255,0.2);border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;">
                                 <span style="font-size:40px;">❌</span>
                             </div>
-                            <h1 style="margin:0;font-size:26px;font-weight:700;">Boeking Geannuleerd</h1>
+                            <h1 style="margin:0;font-size:26px;font-weight:700;">{$t('email_booking_cancelled_heading')}</h1>
                             <p style="margin:10px 0 0;opacity:0.9;font-size:15px;">#{$booking['booking_number']}</p>
                         </td>
                     </tr>
@@ -821,30 +845,30 @@ HTML;
                     <tr>
                         <td style="padding:40px;">
                             <p style="font-size:17px;color:#ffffff;margin:0 0 25px;text-align:center;">
-                                Een klant heeft de volgende boeking geannuleerd
+                                {$t('email_customer_cancelled_booking')}
                             </p>
 
                             <!-- Booking Details -->
                             <div style="background:#0a0a0a;border-radius:16px;padding:25px;margin:0 0 25px;">
                                 <table width="100%" cellpadding="0" cellspacing="0">
                                     <tr>
-                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;">Klant</td>
+                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;">{$t('customer')}</td>
                                         <td style="padding:8px 0;text-align:right;font-weight:600;color:#1f2937;">{$customerName}</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">Dienst</td>
+                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">{$t('service')}</td>
                                         <td style="padding:8px 0;text-align:right;font-weight:600;color:#1f2937;border-top:1px solid #e5e7eb;">{$serviceName}</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">Datum</td>
+                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">{$t('date')}</td>
                                         <td style="padding:8px 0;text-align:right;font-weight:600;color:#1f2937;border-top:1px solid #e5e7eb;">{$appointmentDate}</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">Tijd</td>
+                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">{$t('time')}</td>
                                         <td style="padding:8px 0;text-align:right;font-weight:600;color:#1f2937;border-top:1px solid #e5e7eb;">{$appointmentTime}</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">Bedrag</td>
+                                        <td style="padding:8px 0;color:#6b7280;font-size:14px;border-top:1px solid #e5e7eb;">{$t('amount')}</td>
                                         <td style="padding:8px 0;text-align:right;font-weight:700;color:#ffffff;font-size:16px;border-top:1px solid #e5e7eb;">€{$priceFormatted}</td>
                                     </tr>
                                 </table>
@@ -855,17 +879,17 @@ HTML;
                             <!-- Time Slot Free Notice -->
                             <div style="background:#0a0a0a;border:2px solid #404040;border-radius:12px;padding:18px;margin:25px 0;text-align:center;">
                                 <p style="margin:0;color:#ffffff;font-weight:600;font-size:15px;">
-                                    🕐 Tijdslot is weer vrij
+                                    🕐 {$t('email_timeslot_available')}
                                 </p>
                                 <p style="margin:8px 0 0;color:#ffffff;font-size:14px;">
-                                    {$appointmentDate} om {$appointmentTime} is nu weer beschikbaar voor nieuwe boekingen
+                                    {$appointmentDate} - {$appointmentTime}
                                 </p>
                             </div>
 
                             <!-- CTA Button -->
                             <p style="text-align:center;margin-top:30px;">
-                                <a href="https://glamourschedule.nl/business/calendar" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#fff;padding:16px 40px;border-radius:50px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 4px 15px #rgba(0,0,0,0.3);">
-                                    📅 Bekijk agenda
+                                <a href="https://glamourschedule.com/business/calendar" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#fff;padding:16px 40px;border-radius:50px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 4px 15px #rgba(0,0,0,0.3);">
+                                    📅 {$t('email_view_calendar')}
                                 </a>
                             </p>
                         </td>
@@ -885,8 +909,8 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
-            $mailer->send($booking['business_email'], "Boeking geannuleerd - #{$booking['booking_number']}", $htmlBody);
+            $mailer = new Mailer($businessLang);
+            $mailer->send($booking['business_email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send business cancellation notice: " . $e->getMessage());
         }
@@ -1288,8 +1312,18 @@ HTML;
 
     private function sendBookingConfirmation(array $data): bool
     {
+        $customerLang = $data['language'] ?? $this->lang ?? 'nl';
+        $translations = $this->loadTranslationsForLang($customerLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
         $to = $data['email'];
-        $subject = "Boekingsbevestiging #{$data['booking_number']} - GlamourSchedule";
+        $subject = $t('email_booking_confirmation_subject', ['booking_number' => $data['booking_number']]);
 
         $dateFormatted = date('d-m-Y', strtotime($data['date']));
         $priceFormatted = number_format($data['price'], 2, ',', '.');
@@ -1312,42 +1346,42 @@ HTML;
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1 style='margin:0'>Boekingsbevestiging</h1>
+                    <h1 style='margin:0'>{$t('email_booking_confirmation_heading')}</h1>
                     <p style='margin:10px 0 0'>#{$data['booking_number']}</p>
                 </div>
                 <div class='content'>
-                    <p>Beste {$data['name']},</p>
-                    <p>Bedankt voor je boeking! Hieronder vind je de details van je afspraak.</p>
+                    <p>{$t('email_dear_name', ['name' => $data['name']])}</p>
+                    <p>{$t('email_thanks_for_booking')} {$t('email_find_details_below')}</p>
 
                     <div class='booking-details'>
                         <div class='detail-row'>
-                            <span class='detail-label'>Salon:</span>
+                            <span class='detail-label'>{$t('email_salon_label')}</span>
                             <span>{$data['business_name']}</span>
                         </div>
                         <div class='detail-row'>
-                            <span class='detail-label'>Behandeling:</span>
+                            <span class='detail-label'>{$t('email_treatment_label')}</span>
                             <span>{$data['service_name']}</span>
                         </div>
                         <div class='detail-row'>
-                            <span class='detail-label'>Datum:</span>
+                            <span class='detail-label'>{$t('email_date_label')}</span>
                             <span>{$dateFormatted}</span>
                         </div>
                         <div class='detail-row'>
-                            <span class='detail-label'>Tijd:</span>
+                            <span class='detail-label'>{$t('email_time_label')}</span>
                             <span>{$data['time']}</span>
                         </div>
                         <div class='detail-row'>
-                            <span class='detail-label'>Prijs:</span>
+                            <span class='detail-label'>{$t('email_price_label')}</span>
                             <span>&euro;{$priceFormatted}</span>
                         </div>
                     </div>
 
                     <p style='text-align:center'>
-                        <a href='https://glamourschedule.nl/booking/{$data['uuid']}' class='btn'>Bekijk je boeking</a>
+                        <a href='https://glamourschedule.com/booking/{$data['uuid']}' class='btn'>{$t('email_view_your_booking')}</a>
                     </p>
 
                     <p style='margin-top:30px;font-size:14px;color:#cccccc'>
-                        Je kunt je afspraak bekijken, wijzigen of annuleren via bovenstaande link.
+                        {$t('email_can_view_change_cancel')}
                     </p>
                 </div>
                 <div class='footer'>
@@ -1358,15 +1392,21 @@ HTML;
         </html>
         ";
 
-        $headers = [
-            'MIME-Version: 1.0',
-            'Content-type: text/html; charset=UTF-8',
-            'From: GlamourSchedule <noreply@glamourschedule.nl>',
-            'Reply-To: info@glamourschedule.nl',
-            'X-Mailer: PHP/' . phpversion()
-        ];
-
-        return mail($to, $subject, $message, implode("\r\n", $headers));
+        try {
+            $mailer = new Mailer($customerLang);
+            return $mailer->send($to, $subject, $message);
+        } catch (\Exception $e) {
+            error_log("Failed to send booking confirmation email: " . $e->getMessage());
+            // Fallback to mail()
+            $headers = [
+                'MIME-Version: 1.0',
+                'Content-type: text/html; charset=UTF-8',
+                'From: GlamourSchedule <noreply@glamourschedule.com>',
+                'Reply-To: info@glamourschedule.com',
+                'X-Mailer: PHP/' . phpversion()
+            ];
+            return mail($to, $subject, $message, implode("\r\n", $headers));
+        }
     }
 
     /**
@@ -1720,8 +1760,19 @@ HTML;
      */
     private function sendWaitlistConfirmationEmail(array $data): void
     {
+        $customerLang = $data['language'] ?? $this->lang ?? 'nl';
+        $translations = $this->loadTranslationsForLang($customerLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
         $dateFormatted = date('d-m-Y', strtotime($data['date']));
         $currentYear = date('Y');
+        $subject = $t('email_waitlist_confirmation_subject', ['business_name' => $data['business_name']]);
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -1737,28 +1788,28 @@ HTML;
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
-                            <h1 style="margin:0;font-size:28px;font-weight:700;">Wachtlijst Bevestiging</h1>
+                            <h1 style="margin:0;font-size:28px;font-weight:700;">{$t('email_waitlist_confirmation_heading')}</h1>
                             <p style="margin:10px 0 0;opacity:0.9;font-size:16px;">{$data['business_name']}</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;margin:0 0 25px;">Beste <strong>{$data['name']}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;margin:0 0 25px;">{$t('email_dear_name', ['name' => $data['name']])}</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 30px;">
-                                Je staat nu op de wachtlijst voor een afspraak bij <strong>{$data['business_name']}</strong>.
+                                {$t('email_on_waitlist_for', ['business_name' => $data['business_name']])}
                             </p>
 
                             <div style="background:linear-gradient(135deg,#fffbeb,#faf5ff);border-radius:12px;padding:25px;margin-bottom:30px;">
                                 <table width="100%" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                                            <span style="color:#cccccc;font-size:14px;">Dienst</span><br>
+                                            <span style="color:#cccccc;font-size:14px;">{$t('email_service_label')}</span><br>
                                             <strong style="color:#ffffff;font-size:16px;">{$data['service_name']}</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="padding:12px 0;">
-                                            <span style="color:#cccccc;font-size:14px;">Gewenste datum</span><br>
+                                            <span style="color:#cccccc;font-size:14px;">{$t('email_preferred_date')}</span><br>
                                             <strong style="color:#ffffff;font-size:18px;">{$dateFormatted}</strong>
                                         </td>
                                     </tr>
@@ -1767,14 +1818,13 @@ HTML;
 
                             <div style="background:#0a0a0a;border-left:4px solid #000000;padding:20px;border-radius:0 8px 8px 0;">
                                 <p style="margin:0;color:#ffffff;font-size:14px;">
-                                    <strong>Wat gebeurt er nu?</strong><br><br>
-                                    Zodra er een plek vrijkomt op jouw gewenste datum, sturen we je direct een e-mail.
-                                    Je hebt dan 60 minuten om te boeken voordat de plek naar de volgende persoon gaat.
+                                    <strong>{$t('email_what_happens_now')}</strong><br><br>
+                                    {$t('email_when_spot_available')} {$t('email_book_within_60_minutes')}
                                 </p>
                             </div>
 
                             <p style="font-size:14px;color:#888;text-align:center;margin:25px 0 0;">
-                                We houden je op de hoogte!
+                                {$t('email_we_keep_you_posted')}
                             </p>
                         </td>
                     </tr>
@@ -1792,8 +1842,8 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
-            $mailer->send($data['email'], "Wachtlijst bevestiging - {$data['business_name']}", $htmlBody);
+            $mailer = new Mailer($customerLang);
+            $mailer->send($data['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send waitlist confirmation: " . $e->getMessage());
         }
@@ -1804,9 +1854,20 @@ HTML;
      */
     private function sendWaitlistNotificationEmail(array $data): void
     {
+        $customerLang = $data['language'] ?? $this->lang ?? 'nl';
+        $translations = $this->loadTranslationsForLang($customerLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
+
         $dateFormatted = date('d-m-Y', strtotime($data['date']));
         $timeFormatted = date('H:i', strtotime($data['time']));
-        $bookingUrl = "https://new.glamourschedule.nl/business/{$data['business_slug']}?date={$data['date']}&time={$data['time']}";
+        $bookingUrl = "https://glamourschedule.com/business/{$data['business_slug']}?date={$data['date']}&time={$data['time']}";
+        $subject = $t('email_spot_available_subject', ['business_name' => $data['business_name']]);
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -1819,39 +1880,39 @@ HTML;
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);padding:40px;text-align:center;color:#fff;">
-                            <h1 style="margin:0;font-size:24px;">Er is een plek vrijgekomen!</h1>
+                            <h1 style="margin:0;font-size:24px;">{$t('email_spot_available_heading')}</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;">Goed nieuws <strong>{$data['name']}</strong>!</p>
+                            <p style="font-size:18px;color:#ffffff;">{$t('email_good_news_name', ['name' => $data['name']])}</p>
                             <p style="font-size:16px;color:#555;line-height:1.6;">
-                                Er is een afspraak geannuleerd bij <strong>{$data['business_name']}</strong> en jij staat bovenaan de wachtlijst!
+                                {$t('email_booking_cancelled_you_are_first', ['business_name' => $data['business_name']])}
                             </p>
 
                             <div style="background:linear-gradient(135deg,#fafafa,#f5f5f5);border:2px solid #000000;border-radius:12px;padding:25px;margin:25px 0;text-align:center;">
-                                <p style="margin:0;color:#cccccc;font-size:14px;">Beschikbare plek</p>
+                                <p style="margin:0;color:#cccccc;font-size:14px;">{$t('email_available_spot')}</p>
                                 <p style="margin:10px 0 0;color:#ffffff;font-size:24px;font-weight:700;">
-                                    {$dateFormatted} om {$timeFormatted}
+                                    {$dateFormatted} - {$timeFormatted}
                                 </p>
                                 <p style="margin:10px 0 0;color:#cccccc;">{$data['service_name']}</p>
                             </div>
 
                             <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:15px 20px;border-radius:0 8px 8px 0;margin:25px 0;">
                                 <p style="margin:0;color:#991b1b;font-size:14px;">
-                                    <strong>Let op - Beperkte tijd!</strong><br>
-                                    Je hebt <strong>60 minuten</strong> om te boeken, daarna gaat de plek automatisch naar de volgende persoon op de wachtlijst.
+                                    <strong>{$t('email_attention_limited_time')}</strong><br>
+                                    {$t('email_book_within_60_minutes')}
                                 </p>
                             </div>
 
                             <p style="text-align:center;margin:30px 0;">
                                 <a href="{$bookingUrl}" style="display:inline-block;background:#000000;color:#fff;padding:18px 50px;border-radius:50px;text-decoration:none;font-weight:700;font-size:17px;">
-                                    Nu Boeken
+                                    {$t('email_book_now')}
                                 </a>
                             </p>
 
                             <p style="font-size:14px;color:#888;text-align:center;">
-                                Kun je toch niet? Geen probleem, we sturen de plek door naar de volgende.
+                                {$t('email_cant_make_it')}
                             </p>
                         </td>
                     </tr>
@@ -1869,8 +1930,8 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
-            $mailer->send($data['email'], "Plek vrijgekomen bij {$data['business_name']}", $htmlBody);
+            $mailer = new Mailer($customerLang);
+            $mailer->send($data['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send waitlist notification: " . $e->getMessage());
         }

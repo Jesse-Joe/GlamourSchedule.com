@@ -1467,6 +1467,17 @@ return [
     'email_refund_of' => 'Je terugbetaling van',
     'email_make_new_appointment' => 'Nieuwe afspraak maken',
     'email_booking_cancelled_subject' => 'Boeking geannuleerd - #{booking_number}',
+    'email_50_percent_to_salon' => '50% van het bedrag gaat naar de salon als compensatie.',
+    'email_full_refund_minus_admin' => 'Je ontvangt het volledige bedrag terug, minus administratiekosten.',
+    'email_admin_fee_explanation' => 'De administratiekosten van {amount} dekken de verwerking van je annulering en terugbetaling. We raden aan om goed na te denken voordat je boekt, zodat je deze kosten in de toekomst kunt vermijden.',
+    'email_refund_within_days' => 'Je terugbetaling van {amount} wordt binnen 5-10 werkdagen op je rekening gestort.',
+    'email_late_cancel_compensation' => 'Late annulering vergoeding',
+    'email_amount_credited_next_payout' => 'Dit bedrag wordt bij je volgende uitbetaling bijgeschreven.',
+    'email_customer_cancelled' => 'Een klant heeft een boeking geannuleerd',
+    'email_treatment_label' => 'Behandeling:',
+    'email_time_label' => 'Tijd:',
+    'email_price_label' => 'Prijs:',
+    'email_find_details_below' => 'Hieronder vind je de details van je afspraak.',
 
     // Email - Business Cancellation Notice
     'email_customer_cancelled_booking' => 'Een klant heeft de volgende boeking geannuleerd',
