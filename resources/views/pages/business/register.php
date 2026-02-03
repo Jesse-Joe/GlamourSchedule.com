@@ -614,6 +614,32 @@
                 </div>
 
                 <div class="form-group">
+                    <label><i class="fas fa-globe"></i> <?= $__('country') ?? 'Land' ?> *</label>
+                    <select name="country" id="country-select" class="form-control" required onchange="updateBusinessFields()">
+                        <option value="">-- <?= $__('select_country') ?? 'Selecteer land' ?> --</option>
+                        <option value="NL" <?= ($data['country'] ?? '') === 'NL' ? 'selected' : '' ?>>🇳🇱 Nederland</option>
+                        <option value="BE" <?= ($data['country'] ?? '') === 'BE' ? 'selected' : '' ?>>🇧🇪 België</option>
+                        <option value="DE" <?= ($data['country'] ?? '') === 'DE' ? 'selected' : '' ?>>🇩🇪 Deutschland</option>
+                        <option value="FR" <?= ($data['country'] ?? '') === 'FR' ? 'selected' : '' ?>>🇫🇷 France</option>
+                        <option value="GB" <?= ($data['country'] ?? '') === 'GB' ? 'selected' : '' ?>>🇬🇧 United Kingdom</option>
+                        <option value="ES" <?= ($data['country'] ?? '') === 'ES' ? 'selected' : '' ?>>🇪🇸 España</option>
+                        <option value="IT" <?= ($data['country'] ?? '') === 'IT' ? 'selected' : '' ?>>🇮🇹 Italia</option>
+                        <option value="PT" <?= ($data['country'] ?? '') === 'PT' ? 'selected' : '' ?>>🇵🇹 Portugal</option>
+                        <option value="AT" <?= ($data['country'] ?? '') === 'AT' ? 'selected' : '' ?>>🇦🇹 Österreich</option>
+                        <option value="CH" <?= ($data['country'] ?? '') === 'CH' ? 'selected' : '' ?>>🇨🇭 Schweiz</option>
+                        <option value="LU" <?= ($data['country'] ?? '') === 'LU' ? 'selected' : '' ?>>🇱🇺 Luxembourg</option>
+                        <option value="PL" <?= ($data['country'] ?? '') === 'PL' ? 'selected' : '' ?>>🇵🇱 Polska</option>
+                        <option value="US" <?= ($data['country'] ?? '') === 'US' ? 'selected' : '' ?>>🇺🇸 United States</option>
+                        <option value="CA" <?= ($data['country'] ?? '') === 'CA' ? 'selected' : '' ?>>🇨🇦 Canada</option>
+                        <option value="AU" <?= ($data['country'] ?? '') === 'AU' ? 'selected' : '' ?>>🇦🇺 Australia</option>
+                        <option value="TR" <?= ($data['country'] ?? '') === 'TR' ? 'selected' : '' ?>>🇹🇷 Türkiye</option>
+                        <option value="MA" <?= ($data['country'] ?? '') === 'MA' ? 'selected' : '' ?>>🇲🇦 Morocco</option>
+                        <option value="AE" <?= ($data['country'] ?? '') === 'AE' ? 'selected' : '' ?>>🇦🇪 UAE</option>
+                        <option value="OTHER" <?= ($data['country'] ?? '') === 'OTHER' ? 'selected' : '' ?>>🌍 <?= $__('other_country') ?? 'Ander land' ?></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label><i class="fas fa-road"></i> <?= $__('address') ?> *</label>
                     <input type="text" name="address" class="form-control" placeholder="<?= $__('street_example') ?>" value="<?= htmlspecialchars($data['address'] ?? '') ?>" required>
                 </div>
@@ -629,13 +655,24 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-file-contract"></i> <?= $__('kvk_number') ?> <span style="font-weight:400;color:#9ca3af">(<?= $__('optional') ?>)</span></label>
-                    <input type="text" name="kvk_number" class="form-control" placeholder="12345678" value="<?= htmlspecialchars($data['kvk_number'] ?? '') ?>" pattern="\d{8}" maxlength="8">
-                    <small style="color:#9ca3af;display:block;margin-top:4px;"><?= $__('kvk_verification_note') ?></small>
-                    <?php if (isset($errors['kvk_number'])): ?>
-                        <span class="error-text"><?= htmlspecialchars($errors['kvk_number']) ?></span>
-                    <?php endif; ?>
+                <!-- Bedrijfsregistratie (dynamisch per land) -->
+                <div class="section-header" style="margin-top:2rem">
+                    <i class="fas fa-file-contract"></i>
+                    <h4 id="registration-section-title"><?= $__('business_registration') ?? 'Bedrijfsregistratie' ?></h4>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label id="business-reg-label"><i class="fas fa-building"></i> <span id="business-reg-label-text"><?= $__('kvk_number') ?></span> <span style="font-weight:400;color:#9ca3af">(<?= $__('optional') ?>)</span></label>
+                        <input type="text" name="business_registration_number" id="business-reg-input" class="form-control" placeholder="12345678" value="<?= htmlspecialchars($data['business_registration_number'] ?? $data['kvk_number'] ?? '') ?>">
+                        <input type="hidden" name="business_registration_type" id="business-reg-type" value="KVK">
+                        <small id="business-reg-help" style="color:#9ca3af;display:block;margin-top:4px;"><?= $__('kvk_verification_note') ?></small>
+                    </div>
+                    <div class="form-group">
+                        <label id="tax-label"><i class="fas fa-percent"></i> <span id="tax-label-text"><?= $__('btw_number') ?? 'BTW-nummer' ?></span> <span style="font-weight:400;color:#9ca3af">(<?= $__('optional') ?>)</span></label>
+                        <input type="text" name="tax_number" id="tax-input" class="form-control" placeholder="NL123456789B01" value="<?= htmlspecialchars($data['tax_number'] ?? $data['btw_number'] ?? '') ?>">
+                        <small id="tax-help" style="color:#9ca3af;display:block;margin-top:4px;">Format: NL + 9 cijfers + B + 2 cijfers</small>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -769,9 +806,108 @@ function updatePricing() {
     }
 }
 
+// Country-specific business registration configurations
+const countryConfig = {
+    'NL': {
+        registration: { type: 'KVK', label: 'KVK-nummer', placeholder: '12345678', help: 'Je 8-cijferig KVK-nummer', maxlength: 8 },
+        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'NL123456789B01', help: 'Format: NL + 9 cijfers + B + 2 cijfers', maxlength: 14 }
+    },
+    'BE': {
+        registration: { type: 'KBO', label: 'Ondernemingsnummer (KBO)', placeholder: '0123456789', help: 'Je 10-cijferig ondernemingsnummer', maxlength: 10 },
+        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'BE0123456789', help: 'Format: BE + ondernemingsnummer', maxlength: 12 }
+    },
+    'DE': {
+        registration: { type: 'HRB', label: 'Handelsregisternummer', placeholder: 'HRB 12345', help: 'Ihr Handelsregisternummer', maxlength: 20 },
+        tax: { type: 'USt-IdNr', label: 'Umsatzsteuer-ID', placeholder: 'DE123456789', help: 'Format: DE + 9 Ziffern', maxlength: 11 }
+    },
+    'FR': {
+        registration: { type: 'SIRET', label: 'Numéro SIRET', placeholder: '12345678901234', help: 'Votre numéro SIRET à 14 chiffres', maxlength: 14 },
+        tax: { type: 'TVA', label: 'Numéro de TVA', placeholder: 'FR12345678901', help: 'Format: FR + 2 chiffres + SIREN', maxlength: 13 }
+    },
+    'GB': {
+        registration: { type: 'CRN', label: 'Company Registration Number', placeholder: '12345678', help: 'Your Companies House registration number', maxlength: 10 },
+        tax: { type: 'VAT', label: 'VAT Registration Number', placeholder: 'GB123456789', help: 'Format: GB + 9 or 12 digits', maxlength: 14 }
+    },
+    'ES': {
+        registration: { type: 'NIF', label: 'NIF/CIF', placeholder: 'B12345678', help: 'Tu Número de Identificación Fiscal', maxlength: 9 },
+        tax: { type: 'IVA', label: 'Número de IVA', placeholder: 'ESB12345678', help: 'Format: ES + NIF', maxlength: 11 }
+    },
+    'IT': {
+        registration: { type: 'REA', label: 'Numero REA', placeholder: 'MI-1234567', help: 'Il tuo numero REA', maxlength: 15 },
+        tax: { type: 'P.IVA', label: 'Partita IVA', placeholder: 'IT12345678901', help: 'Format: IT + 11 cifre', maxlength: 13 }
+    },
+    'PT': {
+        registration: { type: 'NIPC', label: 'NIPC', placeholder: '123456789', help: 'O seu NIPC de 9 dígitos', maxlength: 9 },
+        tax: { type: 'NIF', label: 'Número de IVA', placeholder: 'PT123456789', help: 'Format: PT + 9 dígitos', maxlength: 11 }
+    },
+    'AT': {
+        registration: { type: 'FN', label: 'Firmenbuchnummer', placeholder: '123456a', help: 'Ihre Firmenbuchnummer', maxlength: 10 },
+        tax: { type: 'UID', label: 'UID-Nummer', placeholder: 'ATU12345678', help: 'Format: ATU + 8 Ziffern', maxlength: 11 }
+    },
+    'CH': {
+        registration: { type: 'UID', label: 'UID-Nummer', placeholder: 'CHE-123.456.789', help: 'Ihre Unternehmens-ID', maxlength: 15 },
+        tax: { type: 'MWST', label: 'MWST-Nummer', placeholder: 'CHE-123.456.789 MWST', help: 'Format: UID + MWST', maxlength: 20 }
+    },
+    'LU': {
+        registration: { type: 'RCS', label: 'Numéro RCS', placeholder: 'B123456', help: 'Votre numéro RCS Luxembourg', maxlength: 10 },
+        tax: { type: 'TVA', label: 'Numéro TVA', placeholder: 'LU12345678', help: 'Format: LU + 8 chiffres', maxlength: 10 }
+    },
+    'PL': {
+        registration: { type: 'KRS', label: 'Numer KRS', placeholder: '0000123456', help: 'Twój numer KRS', maxlength: 10 },
+        tax: { type: 'NIP', label: 'Numer NIP', placeholder: 'PL1234567890', help: 'Format: PL + 10 cyfr', maxlength: 12 }
+    },
+    'US': {
+        registration: { type: 'EIN', label: 'EIN (Employer ID)', placeholder: '12-3456789', help: 'Your IRS Employer Identification Number', maxlength: 10 },
+        tax: { type: 'Sales Tax', label: 'Sales Tax ID', placeholder: 'State-specific', help: 'Your state sales tax permit number', maxlength: 20 }
+    },
+    'CA': {
+        registration: { type: 'BN', label: 'Business Number', placeholder: '123456789', help: 'Your 9-digit CRA Business Number', maxlength: 9 },
+        tax: { type: 'GST/HST', label: 'GST/HST Number', placeholder: '123456789RT0001', help: 'Format: BN + RT + 4 digits', maxlength: 15 }
+    },
+    'AU': {
+        registration: { type: 'ABN', label: 'ABN', placeholder: '12345678901', help: 'Your 11-digit Australian Business Number', maxlength: 11 },
+        tax: { type: 'GST', label: 'GST Registration', placeholder: '12345678901', help: 'Same as ABN if GST registered', maxlength: 11 }
+    },
+    'TR': {
+        registration: { type: 'VKN', label: 'Vergi Kimlik Numarası', placeholder: '1234567890', help: '10 haneli Vergi Kimlik Numaranız', maxlength: 10 },
+        tax: { type: 'KDV', label: 'KDV Numarası', placeholder: 'TR1234567890', help: 'Format: TR + VKN', maxlength: 12 }
+    },
+    'MA': {
+        registration: { type: 'RC', label: 'رقم السجل التجاري / Registre de Commerce', placeholder: '123456', help: 'Numéro du Registre de Commerce', maxlength: 15 },
+        tax: { type: 'IF', label: 'رقم التعريف الضريبي / Identifiant Fiscal', placeholder: '12345678', help: 'Identifiant Fiscal', maxlength: 15 }
+    },
+    'AE': {
+        registration: { type: 'License', label: 'رقم الرخصة التجارية / Trade License', placeholder: '123456', help: 'Your Trade License Number', maxlength: 20 },
+        tax: { type: 'TRN', label: 'رقم التسجيل الضريبي / TRN', placeholder: '100000000000003', help: '15-digit Tax Registration Number', maxlength: 15 }
+    },
+    'OTHER': {
+        registration: { type: 'Business ID', label: 'Business Registration Number', placeholder: '', help: 'Your official business registration number', maxlength: 30 },
+        tax: { type: 'Tax ID', label: 'Tax/VAT Number', placeholder: '', help: 'Your tax or VAT registration number', maxlength: 20 }
+    }
+};
+
+function updateBusinessFields() {
+    const country = document.getElementById('country-select').value;
+    const config = countryConfig[country] || countryConfig['OTHER'];
+
+    // Update registration field
+    document.getElementById('business-reg-label-text').textContent = config.registration.label;
+    document.getElementById('business-reg-input').placeholder = config.registration.placeholder;
+    document.getElementById('business-reg-input').maxLength = config.registration.maxlength;
+    document.getElementById('business-reg-help').textContent = config.registration.help;
+    document.getElementById('business-reg-type').value = config.registration.type;
+
+    // Update tax field
+    document.getElementById('tax-label-text').textContent = config.tax.label;
+    document.getElementById('tax-input').placeholder = config.tax.placeholder;
+    document.getElementById('tax-input').maxLength = config.tax.maxlength;
+    document.getElementById('tax-help').textContent = config.tax.help;
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateBusinessType();
+    updateBusinessFields();
 });
 </script>
 
