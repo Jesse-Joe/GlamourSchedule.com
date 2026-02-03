@@ -903,10 +903,19 @@ HTML;
 
     private function sendBusinessApprovalEmail(array $business): void
     {
-        $dashboardUrl = "https://glamourschedule.nl/business/dashboard";
-        $businessUrl = "https://glamourschedule.nl/business/{$business['slug']}";
+        $businessLang = $business['language'] ?? 'nl';
+        $translations = $this->loadTranslationsForLang($businessLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
-        $subject = "Goed nieuws! Je bedrijf is geverifieerd - {$business['name']}";
+        $dashboardUrl = "https://glamourschedule.com/business/dashboard";
+        $businessUrl = "https://glamourschedule.com/business/{$business['slug']}";
+        $subject = $t('email_business_approved_subject', ['business_name' => $business['name']]);
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -919,38 +928,34 @@ HTML;
                     <div style="width:80px;height:80px;background:#22c55e;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
                         <span style="font-size:40px;line-height:80px;">✓</span>
                     </div>
-                    <h1 style="margin:0;font-size:28px;font-weight:700;">Account Geactiveerd!</h1>
-                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je bedrijf is succesvol geverifieerd</p>
+                    <h1 style="margin:0;font-size:28px;font-weight:700;">{$t('email_account_activated')}</h1>
+                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">{$t('email_business_verified_success')}</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$business['name']},</p>
-
-                    <p style="font-size:16px;color:#ffffff;line-height:1.7;margin:0 0 25px;">
-                        Geweldig nieuws! Ons team heeft je bedrijfsregistratie beoordeeld en goedgekeurd.
-                        Je account is nu <strong>volledig actief</strong> en je kunt direct boekingen ontvangen van klanten.
-                    </p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">{$t('email_dear_name', ['name' => $business['name']])}</p>
 
                     <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:16px;padding:25px;margin-bottom:30px;">
-                        <h3 style="margin:0 0 15px;color:#166534;font-size:18px;">Wat kun je nu doen?</h3>
+                        <h3 style="margin:0 0 15px;color:#166534;font-size:18px;">{$t('email_what_can_you_do')}</h3>
                         <ul style="margin:0;padding-left:20px;color:#166534;line-height:1.8;">
-                            <li>Klanten kunnen nu bij je boeken</li>
-                            <li>Je bedrijfspagina is zichtbaar op GlamourSchedule</li>
-                            <li>Je ontvangt meldingen bij nieuwe boekingen</li>
+                            <li>{$t('email_start_receiving_bookings')}</li>
+                            <li>{$t('email_setup_services')}</li>
+                            <li>{$t('email_setup_hours')}</li>
+                            <li>{$t('email_upload_photos')}</li>
                         </ul>
                     </div>
 
                     <div style="text-align:center;margin:30px 0;">
                         <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 50px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;margin:5px;">
-                            Naar Dashboard
+                            {$t('email_go_to_dashboard')}
                         </a>
                     </div>
 
                     <p style="font-size:14px;color:#cccccc;text-align:center;margin:20px 0 0;">
-                        Je bedrijfspagina: <a href="{$businessUrl}" style="color:#ffffff;font-weight:600;">{$businessUrl}</a>
+                        <a href="{$businessUrl}" style="color:#ffffff;font-weight:600;">{$businessUrl}</a>
                     </p>
                 </td></tr>
                 <tr><td style="background:#000000;padding:25px;text-align:center;">
-                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2026 GlamourSchedule - Beauty & Wellness Bookings</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -959,7 +964,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer = new \GlamourSchedule\Core\Mailer($businessLang);
             $mailer->send($business['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send business approval email: " . $e->getMessage());
@@ -968,10 +973,19 @@ HTML;
 
     private function sendBusinessRejectionEmail(array $business, string $reason): void
     {
-        $contactUrl = "https://glamourschedule.nl/contact";
-        $registerUrl = "https://glamourschedule.nl/business/register";
+        $businessLang = $business['language'] ?? 'nl';
+        $translations = $this->loadTranslationsForLang($businessLang);
+        $t = function($key, $replacements = []) use ($translations) {
+            $text = $translations[$key] ?? $key;
+            foreach ($replacements as $search => $replace) {
+                $text = str_replace('{' . $search . '}', $replace, $text);
+            }
+            return $text;
+        };
 
-        $subject = "Je bedrijfsregistratie is helaas afgewezen - {$business['name']}";
+        $contactUrl = "https://glamourschedule.com/contact";
+        $registerUrl = "https://glamourschedule.com/business/register";
+        $subject = $t('email_business_rejected_subject', ['business_name' => $business['name']]);
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -984,42 +998,37 @@ HTML;
                     <div style="width:80px;height:80px;background:#ef4444;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
                         <span style="font-size:40px;line-height:80px;">✗</span>
                     </div>
-                    <h1 style="margin:0;font-size:28px;font-weight:700;">Registratie Afgewezen</h1>
-                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">Je aanvraag kon helaas niet worden goedgekeurd</p>
+                    <h1 style="margin:0;font-size:28px;font-weight:700;">{$t('email_registration_rejected')}</h1>
+                    <p style="margin:15px 0 0;opacity:0.9;font-size:16px;">{$t('email_request_not_approved')}</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
-                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$business['name']},</p>
-
-                    <p style="font-size:16px;color:#ffffff;line-height:1.7;margin:0 0 25px;">
-                        Helaas moeten we je meedelen dat je bedrijfsregistratie is afgewezen na beoordeling door ons team.
-                    </p>
+                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">{$t('email_dear_name', ['name' => $business['name']])}</p>
 
                     <div style="background:#fef2f2;border:2px solid #ef4444;border-radius:16px;padding:25px;margin-bottom:30px;">
-                        <h3 style="margin:0 0 15px;color:#991b1b;font-size:16px;">Reden van afwijzing:</h3>
+                        <h3 style="margin:0 0 15px;color:#991b1b;font-size:16px;">{$t('email_reason_rejection')}</h3>
                         <p style="margin:0;color:#991b1b;line-height:1.7;font-size:15px;">{$reason}</p>
                     </div>
 
                     <div style="background:#f9fafb;border-radius:16px;padding:25px;margin-bottom:30px;">
-                        <h3 style="margin:0 0 15px;color:#ffffff;font-size:16px;">Wat kun je doen?</h3>
+                        <h3 style="margin:0 0 15px;color:#ffffff;font-size:16px;">{$t('email_what_can_you_do_now')}</h3>
                         <ul style="margin:0;padding-left:20px;color:#555;line-height:1.8;">
-                            <li>Controleer of je gegevens correct zijn</li>
-                            <li>Voeg een geldig KVK-nummer toe</li>
-                            <li>Registreer opnieuw met de juiste informatie</li>
-                            <li>Neem contact met ons op als je vragen hebt</li>
+                            <li>{$t('email_correct_issues')}</li>
+                            <li>{$t('email_try_again')}</li>
+                            <li>{$t('email_contact_questions')}</li>
                         </ul>
                     </div>
 
                     <div style="text-align:center;margin:30px 0;">
                         <a href="{$registerUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;margin:5px;">
-                            Opnieuw Registreren
+                            {$t('email_register_again')}
                         </a>
                         <a href="{$contactUrl}" style="display:inline-block;background:#ffffff;color:#000000;padding:18px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;border:2px solid #333;margin:5px;">
-                            Contact Opnemen
+                            {$t('email_contact_us')}
                         </a>
                     </div>
                 </td></tr>
                 <tr><td style="background:#000000;padding:25px;text-align:center;">
-                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2026 GlamourSchedule - Beauty & Wellness Bookings</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -1028,7 +1037,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new \GlamourSchedule\Core\Mailer();
+            $mailer = new \GlamourSchedule\Core\Mailer($businessLang);
             $mailer->send($business['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send business rejection email: " . $e->getMessage());
