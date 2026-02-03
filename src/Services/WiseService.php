@@ -17,8 +17,26 @@ class WiseService
     // Supported currencies for payouts
     private const SUPPORTED_CURRENCIES = [
         'EUR', 'GBP', 'USD', 'CHF', 'SEK', 'NOK', 'DKK', 'PLN', 'CZK', 'HUF',
-        'RON', 'BGN', 'HRK', 'AUD', 'NZD', 'CAD', 'SGD', 'HKD', 'JPY', 'INR'
+        'RON', 'BGN', 'HRK', 'AUD', 'NZD', 'CAD', 'SGD', 'HKD', 'JPY', 'INR',
+        'TRY', 'MAD', 'AED', 'ZAR', 'BRL', 'MXN', 'THB', 'MYR', 'PHP', 'IDR'
     ];
+
+    // Country to currency mapping
+    private const COUNTRY_CURRENCIES = [
+        'NL' => 'EUR', 'BE' => 'EUR', 'DE' => 'EUR', 'FR' => 'EUR', 'ES' => 'EUR',
+        'IT' => 'EUR', 'PT' => 'EUR', 'AT' => 'EUR', 'IE' => 'EUR', 'FI' => 'EUR',
+        'LU' => 'EUR', 'GR' => 'EUR', 'SK' => 'EUR', 'SI' => 'EUR', 'EE' => 'EUR',
+        'LV' => 'EUR', 'LT' => 'EUR', 'CY' => 'EUR', 'MT' => 'EUR',
+        'GB' => 'GBP', 'US' => 'USD', 'CA' => 'CAD', 'AU' => 'AUD', 'NZ' => 'NZD',
+        'CH' => 'CHF', 'SE' => 'SEK', 'NO' => 'NOK', 'DK' => 'DKK', 'PL' => 'PLN',
+        'CZ' => 'CZK', 'HU' => 'HUF', 'RO' => 'RON', 'BG' => 'BGN', 'HR' => 'EUR',
+        'TR' => 'TRY', 'MA' => 'MAD', 'AE' => 'AED', 'ZA' => 'ZAR',
+        'BR' => 'BRL', 'MX' => 'MXN', 'JP' => 'JPY', 'SG' => 'SGD', 'HK' => 'HKD',
+        'IN' => 'INR', 'TH' => 'THB', 'MY' => 'MYR', 'PH' => 'PHP', 'ID' => 'IDR'
+    ];
+
+    // Exchange rate cache (in-memory for single request)
+    private array $rateCache = [];
 
     public function __construct()
     {
@@ -436,5 +454,353 @@ class WiseService
     public function getSupportedCurrencies(): array
     {
         return self::SUPPORTED_CURRENCIES;
+    }
+
+    /**
+     * Get currency for a country code
+     */
+    public function getCurrencyForCountry(string $countryCode): string
+    {
+        return self::COUNTRY_CURRENCIES[strtoupper($countryCode)] ?? 'EUR';
+    }
+
+    /**
+     * Get all country currency mappings
+     */
+    public function getCountryCurrencies(): array
+    {
+        return self::COUNTRY_CURRENCIES;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // EXCHANGE RATE & MARGIN CALCULATIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Get live exchange rate from Wise API
+     * Returns both the Wise rate and mid-market rate for comparison
+     */
+    public function getExchangeRate(string $sourceCurrency = 'EUR', string $targetCurrency = 'EUR'): ?array
+    {
+        if ($sourceCurrency === $targetCurrency) {
+            return [
+                'source' => $sourceCurrency,
+                'target' => $targetCurrency,
+                'rate' => 1.0,
+                'mid_market_rate' => 1.0,
+                'margin_percentage' => 0.0,
+                'margin_amount' => 0.0,
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+        }
+
+        $cacheKey = "{$sourceCurrency}_{$targetCurrency}";
+        if (isset($this->rateCache[$cacheKey])) {
+            return $this->rateCache[$cacheKey];
+        }
+
+        // Get rate via quote (most accurate for actual transfers)
+        $response = $this->request('GET', "/v1/rates?source={$sourceCurrency}&target={$targetCurrency}");
+
+        if ($response && is_array($response) && !empty($response)) {
+            $rateData = $response[0];
+            $wiseRate = $rateData['rate'] ?? 1.0;
+
+            // Get mid-market rate for comparison
+            $midMarketRate = $this->getMidMarketRate($sourceCurrency, $targetCurrency) ?? $wiseRate;
+
+            // Calculate margin
+            $marginPercentage = $midMarketRate > 0
+                ? (($midMarketRate - $wiseRate) / $midMarketRate) * 100
+                : 0;
+
+            $result = [
+                'source' => $sourceCurrency,
+                'target' => $targetCurrency,
+                'rate' => $wiseRate,
+                'mid_market_rate' => $midMarketRate,
+                'margin_percentage' => round(abs($marginPercentage), 4),
+                'margin_direction' => $marginPercentage >= 0 ? 'below' : 'above',
+                'timestamp' => $rateData['time'] ?? date('Y-m-d H:i:s')
+            ];
+
+            $this->rateCache[$cacheKey] = $result;
+            return $result;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get mid-market rate (interbank rate) for comparison
+     * Uses ECB rates as reference for EUR pairs
+     */
+    private function getMidMarketRate(string $source, string $target): ?float
+    {
+        // Try to get from Wise's comparison endpoint
+        $response = $this->request('GET', "/v1/rates?source={$source}&target={$target}");
+
+        if ($response && is_array($response) && !empty($response)) {
+            // Wise returns the mid-market rate
+            return $response[0]['rate'] ?? null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get detailed quote with all fees and margins
+     */
+    public function getDetailedQuote(float $sourceAmount, string $sourceCurrency = 'EUR', string $targetCurrency = 'EUR'): ?array
+    {
+        $data = [
+            'sourceCurrency' => $sourceCurrency,
+            'targetCurrency' => $targetCurrency,
+            'sourceAmount' => $sourceAmount,
+            'payOut' => 'BANK_TRANSFER'
+        ];
+
+        $response = $this->request('POST', "/v3/profiles/{$this->profileId}/quotes", $data);
+
+        if ($response && isset($response['id'])) {
+            $paymentOption = $response['paymentOptions'][0] ?? [];
+            $fee = $paymentOption['fee']['total'] ?? $response['fee'] ?? 0;
+            $rate = $response['rate'] ?? 1;
+            $targetAmount = $paymentOption['targetAmount'] ?? $response['targetAmount'] ?? ($sourceAmount * $rate);
+
+            // Get mid-market for comparison
+            $exchangeInfo = $this->getExchangeRate($sourceCurrency, $targetCurrency);
+            $midMarketRate = $exchangeInfo['mid_market_rate'] ?? $rate;
+
+            // Calculate what you'd get at mid-market (theoretical)
+            $midMarketAmount = ($sourceAmount - $fee) * $midMarketRate;
+            $marginLoss = $midMarketAmount - $targetAmount;
+            $marginPercentage = $midMarketAmount > 0 ? ($marginLoss / $midMarketAmount) * 100 : 0;
+
+            return [
+                'quote_id' => $response['id'],
+                'source_currency' => $sourceCurrency,
+                'target_currency' => $targetCurrency,
+                'source_amount' => $sourceAmount,
+                'target_amount' => round($targetAmount, 2),
+                'fee' => [
+                    'total' => round($fee, 2),
+                    'currency' => $sourceCurrency,
+                    'breakdown' => $this->extractFeeBreakdown($response)
+                ],
+                'rate' => [
+                    'wise_rate' => $rate,
+                    'mid_market_rate' => $midMarketRate,
+                    'margin_percentage' => round(abs($marginPercentage), 4),
+                    'margin_amount' => round(abs($marginLoss), 2),
+                    'margin_currency' => $targetCurrency
+                ],
+                'delivery' => [
+                    'estimate' => $paymentOption['estimatedDelivery'] ?? null,
+                    'speed' => $response['deliveryEstimate']['date'] ?? 'Unknown'
+                ],
+                'expires_at' => $response['expirationTime'] ?? null,
+                'comparison' => [
+                    'wise_total_cost' => round($fee + abs($marginLoss / $rate), 2),
+                    'wise_total_cost_percentage' => round((($fee + abs($marginLoss / $rate)) / $sourceAmount) * 100, 2),
+                    'theoretical_at_midmarket' => round($midMarketAmount, 2),
+                    'actual_received' => round($targetAmount, 2),
+                    'difference' => round($midMarketAmount - $targetAmount, 2)
+                ]
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract fee breakdown from quote response
+     */
+    private function extractFeeBreakdown(array $response): array
+    {
+        $breakdown = [];
+
+        if (isset($response['paymentOptions'][0]['fee'])) {
+            $feeDetails = $response['paymentOptions'][0]['fee'];
+
+            if (isset($feeDetails['transferwise'])) {
+                $breakdown['wise_fee'] = $feeDetails['transferwise'];
+            }
+            if (isset($feeDetails['payIn'])) {
+                $breakdown['pay_in_fee'] = $feeDetails['payIn'];
+            }
+            if (isset($feeDetails['discount'])) {
+                $breakdown['discount'] = $feeDetails['discount'];
+            }
+        }
+
+        return $breakdown;
+    }
+
+    /**
+     * Calculate payout for a business in their local currency
+     * Takes EUR amount and calculates what they'll receive
+     */
+    public function calculatePayout(float $eurAmount, string $targetCurrency, bool $includeWiseFee = true): array
+    {
+        if ($targetCurrency === 'EUR') {
+            return [
+                'source_amount' => $eurAmount,
+                'source_currency' => 'EUR',
+                'target_amount' => $eurAmount,
+                'target_currency' => 'EUR',
+                'exchange_rate' => 1.0,
+                'wise_fee' => 0.0,
+                'margin_cost' => 0.0,
+                'total_cost' => 0.0,
+                'cost_percentage' => 0.0,
+                'net_amount' => $eurAmount
+            ];
+        }
+
+        $quote = $this->getDetailedQuote($eurAmount, 'EUR', $targetCurrency);
+
+        if (!$quote) {
+            // Fallback calculation if API fails
+            $rate = $this->getExchangeRate('EUR', $targetCurrency);
+            $estimatedRate = $rate['rate'] ?? 1.0;
+            $estimatedFee = $eurAmount * 0.005; // Estimate 0.5% fee
+
+            return [
+                'source_amount' => $eurAmount,
+                'source_currency' => 'EUR',
+                'target_amount' => round(($eurAmount - $estimatedFee) * $estimatedRate, 2),
+                'target_currency' => $targetCurrency,
+                'exchange_rate' => $estimatedRate,
+                'wise_fee' => round($estimatedFee, 2),
+                'margin_cost' => 0.0,
+                'total_cost' => round($estimatedFee, 2),
+                'cost_percentage' => 0.5,
+                'net_amount' => round($eurAmount - $estimatedFee, 2),
+                'is_estimate' => true
+            ];
+        }
+
+        return [
+            'source_amount' => $eurAmount,
+            'source_currency' => 'EUR',
+            'target_amount' => $quote['target_amount'],
+            'target_currency' => $targetCurrency,
+            'exchange_rate' => $quote['rate']['wise_rate'],
+            'mid_market_rate' => $quote['rate']['mid_market_rate'],
+            'wise_fee' => $quote['fee']['total'],
+            'margin_cost' => $quote['rate']['margin_amount'],
+            'margin_percentage' => $quote['rate']['margin_percentage'],
+            'total_cost' => $quote['comparison']['wise_total_cost'],
+            'cost_percentage' => $quote['comparison']['wise_total_cost_percentage'],
+            'net_amount_eur' => round($eurAmount - $quote['fee']['total'], 2),
+            'delivery_estimate' => $quote['delivery']['estimate'],
+            'quote_id' => $quote['quote_id'],
+            'is_estimate' => false
+        ];
+    }
+
+    /**
+     * Calculate margin for multiple currencies at once
+     * Useful for showing business their payout options
+     */
+    public function calculateMultiCurrencyPayout(float $eurAmount, array $currencies = []): array
+    {
+        if (empty($currencies)) {
+            $currencies = ['EUR', 'GBP', 'USD', 'CHF', 'PLN', 'SEK', 'NOK', 'DKK'];
+        }
+
+        $results = [];
+        foreach ($currencies as $currency) {
+            $results[$currency] = $this->calculatePayout($eurAmount, $currency);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get exchange rate comparison table
+     * Shows rates and margins for common currency pairs
+     */
+    public function getExchangeRateComparison(string $baseCurrency = 'EUR'): array
+    {
+        $compareCurrencies = ['GBP', 'USD', 'CHF', 'PLN', 'SEK', 'NOK', 'DKK', 'CZK', 'HUF', 'TRY', 'AUD', 'CAD'];
+        $results = [];
+
+        foreach ($compareCurrencies as $target) {
+            if ($target === $baseCurrency) continue;
+
+            $rate = $this->getExchangeRate($baseCurrency, $target);
+            if ($rate) {
+                $results[$target] = [
+                    'currency' => $target,
+                    'rate' => $rate['rate'],
+                    'mid_market' => $rate['mid_market_rate'],
+                    'margin' => $rate['margin_percentage'] . '%',
+                    'updated' => $rate['timestamp']
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Store exchange rate in database for historical tracking
+     */
+    public function storeExchangeRate(\PDO $pdo, string $source, string $target, float $rate, float $midMarketRate): bool
+    {
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO exchange_rates (source_currency, target_currency, rate, mid_market_rate, margin_percentage, recorded_at)
+                VALUES (?, ?, ?, ?, ?, NOW())
+            ");
+
+            $margin = $midMarketRate > 0 ? (($midMarketRate - $rate) / $midMarketRate) * 100 : 0;
+
+            return $stmt->execute([$source, $target, $rate, $midMarketRate, abs($margin)]);
+        } catch (\Exception $e) {
+            $this->log("Failed to store exchange rate: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get historical exchange rates from database
+     */
+    public function getHistoricalRates(\PDO $pdo, string $source, string $target, int $days = 30): array
+    {
+        try {
+            $stmt = $pdo->prepare("
+                SELECT rate, mid_market_rate, margin_percentage, recorded_at
+                FROM exchange_rates
+                WHERE source_currency = ? AND target_currency = ?
+                AND recorded_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+                ORDER BY recorded_at DESC
+            ");
+            $stmt->execute([$source, $target, $days]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Format currency amount for display
+     */
+    public function formatCurrency(float $amount, string $currency): string
+    {
+        $symbols = [
+            'EUR' => '€', 'GBP' => '£', 'USD' => '$', 'CHF' => 'CHF ',
+            'SEK' => 'kr ', 'NOK' => 'kr ', 'DKK' => 'kr ', 'PLN' => 'zł ',
+            'CZK' => 'Kč ', 'HUF' => 'Ft ', 'TRY' => '₺', 'AUD' => 'A$',
+            'CAD' => 'C$', 'JPY' => '¥', 'INR' => '₹', 'AED' => 'د.إ ',
+            'MAD' => 'MAD ', 'ZAR' => 'R '
+        ];
+
+        $symbol = $symbols[$currency] ?? $currency . ' ';
+        $decimals = in_array($currency, ['JPY', 'HUF', 'KRW']) ? 0 : 2;
+
+        return $symbol . number_format($amount, $decimals, ',', '.');
     }
 }
