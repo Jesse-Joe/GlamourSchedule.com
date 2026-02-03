@@ -499,8 +499,15 @@
             <?php if ($isEarlyAdopter): ?>
                 <div class="early-adopter-badge">
                     <i class="fas fa-star"></i>
-                    <span>Early Adopter: <?= $__('early_adopter_badge', ['count' => 100 - ($earlyAdopterCount ?? 0)]) ?> &euro;0,99!</span>
+                    <span>Early Bird #<?= $earlyAdopterCount + 1 ?>/100:
+                        <?php if ($showDualCurrency ?? false): ?>
+                            <?= $localPrice ?> (<?= $eurPrice ?>)
+                        <?php else: ?>
+                            <?= $eurPrice ?>
+                        <?php endif; ?>
+                    </span>
                 </div>
+                <p style="color:#888;font-size:0.9rem;margin-top:0.5rem">Nog <?= $spotsLeft ?> plekken in <?= htmlspecialchars($countryName) ?></p>
             <?php endif; ?>
         </div>
 
@@ -683,21 +690,28 @@
                 <!-- Pricing -->
                 <div class="pricing-card">
                     <div class="price-display">
-                        <span class="price-amount">&euro;<?= number_format($regFee, 2, ',', '.') ?></span>
-                        <span class="price-period">eenmalig (na 14 dagen proeftijd)</span>
+                        <?php if ($showDualCurrency ?? false): ?>
+                            <span class="price-amount"><?= $localPrice ?></span>
+                            <span class="price-period">(<?= $eurPrice ?>) na 14 dagen proeftijd</span>
+                        <?php else: ?>
+                            <span class="price-amount"><?= $eurPrice ?></span>
+                            <span class="price-period">na 14 dagen proeftijd</span>
+                        <?php endif; ?>
                     </div>
                     <div class="price-note" id="employee-price-note" style="display:none; color: #fbbf24;">
                         <i class="fas fa-users"></i>
-                        <span>0 medewerker(s): +&euro;0,00</span>
+                        <span>0 medewerker(s): +€0,00</span>
                     </div>
                     <div class="price-note">
                         <i class="fas fa-info-circle"></i>
-                        <span>Geen maandelijkse kosten, alleen &euro;1,75 per boeking</span>
+                        <span>Geen maandelijkse kosten, alleen €1,75 per boeking</span>
                     </div>
+                    <?php if ($isEarlyAdopter): ?>
                     <div class="price-note" style="font-size: 0.8rem; opacity: 0.7;">
                         <i class="fas fa-tag"></i>
-                        <span>Normale prijs na promotie: &euro;99,99</span>
+                        <span>Normale prijs na early bird: <?= $showDualCurrency ? $localOriginal . ' (' . $eurOriginal . ')' : $eurOriginal ?></span>
                     </div>
+                    <?php endif; ?>
 
                     <div class="benefits-list">
                         <div class="benefit-item"><i class="fas fa-check-circle"></i> <?= $__('benefit_unlimited') ?></div>

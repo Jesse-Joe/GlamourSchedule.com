@@ -221,10 +221,10 @@ class GeoIP
             ];
         }
 
-        // Promo exhausted
+        // Promo exhausted - standard price €99.99
         return [
-            'price' => 29.99,
-            'original_price' => 29.99,
+            'price' => 99.99,
+            'original_price' => 99.99,
             'is_promo' => false,
             'spots_left' => 0,
             'early_bird_number' => null,
@@ -233,7 +233,42 @@ class GeoIP
     }
 
     /**
+     * Get promotion price with local currency display
+     * Shows price in local currency but charges EUR equivalent
+     */
+    public function getPromotionPriceWithCurrency(string $countryCode): array
+    {
+        $promo = $this->getPromotionPrice($countryCode);
+
+        try {
+            $currencyService = new \GlamourSchedule\Services\CurrencyService();
+            $localPrice = $currencyService->getDisplayPrice($promo['price'], $countryCode);
+            $localOriginal = $currencyService->getDisplayPrice($promo['original_price'], $countryCode);
+
+            $promo['local_price'] = $localPrice['local_formatted'];
+            $promo['local_original'] = $localOriginal['local_formatted'];
+            $promo['local_currency'] = $localPrice['local_currency'];
+            $promo['local_symbol'] = $localPrice['local_symbol'];
+            $promo['eur_price'] = $localPrice['eur_formatted'];
+            $promo['eur_original'] = $localOriginal['eur_formatted'];
+            $promo['show_dual'] = ($localPrice['local_currency'] !== 'EUR');
+        } catch (\Exception $e) {
+            // Fallback to EUR only
+            $promo['local_price'] = '€' . number_format($promo['price'], 2, ',', '.');
+            $promo['local_original'] = '€' . number_format($promo['original_price'], 2, ',', '.');
+            $promo['local_currency'] = 'EUR';
+            $promo['local_symbol'] = '€';
+            $promo['eur_price'] = $promo['local_price'];
+            $promo['eur_original'] = $promo['local_original'];
+            $promo['show_dual'] = false;
+        }
+
+        return $promo;
+    }
+
+    /**
      * Create country promotion entry (100 early bird spots)
+     * Early bird: €0.99, Standard: €99.99
      */
     private function createCountryPromotion(string $countryCode): void
     {
@@ -241,7 +276,7 @@ class GeoIP
             $this->db->query(
                 "INSERT IGNORE INTO country_promotions
                  (country_code, country_name, promo_price, normal_price, max_promo_registrations, current_registrations, is_active)
-                 VALUES (?, ?, 0.99, 29.99, 100, 0, 1)",
+                 VALUES (?, ?, 0.99, 99.99, 100, 0, 1)",
                 [$countryCode, $countryCode]
             );
         } catch (\Exception $e) {

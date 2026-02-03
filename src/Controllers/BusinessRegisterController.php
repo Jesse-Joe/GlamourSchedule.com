@@ -32,7 +32,7 @@ class BusinessRegisterController extends Controller
         // Get user location based on IP
         $location = $this->geoIP->lookup();
         $countryCode = $location['country_code'];
-        $promoInfo = $this->geoIP->getPromotionPrice($countryCode);
+        $promoInfo = $this->geoIP->getPromotionPriceWithCurrency($countryCode);
 
         // Log the visit
         $this->geoIP->logLocation($location, null, null, '/business/register');
@@ -55,7 +55,8 @@ class BusinessRegisterController extends Controller
             }
         }
 
-        // Determine final price: promo price takes priority over referral discount
+        // Determine final price: promo price (€0.99) or standard (€99.99)
+        // Both are paid after 14 days trial
         $regFee = $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? $discountedFee : self::REGISTRATION_FEE);
 
         return $this->view('pages/business/register', [
@@ -70,13 +71,20 @@ class BusinessRegisterController extends Controller
             'hasValidReferral' => $hasValidReferral,
             'referralCode' => $referralCode,
             'salesPartnerDiscount' => self::SALES_PARTNER_DISCOUNT,
-            // New geo-based data
+            // Geo-based data with local currency
             'countryCode' => $countryCode,
             'countryName' => $location['country_name'],
             'promoPrice' => $promoInfo['price'],
             'spotsLeft' => $promoInfo['spots_left'],
             'isPromo' => $promoInfo['is_promo'],
-            'detectedLanguage' => $location['language']
+            'detectedLanguage' => $location['language'],
+            // Local currency display (shows local + EUR for non-EUR countries)
+            'localPrice' => $promoInfo['local_price'],
+            'localOriginal' => $promoInfo['local_original'],
+            'localCurrency' => $promoInfo['local_currency'],
+            'eurPrice' => $promoInfo['eur_price'],
+            'eurOriginal' => $promoInfo['eur_original'],
+            'showDualCurrency' => $promoInfo['show_dual']
         ]);
     }
 
