@@ -9,17 +9,19 @@ class HomeController extends Controller
     {
         http_response_code(200);
 
-        $boostedBusinesses = $this->getBoostedBusinesses();
-        $featuredBusinesses = $this->getFeaturedBusinesses();
+        // Get GeoIP data for country filtering and localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+
+        $boostedBusinesses = $this->getBoostedBusinesses($countryCode);
+        $featuredBusinesses = $this->getFeaturedBusinesses($countryCode);
         $categories = $this->getCategories();
         $stats = $this->getPlatformStats();
 
         $countryStats = $this->getCountryStats();
 
-        // Get GeoIP data for localized pricing
-        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
-        $location = $geoIP->lookup();
-        $countryCode = $location['country_code'] ?? 'NL';
+        // Get localized pricing for visitor's country
         $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
 
         return $this->view('pages/home', [
@@ -37,8 +39,9 @@ class HomeController extends Controller
     /**
      * Get boosted businesses (paid promotion)
      * Only show businesses with active boost (boost_expires_at > NOW())
+     * Filtered by visitor's country
      */
-    private function getBoostedBusinesses(): array
+    private function getBoostedBusinesses(string $visitorCountry): array
     {
         $stmt = $this->db->query(
             "SELECT b.*, b.company_name as name,
@@ -51,17 +54,24 @@ class HomeController extends Controller
              WHERE b.status = 'active'
                AND b.is_boosted = 1
                AND b.boost_expires_at > NOW()
+               AND b.country = ?
              GROUP BY b.id
              ORDER BY b.boost_expires_at DESC
-             LIMIT 9"
+             LIMIT 9",
+            [$visitorCountry]
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function getFeaturedBusinesses(): array
+    /**
+     * Get featured businesses based on monthly bookings
+     * Filtered by visitor's country
+     */
+    private function getFeaturedBusinesses(string $visitorCountry): array
     {
         // Get top 9 salons based on monthly bookings (salon leaderboard)
         // Excludes boosted businesses to avoid duplicates
+        // Filtered by visitor's country
         $stmt = $this->db->query(
             "SELECT b.*, b.company_name as name,
                     COALESCE(AVG(r.rating), 0) as avg_rating,
@@ -76,9 +86,11 @@ class HomeController extends Controller
              LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
              WHERE b.status = 'active'
                AND (b.is_boosted = 0 OR b.is_boosted IS NULL OR b.boost_expires_at <= NOW())
+               AND b.country = ?
              GROUP BY b.id
              ORDER BY monthly_bookings DESC, avg_rating DESC
-             LIMIT 9"
+             LIMIT 9",
+            [$visitorCountry]
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
