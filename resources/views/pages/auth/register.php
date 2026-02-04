@@ -713,7 +713,7 @@
                         </div>
                         <div class="price-note">
                             <i class="fas fa-receipt"></i>
-                            <span><?= str_replace('&euro;1.75', $promo['fee_display'] ?? '€1,75', $translations['per_booking_fee'] ?? '&euro;1.75 per successful booking') ?></span>
+                            <span><?= str_replace(':amount', $promo['fee_display'] ?? '€1,75', $translations['per_booking_fee'] ?? ':amount per successful booking') ?></span>
                         </div>
 
                         <div class="benefits-list">
