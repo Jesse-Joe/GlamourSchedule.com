@@ -1802,7 +1802,11 @@ if (!$coverImage && !empty($images)) {
                                     </div>
                                     <div class="biz-service-right">
                                         <?php if ($showPrices): ?>
-                                            <span class="biz-service-price">&euro;<?= number_format($svc['price'], 0) ?></span>
+                                            <span class="biz-service-price"><?php
+                                                $svcPriceDisplay = $currencyService->convertFromEur((float)$svc['price'], $visitorCurrency);
+                                                echo $svcPriceDisplay['local_symbol'] . number_format($svcPriceDisplay['local_amount'], 0);
+                                                if ($showDualCurrency): ?> <small style="opacity:0.7">(€<?= number_format($svc['price'], 0) ?>)</small><?php endif;
+                                            ?></span>
                                         <?php endif; ?>
                                         <span class="biz-service-arrow"><i class="fas fa-chevron-right"></i></span>
                                     </div>

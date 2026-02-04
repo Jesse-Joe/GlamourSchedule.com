@@ -76,6 +76,14 @@ class BusinessController extends Controller
             return $path ? $baseUrl . '/' . ltrim($path, '/') : $baseUrl;
         };
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
         return $this->view('pages/business/show', [
             'pageTitle' => $business['name'],
             'business' => $business,
@@ -86,7 +94,10 @@ class BusinessController extends Controller
             'settings' => $settings,
             'reviewStats' => $reviewStats,
             'businessUrl' => $businessUrlHelper,
-            'isSubdomain' => false
+            'isSubdomain' => false,
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
         ]);
     }
 
