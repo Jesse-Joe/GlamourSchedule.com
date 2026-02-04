@@ -1946,7 +1946,10 @@ body .biz-card .biz-card-footer {
                         <div class="biz-card-footer" style="margin-top:auto !important; padding-top:12px !important; display:flex !important; align-items:center !important; justify-content:space-between !important;">
                             <?php if (!empty($biz['min_price'])): ?>
                                 <span class="biz-card-price">
-                                    <?= $translations['from_price'] ?? 'From' ?> <strong>&euro;<?= number_format($biz['min_price'], 0) ?></strong>
+                                    <?= $translations['from_price'] ?? 'From' ?> <strong><?php
+                                        $minPriceDisplay = $currencyService->convertFromEur((float)$biz['min_price'], $visitorCurrency);
+                                        echo $minPriceDisplay['local_symbol'] . number_format($minPriceDisplay['local_amount'], 0);
+                                    ?></strong>
                                 </span>
                             <?php else: ?>
                                 <span class="biz-card-price"></span>

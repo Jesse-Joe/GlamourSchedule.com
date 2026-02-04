@@ -105,6 +105,14 @@ class SearchController extends Controller
         // Enrich businesses with additional data (pass calculated coordinates for distance)
         $businesses = $this->enrichBusinessData($businesses, $calcLat, $calcLng);
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $geoLocation = $geoIP->lookup();
+        $visitorCountryCode = $geoLocation['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($visitorCountryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
         return $this->view('pages/search/index', [
             'pageTitle' => $this->t('search'),
             'businesses' => $businesses,
@@ -118,7 +126,10 @@ class SearchController extends Controller
             'userLng' => $userLng,
             'locationSource' => $locationSource,
             'searchCountry' => $userCountry,
-            'ipCountry' => $ipCountry
+            'ipCountry' => $ipCountry,
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
         ]);
     }
 
