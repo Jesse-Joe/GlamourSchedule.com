@@ -325,6 +325,103 @@
     line-height: 1.5;
 }
 
+/* Boost Pricing Section */
+.boost-pricing {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+.boost-pricing-header {
+    margin-bottom: 2rem;
+}
+.boost-pricing-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+.boost-pricing-icon i {
+    font-size: 1.75rem;
+    color: #ffffff;
+}
+.boost-pricing-header h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.5rem;
+}
+.boost-pricing-subtitle {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+.boost-pricing-card {
+    background: #111111;
+    border: 1px solid #333333;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+.boost-pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f59e0b;
+    color: #000000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+.boost-pricing-amount {
+    margin-bottom: 1.5rem;
+}
+.boost-price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    display: block;
+}
+.boost-period {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+}
+.boost-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    text-align: left;
+}
+.boost-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.85);
+}
+.boost-features li i {
+    color: #f59e0b;
+    font-size: 0.9rem;
+}
+.boost-note {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    margin: 0;
+    font-style: italic;
+}
+
 /* FAQ Section */
 .pricing-faq {
     margin-bottom: 4rem;
@@ -610,6 +707,31 @@
                         <p><?= $translations['transparent_pricing_desc'] ?? 'Je ziet altijd precies wat je ontvangt per boeking in je dashboard.' ?></p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Boost/Featured Section -->
+        <div class="boost-pricing">
+            <div class="boost-pricing-header">
+                <div class="boost-pricing-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3><?= $translations['boost_your_salon'] ?? 'Boost je Salon' ?></h3>
+                <p class="boost-pricing-subtitle"><?= $translations['boost_subtitle'] ?? 'Word uitgelicht op de homepage en krijg meer klanten' ?></p>
+            </div>
+            <div class="boost-pricing-card">
+                <div class="boost-pricing-badge"><?= $translations['optional'] ?? 'Optioneel' ?></div>
+                <div class="boost-pricing-amount">
+                    <span class="boost-price"><?= $promo['boost_price_display'] ?? '€299,99' ?></span>
+                    <span class="boost-period"><?= $translations['for_30_days'] ?? 'voor 30 dagen' ?></span>
+                </div>
+                <ul class="boost-features">
+                    <li><i class="fas fa-star"></i> <?= $translations['boost_feature_1'] ?? 'Uitgelicht op de homepage' ?></li>
+                    <li><i class="fas fa-badge-check"></i> <?= $translations['boost_feature_2'] ?? 'Speciale "Uitgelicht" badge' ?></li>
+                    <li><i class="fas fa-search"></i> <?= $translations['boost_feature_3'] ?? 'Prioriteit in zoekresultaten' ?></li>
+                    <li><i class="fas fa-redo-alt"></i> <?= $translations['boost_feature_4'] ?? 'Geen automatische verlenging' ?></li>
+                </ul>
+                <p class="boost-note"><?= $translations['boost_note'] ?? 'Eenmalige betaling, activeer wanneer je wilt vanuit je dashboard.' ?></p>
             </div>
         </div>
 
