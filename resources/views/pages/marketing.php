@@ -450,7 +450,7 @@
         <div class="pricing-grid">
             <div class="pricing-card">
                 <h3>Starter</h3>
-                <div class="price">&euro;199<span> eenmalig</span></div>
+                <div class="price"><?= $starterPrice['local_formatted'] ?? '€199' ?><?php if ($showDualCurrency ?? false): ?> <small style="opacity:0.7">(€199)</small><?php endif; ?><span> eenmalig</span></div>
                 <div class="price-note">30 dagen campagne</div>
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Social media beheer (2 platforms)</li>
@@ -464,7 +464,7 @@
 
             <div class="pricing-card featured">
                 <h3>Professional</h3>
-                <div class="price">&euro;399<span> eenmalig</span></div>
+                <div class="price"><?= $proPrice['local_formatted'] ?? '€399' ?><?php if ($showDualCurrency ?? false): ?> <small style="opacity:0.7">(€399)</small><?php endif; ?><span> eenmalig</span></div>
                 <div class="price-note">30 dagen campagne</div>
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Social media beheer (3 platforms)</li>

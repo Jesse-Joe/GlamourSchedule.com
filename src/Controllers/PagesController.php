@@ -36,8 +36,23 @@ class PagesController extends Controller
 
     public function marketing(): string
     {
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+
+        // Currency service for package prices
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $starterPrice = $currencyService->getDisplayPrice(199, $countryCode);
+        $proPrice = $currencyService->getDisplayPrice(399, $countryCode);
+
         return $this->view('pages/marketing', [
-            'pageTitle' => 'Marketing'
+            'pageTitle' => 'Marketing',
+            'promo' => $promo,
+            'showDualCurrency' => $promo['show_dual'] ?? false,
+            'starterPrice' => $starterPrice,
+            'proPrice' => $proPrice
         ]);
     }
 
