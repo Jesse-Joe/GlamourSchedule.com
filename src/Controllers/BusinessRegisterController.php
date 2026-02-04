@@ -60,7 +60,7 @@ class BusinessRegisterController extends Controller
         $regFee = $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? $discountedFee : self::REGISTRATION_FEE);
 
         return $this->view('pages/business/register', [
-            'pageTitle' => 'Bedrijf Registreren',
+            'pageTitle' => $this->getTranslations()['page_business_register'] ?? 'Business Registration',
             'categories' => $categories,
             'isEarlyAdopter' => $promoInfo['is_promo'],
             'earlyAdopterCount' => 100 - $promoInfo['spots_left'],
@@ -190,7 +190,7 @@ class BusinessRegisterController extends Controller
             $regFee = $promoInfo['is_promo'] ? $promoInfo['price'] : ($hasValidReferral ? self::REGISTRATION_FEE - self::SALES_PARTNER_DISCOUNT : self::REGISTRATION_FEE);
 
             return $this->view('pages/business/register', [
-                'pageTitle' => 'Bedrijf Registreren',
+                'pageTitle' => $this->getTranslations()['page_business_register'] ?? 'Business Registration',
                 'categories' => $this->getCategories(),
                 'errors' => $errors,
                 'data' => $data,
@@ -421,7 +421,7 @@ class BusinessRegisterController extends Controller
             }
 
             return $this->view('pages/business/register', [
-                'pageTitle' => 'Bedrijf Registreren',
+                'pageTitle' => $this->getTranslations()['page_business_register'] ?? 'Business Registration',
                 'categories' => $this->getCategories(),
                 'errors' => ['general' => $this->t('error_registration_failed')],
                 'data' => $data,

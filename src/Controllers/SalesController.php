@@ -89,7 +89,7 @@ class SalesController extends Controller
         $referrals = $this->getAllReferrals();
 
         return $this->view('pages/sales/referrals', [
-            'pageTitle' => 'Mijn Referrals',
+            'pageTitle' => $this->getTranslations()['page_my_referrals'] ?? 'My Referrals',
             'salesUser' => $this->salesUser,
             'referrals' => $referrals,
             'csrfToken' => $this->csrf()
@@ -1046,7 +1046,7 @@ HTML;
     public function showRegister(): string
     {
         return $this->view('pages/sales/register', [
-            'pageTitle' => 'Word Sales Partner',
+            'pageTitle' => $this->getTranslations()['page_become_sales_partner'] ?? 'Become Sales Partner',
             'csrfToken' => $this->csrf()
         ]);
     }
@@ -1108,7 +1108,7 @@ HTML;
 
         if (!empty($errors)) {
             return $this->view('pages/sales/register', [
-                'pageTitle' => 'Word Sales Partner',
+                'pageTitle' => $this->getTranslations()['page_become_sales_partner'] ?? 'Become Sales Partner',
                 'errors' => $errors,
                 'data' => $data,
                 'csrfToken' => $this->csrf()

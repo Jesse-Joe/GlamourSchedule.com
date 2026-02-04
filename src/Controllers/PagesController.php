@@ -23,7 +23,7 @@ class PagesController extends Controller
     public function about(): string
     {
         return $this->view('pages/about', [
-            'pageTitle' => 'Functionaliteit'
+            'pageTitle' => $this->getTranslations()['page_about'] ?? 'Features'
         ]);
     }
 
@@ -48,7 +48,7 @@ class PagesController extends Controller
         $proPrice = $currencyService->getDisplayPrice(399, $countryCode);
 
         return $this->view('pages/marketing', [
-            'pageTitle' => 'Marketing',
+            'pageTitle' => $this->getTranslations()['page_marketing'] ?? 'Marketing',
             'promo' => $promo,
             'showDualCurrency' => $promo['show_dual'] ?? false,
             'starterPrice' => $starterPrice,
@@ -65,7 +65,7 @@ class PagesController extends Controller
         $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
 
         return $this->view('pages/pricing', [
-            'pageTitle' => $this->getTranslations()['pricing'] ?? 'Prijzen',
+            'pageTitle' => $this->getTranslations()['pricing'] ?? 'Pricing',
             'promo' => $promo,
             'countryCode' => $countryCode,
             'showDualCurrency' => $promo['show_dual'] ?? false

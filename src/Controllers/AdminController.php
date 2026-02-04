@@ -804,7 +804,7 @@ HTML;
 
         if (!$business) {
             return $this->view('pages/admin/verify-business-invalid', [
-                'pageTitle' => 'Ongeldige Link'
+                'pageTitle' => $this->getTranslations()['page_invalid_link'] ?? 'Invalid Link'
             ]);
         }
 
@@ -828,7 +828,7 @@ HTML;
         $action = $_GET['action'] ?? 'view';
 
         return $this->view('pages/admin/verify-business', [
-            'pageTitle' => 'Bedrijf Verifiëren',
+            'pageTitle' => $this->getTranslations()['page_verify_business'] ?? 'Verify Business',
             'business' => $business,
             'token' => $token,
             'action' => $action,
@@ -853,7 +853,7 @@ HTML;
 
         if (!$business) {
             return $this->view('pages/admin/verify-business-invalid', [
-                'pageTitle' => 'Ongeldige Link'
+                'pageTitle' => $this->getTranslations()['page_invalid_link'] ?? 'Invalid Link'
             ]);
         }
 
@@ -871,7 +871,7 @@ HTML;
             $this->sendBusinessApprovalEmail($business);
 
             return $this->view('pages/admin/verify-business-done', [
-                'pageTitle' => 'Bedrijf Geaccepteerd',
+                'pageTitle' => $this->getTranslations()['page_business_accepted'] ?? 'Business Accepted',
                 'business' => $business,
                 'status' => 'approved'
             ]);
@@ -891,7 +891,7 @@ HTML;
             $this->sendBusinessRejectionEmail($business, $reason);
 
             return $this->view('pages/admin/verify-business-done', [
-                'pageTitle' => 'Bedrijf Afgewezen',
+                'pageTitle' => $this->getTranslations()['page_business_rejected'] ?? 'Business Rejected',
                 'business' => $business,
                 'status' => 'rejected',
                 'reason' => $reason

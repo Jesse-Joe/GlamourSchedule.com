@@ -72,7 +72,7 @@ class BusinessDashboardController extends Controller
         $kvkVerificationNeeded = empty($this->business['kvk_verified']) && empty($this->business['is_verified']);
 
         return $this->view('pages/business/dashboard/index', [
-            'pageTitle' => 'Bedrijf Dashboard',
+            'pageTitle' => $this->getTranslations()['page_business_dashboard'] ?? 'Business Dashboard',
             'business' => $this->business,
             'stats' => $stats,
             'todayBookings' => $todayBookings,
@@ -941,7 +941,7 @@ class BusinessDashboardController extends Controller
         $hours = $this->getBusinessHours();
 
         return $this->view('pages/business/dashboard/profile', [
-            'pageTitle' => 'Bedrijfsprofiel',
+            'pageTitle' => $this->getTranslations()['page_business_profile'] ?? 'Business Profile',
             'business' => $this->business,
             'hours' => $hours,
             'csrfToken' => $this->csrf(),
@@ -2142,7 +2142,7 @@ HTML;
         $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
 
         return $this->view('pages/business/dashboard/boost', [
-            'pageTitle' => 'Boost je Bedrijf',
+            'pageTitle' => $this->getTranslations()['page_boost_business'] ?? 'Boost your Business',
             'business' => $this->business,
             'csrfToken' => $this->csrf(),
             'boostPrice' => $promo['boost_price'] ?? 299.99,

@@ -38,6 +38,7 @@ return [
     'required' => 'required',
     'min_chars' => 'min. :count characters',
     'for_business' => 'For Business',
+    'pricing' => 'Pricing',
 
     // ═══════════════════════════════════════════════════════════════════════
     // HOMEPAGE
@@ -1690,6 +1691,11 @@ return [
     'page_users_admin' => 'Users - Admin',
     'page_businesses_admin' => 'Businesses - Admin',
     'page_revenue_admin' => 'Revenue - Admin',
+    'page_about' => 'Features',
+    'page_marketing' => 'Marketing',
+    'page_business_dashboard' => 'Business Dashboard',
+    'page_business_profile' => 'Business Profile',
+    'page_boost_business' => 'Boost your Business',
 
     // ═══════════════════════════════════════════════════════════════════════
     // MISC

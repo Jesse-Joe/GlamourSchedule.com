@@ -34,7 +34,7 @@ return [
         'url' => getenv('APP_URL') ?: 'https://glamourschedule.com',
         'debug' => getenv('APP_DEBUG') === 'true',
         'timezone' => 'Europe/Amsterdam',
-        'locale' => 'nl',
+        'locale' => 'en',
         'key' => getenv('APP_KEY') ?: '',
     ],
     
@@ -98,8 +98,8 @@ return [
             // Africa
             'sw', 'af', 'am', 'ha', 'yo', 'ig', 'zu', 'xh', 'so', 'mg', 'rw'
         ],
-        'default' => 'nl',
-        'fallback' => 'en',
+        'default' => 'en',
+        'fallback' => 'nl',
         'detect_from_ip' => true,
         'detect_from_browser' => true,
         'names' => [

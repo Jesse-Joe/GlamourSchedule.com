@@ -38,6 +38,7 @@ return [
     'required' => 'verplicht',
     'min_chars' => 'min. :count tekens',
     'for_business' => 'Voor Bedrijven',
+    'pricing' => 'Prijzen',
 
     // ═══════════════════════════════════════════════════════════════════════
     // HOMEPAGE
@@ -1683,6 +1684,11 @@ return [
     'page_users_admin' => 'Gebruikers - Admin',
     'page_businesses_admin' => 'Bedrijven - Admin',
     'page_revenue_admin' => 'Omzet - Admin',
+    'page_about' => 'Functionaliteit',
+    'page_marketing' => 'Marketing',
+    'page_business_dashboard' => 'Bedrijf Dashboard',
+    'page_business_profile' => 'Bedrijfsprofiel',
+    'page_boost_business' => 'Boost je Bedrijf',
 
     // ═══════════════════════════════════════════════════════════════════════
     // MISC

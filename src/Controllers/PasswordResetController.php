@@ -12,7 +12,7 @@ class PasswordResetController extends Controller
     public function showForgotForm(): string
     {
         return $this->view('pages/auth/forgot-password', [
-            'pageTitle' => 'Wachtwoord vergeten'
+            'pageTitle' => $this->t('page_forgot_password')
         ]);
     }
 
@@ -95,14 +95,14 @@ class PasswordResetController extends Controller
 
         if (!$reset) {
             return $this->view('pages/auth/reset-password', [
-                'pageTitle' => 'Link verlopen',
+                'pageTitle' => $this->t('page_link_expired'),
                 'error' => 'expired',
                 'token' => null
             ]);
         }
 
         return $this->view('pages/auth/reset-password', [
-            'pageTitle' => 'Nieuw wachtwoord instellen',
+            'pageTitle' => $this->t('page_new_password'),
             'token' => $token,
             'email' => $reset['email']
         ]);
@@ -176,9 +176,16 @@ class PasswordResetController extends Controller
     private function sendResetEmail(string $email, string $firstName, string $token): void
     {
         $resetUrl = "https://glamourschedule.nl/reset-password/{$token}";
-
-        $subject = "Wachtwoord herstellen - GlamourSchedule";
         $currentYear = date('Y');
+
+        // Get translations
+        $subject = $this->t('email_password_reset_subject');
+        $heading = $this->t('email_password_reset_heading');
+        $greeting = $this->t('email_greeting', ['name' => $firstName]);
+        $body = $this->t('email_password_reset_body');
+        $buttonText = $this->t('email_password_reset_button');
+        $notice = $this->t('email_password_reset_notice');
+        $linkNotWorking = $this->t('email_link_not_working');
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
@@ -196,33 +203,32 @@ class PasswordResetController extends Controller
                     <tr>
                         <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
                             <div style="font-size:48px;margin-bottom:10px;">🔐</div>
-                            <h1 style="margin:0;font-size:26px;font-weight:700;">Wachtwoord herstellen</h1>
+                            <h1 style="margin:0;font-size:26px;font-weight:700;">{$heading}</h1>
                         </td>
                     </tr>
                     <!-- Content -->
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">Hoi <strong>{$firstName}</strong>,</p>
+                            <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">{$greeting}</p>
 
                             <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
-                                Je hebt een verzoek ingediend om je wachtwoord te herstellen.
-                                Klik op onderstaande knop om een nieuw wachtwoord in te stellen.
+                                {$body}
                             </p>
 
                             <p style="text-align:center;margin:35px 0;">
                                 <a href="{$resetUrl}" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:18px 50px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:17px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-                                    Nieuw wachtwoord instellen
+                                    {$buttonText}
                                 </a>
                             </p>
 
                             <div style="background:#0a0a0a;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
                                 <p style="margin:0;color:#ffffff;font-size:14px;">
-                                    <strong>Let op:</strong> Deze link is 1 uur geldig. Heb je dit verzoek niet gedaan? Negeer dan deze email.
+                                    {$notice}
                                 </p>
                             </div>
 
                             <p style="font-size:13px;color:#999;margin:25px 0 0;">
-                                Werkt de knop niet? Kopieer dan deze link:<br>
+                                {$linkNotWorking}<br>
                                 <a href="{$resetUrl}" style="color:#ffffff;word-break:break-all;">{$resetUrl}</a>
                             </p>
                         </td>
