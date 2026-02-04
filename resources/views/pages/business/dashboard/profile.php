@@ -192,11 +192,11 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                         <div>
                             <p style="margin:0;font-weight:600;color:#ffffff">Platform Fee bij Cash Betaling</p>
                             <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#999999">
-                                Bij cash betalingen betaalt de klant <strong style="color:#ffffff">€1,75 platform fee</strong> online tijdens het boeken.
+                                Bij cash betalingen betaalt de klant <strong style="color:#ffffff"><?= $feeData['fee_display'] ?? '€1,75' ?> platform fee</strong> online tijdens het boeken.
                                 Dit bedrag wordt afgetrokken van uw openstaande cash saldo.
                             </p>
                             <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#999999">
-                                <i class="fas fa-calculator"></i> Voorbeeld: Dienst €50 → Klant betaalt €1,75 online + €48,25 cash bij aankomst
+                                <i class="fas fa-calculator"></i> Voorbeeld: Dienst €50 → Klant betaalt <?= $feeData['fee_display'] ?? '€1,75' ?> online + €<?= number_format(50 - ($feeData['fee_amount'] ?? 1.75), 2, ',', '.') ?> cash bij aankomst
                             </p>
                         </div>
                     </div>
@@ -210,7 +210,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                             <p style="margin:0;font-weight:600;color:#dc2626">Belangrijke informatie bij cash betalingen</p>
                             <ul style="margin:0.75rem 0 0 0;padding-left:1.25rem;font-size:0.9rem;color:#991b1b;line-height:1.6">
                                 <li><strong>No-shows & weigeringen:</strong> GlamourSchedule neemt geen verantwoordelijkheid voor klanten die weigeren te betalen of niet komen opdagen bij cash boekingen.</li>
-                                <li><strong>Uw kosten:</strong> U betaalt alleen de €1,75 platform fee per boeking, ongeacht of de klant komt opdagen.</li>
+                                <li><strong>Uw kosten:</strong> U betaalt alleen de <?= $feeData['fee_display'] ?? '€1,75' ?> platform fee per boeking, ongeacht of de klant komt opdagen.</li>
                                 <li><strong>Annuleringsbeleid:</strong> Het standaard annuleringsbeleid van 50% bij annulering binnen 24 uur blijft van toepassing. Bij no-shows ontvangt u dit bedrag niet automatisch.</li>
                             </ul>
                             <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#991b1b">

@@ -8,6 +8,7 @@ use GlamourSchedule\Services\BookingSignatureService;
 class BusinessDashboardController extends Controller
 {
     private array $business;
+    private array $feeData;
 
     public function __construct()
     {
@@ -22,6 +23,28 @@ class BusinessDashboardController extends Controller
             exit;
         }
         $this->business = $business;
+
+        // Get fee data for business's country
+        $this->feeData = $this->getBusinessFeeData();
+    }
+
+    /**
+     * Get transaction fee data for the business's country
+     */
+    private function getBusinessFeeData(): array
+    {
+        $countryCode = $this->business['country'] ?? 'NL';
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+
+        return [
+            'fee_amount' => $promo['transaction_fee'] ?? 1.75,
+            'fee_display' => $promo['fee_display'] ?? '€1,75',
+            'local_fee' => $promo['local_fee'] ?? '€1,75',
+            'eur_fee' => $promo['eur_fee'] ?? '€1,75',
+            'currency_symbol' => $promo['local_symbol'] ?? '€',
+            'country_code' => $countryCode
+        ];
     }
 
     public function index(): string
@@ -57,7 +80,8 @@ class BusinessDashboardController extends Controller
             'isNewRegistration' => $isNewRegistration,
             'profileCompletion' => $profileCompletion,
             'aiManager' => $aiManagerData,
-            'kvkVerificationNeeded' => $kvkVerificationNeeded
+            'kvkVerificationNeeded' => $kvkVerificationNeeded,
+            'feeData' => $this->feeData
         ]);
     }
 
@@ -155,7 +179,8 @@ class BusinessDashboardController extends Controller
             'pageTitle' => 'Uitbetalingen',
             'business' => $this->business,
             'payouts' => $payouts,
-            'pendingAmount' => $pendingAmount
+            'pendingAmount' => $pendingAmount,
+            'feeData' => $this->feeData
         ]);
     }
 
@@ -919,7 +944,8 @@ class BusinessDashboardController extends Controller
             'pageTitle' => 'Bedrijfsprofiel',
             'business' => $this->business,
             'hours' => $hours,
-            'csrfToken' => $this->csrf()
+            'csrfToken' => $this->csrf(),
+            'feeData' => $this->feeData
         ]);
     }
 
@@ -2883,7 +2909,8 @@ HTML;
             'todayBookings' => $todayBookings,
             'recentCustomers' => $recentCustomers,
             'todayHours' => $todayHours,
-            'csrfToken' => $this->csrf()
+            'csrfToken' => $this->csrf(),
+            'feeData' => $this->feeData
         ]);
     }
 

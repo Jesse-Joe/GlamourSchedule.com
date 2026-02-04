@@ -819,7 +819,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                 <div class="payment-method" data-method="cash" onclick="selectPaymentMethod(this)">
                     <i class="fas fa-money-bill-wave"></i>
                     <div class="title">Contant bij Afspraak</div>
-                    <div class="desc">Klant betaalt €1,75 online + rest contant</div>
+                    <div class="desc">Klant betaalt <?= $feeData['fee_display'] ?? '€1,75' ?> online + rest contant</div>
                 </div>
             </div>
             <input type="hidden" id="selectedPaymentMethod" value="online">
@@ -954,7 +954,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <div class="card" style="background:linear-gradient(135deg, #000, #333);color:white;margin-top:1rem">
             <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> POS Tips</h4>
             <ul style="margin:0;padding-left:1.25rem;font-size:0.85rem;opacity:0.9">
-                <li>Bij contante betaling betaalt de klant €1,75 online als reserveringskosten</li>
+                <li>Bij contante betaling betaalt de klant <?= $feeData['fee_display'] ?? '€1,75' ?> online als reserveringskosten</li>
                 <li>Klik op "Link" om betalingslinks opnieuw te versturen</li>
                 <li>Bij annuleren wordt de online betaling teruggestort</li>
             </ul>
@@ -1242,9 +1242,11 @@ function updateSummary() {
     document.getElementById('summaryDateTime').textContent = date && time ? formatDate(date) + ' om ' + time : '-';
     document.getElementById('summaryPayment').textContent = paymentMethod === 'cash' ? 'Contant' : 'Online';
 
-    const onlineAmount = paymentMethod === 'cash' ? 1.75 : servicePrice;
-    document.getElementById('summaryOnlineAmount').textContent = '€' + onlineAmount.toFixed(2).replace('.', ',');
-    document.getElementById('summaryTotal').textContent = '€' + servicePrice.toFixed(2).replace('.', ',');
+    const platformFee = <?= $feeData['fee_amount'] ?? 1.75 ?>;
+    const currencySymbol = '<?= $feeData['currency_symbol'] ?? '€' ?>';
+    const onlineAmount = paymentMethod === 'cash' ? platformFee : servicePrice;
+    document.getElementById('summaryOnlineAmount').textContent = currencySymbol + onlineAmount.toFixed(2).replace('.', ',');
+    document.getElementById('summaryTotal').textContent = currencySymbol + servicePrice.toFixed(2).replace('.', ',');
 }
 
 // Listen for date/time changes

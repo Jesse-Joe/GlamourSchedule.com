@@ -140,7 +140,7 @@
             </div>
 
             <ul style="padding-left:1.25rem;color:var(--text-light);line-height:2;font-size:0.9rem">
-                <li>Boekingsbedrag - &euro;1,75 administratiekosten = jouw verdiensten</li>
+                <li>Boekingsbedrag - <?= $feeData['fee_display'] ?? '€1,75' ?> administratiekosten = jouw verdiensten</li>
                 <li>Uitbetalingen worden elke 14 dagen verwerkt</li>
                 <li>Minimaal uitbetalingsbedrag: &euro;25,00</li>
                 <li>Uitbetaling binnen 2-3 werkdagen na verwerking</li>
