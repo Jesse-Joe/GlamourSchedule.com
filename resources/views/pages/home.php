@@ -287,11 +287,26 @@
         <p class="section-subtitle"><?= $translations['featured_businesses_desc'] ?? 'Premium salons that stand out' ?></p>
     </div>
 
+    <?php
+    $boostedCount = count($boostedBusinesses ?? []);
+    $totalSlots = 9;
+    ?>
+
+    <?php if ($boostedCount === 0): ?>
+    <!-- No businesses in visitor's country -->
+    <div class="no-businesses-message" style="text-align:center;padding:3rem 1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border)">
+        <div style="width:80px;height:80px;background:var(--secondary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+            <i class="fas fa-store" style="font-size:2rem;color:var(--text-muted)"></i>
+        </div>
+        <h3 style="margin:0 0 0.5rem;color:var(--text)"><?= $translations['no_businesses_in_country'] ?? 'Momenteel nog geen bedrijven in uw land' ?></h3>
+        <p style="color:var(--text-muted);margin:0 0 1.5rem;max-width:400px;margin-left:auto;margin-right:auto"><?= $translations['no_businesses_in_country_desc'] ?? 'Wees de eerste! Registreer uw salon en bereik nieuwe klanten.' ?></p>
+        <a href="/register?type=business" class="btn btn-primary">
+            <i class="fas fa-rocket"></i> <?= $translations['register_your_salon'] ?? 'Registreer uw salon' ?>
+        </a>
+    </div>
+    <?php else: ?>
     <div class="boosted-grid">
         <?php
-        $boostedCount = count($boostedBusinesses ?? []);
-        $totalSlots = 9;
-
         // Show boosted businesses
         foreach ($boostedBusinesses ?? [] as $biz):
             $logoUrl = $biz['logo'] ?? '';
@@ -351,6 +366,7 @@
         </a>
         <?php endfor; ?>
     </div>
+    <?php endif; ?>
 </section>
 
 <!-- Categories - 10 Groups with Photos -->
