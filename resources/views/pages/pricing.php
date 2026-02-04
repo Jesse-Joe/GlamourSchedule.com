@@ -670,7 +670,7 @@
                             <td><i class="fas fa-check check"></i></td>
                         </tr>
                         <tr>
-                            <td><?= $translations['local_support'] ?? 'Nederlandse support' ?></td>
+                            <td><?= $translations['international_support'] ?? 'International support' ?></td>
                             <td><i class="fas fa-check check"></i></td>
                         </tr>
                     </tbody>

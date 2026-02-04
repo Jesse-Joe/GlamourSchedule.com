@@ -457,8 +457,8 @@
                 <span class="func-stat-label"><?= $translations['secure_payment_title'] ?? 'Secure Payment' ?></span>
             </div>
             <div class="func-stat">
-                <span class="func-stat-number">NL</span>
-                <span class="func-stat-label"><?= $translations['support'] ?? 'Support' ?></span>
+                <span class="func-stat-number">86+</span>
+                <span class="func-stat-label"><?= $translations['languages'] ?? 'Languages' ?></span>
             </div>
         </div>
     </section>
@@ -586,8 +586,8 @@
             <div class="business-feature">
                 <i class="fas fa-headset"></i>
                 <div>
-                    <h4><?= $translations['local_support'] ?? 'Local Support' ?></h4>
-                    <p><?= $translations['local_support_desc'] ?? 'Help when you need it' ?></p>
+                    <h4><?= $translations['international_support'] ?? 'International Support' ?></h4>
+                    <p><?= $translations['international_support_desc'] ?? 'Help in your language when you need it' ?></p>
                 </div>
             </div>
         </div>
