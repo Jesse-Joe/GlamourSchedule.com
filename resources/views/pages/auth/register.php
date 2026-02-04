@@ -534,6 +534,10 @@
                 <form method="POST" action="/register" id="formPersonal">
                     <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                     <input type="hidden" name="account_type" value="personal">
+                    <!-- Honeypot - hidden from humans, bots will fill this -->
+                    <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none" aria-hidden="true">
+                        <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+                    </div>
 
                     <div class="grid-2">
                         <div class="form-group">
@@ -603,6 +607,10 @@
 
                 <form method="POST" action="/business/register" id="formBusiness">
                     <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
+                    <!-- Honeypot - hidden from humans, bots will fill this -->
+                    <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none" aria-hidden="true">
+                        <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+                    </div>
 
                     <!-- Bedrijfsgegevens -->
                     <div class="section-header">

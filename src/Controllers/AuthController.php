@@ -287,6 +287,54 @@ class AuthController extends Controller
             ]);
         }
 
+        // Honeypot check - if filled, it's a bot
+        if (!empty($_POST['website_url'])) {
+            // Silently reject - don't give feedback to bots
+            sleep(2); // Slow down bots
+            return $this->redirect('/register?success=1');
+        }
+
+        // Rate limiting - max 5 registrations per IP per hour
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        try {
+            // Try to use rate_limits table
+            $this->db->query(
+                "CREATE TABLE IF NOT EXISTS rate_limits (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    ip_address VARCHAR(45) NOT NULL,
+                    action_type VARCHAR(50) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_ip_action (ip_address, action_type)
+                ) ENGINE=InnoDB"
+            );
+
+            // Clean old entries
+            $this->db->query("DELETE FROM rate_limits WHERE created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+
+            // Check rate limit
+            $stmt = $this->db->query(
+                "SELECT COUNT(*) as cnt FROM rate_limits WHERE ip_address = ? AND action_type = 'user_register' AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)",
+                [$ip]
+            );
+            $recentRegs = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'] ?? 0;
+
+            if ($recentRegs >= 5) {
+                return $this->view('pages/auth/register', [
+                    'pageTitle' => $this->t('page_register'),
+                    'error' => $this->t('error_too_many_attempts') ?? 'Too many registration attempts. Please try again later.'
+                ]);
+            }
+
+            // Log this attempt
+            $this->db->query(
+                "INSERT INTO rate_limits (ip_address, action_type) VALUES (?, 'user_register')",
+                [$ip]
+            );
+        } catch (\Exception $e) {
+            // Rate limiting failed, continue without it
+            error_log("Rate limiting error: " . $e->getMessage());
+        }
+
         $data = [
             'first_name' => trim($_POST['first_name'] ?? ''),
             'last_name' => trim($_POST['last_name'] ?? ''),
