@@ -16,13 +16,21 @@ class HomeController extends Controller
 
         $countryStats = $this->getCountryStats();
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+
         return $this->view('pages/home', [
             'pageTitle' => 'Home',
             'boostedBusinesses' => $boostedBusinesses,
             'featuredBusinesses' => $featuredBusinesses,
             'categories' => $categories,
             'stats' => $stats,
-            'countryStats' => $countryStats
+            'countryStats' => $countryStats,
+            'promo' => $promo,
+            'showDualCurrency' => $promo['show_dual'] ?? false
         ]);
     }
 

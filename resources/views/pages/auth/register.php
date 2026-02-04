@@ -697,8 +697,11 @@
                             <i class="fas fa-star"></i> <?= $translations['early_bird'] ?? 'Early Bird - First 100 businesses' ?>
                         </div>
                         <div class="price-display">
-                            <span class="price-amount">&euro;0,99</span>
+                            <span class="price-amount"><?= $promo['local_price'] ?? '€0,99' ?></span>
                             <span class="price-period"><?= $translations['one_time'] ?? 'one-time' ?></span>
+                            <?php if ($showDualCurrency ?? false): ?>
+                            <span class="price-eur" style="font-size:0.8rem;color:rgba(255,255,255,0.6)">(<?= $promo['eur_price'] ?? '€0,99' ?>)</span>
+                            <?php endif; ?>
                         </div>
                         <div class="price-note" style="margin-bottom:0.5rem">
                             <i class="fas fa-clock"></i>
@@ -706,11 +709,11 @@
                         </div>
                         <div class="price-note" style="margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.05);border-radius:8px">
                             <i class="fas fa-info-circle"></i>
-                            <span><?= $translations['after_price_new_business'] ?? 'Then &euro;99.99 one-time for new businesses' ?></span>
+                            <span><?= str_replace('&euro;99.99', $promo['local_original'] ?? '€99,99', $translations['after_price_new_business'] ?? 'Then &euro;99.99 one-time for new businesses') ?></span>
                         </div>
                         <div class="price-note">
                             <i class="fas fa-receipt"></i>
-                            <span><?= $translations['per_booking_fee'] ?? '&euro;1.75 per successful booking' ?></span>
+                            <span><?= str_replace('&euro;1.75', $promo['fee_display'] ?? '€1,75', $translations['per_booking_fee'] ?? '&euro;1.75 per successful booking') ?></span>
                         </div>
 
                         <div class="benefits-list">

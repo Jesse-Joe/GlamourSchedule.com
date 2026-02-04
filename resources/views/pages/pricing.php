@@ -507,11 +507,11 @@
                 </div>
 
                 <div class="pricing-price">
-                    <div class="pricing-price-old">&euro;99,99</div>
-                    <div class="pricing-price-amount"><span class="currency">&euro;</span>0,99</div>
+                    <div class="pricing-price-old"><?= $promo['local_original'] ?? '€99,99' ?></div>
+                    <div class="pricing-price-amount"><?= $promo['local_price'] ?? '€0,99' ?></div>
                     <div class="pricing-price-period"><?= $translations['one_time_after_trial'] ?? 'eenmalig na 14 dagen proeftijd' ?></div>
                     <?php if ($showDualCurrency ?? false): ?>
-                    <div class="pricing-price-local"><?= $promo['local_price'] ?? '' ?> (<?= $promo['eur_price'] ?? '&euro;0,99' ?>)</div>
+                    <div class="pricing-price-local">(<?= $promo['eur_price'] ?? '€0,99' ?>)</div>
                     <?php endif; ?>
                     <div class="spots-left-badge">
                         <i class="fas fa-fire"></i>
@@ -548,10 +548,10 @@
                 </div>
 
                 <div class="pricing-price">
-                    <div class="pricing-price-amount"><span class="currency">&euro;</span>99,99</div>
+                    <div class="pricing-price-amount"><?= $promo['local_original'] ?? '€99,99' ?></div>
                     <div class="pricing-price-period"><?= $translations['one_time_after_trial'] ?? 'eenmalig na 14 dagen proeftijd' ?></div>
                     <?php if ($showDualCurrency ?? false): ?>
-                    <div class="pricing-price-local"><?= $promo['local_original'] ?? '' ?></div>
+                    <div class="pricing-price-local">(<?= $promo['eur_original'] ?? '€99,99' ?>)</div>
                     <?php endif; ?>
                 </div>
 

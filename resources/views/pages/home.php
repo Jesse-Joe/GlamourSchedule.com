@@ -578,7 +578,7 @@
                     <i class="fas fa-rocket"></i> <?= $translations['start_free'] ?? 'Start Free' ?>
                 </a>
                 <span class="badge">
-                    <i class="fas fa-tag"></i> <?= str_replace(':count', '100', $translations['first_salons_offer'] ?? 'First 100 salons: only') ?> &euro;0,99
+                    <i class="fas fa-tag"></i> <?= str_replace(':count', '100', $translations['first_salons_offer'] ?? 'First 100 salons: only') ?> <?= $promo['local_price'] ?? '€0,99' ?>
                 </span>
             </div>
         </div>

@@ -251,9 +251,17 @@ class AuthController extends Controller
         // Get categories for business registration tab
         $categories = $this->getCategories();
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+
         return $this->view('pages/auth/register', [
             'pageTitle' => $this->t('page_register'),
-            'categories' => $categories
+            'categories' => $categories,
+            'promo' => $promo,
+            'showDualCurrency' => $promo['show_dual'] ?? false
         ]);
     }
 
