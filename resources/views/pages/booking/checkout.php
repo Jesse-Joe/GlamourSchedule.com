@@ -359,7 +359,11 @@ $accentColor = $settings['accent_color'] ?? '#000000';
                         <span class="service-duration">
                             <i class="fas fa-clock"></i> <?= $service['duration_minutes'] ?> <?= $translations['minutes'] ?? 'minutes' ?>
                         </span>
-                        <span class="service-price">&euro;<?= number_format($service['sale_price'] ?? $service['price'], 2, ',', '.') ?></span>
+                        <span class="service-price"><?php
+                            $priceDisplay = $currencyService->convertFromEur((float)($service['sale_price'] ?? $service['price']), $visitorCurrency);
+                            echo $priceDisplay['local_formatted'];
+                            if ($showDualCurrency): ?> <small style="opacity:0.7">(<?= $priceDisplay['eur_formatted'] ?>)</small><?php endif;
+                        ?></span>
                     </div>
                 </div>
                 <?php if (!empty($employee)): ?>
@@ -458,7 +462,7 @@ $accentColor = $settings['accent_color'] ?? '#000000';
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <span id="points_selected" style="font-weight:600;color:#92400e;">0 <?= $translations['points'] ?? 'punten' ?></span>
-                            <span id="discount_preview" style="font-weight:700;color:#16a34a;">-&euro;0,00</span>
+                            <span id="discount_preview" style="font-weight:700;color:#16a34a;">-<?= $currencyService->getSymbol($visitorCurrency) ?>0,00</span>
                         </div>
                         <p style="margin:0.5rem 0 0;font-size:0.8rem;color:#92400e;">
                             <?= $translations['loyalty_100_equals_1'] ?? '100 punten = 1% korting' ?>
@@ -483,16 +487,23 @@ $accentColor = $settings['accent_color'] ?? '#000000';
                 <div id="price_breakdown" style="background:var(--secondary);border-radius:12px;padding:1rem;margin-bottom:1rem;display:none;">
                     <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
                         <span style="color:var(--text-light);"><?= $translations['service_price'] ?? 'Dienstprijs' ?></span>
-                        <span>&euro;<?= number_format($bookingData['service_price'], 2, ',', '.') ?></span>
+                        <span><?php
+                            $servicePriceDisplay = $currencyService->convertFromEur((float)$bookingData['service_price'], $visitorCurrency);
+                            echo $servicePriceDisplay['local_formatted'];
+                        ?></span>
                     </div>
                     <div id="loyalty_discount_row" style="display:flex;justify-content:space-between;color:#16a34a;">
                         <span><?= $translations['loyalty_discount'] ?? 'Puntkorting' ?></span>
-                        <span id="loyalty_discount_amount">-&euro;0,00</span>
+                        <span id="loyalty_discount_amount">-<?= $currencyService->getSymbol($visitorCurrency) ?>0,00</span>
                     </div>
                 </div>
                 <div class="total-box">
                     <span class="total-label"><?= $translations['checkout_total_to_pay'] ?? 'Total to pay' ?></span>
-                    <span class="total-amount" id="total_amount">&euro;<?= number_format($bookingData['total_price'], 2, ',', '.') ?></span>
+                    <span class="total-amount" id="total_amount"><?php
+                        $totalPriceDisplay = $currencyService->convertFromEur((float)$bookingData['total_price'], $visitorCurrency);
+                        echo $totalPriceDisplay['local_formatted'];
+                        if ($showDualCurrency): ?> <small style="opacity:0.7">(<?= $totalPriceDisplay['eur_formatted'] ?>)</small><?php endif;
+                    ?></span>
                 </div>
             </div>
 
@@ -532,8 +543,17 @@ $accentColor = $settings['accent_color'] ?? '#000000';
     const totalAmount = document.getElementById('total_amount');
     const loyaltyInput = document.getElementById('loyalty_points_input');
 
-    function formatCurrency(amount) {
-        return '€' + amount.toFixed(2).replace('.', ',');
+    const currencySymbol = '<?= $currencyService->getSymbol($visitorCurrency) ?>';
+    const exchangeRate = <?= $currencyService->getExchangeRate('EUR', $visitorCurrency) ?>;
+    const showDual = <?= $showDualCurrency ? 'true' : 'false' ?>;
+
+    function formatCurrency(eurAmount) {
+        const localAmount = eurAmount * exchangeRate;
+        let result = currencySymbol + localAmount.toFixed(2).replace('.', ',');
+        if (showDual) {
+            result += ' (€' + eurAmount.toFixed(2).replace('.', ',') + ')';
+        }
+        return result;
     }
 
     function calculateDiscount(points) {

@@ -72,13 +72,24 @@ class BookingController extends Controller
         // Get business settings for theme
         $settings = $this->getBusinessSettings($business['id']);
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
         return $this->view('pages/booking/create', [
             'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
             'business' => $business,
             'services' => $services,
             'selectedService' => $selectedService,
             'employees' => $employees,
-            'settings' => $settings
+            'settings' => $settings,
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
         ]);
     }
 
@@ -268,6 +279,14 @@ class BookingController extends Controller
             }
         }
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
         return $this->view('pages/booking/checkout', [
             'pageTitle' => $this->t('page_confirm_booking'),
             'business' => $business,
@@ -276,7 +295,10 @@ class BookingController extends Controller
             'bookingData' => $bookingData,
             'csrfToken' => $this->csrf(),
             'settings' => $settings,
-            'loyaltyData' => $loyaltyData
+            'loyaltyData' => $loyaltyData,
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
         ]);
     }
 
@@ -532,10 +554,21 @@ class BookingController extends Controller
             return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
+        // Get GeoIP data for localized pricing
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
         return $this->view('pages/booking/show', [
             'pageTitle' => $this->t('page_booking_number') . $booking['booking_number'],
             'booking' => $booking,
-            'csrfToken' => $this->csrf()
+            'csrfToken' => $this->csrf(),
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
         ]);
     }
 

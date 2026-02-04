@@ -624,7 +624,11 @@
 
             <?php if ($booking['status'] === 'pending' && $booking['payment_status'] !== 'paid'): ?>
                 <a href="/payment/create/<?= $booking['uuid'] ?>" class="booking-btn booking-btn-pay">
-                    <i class="fas fa-lock"></i> <?= $__('pay_now') ?> - &euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>
+                    <i class="fas fa-lock"></i> <?= $__('pay_now') ?> - <?php
+                        $payPriceDisplay = $currencyService->convertFromEur((float)$booking['total_price'], $visitorCurrency);
+                        echo $payPriceDisplay['local_formatted'];
+                        if ($showDualCurrency): ?> <small>(<?= $payPriceDisplay['eur_formatted'] ?>)</small><?php endif;
+                    ?>
                 </a>
                 <div style="height:1rem"></div>
             <?php endif; ?>
@@ -654,7 +658,11 @@
                 </div>
                 <div class="booking-row">
                     <span class="booking-label"><?= $__('total') ?></span>
-                    <span class="booking-value price">&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?></span>
+                    <span class="booking-value price"><?php
+                        $totalDisplay = $currencyService->convertFromEur((float)$booking['total_price'], $visitorCurrency);
+                        echo $totalDisplay['local_formatted'];
+                        if ($showDualCurrency): ?> <small style="opacity:0.7">(<?= $totalDisplay['eur_formatted'] ?>)</small><?php endif;
+                    ?></span>
                 </div>
                 <div class="booking-address">
                     <i class="fas fa-map-marker-alt"></i>
@@ -727,7 +735,8 @@
                 $hoursUntilAppointment = ($appointmentDateTime->getTimestamp() - $now->getTimestamp()) / 3600;
                 $isWithin24Hours = $hoursUntilAppointment <= 24 && $hoursUntilAppointment > 0;
                 $isPastAppointment = $hoursUntilAppointment <= 0;
-                $halfPrice = number_format($booking['total_price'] / 2, 2, ',', '.');
+                $halfPriceEur = $booking['total_price'] / 2;
+                $halfPriceDisplay = $currencyService->convertFromEur($halfPriceEur, $visitorCurrency);
                 ?>
                 <div class="booking-actions">
                     <a href="/search" class="booking-btn booking-btn-secondary">
@@ -760,11 +769,11 @@
             <div class="booking-modal-info">
                 <?php if ($isWithin24Hours): ?>
                     <p class="warning"><i class="fas fa-clock"></i> Binnen 24 uur voor afspraak</p>
-                    <p class="danger">50% (&euro;<?= $halfPrice ?>) gaat naar salon</p>
-                    <p>Je krijgt &euro;<?= $halfPrice ?> terug</p>
+                    <p class="danger">50% (<?= $halfPriceDisplay['local_formatted'] ?>) gaat naar salon</p>
+                    <p>Je krijgt <?= $halfPriceDisplay['local_formatted'] ?> terug</p>
                 <?php else: ?>
                     <p class="success"><i class="fas fa-check-circle"></i> Gratis annuleren</p>
-                    <p>Volledig bedrag (&euro;<?= number_format($booking['total_price'], 2, ',', '.') ?>) terug</p>
+                    <p>Volledig bedrag (<?= $totalDisplay['local_formatted'] ?>) terug</p>
                 <?php endif; ?>
             </div>
             <p class="booking-modal-question">Weet je het zeker?</p>
@@ -783,7 +792,7 @@
             <i class="fas fa-question-circle" style="font-size:3rem;color:#f59e0b;margin-bottom:1rem"></i>
             <h3 style="color:#fff;margin:0 0 1rem">Laatste check</h3>
             <?php if ($isWithin24Hours): ?>
-                <p style="color:#ef4444;font-weight:600;margin-bottom:1.5rem">&euro;<?= $halfPrice ?> gaat naar <?= htmlspecialchars($booking['business_name']) ?></p>
+                <p style="color:#ef4444;font-weight:600;margin-bottom:1.5rem"><?= $halfPriceDisplay['local_formatted'] ?> gaat naar <?= htmlspecialchars($booking['business_name']) ?></p>
             <?php else: ?>
                 <p style="color:#888;margin-bottom:1.5rem">Je afspraak wordt definitief geannuleerd</p>
             <?php endif; ?>

@@ -782,7 +782,11 @@ select.form-input {
                                     <i class="fas fa-clock"></i> <?= $service['duration_minutes'] ?> <?= $__('min') ?>
                                 </span>
                             </div>
-                            <span class="service-price">&euro;<?= number_format($service['price'], 2, ',', '.') ?></span>
+                            <span class="service-price"><?php
+                                $priceDisplay = $currencyService->convertFromEur((float)$service['price'], $visitorCurrency);
+                                echo $priceDisplay['local_formatted'];
+                                if ($showDualCurrency): ?> <small style="opacity:0.7">(<?= $priceDisplay['eur_formatted'] ?>)</small><?php endif;
+                            ?></span>
                         </label>
                     <?php endforeach; ?>
                 </div>
