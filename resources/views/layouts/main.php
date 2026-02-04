@@ -3,6 +3,14 @@
 $isLoggedIn = isset($_SESSION['user_id']);
 $isBusiness = isset($_SESSION['business_id']);
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Load promo data for popups if not already set
+if (!isset($promo)) {
+    $geoIP = new \GlamourSchedule\Core\GeoIP($db ?? new \GlamourSchedule\Core\Database());
+    $location = $geoIP->lookup();
+    $promo = $geoIP->getPromotionPriceWithCurrency($location['country_code'] ?? 'NL');
+    $showDualCurrency = $promo['show_dual'] ?? false;
+}
 ?>
 <html lang="<?= $lang ?? 'nl' ?>">
 <head>
@@ -790,9 +798,11 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 </div>
                 <h2><?= $translations['start_salon_for'] ?? 'Start your salon for only' ?></h2>
                 <div class="early-bird-price">
-                    <span class="currency">&euro;</span>
-                    <span class="amount">0,99</span>
+                    <span class="amount"><?= $promo['local_price'] ?? '€0,99' ?></span>
                 </div>
+                <?php if ($showDualCurrency ?? false): ?>
+                <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;margin:-0.5rem 0 0.5rem">(<?= $promo['eur_price'] ?? '€0,99' ?>)</p>
+                <?php endif; ?>
                 <p class="early-bird-subtitle"><?= $translations['early_bird_subtitle'] ?? 'One-time for the first 100 businesses' ?></p>
                 <ul class="early-bird-features">
                     <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_1'] ?? '14 days free trial' ?></li>
@@ -803,7 +813,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                 <a href="/register?type=business" class="early-bird-btn">
                     <i class="fas fa-rocket"></i> <?= $translations['register_now'] ?? 'Register Now' ?>
                 </a>
-                <p class="early-bird-note"><?= $translations['early_bird_note'] ?? 'After this €99.99 for new businesses' ?></p>
+                <p class="early-bird-note"><?= str_replace(['€99.99', '€99,99'], $promo['local_original'] ?? '€99,99', $translations['early_bird_note'] ?? 'After this €99.99 for new businesses') ?></p>
             </div>
         </div>
     </div>
@@ -818,9 +828,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     .early-bird-content { text-align: center; }
     .early-bird-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; padding: 0.5rem 1.25rem; border-radius: 50px; font-size: 0.9rem; font-weight: 700; margin-bottom: 1.5rem; }
     .early-bird-content h2 { color: #fff; font-size: 1.5rem; margin: 0 0 1rem; font-weight: 600; }
-    .early-bird-price { display: flex; align-items: flex-start; justify-content: center; gap: 0.25rem; margin-bottom: 0.5rem; }
-    .early-bird-price .currency { font-size: 1.5rem; color: #fbbf24; font-weight: 700; margin-top: 0.5rem; }
-    .early-bird-price .amount { font-size: 4rem; color: #fbbf24; font-weight: 800; line-height: 1; }
+    .early-bird-price { display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; }
+    .early-bird-price .amount { font-size: 3rem; color: #fbbf24; font-weight: 800; line-height: 1; }
     .early-bird-subtitle { color: rgba(255,255,255,0.7); margin: 0 0 1.5rem; font-size: 0.95rem; }
     .early-bird-features { list-style: none; padding: 0; margin: 0 0 1.5rem; text-align: left; }
     .early-bird-features li { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; color: rgba(255,255,255,0.9); font-size: 0.95rem; }
