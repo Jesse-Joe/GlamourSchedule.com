@@ -180,7 +180,7 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-user-plus"></i> Nieuwe Medewerker Toevoegen</h3>
+                <h3 class="card-title"><i class="fas fa-user-plus"></i> <?= $translations['add_new_employee'] ?? 'Add New Employee' ?></h3>
             </div>
 
             <form method="POST" action="/business/employees" enctype="multipart/form-data">
@@ -188,51 +188,51 @@
                 <input type="hidden" name="action" value="add">
 
                 <div class="form-group">
-                    <label class="form-label">Naam *</label>
-                    <input type="text" name="name" class="form-control" placeholder="Bijv: Lisa de Vries" required>
+                    <label class="form-label"><?= $translations['employee_name'] ?? 'Name' ?> *</label>
+                    <input type="text" name="name" class="form-control" placeholder="<?= $translations['employee_name_placeholder'] ?? 'E.g.: Lisa de Vries' ?>" required>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">E-mailadres</label>
-                        <input type="email" name="email" class="form-control" placeholder="medewerker@email.nl">
+                        <label class="form-label"><?= $translations['email_label'] ?? 'Email address' ?></label>
+                        <input type="email" name="email" class="form-control" placeholder="<?= $translations['employee_email_placeholder'] ?? 'employee@email.com' ?>">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Telefoonnummer</label>
-                        <input type="tel" name="phone" class="form-control" placeholder="06-12345678">
+                        <label class="form-label"><?= $translations['phone_label'] ?? 'Phone number' ?></label>
+                        <input type="tel" name="phone" class="form-control" placeholder="<?= $translations['phone_placeholder'] ?? '+1 234 567 890' ?>">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Bio / Beschrijving</label>
-                    <textarea name="bio" class="form-control" rows="3" placeholder="Korte beschrijving van de medewerker..."></textarea>
+                    <label class="form-label"><?= $translations['employee_bio'] ?? 'Bio / Description' ?></label>
+                    <textarea name="bio" class="form-control" rows="3" placeholder="<?= $translations['employee_bio_placeholder'] ?? 'Short description of the employee...' ?>"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Agenda Kleur</label>
+                    <label class="form-label"><?= $translations['calendar_color'] ?? 'Calendar Color' ?></label>
                     <input type="color" name="color" value="#000000" class="form-control" style="height:50px;padding:5px">
-                    <p class="form-hint">Deze kleur wordt gebruikt in de agenda om afspraken van deze medewerker te onderscheiden.</p>
+                    <p class="form-hint"><?= $translations['calendar_color_hint'] ?? 'This color is used in the calendar to distinguish appointments for this employee.' ?></p>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Foto</label>
+                    <label class="form-label"><?= $translations['photo'] ?? 'Photo' ?></label>
                     <input type="file" name="photo" class="form-control" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%">
-                    <i class="fas fa-plus"></i> Medewerker Toevoegen
+                    <i class="fas fa-plus"></i> <?= $translations['add_employee'] ?? 'Add Employee' ?>
                 </button>
             </form>
         </div>
 
         <div class="card" style="background:linear-gradient(135deg,#000000,#262626);color:white">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> Werknemersbeheer</h4>
+            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $translations['employee_management'] ?? 'Employee Management' ?></h4>
             <ul style="padding-left:1.25rem;opacity:0.9;font-size:0.9rem;line-height:1.8">
-                <li>Elke medewerker krijgt een eigen agenda</li>
-                <li>Klanten kunnen bij het boeken een medewerker kiezen</li>
-                <li>Meerdere afspraken tegelijk mogelijk op hetzelfde tijdstip</li>
-                <li>Per extra medewerker: &euro;4,99 eenmalig</li>
+                <li><?= $translations['employee_tip_1'] ?? 'Each employee gets their own calendar' ?></li>
+                <li><?= $translations['employee_tip_2'] ?? 'Customers can choose an employee when booking' ?></li>
+                <li><?= $translations['employee_tip_3'] ?? 'Multiple appointments possible at the same time' ?></li>
+                <li><?= $translations['employee_tip_4'] ?? 'Per additional employee: €4.99 one-time' ?></li>
             </ul>
         </div>
     </div>
@@ -241,14 +241,14 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-users"></i> Medewerkers (<?= count($employees) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-users"></i> <?= $translations['employees'] ?? 'Employees' ?> (<?= count($employees) ?>)</h3>
             </div>
 
             <?php if (empty($employees)): ?>
                 <div class="text-center" style="padding:3rem">
                     <i class="fas fa-users" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-                    <h4>Nog geen medewerkers</h4>
-                    <p class="text-muted">Voeg je eerste medewerker toe om afspraken per persoon te beheren.</p>
+                    <h4><?= $translations['no_employees_yet'] ?? 'No employees yet' ?></h4>
+                    <p class="text-muted"><?= $translations['no_employees_hint'] ?? 'Add your first employee to manage appointments per person.' ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($employees as $employee): ?>
@@ -273,7 +273,7 @@
                             <div style="margin-top:0.5rem">
                                 <span class="employee-status <?= $employee['is_active'] ? 'active' : 'inactive' ?>">
                                     <i class="fas fa-<?= $employee['is_active'] ? 'check-circle' : 'times-circle' ?>"></i>
-                                    <?= $employee['is_active'] ? 'Actief' : 'Inactief' ?>
+                                    <?= $employee['is_active'] ? ($translations['active'] ?? 'Active') : ($translations['inactive'] ?? 'Inactive') ?>
                                 </span>
                             </div>
                             <?php if (!empty($employee['services'])): ?>
@@ -314,7 +314,7 @@
 <div class="modal-overlay" id="editModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-user-edit"></i> Medewerker Bewerken</h3>
+            <h3><i class="fas fa-user-edit"></i> <?= $translations['edit_employee'] ?? 'Edit Employee' ?></h3>
             <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees" enctype="multipart/form-data" id="editForm">
@@ -323,49 +323,49 @@
             <input type="hidden" name="employee_id" id="edit_employee_id">
 
             <div class="form-group">
-                <label class="form-label">Naam *</label>
+                <label class="form-label"><?= $translations['employee_name'] ?? 'Name' ?> *</label>
                 <input type="text" name="name" id="edit_name" class="form-control" required>
             </div>
 
             <div class="grid grid-2">
                 <div class="form-group">
-                    <label class="form-label">E-mailadres</label>
+                    <label class="form-label"><?= $translations['email_label'] ?? 'Email address' ?></label>
                     <input type="email" name="email" id="edit_email" class="form-control">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Telefoonnummer</label>
+                    <label class="form-label"><?= $translations['phone_label'] ?? 'Phone number' ?></label>
                     <input type="tel" name="phone" id="edit_phone" class="form-control">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Bio / Beschrijving</label>
+                <label class="form-label"><?= $translations['employee_bio'] ?? 'Bio / Description' ?></label>
                 <textarea name="bio" id="edit_bio" class="form-control" rows="3"></textarea>
             </div>
 
             <div class="grid grid-2">
                 <div class="form-group">
-                    <label class="form-label">Agenda Kleur</label>
+                    <label class="form-label"><?= $translations['calendar_color'] ?? 'Calendar Color' ?></label>
                     <input type="color" name="color" id="edit_color" class="form-control" style="height:50px;padding:5px">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Status</label>
+                    <label class="form-label"><?= $translations['status'] ?? 'Status' ?></label>
                     <select name="is_active" id="edit_is_active" class="form-control">
-                        <option value="1">Actief</option>
-                        <option value="0">Inactief</option>
+                        <option value="1"><?= $translations['active'] ?? 'Active' ?></option>
+                        <option value="0"><?= $translations['inactive'] ?? 'Inactive' ?></option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Nieuwe Foto</label>
+                <label class="form-label"><?= $translations['new_photo'] ?? 'New Photo' ?></label>
                 <input type="file" name="photo" class="form-control" accept="image/*">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%">
-                <i class="fas fa-save"></i> Opslaan
+                <i class="fas fa-save"></i> <?= $translations['save'] ?? 'Save' ?>
             </button>
         </form>
     </div>
@@ -375,7 +375,7 @@
 <div class="modal-overlay" id="servicesModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-cut"></i> Diensten voor <span id="services_employee_name"></span></h3>
+            <h3><i class="fas fa-cut"></i> <?= $translations['services_for'] ?? 'Services for' ?> <span id="services_employee_name"></span></h3>
             <button class="modal-close" onclick="closeModal('servicesModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees">
@@ -383,7 +383,7 @@
             <input type="hidden" name="action" value="update_services">
             <input type="hidden" name="employee_id" id="services_employee_id">
 
-            <p class="text-muted" style="margin-bottom:1rem">Selecteer welke diensten deze medewerker kan uitvoeren:</p>
+            <p class="text-muted" style="margin-bottom:1rem"><?= $translations['select_services_hint'] ?? 'Select which services this employee can perform:' ?></p>
 
             <div class="services-grid">
                 <?php foreach ($allServices as $service): ?>
@@ -395,11 +395,11 @@
             </div>
 
             <?php if (empty($allServices)): ?>
-                <p class="text-muted text-center" style="padding:2rem">Voeg eerst diensten toe voordat je ze aan medewerkers kunt toewijzen.</p>
+                <p class="text-muted text-center" style="padding:2rem"><?= $translations['add_services_first'] ?? 'Add services first before you can assign them to employees.' ?></p>
             <?php endif; ?>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem">
-                <i class="fas fa-save"></i> Diensten Opslaan
+                <i class="fas fa-save"></i> <?= $translations['save_services'] ?? 'Save Services' ?>
             </button>
         </form>
     </div>
@@ -409,7 +409,7 @@
 <div class="modal-overlay" id="hoursModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-clock"></i> Werktijden voor <span id="hours_employee_name"></span></h3>
+            <h3><i class="fas fa-clock"></i> <?= $translations['working_hours_for'] ?? 'Working Hours for' ?> <span id="hours_employee_name"></span></h3>
             <button class="modal-close" onclick="closeModal('hoursModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees">
@@ -417,10 +417,18 @@
             <input type="hidden" name="action" value="update_hours">
             <input type="hidden" name="employee_id" id="hours_employee_id">
 
-            <p class="text-muted" style="margin-bottom:1rem">Stel de werktijden van deze medewerker in:</p>
+            <p class="text-muted" style="margin-bottom:1rem"><?= $translations['set_working_hours_hint'] ?? 'Set the working hours for this employee:' ?></p>
 
             <?php
-            $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
+            $days = [
+                $translations['monday'] ?? 'Monday',
+                $translations['tuesday'] ?? 'Tuesday',
+                $translations['wednesday'] ?? 'Wednesday',
+                $translations['thursday'] ?? 'Thursday',
+                $translations['friday'] ?? 'Friday',
+                $translations['saturday'] ?? 'Saturday',
+                $translations['sunday'] ?? 'Sunday'
+            ];
             foreach ($days as $index => $day):
                 $dayIndex = ($index + 1) % 7; // Convert to 0=Sunday format
             ?>
@@ -431,13 +439,13 @@
                     <input type="time" name="hours[<?= $dayIndex ?>][close]" class="form-control hour-close" style="flex:1" value="18:00">
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
                         <input type="checkbox" name="hours[<?= $dayIndex ?>][closed]" class="hour-closed" onchange="toggleDay(this)">
-                        Dicht
+                        <?= $translations['closed'] ?? 'Closed' ?>
                     </label>
                 </div>
             <?php endforeach; ?>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem">
-                <i class="fas fa-save"></i> Werktijden Opslaan
+                <i class="fas fa-save"></i> <?= $translations['save_working_hours'] ?? 'Save Working Hours' ?>
             </button>
         </form>
     </div>

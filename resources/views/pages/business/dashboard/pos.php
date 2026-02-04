@@ -2,8 +2,29 @@
 
 <?php
 $today = date('Y-m-d');
-$dayNames = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'];
-$monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+$dayNames = [
+    $translations['sunday'] ?? 'Sunday',
+    $translations['monday'] ?? 'Monday',
+    $translations['tuesday'] ?? 'Tuesday',
+    $translations['wednesday'] ?? 'Wednesday',
+    $translations['thursday'] ?? 'Thursday',
+    $translations['friday'] ?? 'Friday',
+    $translations['saturday'] ?? 'Saturday'
+];
+$monthNames = [
+    $translations['month_january'] ?? 'January',
+    $translations['month_february'] ?? 'February',
+    $translations['month_march'] ?? 'March',
+    $translations['month_april'] ?? 'April',
+    $translations['month_may'] ?? 'May',
+    $translations['month_june'] ?? 'June',
+    $translations['month_july'] ?? 'July',
+    $translations['month_august'] ?? 'August',
+    $translations['month_september'] ?? 'September',
+    $translations['month_october'] ?? 'October',
+    $translations['month_november'] ?? 'November',
+    $translations['month_december'] ?? 'December'
+];
 ?>
 
 <style>
@@ -703,7 +724,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 <div class="pos-header">
     <h1 style="color:#ffffff">
         <i class="fas fa-cash-register"></i>
-        POS Systeem
+        <?= $translations['pos_system'] ?? 'POS System' ?>
     </h1>
     <span style="color:#999999">
         <i class="fas fa-calendar"></i>
@@ -716,7 +737,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div>
         <!-- Customer Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-user"></i> Klant</h3>
+            <h3><i class="fas fa-user"></i> <?= $translations['customer'] ?? 'Customer' ?></h3>
 
             <div id="selectedCustomerBadge" style="display:none" class="selected-customer">
                 <div class="avatar" id="customerAvatar">J</div>
@@ -724,7 +745,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                     <div class="name" id="customerName">Jan de Vries</div>
                     <div class="contact" id="customerContact">jan@email.nl</div>
                 </div>
-                <button class="remove" onclick="clearSelectedCustomer()" title="Verwijderen">
+                <button class="remove" onclick="clearSelectedCustomer()" title="<?= $translations['remove'] ?? 'Remove' ?>">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -734,7 +755,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                     <input type="text"
                            class="form-control"
                            id="customerSearch"
-                           placeholder="Zoek klant op ID, naam, email of telefoon..."
+                           placeholder="<?= $translations['search_customer_placeholder'] ?? 'Search customer by ID, name, email or phone...' ?>"
                            autocomplete="off"
                            style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                     <div class="customer-search-results" id="customerResults">
@@ -743,8 +764,8 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem">
-                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="E-mail (optioneel)" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
-                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="Telefoon (optioneel)" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="<?= $translations['email_optional'] ?? 'Email (optional)' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="<?= $translations['phone_optional'] ?? 'Phone (optional)' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
 
@@ -753,10 +774,10 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Service Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-concierge-bell"></i> Dienst</h3>
+            <h3><i class="fas fa-concierge-bell"></i> <?= $translations['service'] ?? 'Service' ?></h3>
 
             <?php if (empty($services)): ?>
-                <p style="color:#999999">Geen diensten gevonden. <a href="/business/services" style="color:#ffffff">Voeg diensten toe</a></p>
+                <p style="color:#999999"><?= $translations['no_services_found'] ?? 'No services found.' ?> <a href="/business/services" style="color:#ffffff"><?= $translations['add_services'] ?? 'Add services' ?></a></p>
             <?php else: ?>
                 <div class="service-grid">
                     <?php foreach ($services as $service): ?>
@@ -782,9 +803,9 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <?php if (!empty($employees)): ?>
         <!-- Employee Section (only for BV) -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-user-tie"></i> Medewerker</h3>
+            <h3><i class="fas fa-user-tie"></i> <?= $translations['employee'] ?? 'Employee' ?></h3>
             <select class="form-control" id="selectedEmployee" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
-                <option value="">-- Geen specifieke medewerker --</option>
+                <option value="">-- <?= $translations['no_specific_employee'] ?? 'No specific employee' ?> --</option>
                 <?php foreach ($employees as $emp): ?>
                     <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?></option>
                 <?php endforeach; ?>
@@ -794,14 +815,14 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Date & Time Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-clock"></i> Datum & Tijd</h3>
+            <h3><i class="fas fa-clock"></i> <?= $translations['date_and_time'] ?? 'Date & Time' ?></h3>
             <div class="datetime-row">
                 <div>
-                    <label class="form-label" style="color:#ffffff">Datum</label>
+                    <label class="form-label" style="color:#ffffff"><?= $translations['date'] ?? 'Date' ?></label>
                     <input type="date" class="form-control" id="appointmentDate" value="<?= $today ?>" min="<?= $today ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
                 <div>
-                    <label class="form-label" style="color:#ffffff">Tijd</label>
+                    <label class="form-label" style="color:#ffffff"><?= $translations['time'] ?? 'Time' ?></label>
                     <input type="time" class="form-control" id="appointmentTime" value="<?= date('H:00', strtotime('+1 hour')) ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
@@ -809,17 +830,17 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Payment Method Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-credit-card"></i> Betaalmethode</h3>
+            <h3><i class="fas fa-credit-card"></i> <?= $translations['payment_method'] ?? 'Payment Method' ?></h3>
             <div class="payment-methods">
                 <div class="payment-method selected" data-method="online" onclick="selectPaymentMethod(this)">
                     <i class="fas fa-globe"></i>
-                    <div class="title">Online Betaling</div>
-                    <div class="desc">Klant betaalt volledige bedrag online</div>
+                    <div class="title"><?= $translations['online_payment'] ?? 'Online Payment' ?></div>
+                    <div class="desc"><?= $translations['online_payment_desc'] ?? 'Customer pays full amount online' ?></div>
                 </div>
                 <div class="payment-method" data-method="cash" onclick="selectPaymentMethod(this)">
                     <i class="fas fa-money-bill-wave"></i>
-                    <div class="title">Contant bij Afspraak</div>
-                    <div class="desc">Klant betaalt <?= $feeData['fee_display'] ?? '€1,75' ?> online + rest contant</div>
+                    <div class="title"><?= $translations['cash_at_appointment'] ?? 'Cash at Appointment' ?></div>
+                    <div class="desc"><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $translations['cash_payment_desc'] ?? 'Customer pays :fee online + rest in cash') ?></div>
                 </div>
             </div>
             <input type="hidden" id="selectedPaymentMethod" value="online">
@@ -827,40 +848,40 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Notes Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-sticky-note"></i> Notities (optioneel)</h3>
-            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="Eventuele opmerkingen..." style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
+            <h3><i class="fas fa-sticky-note"></i> <?= $translations['notes_optional'] ?? 'Notes (optional)' ?></h3>
+            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="<?= $translations['notes_placeholder'] ?? 'Any comments...' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
 
         <!-- Summary & Submit -->
         <div class="summary-card">
-            <h4><i class="fas fa-receipt"></i> Overzicht</h4>
+            <h4><i class="fas fa-receipt"></i> <?= $translations['overview'] ?? 'Overview' ?></h4>
             <div class="summary-row">
-                <span>Klant</span>
+                <span><?= $translations['customer'] ?? 'Customer' ?></span>
                 <span id="summaryCustomer">-</span>
             </div>
             <div class="summary-row">
-                <span>Dienst</span>
+                <span><?= $translations['service'] ?? 'Service' ?></span>
                 <span id="summaryService">-</span>
             </div>
             <div class="summary-row">
-                <span>Datum & Tijd</span>
+                <span><?= $translations['date_and_time'] ?? 'Date & Time' ?></span>
                 <span id="summaryDateTime">-</span>
             </div>
             <div class="summary-row">
-                <span>Betaalmethode</span>
-                <span id="summaryPayment">Online</span>
+                <span><?= $translations['payment_method'] ?? 'Payment method' ?></span>
+                <span id="summaryPayment"><?= $translations['online'] ?? 'Online' ?></span>
             </div>
             <div class="summary-row">
-                <span>Online te betalen</span>
+                <span><?= $translations['online_amount'] ?? 'Online amount' ?></span>
                 <span id="summaryOnlineAmount">€0,00</span>
             </div>
             <div class="summary-row total">
-                <span>Totaal</span>
+                <span><?= $translations['total'] ?? 'Total' ?></span>
                 <span id="summaryTotal">€0,00</span>
             </div>
 
             <button class="btn btn-primary" style="width:100%;margin-top:1.25rem;padding:1rem" onclick="createBooking()" id="createBookingBtn">
-                <i class="fas fa-plus-circle"></i> Afspraak Aanmaken & Link Versturen
+                <i class="fas fa-plus-circle"></i> <?= $translations['create_appointment_send_link'] ?? 'Create Appointment & Send Link' ?>
             </button>
         </div>
     </div>
@@ -870,16 +891,16 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <div class="card" style="padding:0;background:#0a0a0a;border:1px solid #333333">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid #333333;display:flex;justify-content:space-between;align-items:center">
                 <h3 style="margin:0;font-size:1rem;color:#ffffff">
-                    <i class="fas fa-calendar-day"></i> Vandaag
+                    <i class="fas fa-calendar-day"></i> <?= $translations['today'] ?? 'Today' ?>
                 </h3>
-                <span class="badge" style="background:#ffffff;color:#000000"><?= count($todayBookings) ?> afspraken</span>
+                <span class="badge" style="background:#ffffff;color:#000000"><?= count($todayBookings) ?> <?= $translations['appointments'] ?? 'appointments' ?></span>
             </div>
 
             <div class="bookings-list">
                 <?php if (empty($todayBookings)): ?>
                     <div class="empty-state">
                         <i class="fas fa-calendar-plus"></i>
-                        <p>Geen afspraken vandaag</p>
+                        <p><?= $translations['no_appointments_today'] ?? 'No appointments today' ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($todayBookings as $booking): ?>
@@ -917,12 +938,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
                                 <?php endif; ?>
                                 <?php if ($booking['booking_status'] === 'confirmed'): ?>
                                     <button class="booking-action-btn" onclick="markCompleted('<?= $booking['uuid'] ?>')">
-                                        <i class="fas fa-check"></i> Voltooid
+                                        <i class="fas fa-check"></i> <?= $translations['completed'] ?? 'Completed' ?>
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($booking['booking_status'] !== 'cancelled' && $booking['booking_status'] !== 'completed'): ?>
                                     <button class="booking-action-btn danger" onclick="cancelBooking('<?= $booking['uuid'] ?>')">
-                                        <i class="fas fa-times"></i> Annuleer
+                                        <i class="fas fa-times"></i> <?= $translations['cancel'] ?? 'Cancel' ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -936,7 +957,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         <?php if (!empty($recentCustomers)): ?>
         <div class="card" style="margin-top:1rem;background:#0a0a0a;border:1px solid #333333">
             <div class="card-header">
-                <h3 class="card-title" style="font-size:0.95rem;color:#ffffff"><i class="fas fa-users"></i> Recente Klanten</h3>
+                <h3 class="card-title" style="font-size:0.95rem;color:#ffffff"><i class="fas fa-users"></i> <?= $translations['recent_customers'] ?? 'Recent Customers' ?></h3>
             </div>
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
                 <div style="padding:0.75rem 0;border-bottom:1px solid #333333;cursor:pointer;color:#ffffff"
@@ -952,11 +973,11 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <!-- Help Card -->
         <div class="card" style="background:linear-gradient(135deg, #000, #333);color:white;margin-top:1rem">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> POS Tips</h4>
+            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $translations['pos_tips'] ?? 'POS Tips' ?></h4>
             <ul style="margin:0;padding-left:1.25rem;font-size:0.85rem;opacity:0.9">
-                <li>Bij contante betaling betaalt de klant <?= $feeData['fee_display'] ?? '€1,75' ?> online als reserveringskosten</li>
-                <li>Klik op "Link" om betalingslinks opnieuw te versturen</li>
-                <li>Bij annuleren wordt de online betaling teruggestort</li>
+                <li><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $translations['pos_tip_1'] ?? 'For cash payments, customer pays :fee online as reservation fee') ?></li>
+                <li><?= $translations['pos_tip_2'] ?? 'Click "Link" to resend payment links' ?></li>
+                <li><?= $translations['pos_tip_3'] ?? 'When cancelled, the online payment will be refunded' ?></li>
             </ul>
         </div>
     </div>
@@ -966,7 +987,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 <div class="pos-modal-overlay" id="successOverlay" onclick="closeSuccessModal()"></div>
 <div class="pos-modal" id="successModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> Afspraak Aangemaakt</h3>
+        <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> <?= $translations['appointment_created'] ?? 'Appointment Created' ?></h3>
         <button class="pos-modal-close" onclick="closeSuccessModal()">
             <i class="fas fa-times"></i>
         </button>
@@ -974,18 +995,18 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div class="pos-modal-content">
         <div class="success-animation">
             <div class="checkmark"><i class="fas fa-check"></i></div>
-            <h3 style="margin:0 0 0.5rem 0;color:#ffffff" id="successTitle">Afspraak succesvol aangemaakt!</h3>
-            <p style="color:#999999" id="successSubtitle">De betalingslink is verzonden naar de klant.</p>
+            <h3 style="margin:0 0 0.5rem 0;color:#ffffff" id="successTitle"><?= $translations['appointment_created_success'] ?? 'Appointment successfully created!' ?></h3>
+            <p style="color:#999999" id="successSubtitle"><?= $translations['payment_link_sent'] ?? 'The payment link has been sent to the customer.' ?></p>
         </div>
 
         <!-- Digital POS: QR Code for instant payment -->
         <div class="qr-code-section">
             <div class="qr-code-header">
                 <i class="fas fa-qrcode"></i>
-                <span>Scan om te betalen</span>
+                <span><?= $translations['scan_to_pay'] ?? 'Scan to pay' ?></span>
             </div>
             <div id="qrCodeContainer" class="qr-code-display"></div>
-            <p class="qr-code-hint">Klant kan deze QR-code scannen met telefoon</p>
+            <p class="qr-code-hint"><?= $translations['qr_scan_hint'] ?? 'Customer can scan this QR code with their phone' ?></p>
         </div>
 
         <div class="payment-link-box">
@@ -997,19 +1018,19 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 
         <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-top:1rem;border:1px solid #333333">
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span>Klant</span>
+                <span><?= $translations['customer'] ?? 'Customer' ?></span>
                 <strong id="successCustomer" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span>Dienst</span>
+                <span><?= $translations['service'] ?? 'Service' ?></span>
                 <strong id="successService" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span>Datum & Tijd</span>
+                <span><?= $translations['date_and_time'] ?? 'Date & Time' ?></span>
                 <strong id="successDateTime" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;color:#999999">
-                <span>Online te betalen</span>
+                <span><?= $translations['online_amount'] ?? 'Online amount' ?></span>
                 <strong id="successAmount" style="color:#ffffff">-</strong>
             </div>
         </div>
@@ -1028,9 +1049,9 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
         </div>
     </div>
     <div class="pos-modal-actions">
-        <button class="btn btn-secondary" onclick="closeSuccessModal()">Sluiten</button>
+        <button class="btn btn-secondary" onclick="closeSuccessModal()"><?= $translations['close'] ?? 'Close' ?></button>
         <button class="btn btn-primary" onclick="sendPaymentLinkManual()">
-            <i class="fas fa-paper-plane"></i> E-mail Versturen
+            <i class="fas fa-paper-plane"></i> <?= $translations['send_email'] ?? 'Send Email' ?>
         </button>
     </div>
 </div>
@@ -1039,7 +1060,7 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 <div class="pos-modal-overlay" id="fullQrOverlay" onclick="closeFullQrModal()"></div>
 <div class="pos-modal fullscreen-qr-modal" id="fullQrModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-qrcode"></i> Scan om te Betalen</h3>
+        <h3><i class="fas fa-qrcode"></i> <?= $translations['scan_to_pay'] ?? 'Scan to Pay' ?></h3>
         <button class="pos-modal-close" onclick="closeFullQrModal()">
             <i class="fas fa-times"></i>
         </button>
@@ -1047,12 +1068,12 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
     <div class="pos-modal-content" style="text-align:center;padding:2rem">
         <div id="fullQrCodeContainer" style="margin:0 auto 1.5rem"></div>
         <div class="full-qr-amount" id="fullQrAmount">-</div>
-        <p style="color:#999999;margin:0">Scan met je telefoon om te betalen</p>
+        <p style="color:#999999;margin:0"><?= $translations['scan_phone_to_pay'] ?? 'Scan with your phone to pay' ?></p>
 
         <!-- Payment status indicator -->
         <div class="payment-status-indicator" id="paymentStatusIndicator">
             <div class="status-dot pending"></div>
-            <span>Wachten op betaling...</span>
+            <span><?= $translations['waiting_for_payment'] ?? 'Waiting for payment...' ?></span>
         </div>
     </div>
 </div>
@@ -1061,33 +1082,33 @@ $monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', '
 <div class="pos-modal-overlay" id="addCustomerOverlay" onclick="closeAddCustomerModal()"></div>
 <div class="pos-modal" id="addCustomerModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-user-plus"></i> Nieuwe Klant</h3>
+        <h3><i class="fas fa-user-plus"></i> <?= $translations['new_customer'] ?? 'New Customer' ?></h3>
         <button class="pos-modal-close" onclick="closeAddCustomerModal()">
             <i class="fas fa-times"></i>
         </button>
     </div>
     <div class="pos-modal-content">
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff">Naam *</label>
-            <input type="text" class="form-control" id="newCustomerName" placeholder="Volledige naam" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $translations['name'] ?? 'Name' ?> *</label>
+            <input type="text" class="form-control" id="newCustomerName" placeholder="<?= $translations['full_name'] ?? 'Full name' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff">E-mail</label>
-            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="email@voorbeeld.nl" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $translations['email'] ?? 'Email' ?></label>
+            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="<?= $translations['email_placeholder'] ?? 'email@example.com' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff">Telefoon</label>
-            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="06-12345678" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $translations['phone'] ?? 'Phone' ?></label>
+            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="<?= $translations['phone_placeholder'] ?? '+1 234 567 890' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div>
-            <label class="form-label" style="color:#ffffff">Notities</label>
-            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="Optionele notities..." style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
+            <label class="form-label" style="color:#ffffff"><?= $translations['notes'] ?? 'Notes' ?></label>
+            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="<?= $translations['optional_notes'] ?? 'Optional notes...' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
     </div>
     <div class="pos-modal-actions">
-        <button class="btn btn-secondary" onclick="closeAddCustomerModal()">Annuleren</button>
+        <button class="btn btn-secondary" onclick="closeAddCustomerModal()"><?= $translations['cancel'] ?? 'Cancel' ?></button>
         <button class="btn btn-primary" onclick="addNewCustomer()">
-            <i class="fas fa-plus"></i> Klant Toevoegen
+            <i class="fas fa-plus"></i> <?= $translations['add_customer'] ?? 'Add Customer' ?>
         </button>
     </div>
 </div>

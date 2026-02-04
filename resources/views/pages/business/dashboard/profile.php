@@ -32,7 +32,15 @@
 </style>
 
 <?php
-$days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
+$days = [
+    $translations['monday'] ?? 'Monday',
+    $translations['tuesday'] ?? 'Tuesday',
+    $translations['wednesday'] ?? 'Wednesday',
+    $translations['thursday'] ?? 'Thursday',
+    $translations['friday'] ?? 'Friday',
+    $translations['saturday'] ?? 'Saturday',
+    $translations['sunday'] ?? 'Sunday'
+];
 ?>
 
 <form method="POST" action="/business/profile">
@@ -43,55 +51,55 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
         <div>
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-building"></i> Bedrijfsgegevens</h3>
+                    <h3 class="card-title"><i class="fas fa-building"></i> <?= $translations['business_info'] ?? 'Business Details' ?></h3>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Bedrijfsnaam *</label>
+                    <label class="form-label"><?= $translations['business_name_label'] ?? 'Business name' ?> *</label>
                     <input type="text" name="company_name" class="form-control" value="<?= htmlspecialchars($business['company_name'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">E-mailadres *</label>
+                    <label class="form-label"><?= $translations['email_label'] ?? 'Email address' ?> *</label>
                     <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($business['email'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Telefoonnummer</label>
+                    <label class="form-label"><?= $translations['phone_label'] ?? 'Phone number' ?></label>
                     <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($business['phone'] ?? '') ?>" placeholder="06-12345678">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Website</label>
+                    <label class="form-label"><?= $translations['website_label'] ?? 'Website' ?></label>
                     <input type="url" name="website" class="form-control" value="<?= htmlspecialchars($business['website'] ?? '') ?>" placeholder="https://www.example.com">
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> Adresgegevens</h3>
+                    <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> <?= $translations['address_info'] ?? 'Address Details' ?></h3>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">Straat</label>
+                        <label class="form-label"><?= $translations['street_label'] ?? 'Street' ?></label>
                         <input type="text" name="street" class="form-control" value="<?= htmlspecialchars($business['street'] ?? '') ?>">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Huisnummer</label>
+                        <label class="form-label"><?= $translations['house_number_label'] ?? 'House number' ?></label>
                         <input type="text" name="house_number" class="form-control" value="<?= htmlspecialchars($business['house_number'] ?? '') ?>">
                     </div>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">Postcode</label>
+                        <label class="form-label"><?= $translations['postal_code'] ?? 'Postal code' ?></label>
                         <input type="text" name="postal_code" class="form-control" value="<?= htmlspecialchars($business['postal_code'] ?? '') ?>" placeholder="1234 AB">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Stad</label>
+                        <label class="form-label"><?= $translations['city'] ?? 'City' ?></label>
                         <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($business['city'] ?? '') ?>">
                     </div>
                 </div>
@@ -100,7 +108,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
             <!-- IBAN / Bankgegevens -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-university"></i> Bankgegevens (Uitbetalingen)</h3>
+                    <h3 class="card-title"><i class="fas fa-university"></i> <?= $translations['bank_details_payouts'] ?? 'Bank Details (Payouts)' ?></h3>
                 </div>
 
                 <?php if (!empty($business['iban']) && $business['iban_verified']): ?>
@@ -116,7 +124,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                         <div style="display:flex;align-items:center;gap:0.75rem">
                             <i class="fas fa-check-circle" style="color:#22c55e;font-size:1.5rem"></i>
                             <div>
-                                <p style="margin:0;font-weight:600;color:#ffffff">IBAN Geverifieerd</p>
+                                <p style="margin:0;font-weight:600;color:#ffffff"><?= $translations['iban_verified'] ?? 'IBAN Verified' ?></p>
                                 <p style="margin:0.25rem 0 0 0;font-family:monospace;color:#ffffff"><?= htmlspecialchars($business['iban']) ?></p>
                                 <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#999999"><?= htmlspecialchars($business['account_holder'] ?? '') ?></p>
                             </div>
@@ -129,9 +137,9 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                             <div style="display:flex;align-items:center;gap:0.75rem">
                                 <i class="fas fa-shield-alt" style="color:#f59e0b;font-size:1.25rem"></i>
                                 <div>
-                                    <p style="margin:0;font-weight:600;color:#ffffff">Beveiligingsperiode actief</p>
+                                    <p style="margin:0;font-weight:600;color:#ffffff"><?= $translations['security_period_active'] ?? 'Security period active' ?></p>
                                     <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#999999">
-                                        Uitbetalingen beschikbaar over <?= $hoursRemaining ?> uur (72 uur na IBAN wijziging)
+                                        <?= str_replace(':hours', $hoursRemaining, $translations['payouts_available_in'] ?? 'Payouts available in :hours hours (72 hours after IBAN change)') ?>
                                     </p>
                                 </div>
                             </div>
@@ -143,24 +151,24 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     <?php endif; ?>
 
                     <a href="/business/change-iban" class="btn btn-secondary" style="margin-top:1rem">
-                        <i class="fas fa-edit"></i> IBAN Wijzigen
+                        <i class="fas fa-edit"></i> <?= $translations['iban_change'] ?? 'Change IBAN' ?>
                     </a>
 
                 <?php else: ?>
                     <!-- IBAN Toevoegen -->
                     <div style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);border:1px solid #333333;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
-                        <h4 style="margin:0 0 0.5rem 0;color:#ffffff"><i class="fas fa-shield-alt"></i> Veilige IBAN Verificatie</h4>
+                        <h4 style="margin:0 0 0.5rem 0;color:#ffffff"><i class="fas fa-shield-alt"></i> <?= $translations['secure_iban_verification'] ?? 'Secure IBAN Verification' ?></h4>
                         <p style="margin:0;color:#999999;font-size:0.9rem">
-                            Koppel je bankrekening via een €0,01 iDEAL betaling. Je IBAN wordt automatisch opgehaald.
+                            <?= $translations['iban_verification_desc'] ?? 'Link your bank account via a €0.01 iDEAL payment. Your IBAN will be automatically retrieved.' ?>
                         </p>
                     </div>
 
                     <!-- Use formaction to override the parent form action -->
                     <button type="submit" formaction="/business/iban/add" class="btn btn-primary" style="width:100%;padding:1rem;font-size:1.1rem">
-                        <i class="fas fa-university"></i> IBAN Toevoegen via iDEAL
+                        <i class="fas fa-university"></i> <?= $translations['iban_add_via_ideal'] ?? 'Add IBAN via iDEAL' ?>
                     </button>
                     <p class="text-muted text-center" style="margin-top:1rem;font-size:0.85rem">
-                        <i class="fas fa-lock"></i> €0,01 verificatiebetaling - je IBAN wordt automatisch gekoppeld
+                        <i class="fas fa-lock"></i> <?= $translations['iban_verification_note'] ?? '€0.01 verification payment - your IBAN will be automatically linked' ?>
                     </p>
                 <?php endif; ?>
             </div>
@@ -168,7 +176,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
             <!-- Cash Betaling Optie -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-money-bill-wave"></i> Cash Betaling</h3>
+                    <h3 class="card-title"><i class="fas fa-money-bill-wave"></i> <?= $translations['cash_payment'] ?? 'Cash Payment' ?></h3>
                 </div>
 
                 <div style="padding:1rem;background:#1a1a1a;border:1px solid #333333;border-radius:12px;margin-bottom:1rem">
@@ -178,9 +186,9 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                             <span class="slider"></span>
                         </label>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#ffffff">Cash betalingen accepteren</p>
+                            <p style="margin:0;font-weight:600;color:#ffffff"><?= $translations['cash_payment_enabled'] ?? 'Accept cash payments' ?></p>
                             <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#999999">
-                                Sta klanten toe om contant te betalen bij aankomst in uw salon.
+                                <?= $translations['cash_payment_desc'] ?? 'Allow customers to pay cash on arrival at your salon.' ?>
                             </p>
                         </div>
                     </div>
@@ -190,7 +198,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     <div style="display:flex;align-items:flex-start;gap:0.75rem">
                         <i class="fas fa-info-circle" style="color:#ffffff;font-size:1.25rem;margin-top:0.125rem"></i>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#ffffff">Platform Fee bij Cash Betaling</p>
+                            <p style="margin:0;font-weight:600;color:#ffffff"><?= $translations['platform_fee_info'] ?? 'Platform Fee for Cash Payment' ?></p>
                             <p style="margin:0.5rem 0 0 0;font-size:0.9rem;color:#999999">
                                 Bij cash betalingen betaalt de klant <strong style="color:#ffffff"><?= $feeData['fee_display'] ?? '€1,75' ?> platform fee</strong> online tijdens het boeken.
                                 Dit bedrag wordt afgetrokken van uw openstaande cash saldo.
@@ -207,14 +215,14 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                     <div style="display:flex;align-items:flex-start;gap:0.75rem">
                         <i class="fas fa-exclamation-triangle" style="color:#dc2626;font-size:1.25rem;margin-top:0.125rem"></i>
                         <div>
-                            <p style="margin:0;font-weight:600;color:#dc2626">Belangrijke informatie bij cash betalingen</p>
+                            <p style="margin:0;font-weight:600;color:#dc2626"><?= $translations['cash_payment_disclaimer'] ?? 'Important information about cash payments' ?></p>
                             <ul style="margin:0.75rem 0 0 0;padding-left:1.25rem;font-size:0.9rem;color:#991b1b;line-height:1.6">
-                                <li><strong>No-shows & weigeringen:</strong> GlamourSchedule neemt geen verantwoordelijkheid voor klanten die weigeren te betalen of niet komen opdagen bij cash boekingen.</li>
-                                <li><strong>Uw kosten:</strong> U betaalt alleen de <?= $feeData['fee_display'] ?? '€1,75' ?> platform fee per boeking, ongeacht of de klant komt opdagen.</li>
-                                <li><strong>Annuleringsbeleid:</strong> Het standaard annuleringsbeleid van 50% bij annulering binnen 24 uur blijft van toepassing. Bij no-shows ontvangt u dit bedrag niet automatisch.</li>
+                                <li><?= $translations['no_show_warning'] ?? 'No-shows & refusals: GlamourSchedule takes no responsibility for customers who refuse to pay or do not show up for cash bookings.' ?></li>
+                                <li><?= $translations['your_costs'] ?? 'Your costs: You only pay the platform fee per booking, regardless of whether the customer shows up.' ?></li>
+                                <li><?= $translations['cancellation_policy_note'] ?? 'Cancellation policy: The standard 50% cancellation policy for cancellations within 24 hours still applies. For no-shows, you will not receive this amount automatically.' ?></li>
                             </ul>
                             <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#991b1b">
-                                <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Overweeg om alleen online betalingen te accepteren voor maximale zekerheid.
+                                <i class="fas fa-lightbulb"></i> <?= $translations['tip_online_payments'] ?? 'Tip: Consider accepting only online payments for maximum security.' ?>
                             </p>
                         </div>
                     </div>
@@ -223,25 +231,25 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-info-circle"></i> Registratie Info</h3>
+                    <h3 class="card-title"><i class="fas fa-info-circle"></i> <?= $translations['registration_info'] ?? 'Registration Info' ?></h3>
                 </div>
 
                 <div class="grid grid-2">
                     <div>
-                        <p class="text-muted" style="font-size:0.85rem">KvK Nummer</p>
-                        <p style="font-weight:500"><?= htmlspecialchars($business['kvk_number'] ?? 'Niet opgegeven') ?></p>
+                        <p class="text-muted" style="font-size:0.85rem"><?= $translations['kvk_number_label'] ?? 'Chamber of Commerce' ?></p>
+                        <p style="font-weight:500"><?= htmlspecialchars($business['kvk_number'] ?? ($translations['not_specified'] ?? 'Not specified')) ?></p>
                     </div>
                     <div>
-                        <p class="text-muted" style="font-size:0.85rem">BTW Nummer</p>
-                        <p style="font-weight:500"><?= htmlspecialchars($business['btw_number'] ?? 'Niet opgegeven') ?></p>
+                        <p class="text-muted" style="font-size:0.85rem"><?= $translations['vat_number_label'] ?? 'VAT Number' ?></p>
+                        <p style="font-weight:500"><?= htmlspecialchars($business['btw_number'] ?? ($translations['not_specified'] ?? 'Not specified')) ?></p>
                     </div>
                 </div>
 
                 <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-                    <p class="text-muted" style="font-size:0.85rem">Account Status</p>
+                    <p class="text-muted" style="font-size:0.85rem"><?= $translations['account_status'] ?? 'Account Status' ?></p>
                     <span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:<?= $business['status'] === 'active' ? '#ffffff' : '#ffffff' ?>;color:<?= $business['status'] === 'active' ? '#000000' : '#000000' ?>;border-radius:20px;font-size:0.85rem;font-weight:500">
                         <i class="fas fa-<?= $business['status'] === 'active' ? 'check-circle' : 'clock' ?>"></i>
-                        <?= $business['status'] === 'active' ? 'Actief' : 'In afwachting van verificatie' ?>
+                        <?= $business['status'] === 'active' ? ($translations['status_active'] ?? 'Active') : ($translations['status_awaiting_verification'] ?? 'Awaiting verification') ?>
                     </span>
                 </div>
             </div>
@@ -251,7 +259,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
         <div>
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-clock"></i> Openingstijden</h3>
+                    <h3 class="card-title"><i class="fas fa-clock"></i> <?= $translations['opening_hours'] ?? 'Opening Hours' ?></h3>
                 </div>
 
                 <?php for ($i = 0; $i < 7; $i++):
@@ -275,7 +283,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                         </div>
                         <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;white-space:nowrap">
                             <input type="checkbox" name="hours[<?= $i ?>][closed]" <?= !empty($dayHours['is_closed']) ? 'checked' : '' ?> style="width:18px;height:18px;accent-color:var(--danger)">
-                            <span class="text-muted" style="font-size:0.85rem">Gesloten</span>
+                            <span class="text-muted" style="font-size:0.85rem"><?= $translations['closed'] ?? 'Closed' ?></span>
                         </label>
                     </div>
                 <?php endfor; ?>
@@ -295,10 +303,10 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-link"></i> Je Publieke Pagina</h3>
+                    <h3 class="card-title"><i class="fas fa-link"></i> <?= $translations['your_public_page'] ?? 'Your Public Page' ?></h3>
                 </div>
 
-                <p class="text-muted" style="margin-bottom:1rem">Dit is de link naar je publieke bedrijfspagina:</p>
+                <p class="text-muted" style="margin-bottom:1rem"><?= $translations['public_page_desc'] ?? 'This is the link to your public business page:' ?></p>
 
                 <div style="display:flex;align-items:center;gap:0.5rem;padding:1rem;background:var(--secondary);border-radius:10px">
                     <i class="fas fa-globe" style="color:var(--primary)"></i>
@@ -309,20 +317,20 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
                 </div>
 
                 <a href="/business/<?= htmlspecialchars($business['slug'] ?? '') ?>" target="_blank" class="btn btn-primary" style="width:100%;margin-top:1rem">
-                    <i class="fas fa-external-link-alt"></i> Bekijk Pagina
+                    <i class="fas fa-external-link-alt"></i> <?= $translations['view_page'] ?? 'View Page' ?>
                 </a>
             </div>
 
             <div class="card stats-card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333;transition:all 0.3s ease;cursor:default">
-                <h4 class="stats-title" style="margin-bottom:0.5rem;color:#000000;transition:color 0.3s ease"><i class="fas fa-chart-line"></i> Statistieken</h4>
+                <h4 class="stats-title" style="margin-bottom:0.5rem;color:#000000;transition:color 0.3s ease"><i class="fas fa-chart-line"></i> <?= $translations['statistics'] ?? 'Statistics' ?></h4>
                 <div class="grid grid-2" style="margin-top:1rem">
                     <div>
                         <p class="stats-number" style="font-size:2rem;font-weight:700;margin:0;color:#000000;transition:color 0.3s ease"><?= number_format($business['total_reviews'] ?? 0) ?></p>
-                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease">Reviews</p>
+                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease"><?= $translations['reviews'] ?? 'Reviews' ?></p>
                     </div>
                     <div>
                         <p class="stats-number" style="font-size:2rem;font-weight:700;margin:0;color:#000000;transition:color 0.3s ease"><?= number_format($business['rating'] ?? 0, 1) ?></p>
-                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease">Gemiddelde score</p>
+                        <p class="stats-label" style="color:#333333;font-size:0.85rem;transition:color 0.3s ease"><?= $translations['average_rating'] ?? 'Average rating' ?></p>
                     </div>
                 </div>
             </div>
@@ -345,12 +353,12 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
             <!-- Bedrijf Opzeggen -->
             <div class="card" style="border-color:#dc2626;background:rgba(220,38,38,0.1)">
-                <h4 style="color:#ef4444;margin-bottom:0.75rem"><i class="fas fa-exclamation-triangle"></i> Bedrijf Opzeggen</h4>
+                <h4 style="color:#ef4444;margin-bottom:0.75rem"><i class="fas fa-exclamation-triangle"></i> <?= $translations['cancel_business'] ?? 'Cancel Business' ?></h4>
                 <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1rem">
-                    Wil je je bedrijfsaccount opzeggen? Dit verwijdert je bedrijf permanent van het platform.
+                    <?= $translations['delete_business_warning'] ?? 'Note: This permanently deletes:' ?>
                 </p>
                 <button type="button" onclick="showBusinessDeleteModal()" class="btn" style="width:100%;background:#dc2626;color:white;border:none;padding:0.75rem;border-radius:8px;font-weight:600;cursor:pointer">
-                    <i class="fas fa-trash-alt"></i> Bedrijf Verwijderen
+                    <i class="fas fa-trash-alt"></i> <?= $translations['delete_business'] ?? 'Delete Business' ?>
                 </button>
             </div>
         </div>
@@ -358,7 +366,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
 
     <div style="position:sticky;bottom:0;background:var(--secondary);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--border)">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Profiel Opslaan
+            <i class="fas fa-save"></i> <?= $translations['save_profile'] ?? 'Save Profile' ?>
         </button>
     </div>
 </form>
@@ -368,28 +376,28 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:450px;width:100%">
         <div style="text-align:center;margin-bottom:1.5rem">
             <i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:2.5rem"></i>
-            <h3 style="color:var(--text);margin:1rem 0 0 0">Bedrijf Permanent Verwijderen?</h3>
+            <h3 style="color:var(--text);margin:1rem 0 0 0"><?= $translations['delete_business_confirm'] ?? 'Delete Business Permanently?' ?></h3>
         </div>
         <p style="color:var(--text-light);line-height:1.6;margin-bottom:1rem">
-            Weet je zeker dat je <strong style="color:var(--text)"><?= htmlspecialchars($business['company_name'] ?? '') ?></strong> wilt verwijderen?
+            <?= $translations['confirm_delete_business'] ?? 'Are you sure you want to delete this business? This will also delete all related data.' ?>
         </p>
         <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem">
-            <p style="color:#ef4444;font-size:0.9rem;margin:0"><strong>Let op:</strong> Dit verwijdert permanent:</p>
+            <p style="color:#ef4444;font-size:0.9rem;margin:0"><strong><?= $translations['delete_business_warning'] ?? 'Note: This permanently deletes:' ?></strong></p>
             <ul style="color:#ef4444;font-size:0.85rem;margin:0.5rem 0 0 1.25rem;padding:0">
-                <li>Alle boekingen en agenda</li>
-                <li>Alle services en prijzen</li>
-                <li>Alle reviews en foto's</li>
-                <li>Je publieke bedrijfspagina</li>
+                <li><?= $translations['delete_all_bookings'] ?? 'All bookings and calendar' ?></li>
+                <li><?= $translations['delete_all_services'] ?? 'All services and prices' ?></li>
+                <li><?= $translations['delete_all_reviews'] ?? 'All reviews and photos' ?></li>
+                <li><?= $translations['delete_public_page'] ?? 'Your public business page' ?></li>
             </ul>
         </div>
-        <p style="color:var(--text);margin-bottom:0.75rem"><strong>Typ "VERWIJDER" om te bevestigen:</strong></p>
+        <p style="color:var(--text);margin-bottom:0.75rem"><strong><?= $translations['type_delete_confirm'] ?? 'Type "DELETE" to confirm:' ?></strong></p>
         <form method="POST" action="/business/delete" id="businessDeleteForm">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
-            <input type="text" name="confirm_text" id="businessConfirmText" placeholder="Typ VERWIJDER" autocomplete="off" style="width:100%;padding:0.875rem 1rem;border:2px solid var(--border);border-radius:10px;font-size:1rem;background:var(--secondary);color:var(--text);box-sizing:border-box">
+            <input type="text" name="confirm_text" id="businessConfirmText" placeholder="<?= $translations['type_delete'] ?? 'Type DELETE' ?>" autocomplete="off" style="width:100%;padding:0.875rem 1rem;border:2px solid var(--border);border-radius:10px;font-size:1rem;background:var(--secondary);color:var(--text);box-sizing:border-box">
             <div style="display:flex;gap:1rem;margin-top:1.5rem">
-                <button type="button" onclick="hideBusinessDeleteModal()" style="flex:1;padding:0.875rem;background:var(--secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer">Annuleren</button>
+                <button type="button" onclick="hideBusinessDeleteModal()" style="flex:1;padding:0.875rem;background:var(--secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer"><?= $translations['cancel'] ?? 'Cancel' ?></button>
                 <button type="submit" id="businessDeleteBtn" disabled style="flex:1;padding:0.875rem;background:#dc2626;color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer;opacity:0.5">
-                    <i class="fas fa-trash-alt"></i> Verwijderen
+                    <i class="fas fa-trash-alt"></i> <?= $translations['delete'] ?? 'Delete' ?>
                 </button>
             </div>
         </form>
@@ -400,7 +408,7 @@ $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', '
     function copyLink() {
         const link = 'https://glamourschedule.nl/business/<?= htmlspecialchars($business['slug'] ?? '') ?>';
         navigator.clipboard.writeText(link).then(() => {
-            alert('Link gekopieerd!');
+            alert(<?= json_encode($translations['link_copied'] ?? 'Link copied!') ?>);
         });
     }
 

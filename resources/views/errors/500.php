@@ -1,9 +1,21 @@
+<?php
+// Load translations for error page
+$lang = $_COOKIE['lang'] ?? $_GET['lang'] ?? 'en';
+$langFile = __DIR__ . '/../../lang/' . $lang . '/messages.php';
+if (!file_exists($langFile)) {
+    $langFile = __DIR__ . '/../../lang/en/messages.php';
+}
+$translations = include $langFile;
+$__ = function($key) use ($translations) {
+    return $translations[$key] ?? $key;
+};
+?>
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Er ging iets mis - GlamourSchedule</title>
+    <title><?= $__('error_500_title') ?> - GlamourSchedule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -106,18 +118,18 @@
             <div class="error-icon">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <h1>Er ging iets mis</h1>
-            <p>Onze excuses, er is een technische fout opgetreden. We werken eraan om dit zo snel mogelijk op te lossen.</p>
+            <h1><?= $__('error_500_title') ?></h1>
+            <p><?= $__('error_500_message') ?></p>
             <div>
                 <a href="/" class="btn">
-                    <i class="fas fa-home"></i> Naar home
+                    <i class="fas fa-home"></i> <?= $__('error_go_home') ?>
                 </a>
                 <a href="javascript:history.back()" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Terug
+                    <i class="fas fa-arrow-left"></i> <?= $__('back') ?>
                 </a>
             </div>
             <p class="help-text">
-                Blijft het probleem bestaan? <a href="/contact">Neem contact op</a>
+                <?= $__('error_problem_persists') ?> <a href="/contact"><?= $__('error_contact_us') ?></a>
             </p>
         </div>
     </div>

@@ -187,7 +187,16 @@ class BusinessController extends Controller
         );
         $hours = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'];
+        $translations = $this->getTranslations();
+        $days = [
+            $translations['monday'] ?? 'Monday',
+            $translations['tuesday'] ?? 'Tuesday',
+            $translations['wednesday'] ?? 'Wednesday',
+            $translations['thursday'] ?? 'Thursday',
+            $translations['friday'] ?? 'Friday',
+            $translations['saturday'] ?? 'Saturday',
+            $translations['sunday'] ?? 'Sunday'
+        ];
         $formatted = [];
         foreach ($hours as $h) {
             $formatted[$h['day_of_week']] = [
