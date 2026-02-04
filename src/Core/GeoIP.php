@@ -12,20 +12,168 @@ class GeoIP
 
     // Country to language mapping
     private array $countryLanguages = [
+        // Dutch
         'NL' => 'nl',
-        'BE' => 'nl', // Belgium defaults to Dutch, can be French
+        'BE' => 'nl', // Belgium (could also be French)
+        'SR' => 'nl', // Suriname
+
+        // German
         'DE' => 'de',
         'AT' => 'de', // Austria
-        'CH' => 'de', // Switzerland (could be French/Italian too)
+        'CH' => 'de', // Switzerland
+        'LI' => 'de', // Liechtenstein
+
+        // French
         'FR' => 'fr',
         'LU' => 'fr', // Luxembourg
         'MC' => 'fr', // Monaco
+
+        // Spanish
+        'ES' => 'es',
+        'MX' => 'es',
+        'AR' => 'es',
+        'CO' => 'es',
+        'CL' => 'es',
+        'PE' => 'es',
+        'VE' => 'es',
+        'EC' => 'es',
+        'GT' => 'es',
+        'CU' => 'es',
+        'DO' => 'es',
+        'HN' => 'es',
+        'SV' => 'es',
+        'NI' => 'es',
+        'CR' => 'es',
+        'PA' => 'es',
+        'UY' => 'es',
+        'PY' => 'es',
+        'BO' => 'es',
+
+        // Portuguese
+        'PT' => 'pt',
+        'BR' => 'pt',
+        'AO' => 'pt', // Angola
+        'MZ' => 'pt', // Mozambique
+
+        // Italian
+        'IT' => 'it',
+        'SM' => 'it', // San Marino
+        'VA' => 'it', // Vatican
+
+        // Polish
+        'PL' => 'pl',
+
+        // Russian
+        'RU' => 'ru',
+        'BY' => 'ru', // Belarus
+        'KZ' => 'ru', // Kazakhstan
+
+        // Ukrainian
+        'UA' => 'uk',
+
+        // Turkish
+        'TR' => 'tr',
+        'CY' => 'tr', // Cyprus (could be Greek)
+
+        // Greek
+        'GR' => 'el',
+
+        // Swedish
+        'SE' => 'sv',
+
+        // Norwegian
+        'NO' => 'no',
+
+        // Danish
+        'DK' => 'da',
+
+        // Finnish
+        'FI' => 'fi',
+
+        // Czech
+        'CZ' => 'cs',
+
+        // Hungarian
+        'HU' => 'hu',
+
+        // Romanian
+        'RO' => 'ro',
+        'MD' => 'ro', // Moldova
+
+        // Bulgarian
+        'BG' => 'bg',
+
+        // Croatian
+        'HR' => 'hr',
+
+        // Serbian
+        'RS' => 'sr',
+
+        // Slovak
+        'SK' => 'sk',
+
+        // Slovenian
+        'SI' => 'sl',
+
+        // Arabic
+        'SA' => 'ar',
+        'AE' => 'ar',
+        'EG' => 'ar',
+        'MA' => 'ar', // Morocco
+        'DZ' => 'ar', // Algeria
+        'TN' => 'ar', // Tunisia
+        'JO' => 'ar', // Jordan
+        'LB' => 'ar', // Lebanon
+        'IQ' => 'ar',
+        'KW' => 'ar',
+        'QA' => 'ar',
+        'BH' => 'ar',
+        'OM' => 'ar',
+
+        // Hebrew
+        'IL' => 'he',
+
+        // Hindi
+        'IN' => 'hi',
+
+        // Thai
+        'TH' => 'th',
+
+        // Vietnamese
+        'VN' => 'vi',
+
+        // Indonesian
+        'ID' => 'id',
+
+        // Malay
+        'MY' => 'ms',
+
+        // Japanese
+        'JP' => 'ja',
+
+        // Korean
+        'KR' => 'ko',
+
+        // Chinese (Simplified)
+        'CN' => 'zh',
+        'SG' => 'zh', // Singapore
+
+        // Chinese (Traditional)
+        'TW' => 'zh-TW',
+        'HK' => 'zh-TW',
+
+        // English
         'GB' => 'en',
         'US' => 'en',
         'CA' => 'en',
         'AU' => 'en',
         'NZ' => 'en',
         'IE' => 'en',
+        'ZA' => 'en', // South Africa
+        'PH' => 'en', // Philippines
+        'NG' => 'en', // Nigeria
+        'KE' => 'en', // Kenya
+        'GH' => 'en', // Ghana
     ];
 
     // Country to timezone mapping (default timezone per country)

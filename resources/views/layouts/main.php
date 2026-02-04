@@ -1183,7 +1183,16 @@ if (!isset($promo)) {
                 <div class="language-popup-buttons">
                     <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>" class="language-popup-btn language-popup-btn-primary" onclick="setLanguageChoice('<?= $domainSwitchPopup['detected_lang'] ?>')">
                         <?php
-                        $langFlags = ['nl' => '🇳🇱', 'de' => '🇩🇪', 'fr' => '🇫🇷'];
+                        $langFlags = [
+                            'nl' => '🇳🇱', 'de' => '🇩🇪', 'fr' => '🇫🇷', 'es' => '🇪🇸', 'pt' => '🇵🇹', 'it' => '🇮🇹',
+                            'pl' => '🇵🇱', 'ru' => '🇷🇺', 'uk' => '🇺🇦', 'tr' => '🇹🇷', 'el' => '🇬🇷',
+                            'sv' => '🇸🇪', 'no' => '🇳🇴', 'da' => '🇩🇰', 'fi' => '🇫🇮',
+                            'cs' => '🇨🇿', 'hu' => '🇭🇺', 'ro' => '🇷🇴', 'bg' => '🇧🇬',
+                            'hr' => '🇭🇷', 'sr' => '🇷🇸', 'sk' => '🇸🇰', 'sl' => '🇸🇮',
+                            'ar' => '🇸🇦', 'he' => '🇮🇱', 'hi' => '🇮🇳', 'th' => '🇹🇭',
+                            'vi' => '🇻🇳', 'id' => '🇮🇩', 'ms' => '🇲🇾',
+                            'ja' => '🇯🇵', 'ko' => '🇰🇷', 'zh' => '🇨🇳', 'zh-TW' => '🇹🇼'
+                        ];
                         $flag = $langFlags[$domainSwitchPopup['detected_lang']] ?? '🌐';
                         ?>
                         <span class="lang-flag"><?= $flag ?></span>
