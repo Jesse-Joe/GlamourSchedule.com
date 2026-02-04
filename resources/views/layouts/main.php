@@ -107,6 +107,10 @@ if (!isset($promo)) {
                 <i class="fas fa-rocket"></i>
                 <span><?= $translations['register_salon'] ?? 'Register Salon' ?></span>
             </a>
+            <a href="/pricing" class="search-quick-link" onclick="closeGlobalSearch()">
+                <i class="fas fa-tag"></i>
+                <span><?= $translations['pricing'] ?? 'Pricing' ?></span>
+            </a>
             <a href="/marketing" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-bullhorn"></i>
                 <span><?= $translations['marketing_services'] ?? 'Marketing Services' ?></span>
@@ -198,6 +202,7 @@ if (!isset($promo)) {
             <div class="sidebar-divider"></div>
 
             <!-- Info -->
+            <a href="/pricing" class="sidebar-link"><i class="fas fa-tag"></i> <?= $translations['pricing'] ?? 'Pricing' ?></a>
             <a href="/marketing" class="sidebar-link"><i class="fas fa-bullhorn"></i> <?= $translations['marketing'] ?? 'Marketing' ?></a>
             <a href="/about" class="sidebar-link"><i class="fas fa-cogs"></i> <?= $translations['features'] ?? 'Features' ?></a>
             <a href="/contact" class="sidebar-link"><i class="fas fa-envelope"></i> <?= $translations['contact'] ?? 'Contact' ?></a>
@@ -370,6 +375,7 @@ if (!isset($promo)) {
             <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
             <li><a href="/sales/register"><?= $translations['become_partner'] ?? 'Become Partner' ?></a></li>
             <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
+            <li><a href="/pricing"><?= $translations['pricing'] ?? 'Pricing' ?></a></li>
             <li><a href="/marketing"><?= $translations['marketing'] ?? 'Marketing' ?></a></li>
             <li><a href="/about"><?= $translations['features'] ?? 'Features' ?></a></li>
             <li><a href="/contact"><?= $translations['contact'] ?? 'Contact' ?></a></li>
