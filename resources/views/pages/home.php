@@ -361,7 +361,7 @@
             </div>
             <div class="boosted-slot-title"><?= $translations['slot_available'] ?? 'Spot Available' ?></div>
             <div class="boosted-slot-desc"><?= $translations['slot_available_desc'] ?? 'Put your salon in the spotlight and reach more customers' ?></div>
-            <div class="boosted-slot-price">&euro;299,99</div>
+            <div class="boosted-slot-price"><?= $promo['boost_price_display'] ?? '€299,99' ?></div>
             <div class="boosted-slot-duration"><?= $translations['slot_duration'] ?? '30 days featured' ?></div>
         </a>
         <?php endfor; ?>

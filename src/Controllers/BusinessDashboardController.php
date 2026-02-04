@@ -2136,10 +2136,17 @@ HTML;
      */
     public function boost(): string
     {
+        // Get boost price for business's country
+        $countryCode = $this->business['country'] ?? 'NL';
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+
         return $this->view('pages/business/dashboard/boost', [
             'pageTitle' => 'Boost je Bedrijf',
             'business' => $this->business,
-            'csrfToken' => $this->csrf()
+            'csrfToken' => $this->csrf(),
+            'boostPrice' => $promo['boost_price'] ?? 299.99,
+            'boostPriceDisplay' => $promo['boost_price_display'] ?? '€299,99'
         ]);
     }
 
@@ -2153,7 +2160,11 @@ HTML;
             return $this->redirect('/business/boost');
         }
 
-        $boostPrice = 299.99;
+        // Get boost price for business's country
+        $countryCode = $this->business['country'] ?? 'NL';
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
+        $boostPrice = $promo['boost_price'] ?? 299.99;
 
         // Create Mollie payment for boost
         $mollieApiKey = $this->config['mollie']['api_key'] ?? '';

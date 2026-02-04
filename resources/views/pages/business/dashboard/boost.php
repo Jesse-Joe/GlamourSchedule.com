@@ -5,7 +5,9 @@
 $isBoosted = !empty($business['is_boosted']) && !empty($business['boost_expires_at']) && strtotime($business['boost_expires_at']) > time();
 $boostExpiresAt = !empty($business['boost_expires_at']) ? strtotime($business['boost_expires_at']) : 0;
 $boostDaysRemaining = $isBoosted ? max(0, ceil(($boostExpiresAt - time()) / 86400)) : 0;
-$boostPrice = 299.99;
+// Boost price comes from controller (country-specific)
+$boostPriceValue = $boostPrice ?? 299.99;
+$boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceValue, 2, ',', '.');
 ?>
 
 <style>
@@ -438,7 +440,7 @@ $boostPrice = 299.99;
         <p class="subtitle">Eenmalige betaling, geen abonnement</p>
 
         <div class="pricing-amount">
-            <span class="currency">&euro;</span><span class="price"><?= number_format($boostPrice, 2, ',', '.') ?></span>
+            <span class="price"><?= $boostPriceFormatted ?></span>
             <span class="period">voor 30 dagen</span>
         </div>
 

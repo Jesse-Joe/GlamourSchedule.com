@@ -322,6 +322,16 @@ class GeoIP
             $promo['fee_display'] = $promo['show_dual']
                 ? $localFee['local_formatted'] . ' (' . $localFee['eur_formatted'] . ')'
                 : $localFee['eur_formatted'];
+
+            // Boost price based on country tier (same tiers as transaction fees)
+            $boostPriceEur = $this->getBoostPriceForCountry($countryCode);
+            $localBoost = $currencyService->getDisplayPrice($boostPriceEur, $countryCode);
+            $promo['boost_price'] = $boostPriceEur;
+            $promo['boost_price_local'] = $localBoost['local_formatted'];
+            $promo['boost_price_eur'] = $localBoost['eur_formatted'];
+            $promo['boost_price_display'] = $promo['show_dual']
+                ? $localBoost['local_formatted'] . ' (' . $localBoost['eur_formatted'] . ')'
+                : $localBoost['eur_formatted'];
         } catch (\Exception $e) {
             // Fallback to EUR only
             $promo['local_price'] = '€' . number_format($promo['price'], 2, ',', '.');
@@ -334,9 +344,50 @@ class GeoIP
             $promo['local_fee'] = '€' . number_format($promo['transaction_fee'], 2, ',', '.');
             $promo['eur_fee'] = $promo['local_fee'];
             $promo['fee_display'] = $promo['local_fee'];
+
+            // Boost price fallback
+            $boostPriceEur = $this->getBoostPriceForCountry($countryCode);
+            $promo['boost_price'] = $boostPriceEur;
+            $promo['boost_price_local'] = '€' . number_format($boostPriceEur, 2, ',', '.');
+            $promo['boost_price_eur'] = $promo['boost_price_local'];
+            $promo['boost_price_display'] = $promo['boost_price_local'];
         }
 
         return $promo;
+    }
+
+    /**
+     * Get boost price for a country based on economic tier
+     * Prices adjusted to be affordable in each region
+     */
+    private function getBoostPriceForCountry(string $countryCode): float
+    {
+        // Premium tier - wealthy small countries
+        $premium = ['CH', 'NO', 'LI', 'MC', 'LU', 'IS'];
+        if (in_array($countryCode, $premium)) return 399.99;
+
+        // High-income tier
+        $highIncome = ['US', 'CA', 'AU', 'SG', 'AE', 'QA', 'KW', 'BH', 'SE', 'DK'];
+        if (in_array($countryCode, $highIncome)) return 349.99;
+
+        // Standard tier - Western Europe
+        $standard = ['NL', 'DE', 'FR', 'GB', 'BE', 'AT', 'IE', 'FI', 'IT', 'ES', 'PT', 'NZ', 'JP'];
+        if (in_array($countryCode, $standard)) return 299.99;
+
+        // Mid-tier - Eastern Europe, Asia developed
+        $midTier = ['PL', 'CZ', 'HK', 'KR', 'IL', 'SA', 'EE', 'LV', 'LT', 'SK', 'SI', 'HR', 'GR', 'CY', 'MT'];
+        if (in_array($countryCode, $midTier)) return 149.99;
+
+        // Budget tier - Emerging markets
+        $budget = ['HU', 'RO', 'BG', 'BR', 'MX', 'TR', 'ZA', 'MY', 'TH', 'CN', 'AR', 'CL', 'CO', 'PE'];
+        if (in_array($countryCode, $budget)) return 79.99;
+
+        // Low-cost tier - Developing countries
+        $lowCost = ['IN', 'ID', 'PH', 'VN', 'PK', 'BD', 'NG', 'KE', 'EG', 'UA'];
+        if (in_array($countryCode, $lowCost)) return 29.99;
+
+        // Default - standard pricing
+        return 299.99;
     }
 
     /**
