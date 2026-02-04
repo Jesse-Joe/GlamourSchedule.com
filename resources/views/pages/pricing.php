@@ -573,7 +573,7 @@
                 </div>
 
                 <div class="pricing-price">
-                    <div class="pricing-price-amount"><span class="currency">&euro;</span>0</div>
+                    <div class="pricing-price-amount"><span class="currency"><?= $promo['local_symbol'] ?? '€' ?></span>0</div>
                     <div class="pricing-price-period"><?= $translations['always_free'] ?? 'Altijd gratis' ?></div>
                 </div>
 
