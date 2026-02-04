@@ -1,11 +1,20 @@
 <?php
-// Load translations for offline page
+// Load translations for offline page with English fallback
 $lang = $_COOKIE['lang'] ?? $_GET['lang'] ?? 'en';
 $langFile = __DIR__ . '/../resources/lang/' . $lang . '/messages.php';
-if (!file_exists($langFile)) {
-    $langFile = __DIR__ . '/../resources/lang/en/messages.php';
+$enFile = __DIR__ . '/../resources/lang/en/messages.php';
+
+// Always load English as fallback
+$enTranslations = file_exists($enFile) ? include $enFile : [];
+
+// Load selected language (or use English if file doesn't exist)
+if (file_exists($langFile) && $lang !== 'en') {
+    $langTranslations = include $langFile;
+    $translations = array_merge($enTranslations, $langTranslations);
+} else {
+    $translations = $enTranslations;
 }
-$translations = include $langFile;
+
 $__ = function($key) use ($translations) {
     return $translations[$key] ?? $key;
 };
