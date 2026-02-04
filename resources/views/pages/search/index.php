@@ -1807,12 +1807,12 @@ body .biz-card .biz-card-footer {
         <!-- Empty State -->
         <div class="empty-state">
             <div class="empty-state-icon">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-store"></i>
             </div>
-            <h3><?= $translations['no_salons_found'] ?? 'No salons found' ?></h3>
-            <p><?= $translations['try_other_search'] ?? 'Try a different search or location' ?></p>
-            <a href="/search" class="btn">
-                <i class="fas fa-redo"></i> <?= $translations['reset_search'] ?? 'Reset search' ?>
+            <h3><?= $translations['no_businesses_in_country'] ?? 'Momenteel nog geen bedrijven in uw land' ?></h3>
+            <p><?= $translations['no_businesses_in_country_desc'] ?? 'Wees de eerste! Registreer uw salon en bereik nieuwe klanten.' ?></p>
+            <a href="/register?type=business" class="btn btn-primary">
+                <i class="fas fa-rocket"></i> <?= $translations['register_your_salon'] ?? 'Registreer uw salon' ?>
             </a>
         </div>
     <?php else: ?>
