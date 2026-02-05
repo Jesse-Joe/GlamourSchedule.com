@@ -6,25 +6,25 @@
         <div class="stat-card primary">
             <div class="stat-icon"><i class="fas fa-euro-sign"></i></div>
             <div class="stat-content">
-                <h4>Netto Verdiend</h4>
+                <h4><?= $__('net_earned') ?></h4>
                 <p class="value">&euro;<?= number_format($stats['totalEarnings'], 2, ',', '.') ?></p>
-                <span class="stat-label">Uitbetaald</span>
+                <span class="stat-label"><?= $__('paid_out') ?></span>
             </div>
         </div>
         <div class="stat-card success">
             <div class="stat-icon"><i class="fas fa-clock"></i></div>
             <div class="stat-content">
-                <h4>Wacht op uitbetaling</h4>
+                <h4><?= $__('waiting_payout') ?></h4>
                 <p class="value">&euro;<?= number_format($stats['pendingEarnings'], 2, ',', '.') ?></p>
-                <span class="stat-label"><?= $stats['convertedReferrals'] ?> geconverteerd</span>
+                <span class="stat-label"><?= $stats['convertedReferrals'] ?> <?= $__('converted') ?></span>
             </div>
         </div>
         <div class="stat-card warning">
             <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
             <div class="stat-content">
-                <h4>Potentieel</h4>
+                <h4><?= $__('potential') ?></h4>
                 <p class="value">&euro;<?= number_format($stats['potentialEarnings'], 2, ',', '.') ?></p>
-                <span class="stat-label"><?= $stats['pendingReferrals'] ?> in proeftijd</span>
+                <span class="stat-label"><?= $stats['pendingReferrals'] ?> <?= $__('in_trial') ?></span>
             </div>
         </div>
     </div>
@@ -32,27 +32,27 @@
     <div class="stats-row secondary">
         <div class="stat-mini">
             <span class="stat-number"><?= $stats['totalReferrals'] ?></span>
-            <span class="stat-text">Totaal</span>
+            <span class="stat-text"><?= $__('total') ?></span>
         </div>
         <div class="stat-mini">
             <span class="stat-number success"><?= $stats['paidReferrals'] ?></span>
-            <span class="stat-text">Uitbetaald</span>
+            <span class="stat-text"><?= $__('paid_out') ?></span>
         </div>
         <div class="stat-mini">
             <span class="stat-number warning"><?= $stats['convertedReferrals'] ?></span>
-            <span class="stat-text">Geconverteerd</span>
+            <span class="stat-text"><?= $__('converted') ?></span>
         </div>
         <div class="stat-mini">
             <span class="stat-number info"><?= $stats['pendingReferrals'] ?></span>
-            <span class="stat-text">In proeftijd</span>
+            <span class="stat-text"><?= $__('in_trial') ?></span>
         </div>
         <div class="stat-mini">
             <span class="stat-number danger"><?= $stats['cancelledReferrals'] ?></span>
-            <span class="stat-text">Geannuleerd</span>
+            <span class="stat-text"><?= $__('cancelled') ?></span>
         </div>
         <div class="stat-mini">
             <span class="stat-number"><?= $stats['conversionRate'] ?>%</span>
-            <span class="stat-text">Conversie</span>
+            <span class="stat-text"><?= $__('conversion') ?></span>
         </div>
     </div>
 </div>
@@ -60,22 +60,22 @@
 <!-- Quick Actions -->
 <div class="grid-2" style="margin-bottom:1.5rem">
     <div class="card" style="border:2px solid #333333">
-        <h3><i class="fas fa-link"></i> Deel je Link</h3>
+        <h3><i class="fas fa-link"></i> <?= $__('share_your_link') ?></h3>
         <div style="background:#ffffff;padding:0.75rem;border-radius:8px;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#000000;margin-bottom:1rem;border:1px solid rgba(0,0,0,0.1)">
             glamourschedule.nl/partner/register?ref=<?= htmlspecialchars($salesUser['referral_code']) ?>
         </div>
         <button onclick="copyLink()" class="btn btn-primary" style="width:100%">
-            <i class="fas fa-copy"></i> Kopieer Link
+            <i class="fas fa-copy"></i> <?= $__('copy_link') ?>
         </button>
     </div>
 
     <div class="card" style="background:#1a1a1a;border:2px solid #333">
-        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> Verdien &euro;49,99</h3>
+        <h3 style="color:#fff"><i class="fas fa-euro-sign"></i> <?= $__('earn_amount', ['amount' => '€49,99']) ?></h3>
         <p style="margin:0;color:#a1a1a1;line-height:1.6">
-            Voor elke salon die via jouw code registreert en na de proeftijd betaalt, ontvang je &euro;49,99 commissie!
+            <?= $__('for_each_salon') ?>
         </p>
         <a href="/sales/materials" style="display:inline-block;margin-top:1rem;color:#fff;text-decoration:none;font-weight:600">
-            <i class="fas fa-arrow-right"></i> Bekijk promotiemateriaal
+            <i class="fas fa-arrow-right"></i> <?= $__('view_promo_materials') ?>
         </a>
     </div>
 </div>

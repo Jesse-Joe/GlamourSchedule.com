@@ -89,7 +89,7 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-plus-circle"></i> Nieuwe Dienst Toevoegen</h3>
+                <h3 class="card-title"><i class="fas fa-plus-circle"></i> <?= $__('add_new_service') ?></h3>
             </div>
 
             <form method="POST" action="/business/services">
@@ -119,7 +119,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%">
-                    <i class="fas fa-plus"></i> Dienst Toevoegen
+                    <i class="fas fa-plus"></i> <?= $__('add_service') ?>
                 </button>
             </form>
         </div>
@@ -138,7 +138,7 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-cut"></i> Mijn Diensten (<?= count($services) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-cut"></i> <?= $__('my_services') ?> (<?= count($services) ?>)</h3>
             </div>
 
             <?php if (empty($services)): ?>

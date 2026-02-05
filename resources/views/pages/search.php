@@ -508,15 +508,15 @@ $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
     <div class="search-card">
         <div class="search-hero">
             <i class="fas fa-search"></i>
-            <h1>Zoek Salons</h1>
-            <p>Vind de perfecte salon voor jouw behandeling</p>
+            <h1><?= $__('search_salons') ?></h1>
+            <p><?= $__('find_perfect_salon') ?></p>
         </div>
 
         <div class="search-body">
             <!-- Search Form -->
             <div class="section-header">
                 <i class="fas fa-filter"></i>
-                <h4>Zoeken & Filteren</h4>
+                <h4><?= $__('search_filter') ?></h4>
             </div>
 
             <form action="/search" method="GET" class="search-form">
@@ -526,34 +526,34 @@ $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
 
                 <div class="search-input-wrapper">
                     <div class="form-group">
-                        <label><i class="fas fa-spa"></i> Salon of behandeling</label>
-                        <input type="text" name="q" class="form-control" placeholder="Bijv. kapper, nagels, massage..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+                        <label><i class="fas fa-spa"></i> <?= $__('salon_or_treatment') ?></label>
+                        <input type="text" name="q" class="form-control" placeholder="<?= $__('search_placeholder') ?>" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
                     </div>
                 </div>
 
                 <div class="search-input-wrapper">
                     <div class="form-group">
-                        <label><i class="fas fa-map-marker-alt"></i> Locatie</label>
-                        <input type="text" name="location" class="form-control" placeholder="Stad of postcode" value="<?= htmlspecialchars($_GET['location'] ?? '') ?>">
+                        <label><i class="fas fa-map-marker-alt"></i> <?= $__('location') ?></label>
+                        <input type="text" name="location" class="form-control" placeholder="<?= $__('city_or_postal') ?>" value="<?= htmlspecialchars($_GET['location'] ?? '') ?>">
                     </div>
                 </div>
 
                 <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Zoeken
+                    <i class="fas fa-search"></i> <?= $__('search') ?>
                 </button>
             </form>
 
             <!-- Category Tabs -->
             <div class="category-tabs" id="categoryTabs">
                 <a href="/search" class="category-tab <?= empty($currentCategory) ? 'active' : '' ?>">
-                    <i class="fas fa-th-large"></i> Alles
+                    <i class="fas fa-th-large"></i> <?= $__('all') ?>
                 </a>
             </div>
 
             <!-- Category Cards -->
             <?php if (empty($currentCategory)): ?>
             <div class="category-cards-section">
-                <h3 class="category-cards-title">Ontdek per categorie</h3>
+                <h3 class="category-cards-title"><?= $__('discover_by_category') ?></h3>
                 <div class="category-cards-grid" id="categoryCards"></div>
             </div>
             <?php endif; ?>
@@ -561,14 +561,14 @@ $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
             <!-- Results Header -->
             <div class="results-header">
                 <p class="results-count">
-                    <strong><?= count($businesses ?? []) ?></strong> salons gevonden
+                    <strong><?= count($businesses ?? []) ?></strong> <?= $__('salons_found') ?>
                 </p>
                 <div class="sort-wrapper">
-                    <label>Sorteren:</label>
+                    <label><?= $__('sort_by') ?></label>
                     <select class="form-control" style="width:auto;padding-right:1.5rem" onchange="sortResults(this.value)">
-                        <option value="rating">Hoogste beoordeling</option>
-                        <option value="reviews">Meeste reviews</option>
-                        <option value="name">Naam A-Z</option>
+                        <option value="rating"><?= $__('highest_rating') ?></option>
+                        <option value="reviews"><?= $__('most_reviews') ?></option>
+                        <option value="name"><?= $__('name_az') ?></option>
                     </select>
                 </div>
             </div>
@@ -599,15 +599,15 @@ $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
                                 </div>
                                 <span class="count">(<?= $biz['review_count'] ?? 0 ?>)</span>
                             </div>
-                            <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="salon-btn">Bekijk & Boek</a>
+                            <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="salon-btn"><?= $__('view_and_book') ?></a>
                         </div>
                     </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="empty-state">
                         <i class="fas fa-search"></i>
-                        <h3>Geen resultaten</h3>
-                        <p>Probeer een andere zoekopdracht of locatie.</p>
+                        <h3><?= $__('no_results') ?></h3>
+                        <p><?= $__('try_different_search') ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -616,11 +616,11 @@ $currentCategory = $_GET['category'] ?? $_GET['group'] ?? '';
             <?php if (!empty($businesses) && count($businesses) >= 12): ?>
             <div class="pagination">
                 <button class="pagination-btn" id="prev-page" disabled>
-                    <i class="fas fa-chevron-left"></i> Vorige
+                    <i class="fas fa-chevron-left"></i> <?= $__('previous') ?>
                 </button>
-                <span class="pagination-info">Pagina 1</span>
+                <span class="pagination-info"><?= $__('page') ?> 1</span>
                 <button class="pagination-btn" id="next-page">
-                    Volgende <i class="fas fa-chevron-right"></i>
+                    <?= $__('next') ?> <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
             <?php endif; ?>

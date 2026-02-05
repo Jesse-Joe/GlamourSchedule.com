@@ -193,13 +193,13 @@
 
                 <ul class="navbar-menu">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/search">Salons</a></li>
-                    <li><a href="/business/register">Voor Ondernemers</a></li>
+                    <li><a href="/search"><?= $__('salons') ?></a></li>
+                    <li><a href="/business/register"><?= $__('for_entrepreneurs') ?></a></li>
                 </ul>
 
                 <div class="navbar-actions">
-                    <a href="/login" class="btn btn-glass btn-sm">Inloggen</a>
-                    <a href="/register" class="btn btn-primary btn-sm">Registreren</a>
+                    <a href="/login" class="btn btn-glass btn-sm"><?= $__('login') ?></a>
+                    <a href="/register" class="btn btn-primary btn-sm"><?= $__('register') ?></a>
                 </div>
 
                 <div class="menu-toggle">
@@ -419,8 +419,8 @@
         <div class="mobile-menu-content">
             <ul class="mobile-menu-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/search">Salons</a></li>
-                <li><a href="/business/register">Voor Ondernemers</a></li>
+                <li><a href="/search"><?= $__('salons') ?></a></li>
+                <li><a href="/business/register"><?= $__('for_entrepreneurs') ?></a></li>
             </ul>
             <div class="mobile-menu-actions">
                 <a href="/login" class="btn btn-glass w-full">Inloggen</a>

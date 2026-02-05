@@ -115,8 +115,8 @@
         </h2>
 
         <div class="scanner-instructions">
-            <h4><i class="fas fa-info-circle"></i> Hoe werkt het?</h4>
-            <p>Laat de klant de QR code tonen uit de boekingsbevestiging. Scan de code om de aanwezigheid te bevestigen.</p>
+            <h4><i class="fas fa-info-circle"></i> <?= $__('how_it_works') ?></h4>
+            <p><?= $__('scanner_instructions') ?></p>
         </div>
 
         <div id="reader"></div>
@@ -130,27 +130,27 @@
             <div id="bookingDetails" class="booking-details" style="display:none">
                 <table>
                     <tr>
-                        <td>Boeking</td>
+                        <td><?= $__('booking') ?></td>
                         <td id="detailNumber">-</td>
                     </tr>
                     <tr id="verificationRow" style="display:none">
-                        <td><i class="fas fa-shield-alt" style="color:#f59e0b"></i> Verificatie</td>
+                        <td><i class="fas fa-shield-alt" style="color:#f59e0b"></i> <?= $__('verification') ?></td>
                         <td id="detailVerification" style="font-family:monospace;letter-spacing:1px">-</td>
                     </tr>
                     <tr>
-                        <td>Klant</td>
+                        <td><?= $__('customer') ?></td>
                         <td id="detailCustomer">-</td>
                     </tr>
                     <tr>
-                        <td>Dienst</td>
+                        <td><?= $__('service') ?></td>
                         <td id="detailService">-</td>
                     </tr>
                     <tr>
-                        <td>Tijd</td>
+                        <td><?= $__('time') ?></td>
                         <td id="detailTime">-</td>
                     </tr>
                     <tr>
-                        <td>Bedrag</td>
+                        <td><?= $__('amount') ?></td>
                         <td id="detailPrice">-</td>
                     </tr>
                 </table>

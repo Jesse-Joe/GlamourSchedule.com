@@ -172,10 +172,10 @@
 
 <?php if (!empty($lowStockItems)): ?>
 <div class="low-stock-alert">
-    <h4><i class="fas fa-exclamation-triangle"></i> Lage voorraad waarschuwing</h4>
+    <h4><i class="fas fa-exclamation-triangle"></i> <?= $__('low_stock_warning') ?></h4>
     <ul>
         <?php foreach ($lowStockItems as $item): ?>
-            <li><strong><?= htmlspecialchars($item['name']) ?></strong>: <?= $item['quantity'] ?> <?= htmlspecialchars($item['unit']) ?> (minimum: <?= $item['min_quantity'] ?>)</li>
+            <li><strong><?= htmlspecialchars($item['name']) ?></strong>: <?= $item['quantity'] ?> <?= htmlspecialchars($item['unit']) ?> (<?= $__('minimum') ?>: <?= $item['min_quantity'] ?>)</li>
         <?php endforeach; ?>
     </ul>
 </div>
@@ -186,7 +186,7 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-plus-circle"></i> Nieuw Product Toevoegen</h3>
+                <h3 class="card-title"><i class="fas fa-plus-circle"></i> <?= $__('add_new_product') ?></h3>
             </div>
 
             <form method="POST" action="/business/inventory">
@@ -194,69 +194,69 @@
                 <input type="hidden" name="action" value="add">
 
                 <div class="form-group">
-                    <label class="form-label">Productnaam *</label>
-                    <input type="text" name="name" class="form-control" placeholder="Bijv: Haarverf Bruin" required>
+                    <label class="form-label"><?= $__('product_name') ?> *</label>
+                    <input type="text" name="name" class="form-control" placeholder="<?= $__('product_name_placeholder') ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Beschrijving</label>
-                    <textarea name="description" class="form-control" rows="2" placeholder="Optionele beschrijving..."></textarea>
+                    <label class="form-label"><?= $__('description') ?></label>
+                    <textarea name="description" class="form-control" rows="2" placeholder="<?= $__('optional_description') ?>"></textarea>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">SKU / Artikelnummer</label>
-                        <input type="text" name="sku" class="form-control" placeholder="Bijv: HV-001">
+                        <label class="form-label"><?= $__('sku_article_number') ?></label>
+                        <input type="text" name="sku" class="form-control" placeholder="<?= $__('sku_placeholder') ?>">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Eenheid</label>
+                        <label class="form-label"><?= $__('unit') ?></label>
                         <select name="unit" class="form-control">
-                            <option value="stuks">Stuks</option>
-                            <option value="ml">Milliliter (ml)</option>
-                            <option value="gram">Gram (g)</option>
-                            <option value="liter">Liter (L)</option>
-                            <option value="kg">Kilogram (kg)</option>
-                            <option value="set">Set</option>
-                            <option value="doos">Doos</option>
+                            <option value="stuks"><?= $__('pieces') ?></option>
+                            <option value="ml"><?= $__('milliliter') ?></option>
+                            <option value="gram"><?= $__('gram') ?></option>
+                            <option value="liter"><?= $__('liter') ?></option>
+                            <option value="kg"><?= $__('kilogram') ?></option>
+                            <option value="set"><?= $__('set') ?></option>
+                            <option value="doos"><?= $__('box') ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">Huidige voorraad *</label>
+                        <label class="form-label"><?= $__('current_stock') ?> *</label>
                         <input type="number" name="quantity" class="form-control" placeholder="0" min="0" value="0" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Minimum voorraad</label>
+                        <label class="form-label"><?= $__('minimum_stock') ?></label>
                         <input type="number" name="min_quantity" class="form-control" placeholder="5" min="0" value="0">
-                        <small class="text-muted">Waarschuwing bij lagere voorraad</small>
+                        <small class="text-muted"><?= $__('low_stock_alert_info') ?></small>
                     </div>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label">Inkoopprijs (&euro;)</label>
+                        <label class="form-label"><?= $__('purchase_price') ?> (&euro;)</label>
                         <input type="number" name="purchase_price" class="form-control" placeholder="0.00" step="0.01" min="0">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Verkoopprijs (&euro;)</label>
+                        <label class="form-label"><?= $__('sell_price') ?> (&euro;)</label>
                         <input type="number" name="sell_price" class="form-control" placeholder="0.00" step="0.01" min="0">
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%">
-                    <i class="fas fa-plus"></i> Product Toevoegen
+                    <i class="fas fa-plus"></i> <?= $__('add_product') ?>
                 </button>
             </form>
         </div>
 
         <div class="card" style="background:linear-gradient(135deg,#000000,#262626);color:white">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-lightbulb"></i> Tips</h4>
+            <h4 style="margin-bottom:0.5rem"><i class="fas fa-lightbulb"></i> <?= $__('tips') ?></h4>
             <ul style="padding-left:1.25rem;opacity:0.9;font-size:0.9rem;line-height:1.8">
-                <li>Stel een minimum voorraad in voor automatische waarschuwingen</li>
-                <li>Koppel producten aan diensten om verbruik bij te houden</li>
-                <li>Gebruik SKU-nummers voor snelle identificatie</li>
+                <li><?= $__('inventory_tip_1') ?></li>
+                <li><?= $__('inventory_tip_2') ?></li>
+                <li><?= $__('inventory_tip_3') ?></li>
             </ul>
         </div>
     </div>
@@ -265,14 +265,14 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-boxes"></i> Mijn Voorraad (<?= count($inventory) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-boxes"></i> <?= $__('my_inventory') ?> (<?= count($inventory) ?>)</h3>
             </div>
 
             <?php if (empty($inventory)): ?>
                 <div class="text-center" style="padding:3rem">
                     <i class="fas fa-boxes" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-                    <h4>Nog geen voorraad</h4>
-                    <p class="text-muted">Voeg je eerste product toe om je voorraad bij te houden.</p>
+                    <h4><?= $__('no_inventory_yet') ?></h4>
+                    <p class="text-muted"><?= $__('add_first_product') ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($inventory as $item):
@@ -312,7 +312,7 @@
                             <button type="button" class="btn btn-sm btn-secondary" onclick="openLinkModal(<?= $item['id'] ?>, '<?= htmlspecialchars($item['name'], ENT_QUOTES) ?>', '<?= htmlspecialchars($item['service_links'] ?? '', ENT_QUOTES) ?>')">
                                 <i class="fas fa-link"></i>
                             </button>
-                            <form method="POST" action="/business/inventory" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_product'] ?? 'Are you sure you want to delete this product?' ?>')">
+                            <form method="POST" action="/business/inventory" style="display:inline" onsubmit="return confirm('<?= $__('confirm_delete_product') ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="inventory_id" value="<?= $item['id'] ?>">
@@ -332,7 +332,7 @@
 <div id="adjustModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-plus-minus"></i> Voorraad Aanpassen</h3>
+            <h3><i class="fas fa-plus-minus"></i> <?= $__('adjust_stock') ?></h3>
             <button type="button" class="modal-close" onclick="closeModal('adjustModal')">&times;</button>
         </div>
         <form method="POST" action="/business/inventory/adjust">
@@ -340,32 +340,32 @@
             <input type="hidden" name="inventory_id" id="adjust_inventory_id">
 
             <p style="margin-bottom:1rem"><strong id="adjust_product_name"></strong></p>
-            <p class="text-muted" style="margin-bottom:1rem">Huidige voorraad: <strong id="adjust_current_qty"></strong></p>
+            <p class="text-muted" style="margin-bottom:1rem"><?= $__('current_stock') ?>: <strong id="adjust_current_qty"></strong></p>
 
             <div class="form-group">
-                <label class="form-label">Actie</label>
+                <label class="form-label"><?= $__('action') ?></label>
                 <div style="display:flex;gap:1rem">
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
-                        <input type="radio" name="adjustment_type" value="add" checked> Toevoegen
+                        <input type="radio" name="adjustment_type" value="add" checked> <?= $__('add') ?>
                     </label>
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
-                        <input type="radio" name="adjustment_type" value="subtract"> Aftrekken
+                        <input type="radio" name="adjustment_type" value="subtract"> <?= $__('subtract') ?>
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Aantal</label>
+                <label class="form-label"><?= $__('quantity') ?></label>
                 <input type="number" name="quantity" class="form-control" min="1" value="1" required>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Notitie (optioneel)</label>
-                <input type="text" name="notes" class="form-control" placeholder="Bijv: Nieuwe levering ontvangen">
+                <label class="form-label"><?= $__('note_optional') ?></label>
+                <input type="text" name="notes" class="form-control" placeholder="<?= $__('note_placeholder') ?>">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%">
-                <i class="fas fa-check"></i> Voorraad Aanpassen
+                <i class="fas fa-check"></i> <?= $__('adjust_stock') ?>
             </button>
         </form>
     </div>
@@ -375,7 +375,7 @@
 <div id="linkModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-link"></i> Koppelen aan Dienst</h3>
+            <h3><i class="fas fa-link"></i> <?= $__('link_to_service') ?></h3>
             <button type="button" class="modal-close" onclick="closeModal('linkModal')">&times;</button>
         </div>
 
@@ -386,9 +386,9 @@
             <input type="hidden" name="inventory_id" id="link_inventory_id">
 
             <div class="form-group">
-                <label class="form-label">Dienst selecteren</label>
+                <label class="form-label"><?= $__('select_service') ?></label>
                 <select name="service_id" class="form-control" required>
-                    <option value="">-- Selecteer een dienst --</option>
+                    <option value="">-- <?= $__('select_a_service') ?> --</option>
                     <?php foreach ($services as $service): ?>
                         <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?> - &euro;<?= number_format($service['price'], 2, ',', '.') ?></option>
                     <?php endforeach; ?>
@@ -396,18 +396,18 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Verbruik per behandeling</label>
+                <label class="form-label"><?= $__('usage_per_treatment') ?></label>
                 <input type="number" name="quantity_used" class="form-control" min="0.01" step="0.01" value="1" required>
-                <small class="text-muted">Hoeveel van dit product wordt verbruikt per behandeling</small>
+                <small class="text-muted"><?= $__('usage_per_treatment_info') ?></small>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%">
-                <i class="fas fa-link"></i> Koppelen
+                <i class="fas fa-link"></i> <?= $__('link') ?>
             </button>
         </form>
 
         <div id="current_links" style="margin-top:1.5rem;display:none">
-            <h4 style="font-size:0.9rem;margin-bottom:0.5rem">Huidige koppelingen:</h4>
+            <h4 style="font-size:0.9rem;margin-bottom:0.5rem"><?= $__('current_links') ?>:</h4>
             <div id="links_list"></div>
         </div>
     </div>

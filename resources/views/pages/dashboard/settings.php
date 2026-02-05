@@ -604,7 +604,7 @@
             </div>
         </div>
         <div style="font-size:0.8rem;color:var(--text-light)">
-            <p style="margin:0"><i class="fas fa-calendar-alt"></i> <?= $translations['settings_member_since'] ?? 'Member since' ?> <?= date('d-m-Y', strtotime($user['created_at'] ?? 'now')) ?></p>
+            <p style="margin:0"><i class="fas fa-calendar-alt"></i> <?= $translations['settings_member_since'] ?? 'Member since' ?> <?= $formatDate($user['created_at'] ?? date('Y-m-d H:i:s')) ?></p>
             <?php if (!empty($user['email_verified'])): ?>
                 <p style="margin:0.25rem 0 0;color:#333333"><i class="fas fa-check-circle"></i> <?= $translations['settings_email_verified'] ?? 'Email verified' ?></p>
             <?php endif; ?>
@@ -710,26 +710,26 @@ async function togglePushNotifications(checkbox) {
         // Enable push notifications
         try {
             // Step 1: Request permission
-            statusText.textContent = 'Toestemming vragen...';
+            statusText.textContent = jsTranslations.pushRequestingPermission;
             const permission = await Notification.requestPermission();
 
             if (permission === 'granted') {
                 // Step 2: Get service worker
-                statusText.textContent = 'Service worker laden...';
+                statusText.textContent = jsTranslations.pushLoadingWorker;
                 await navigator.serviceWorker.register('/sw.js');
                 const registration = await navigator.serviceWorker.ready;
 
                 // Step 3: Get VAPID key
-                statusText.textContent = 'Sleutel ophalen...';
+                statusText.textContent = jsTranslations.pushFetchingKey;
                 const response = await fetch('/api/push/vapid-key');
                 const { publicKey } = await response.json();
 
                 if (!publicKey) {
-                    throw new Error('Geen VAPID sleutel');
+                    throw new Error(jsTranslations.pushNoVapidKey);
                 }
 
                 // Step 4: Subscribe to push
-                statusText.textContent = 'Abonneren...';
+                statusText.textContent = jsTranslations.pushSubscribing;
                 const applicationServerKey = urlBase64ToUint8Array(publicKey);
                 const subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,
@@ -737,7 +737,7 @@ async function togglePushNotifications(checkbox) {
                 });
 
                 // Step 5: Save to server
-                statusText.textContent = 'Opslaan...';
+                statusText.textContent = jsTranslations.pushSaving;
                 const saveResponse = await fetch('/api/push/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -746,25 +746,25 @@ async function togglePushNotifications(checkbox) {
 
                 const saveResult = await saveResponse.json();
                 if (!saveResult.success) {
-                    throw new Error('Opslaan mislukt');
+                    throw new Error(jsTranslations.pushSaveFailed);
                 }
 
-                statusText.textContent = 'Meldingen zijn ingeschakeld';
-                showToast('Push meldingen ingeschakeld!', 'success');
+                statusText.textContent = jsTranslations.pushEnabled;
+                showToast(jsTranslations.pushEnabledToast, 'success');
             } else if (permission === 'denied') {
                 checkbox.checked = false;
                 checkbox.disabled = true;
                 blocked.style.display = 'block';
-                statusText.textContent = 'Geblokkeerd door browser';
+                statusText.textContent = jsTranslations.pushBlockedByBrowser;
             } else {
                 checkbox.checked = false;
-                statusText.textContent = 'Toestemming geweigerd';
+                statusText.textContent = jsTranslations.pushPermissionDenied;
             }
         } catch (error) {
             console.error('Error enabling push:', error);
             checkbox.checked = false;
-            statusText.textContent = 'Fout: ' + error.message;
-            showToast('Fout: ' + error.message, 'error');
+            statusText.textContent = jsTranslations.pushError + error.message;
+            showToast(jsTranslations.pushError + error.message, 'error');
         }
     } else {
         // Disable push notifications
@@ -782,12 +782,12 @@ async function togglePushNotifications(checkbox) {
                 await subscription.unsubscribe();
             }
 
-            statusText.textContent = 'Ontvang herinneringen voor afspraken';
-            showToast('Push meldingen uitgeschakeld', 'info');
+            statusText.textContent = jsTranslations.pushReceiveReminders;
+            showToast(jsTranslations.pushDisabledToast, 'info');
         } catch (error) {
             console.error('Error disabling push:', error);
             checkbox.checked = true;
-            showToast('Er ging iets mis', 'error');
+            showToast(jsTranslations.pushSomethingWrong, 'error');
         }
     }
 

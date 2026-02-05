@@ -2,19 +2,19 @@
 
 <div class="stats-grid">
     <div class="stat-card primary">
-        <div class="stat-label">Totale Omzet</div>
+        <div class="stat-label"><?= $__('total_revenue') ?></div>
         <div class="stat-value">&euro;<?= number_format($stats['totalRevenue'], 2, ',', '.') ?></div>
     </div>
     <div class="stat-card success">
-        <div class="stat-label">Omzet Deze Maand</div>
+        <div class="stat-label"><?= $__('revenue_this_month') ?></div>
         <div class="stat-value">&euro;<?= number_format($stats['revenueThisMonth'], 2, ',', '.') ?></div>
     </div>
     <div class="stat-card warning">
-        <div class="stat-label">Registratiekosten</div>
+        <div class="stat-label"><?= $__('registration_fees') ?></div>
         <div class="stat-value">&euro;<?= number_format($stats['registrationFees'], 2, ',', '.') ?></div>
     </div>
     <div class="stat-card info">
-        <div class="stat-label">Admin Fees (Boekingen)</div>
+        <div class="stat-label"><?= $__('admin_fees_bookings') ?></div>
         <div class="stat-value">&euro;<?= number_format($stats['adminFees'], 2, ',', '.') ?></div>
     </div>
 </div>
@@ -22,7 +22,7 @@
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;">
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-chart-line"></i> Omzet Trend (30 dagen)</h3>
+            <h3 class="card-title"><i class="fas fa-chart-line"></i> <?= $__('revenue_trend') ?></h3>
         </div>
         <div style="height:250px;display:flex;align-items:flex-end;gap:4px;padding:1rem 0;">
             <?php
@@ -39,7 +39,7 @@
             <?php endforeach; ?>
             <?php if (empty($stats['revenuePerDay'])): ?>
             <div style="width:100%;text-align:center;color:var(--text-light);padding:2rem;">
-                Geen data beschikbaar
+                <?= $__('no_data_available') ?>
             </div>
             <?php endif; ?>
         </div>
@@ -47,23 +47,23 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-calculator"></i> Verdeling</h3>
+            <h3 class="card-title"><i class="fas fa-calculator"></i> <?= $__('distribution') ?></h3>
         </div>
         <div>
             <div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--text-light)">Registratiekosten</span>
+                <span style="color:var(--text-light)"><?= $__('registration_fees') ?></span>
                 <strong>&euro;<?= number_format($stats['registrationFees'], 2, ',', '.') ?></strong>
             </div>
             <div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--text-light)">Admin Fees</span>
+                <span style="color:var(--text-light)"><?= $__('admin_fees') ?></span>
                 <strong>&euro;<?= number_format($stats['adminFees'], 2, ',', '.') ?></strong>
             </div>
             <div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--text-light)">Sales Commissies</span>
+                <span style="color:var(--text-light)"><?= $__('sales_commissions') ?></span>
                 <strong style="color:var(--danger);">-&euro;<?= number_format($stats['salesCommissions'], 2, ',', '.') ?></strong>
             </div>
             <div style="display:flex;justify-content:space-between;padding:0.75rem 0;background:var(--bg);margin:0.5rem -1.5rem -1.5rem;padding:1rem 1.5rem;border-radius:0 0 12px 12px;">
-                <span><strong>Netto Omzet</strong></span>
+                <span><strong><?= $__('net_revenue') ?></strong></span>
                 <strong style="color:var(--success);">&euro;<?= number_format($stats['totalRevenue'] - $stats['salesCommissions'], 2, ',', '.') ?></strong>
             </div>
         </div>
@@ -72,16 +72,16 @@
 
 <div class="card" style="margin-top:1.5rem;">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> Recente Transacties</h3>
+        <h3 class="card-title"><i class="fas fa-list"></i> <?= $__('recent_transactions') ?></h3>
         <form method="GET" class="search-box" style="max-width:400px;">
             <select name="type" class="form-control" style="width:auto;" onchange="this.form.submit()">
-                <option value="">Alle types</option>
-                <option value="registration" <?= $type === 'registration' ? 'selected' : '' ?>>Registraties</option>
-                <option value="booking" <?= $type === 'booking' ? 'selected' : '' ?>>Boekingen</option>
-                <option value="commission" <?= $type === 'commission' ? 'selected' : '' ?>>Commissies</option>
+                <option value=""><?= $__('all_types') ?></option>
+                <option value="registration" <?= $type === 'registration' ? 'selected' : '' ?>><?= $__('registrations') ?></option>
+                <option value="booking" <?= $type === 'booking' ? 'selected' : '' ?>><?= $__('bookings') ?></option>
+                <option value="commission" <?= $type === 'commission' ? 'selected' : '' ?>><?= $__('commissions') ?></option>
             </select>
             <a href="/admin/revenue/export?type=<?= urlencode($type) ?>" class="btn btn-secondary">
-                <i class="fas fa-download"></i> Export CSV
+                <i class="fas fa-download"></i> <?= $__('export_csv') ?>
             </a>
         </form>
     </div>
@@ -90,33 +90,33 @@
         <table>
             <thead>
                 <tr>
-                    <th>Datum</th>
-                    <th>Type</th>
-                    <th>Omschrijving</th>
-                    <th>Bedrijf</th>
-                    <th style="text-align:right;">Bedrag</th>
+                    <th><?= $__('date') ?></th>
+                    <th><?= $__('type') ?></th>
+                    <th><?= $__('description') ?></th>
+                    <th><?= $__('business') ?></th>
+                    <th style="text-align:right;"><?= $__('amount') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($transactions)): ?>
                 <tr>
                     <td colspan="5" style="text-align:center;color:var(--text-light);padding:2rem;">
-                        Geen transacties gevonden
+                        <?= $__('no_transactions_found') ?>
                     </td>
                 </tr>
                 <?php else: ?>
                 <?php foreach ($transactions as $tx): ?>
                 <tr>
-                    <td><?= date('d-m-Y H:i', strtotime($tx['created_at'])) ?></td>
+                    <td><?= $formatDateTime($tx['created_at']) ?></td>
                     <td>
                         <?php if ($tx['type'] === 'registration'): ?>
-                            <span class="badge badge-info">Registratie</span>
+                            <span class="badge badge-info"><?= $__('registration') ?></span>
                         <?php elseif ($tx['type'] === 'booking'): ?>
-                            <span class="badge badge-success">Boeking</span>
+                            <span class="badge badge-success"><?= $__('booking') ?></span>
                         <?php elseif ($tx['type'] === 'commission'): ?>
-                            <span class="badge badge-warning">Commissie</span>
+                            <span class="badge badge-warning"><?= $__('commission') ?></span>
                         <?php else: ?>
-                            <span class="badge badge-secondary"><?= ucfirst($tx['type']) ?></span>
+                            <span class="badge badge-secondary"><?= $__($tx['type']) ?></span>
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($tx['description'] ?? '-') ?></td>
@@ -159,16 +159,16 @@
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;">
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Maandoverzicht</h3>
+            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> <?= $__('monthly_overview') ?></h3>
         </div>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Maand</th>
-                        <th style="text-align:right;">Registraties</th>
-                        <th style="text-align:right;">Admin Fees</th>
-                        <th style="text-align:right;">Totaal</th>
+                        <th><?= $__('month') ?></th>
+                        <th style="text-align:right;"><?= $__('registrations') ?></th>
+                        <th style="text-align:right;"><?= $__('admin_fees') ?></th>
+                        <th style="text-align:right;"><?= $__('total') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,7 +182,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($stats['monthlyOverview'])): ?>
                     <tr>
-                        <td colspan="4" style="text-align:center;color:var(--text-light);">Geen data</td>
+                        <td colspan="4" style="text-align:center;color:var(--text-light);"><?= $__('no_data') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -192,15 +192,15 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-trophy"></i> Top Bedrijven (Omzet)</h3>
+            <h3 class="card-title"><i class="fas fa-trophy"></i> <?= $__('top_businesses_revenue') ?></h3>
         </div>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Bedrijf</th>
-                        <th style="text-align:right;">Admin Fees</th>
+                        <th><?= $__('business') ?></th>
+                        <th style="text-align:right;"><?= $__('admin_fees') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -213,7 +213,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($stats['topBusinesses'])): ?>
                     <tr>
-                        <td colspan="3" style="text-align:center;color:var(--text-light);">Geen data</td>
+                        <td colspan="3" style="text-align:center;color:var(--text-light);"><?= $__('no_data') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

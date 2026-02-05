@@ -377,13 +377,13 @@ $boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceVa
         <div class="boost-active-info">
             <i class="fas fa-rocket"></i>
             <div>
-                <h3>Boost Actief!</h3>
-                <p>Je bedrijf wordt uitgelicht op de homepage</p>
+                <h3><?= $__('boost_active') ?></h3>
+                <p><?= $__('boost_highlighted_homepage') ?></p>
             </div>
         </div>
         <div class="boost-countdown">
             <p class="number"><?= $boostDaysRemaining ?></p>
-            <p class="label">dagen over</p>
+            <p class="label"><?= $__('days_remaining') ?></p>
         </div>
     </div>
 <?php else: ?>
@@ -391,43 +391,43 @@ $boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceVa
     <div class="boost-hero">
         <div class="boost-hero-content">
             <i class="fas fa-rocket rocket"></i>
-            <h1>Boost je Bedrijf</h1>
-            <p>Vergroot je zichtbaarheid en krijg meer klanten door uitgelicht te worden op de homepage!</p>
+            <h1><?= $__('boost_your_business') ?></h1>
+            <p><?= $__('boost_hero_description') ?></p>
         </div>
     </div>
 <?php endif; ?>
 
 <!-- Benefits Section -->
 <div class="benefits-section">
-    <h2><i class="fas fa-star"></i> Voordelen van Boosten</h2>
+    <h2><i class="fas fa-star"></i> <?= $__('boost_benefits') ?></h2>
     <div class="benefits-grid">
         <div class="benefit-card">
             <div class="benefit-icon">
                 <i class="fas fa-home"></i>
             </div>
-            <h3>Homepage Uitlichting</h3>
-            <p>Je bedrijf wordt prominent weergegeven in de "Uitgelichte Bedrijven" sectie op de homepage, zichtbaar voor alle bezoekers.</p>
+            <h3><?= $__('boost_homepage_highlight') ?></h3>
+            <p><?= $__('boost_homepage_highlight_desc') ?></p>
         </div>
         <div class="benefit-card">
             <div class="benefit-icon">
                 <i class="fas fa-eye"></i>
             </div>
-            <h3>Meer Zichtbaarheid</h3>
-            <p>Tot wel 5x meer views op je bedrijfspagina dankzij de premium positie op de homepage.</p>
+            <h3><?= $__('boost_more_visibility') ?></h3>
+            <p><?= $__('boost_more_visibility_desc') ?></p>
         </div>
         <div class="benefit-card">
             <div class="benefit-icon">
                 <i class="fas fa-chart-line"></i>
             </div>
-            <h3>Meer Boekingen</h3>
-            <p>Gebooste bedrijven ontvangen gemiddeld 40% meer boekingen tijdens de boost periode.</p>
+            <h3><?= $__('boost_more_bookings') ?></h3>
+            <p><?= $__('boost_more_bookings_desc') ?></p>
         </div>
         <div class="benefit-card">
             <div class="benefit-icon">
                 <i class="fas fa-badge-check"></i>
             </div>
-            <h3>Boost Badge</h3>
-            <p>Je bedrijf krijgt een speciale "Uitgelicht" badge die extra vertrouwen wekt bij potentiele klanten.</p>
+            <h3><?= $__('boost_badge') ?></h3>
+            <p><?= $__('boost_badge_desc') ?></p>
         </div>
     </div>
 </div>
@@ -435,35 +435,35 @@ $boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceVa
 <!-- Pricing Section -->
 <div class="pricing-section">
     <div class="pricing-card">
-        <div class="pricing-badge">POPULAIR</div>
-        <h2>30 Dagen Boost</h2>
-        <p class="subtitle">Eenmalige betaling, geen abonnement</p>
+        <div class="pricing-badge"><?= $__('popular') ?></div>
+        <h2><?= $__('boost_30_days') ?></h2>
+        <p class="subtitle"><?= $__('boost_one_time_payment') ?></p>
 
         <div class="pricing-amount">
             <span class="price"><?= $boostPriceFormatted ?></span>
-            <span class="period">voor 30 dagen</span>
+            <span class="period"><?= $__('for_30_days') ?></span>
         </div>
 
         <div class="pricing-features">
             <div class="pricing-feature">
                 <i class="fas fa-check-circle"></i>
-                <span>30 dagen uitgelicht op homepage</span>
+                <span><?= $__('boost_feature_1') ?></span>
             </div>
             <div class="pricing-feature">
                 <i class="fas fa-check-circle"></i>
-                <span>Speciale "Uitgelicht" badge</span>
+                <span><?= $__('boost_feature_2') ?></span>
             </div>
             <div class="pricing-feature">
                 <i class="fas fa-check-circle"></i>
-                <span>Prioriteit in zoekresultaten</span>
+                <span><?= $__('boost_feature_3') ?></span>
             </div>
             <div class="pricing-feature">
                 <i class="fas fa-check-circle"></i>
-                <span>Geen automatische verlenging</span>
+                <span><?= $__('boost_feature_4') ?></span>
             </div>
             <div class="pricing-feature">
                 <i class="fas fa-check-circle"></i>
-                <span>Handmatig verlengen wanneer je wilt</span>
+                <span><?= $__('boost_feature_5') ?></span>
             </div>
         </div>
 
@@ -472,18 +472,18 @@ $boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceVa
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
                 <button type="submit" class="boost-btn extend-btn">
                     <i class="fas fa-sync"></i>
-                    Verlengen met 30 dagen
+                    <?= $__('extend_30_days') ?>
                 </button>
             </form>
             <p style="margin-top:1rem;color:var(--text-light);font-size:0.9rem">
-                Huidige boost verloopt op: <strong><?= date('d-m-Y', $boostExpiresAt) ?></strong>
+                <?= $__('current_boost_expires') ?>: <strong><?= $formatDate(date('Y-m-d', $boostExpiresAt)) ?></strong>
             </p>
         <?php else: ?>
             <form method="POST" action="/business/boost/activate">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?? '' ?>">
                 <button type="submit" class="boost-btn">
                     <i class="fas fa-rocket"></i>
-                    Nu Boosten
+                    <?= $__('boost_now') ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -492,54 +492,54 @@ $boostPriceFormatted = $boostPriceDisplay ?? '€' . number_format($boostPriceVa
 
 <!-- Stats Preview (Example Stats) -->
 <div class="stats-preview">
-    <h3><i class="fas fa-chart-bar"></i> Gemiddelde resultaten van gebooste bedrijven</h3>
+    <h3><i class="fas fa-chart-bar"></i> <?= $__('boost_average_results') ?></h3>
     <div class="stats-grid">
         <div class="stat-item">
             <p class="number">5x</p>
-            <p class="label">Meer profielbezoeken</p>
+            <p class="label"><?= $__('boost_more_profile_visits') ?></p>
         </div>
         <div class="stat-item">
             <p class="number">+40%</p>
-            <p class="label">Meer boekingen</p>
+            <p class="label"><?= $__('boost_more_bookings_stat') ?></p>
         </div>
         <div class="stat-item">
             <p class="number">2.500+</p>
-            <p class="label">Homepage weergaven/dag</p>
+            <p class="label"><?= $__('boost_homepage_views_day') ?></p>
         </div>
         <div class="stat-item">
             <p class="number">30</p>
-            <p class="label">Dagen zichtbaarheid</p>
+            <p class="label"><?= $__('boost_days_visibility') ?></p>
         </div>
     </div>
 </div>
 
 <!-- FAQ Section -->
 <div class="faq-section">
-    <h2><i class="fas fa-question-circle"></i> Veelgestelde vragen</h2>
+    <h2><i class="fas fa-question-circle"></i> <?= $__('faq') ?></h2>
     <div class="faq-grid">
         <div class="faq-item">
-            <h4>Hoe lang duurt een boost?</h4>
-            <p>Een boost duurt exact 30 dagen vanaf het moment van activatie. Na afloop kun je handmatig verlengen.</p>
+            <h4><?= $__('boost_faq_1_q') ?></h4>
+            <p><?= $__('boost_faq_1_a') ?></p>
         </div>
         <div class="faq-item">
-            <h4>Wordt de boost automatisch verlengd?</h4>
-            <p>Nee, de boost verloopt automatisch na 30 dagen. Je kiest zelf of en wanneer je wilt verlengen.</p>
+            <h4><?= $__('boost_faq_2_q') ?></h4>
+            <p><?= $__('boost_faq_2_a') ?></p>
         </div>
         <div class="faq-item">
-            <h4>Waar word ik weergegeven?</h4>
-            <p>Je bedrijf wordt weergegeven in de "Uitgelichte Bedrijven" sectie op de homepage, zichtbaar voor alle bezoekers.</p>
+            <h4><?= $__('boost_faq_3_q') ?></h4>
+            <p><?= $__('boost_faq_3_a') ?></p>
         </div>
         <div class="faq-item">
-            <h4>Kan ik een boost annuleren?</h4>
-            <p>Aangezien het een eenmalige betaling is, is annuleren niet mogelijk. De boost blijft actief tot de vervaldatum.</p>
+            <h4><?= $__('boost_faq_4_q') ?></h4>
+            <p><?= $__('boost_faq_4_a') ?></p>
         </div>
         <div class="faq-item">
-            <h4>Kan ik meerdere boosts tegelijk kopen?</h4>
-            <p>Je kunt verlengen terwijl je boost nog actief is. De extra 30 dagen worden opgeteld bij je huidige einddatum.</p>
+            <h4><?= $__('boost_faq_5_q') ?></h4>
+            <p><?= $__('boost_faq_5_a') ?></p>
         </div>
         <div class="faq-item">
-            <h4>Hoe betaal ik voor de boost?</h4>
-            <p>Betaling verloopt veilig via iDEAL, creditcard of andere betaalmethoden via onze betalingspartner.</p>
+            <h4><?= $__('boost_faq_6_q') ?></h4>
+            <p><?= $__('boost_faq_6_a') ?></p>
         </div>
     </div>
 </div>

@@ -151,14 +151,14 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-comments"></i> Alle Reviews (<?= count($reviews) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-comments"></i> <?= $__('all_reviews') ?> (<?= count($reviews) ?>)</h3>
             </div>
 
             <?php if (empty($reviews)): ?>
                 <div class="text-center" style="padding:3rem">
                     <i class="fas fa-star" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-                    <h4>Nog geen reviews</h4>
-                    <p class="text-muted">Wanneer klanten reviews achterlaten, verschijnen ze hier.</p>
+                    <h4><?= $__('no_reviews_yet') ?></h4>
+                    <p class="text-muted"><?= $__('reviews_appear_here') ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($reviews as $review): ?>
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                             <div class="review-meta" style="text-align:right">
-                                <small class="text-muted"><?= !empty($review['created_at']) ? date('d-m-Y', strtotime($review['created_at'])) : '-' ?></small>
+                                <small class="text-muted"><?= !empty($review['created_at']) ? $formatDate($review['created_at']) : '-' ?></small>
                                 <?php if (!empty($review['service_name'])): ?>
                                     <br><small class="text-muted"><?= htmlspecialchars($review['service_name']) ?></small>
                                 <?php endif; ?>
@@ -193,14 +193,14 @@
                             <div class="review-response">
                                 <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
                                     <i class="fas fa-reply" style="color:var(--primary)"></i>
-                                    <strong style="font-size:0.85rem">Jouw reactie</strong>
-                                    <small class="text-muted"><?= !empty($review['responded_at']) ? date('d-m-Y', strtotime($review['responded_at'])) : '' ?></small>
+                                    <strong style="font-size:0.85rem"><?= $__('your_response') ?></strong>
+                                    <small class="text-muted"><?= !empty($review['responded_at']) ? $formatDate($review['responded_at']) : '' ?></small>
                                 </div>
                                 <p style="margin:0;font-size:0.9rem"><?= nl2br(htmlspecialchars($review['business_response'])) ?></p>
                             </div>
                         <?php else: ?>
                             <button type="button" class="btn btn-secondary btn-sm" style="margin-top:0.5rem" onclick="showResponseForm(<?= $review['id'] ?>)">
-                                <i class="fas fa-reply"></i> Reageren
+                                <i class="fas fa-reply"></i> <?= $__('respond') ?>
                             </button>
 
                             <div class="response-form" id="responseForm<?= $review['id'] ?>">
@@ -208,14 +208,14 @@
                                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                     <input type="hidden" name="review_id" value="<?= $review['id'] ?>">
                                     <div class="form-group" style="margin-bottom:0.75rem">
-                                        <textarea name="response" class="form-control" rows="3" placeholder="Schrijf je reactie..." required></textarea>
+                                        <textarea name="response" class="form-control" rows="3" placeholder="<?= $__('write_your_response') ?>" required></textarea>
                                     </div>
                                     <div class="response-buttons">
                                         <button type="submit" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-paper-plane"></i> Versturen
+                                            <i class="fas fa-paper-plane"></i> <?= $__('send') ?>
                                         </button>
                                         <button type="button" class="btn btn-secondary btn-sm" onclick="hideResponseForm(<?= $review['id'] ?>)">
-                                            Annuleren
+                                            <?= $__('cancel') ?>
                                         </button>
                                     </div>
                                 </form>
@@ -231,7 +231,7 @@
     <div class="reviews-sidebar">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Statistieken</h3>
+                <h3 class="card-title"><i class="fas fa-chart-bar"></i> <?= $__('statistics') ?></h3>
             </div>
 
             <div class="stats-card-big">
@@ -266,19 +266,19 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-lightbulb"></i> Tips</h3>
+                <h3 class="card-title"><i class="fas fa-lightbulb"></i> <?= $__('tips') ?></h3>
             </div>
             <ul style="padding-left:1.25rem;color:var(--text-light);line-height:1.8;font-size:0.9rem">
-                <li>Reageer snel op reviews om betrokkenheid te tonen</li>
-                <li>Bedank klanten voor positieve feedback</li>
-                <li>Bij negatieve reviews: blijf professioneel en bied oplossingen</li>
-                <li>Vraag tevreden klanten om een review achter te laten</li>
+                <li><?= $__('review_tip_1') ?></li>
+                <li><?= $__('review_tip_2') ?></li>
+                <li><?= $__('review_tip_3') ?></li>
+                <li><?= $__('review_tip_4') ?></li>
             </ul>
         </div>
 
         <div class="card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333">
-            <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-star" style="color:#f5c518"></i> Waarom Reviews Belangrijk Zijn</h4>
-            <p style="font-size:0.85rem;color:#333333">Bedrijven met veel positieve reviews krijgen tot 70% meer boekingen!</p>
+            <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-star" style="color:#f5c518"></i> <?= $__('why_reviews_matter') ?></h4>
+            <p style="font-size:0.85rem;color:#333333"><?= $__('reviews_boost_bookings') ?></p>
         </div>
     </div>
 </div>

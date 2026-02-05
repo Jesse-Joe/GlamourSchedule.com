@@ -300,21 +300,21 @@
 
     <!-- Theme Tabs (Desktop) -->
     <div class="theme-tabs">
-        <button type="button" class="theme-tab active" data-tab="colors"><i class="fas fa-palette"></i> Kleuren</button>
-        <button type="button" class="theme-tab" data-tab="fonts"><i class="fas fa-font"></i> Lettertypen</button>
-        <button type="button" class="theme-tab" data-tab="layout"><i class="fas fa-th-large"></i> Layout</button>
-        <button type="button" class="theme-tab" data-tab="styling"><i class="fas fa-paint-brush"></i> Styling</button>
-        <button type="button" class="theme-tab" data-tab="advanced"><i class="fas fa-code"></i> Geavanceerd</button>
+        <button type="button" class="theme-tab active" data-tab="colors"><i class="fas fa-palette"></i> <?= $__('colors') ?></button>
+        <button type="button" class="theme-tab" data-tab="fonts"><i class="fas fa-font"></i> <?= $__('fonts') ?></button>
+        <button type="button" class="theme-tab" data-tab="layout"><i class="fas fa-th-large"></i> <?= $__('layout') ?></button>
+        <button type="button" class="theme-tab" data-tab="styling"><i class="fas fa-paint-brush"></i> <?= $__('styling') ?></button>
+        <button type="button" class="theme-tab" data-tab="advanced"><i class="fas fa-code"></i> <?= $__('advanced') ?></button>
     </div>
 
     <!-- Theme Tabs (Mobile Dropdown) -->
     <div class="theme-tabs-mobile">
         <select id="themeTabsMobile">
-            <option value="colors">Kleuren</option>
-            <option value="fonts">Lettertypen</option>
-            <option value="layout">Layout</option>
-            <option value="styling">Styling</option>
-            <option value="advanced">Geavanceerd</option>
+            <option value="colors"><?= $__('colors') ?></option>
+            <option value="fonts"><?= $__('fonts') ?></option>
+            <option value="layout"><?= $__('layout') ?></option>
+            <option value="styling"><?= $__('styling') ?></option>
+            <option value="advanced"><?= $__('advanced') ?></option>
         </select>
     </div>
 
@@ -324,9 +324,9 @@
             <div class="tab-content active" id="tab-colors">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-swatchbook"></i> Kleur Presets</h3>
+                        <h3 class="card-title"><i class="fas fa-swatchbook"></i> <?= $__('color_presets') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Kies een voorgedefinieerd kleurenschema:</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('choose_color_scheme') ?></p>
 
                     <div class="color-presets">
                         <?php foreach ($colorPresets as $preset): ?>
@@ -344,58 +344,58 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-sliders-h"></i> Aangepaste Kleuren</h3>
+                        <h3 class="card-title"><i class="fas fa-sliders-h"></i> <?= $__('custom_colors') ?></h3>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Primaire Kleur</label>
+                        <label class="form-label"><?= $__('primary_color') ?></label>
                         <div class="color-picker-wrapper">
                             <input type="color" id="primaryColorPicker" value="<?= htmlspecialchars($settings['primary_color'] ?? '#000000') ?>" onchange="updateColor('primary', this.value)">
                             <input type="text" name="primary_color" id="primaryColor" class="form-control" value="<?= htmlspecialchars($settings['primary_color'] ?? '#000000') ?>" pattern="^#[0-9A-Fa-f]{6}$">
                         </div>
-                        <p class="form-hint">Hoofdkleur voor knoppen en headers</p>
+                        <p class="form-hint"><?= $__('primary_color_description') ?></p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Secundaire Kleur</label>
+                        <label class="form-label"><?= $__('secondary_color') ?></label>
                         <div class="color-picker-wrapper">
                             <input type="color" id="secondaryColorPicker" value="<?= htmlspecialchars($settings['secondary_color'] ?? '#333333') ?>" onchange="updateColor('secondary', this.value)">
                             <input type="text" name="secondary_color" id="secondaryColor" class="form-control" value="<?= htmlspecialchars($settings['secondary_color'] ?? '#333333') ?>" pattern="^#[0-9A-Fa-f]{6}$">
                         </div>
-                        <p class="form-hint">Gebruikt voor accenten en hover states</p>
+                        <p class="form-hint"><?= $__('secondary_color_description') ?></p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Accent Kleur</label>
+                        <label class="form-label"><?= $__('accent_color') ?></label>
                         <div class="color-picker-wrapper">
                             <input type="color" id="accentColorPicker" value="<?= htmlspecialchars($settings['accent_color'] ?? '#fbbf24') ?>" onchange="updateColor('accent', this.value)">
                             <input type="text" name="accent_color" id="accentColor" class="form-control" value="<?= htmlspecialchars($settings['accent_color'] ?? '#fbbf24') ?>" pattern="^#[0-9A-Fa-f]{6}$">
                         </div>
-                        <p class="form-hint">Highlight kleur voor speciale elementen</p>
+                        <p class="form-hint"><?= $__('accent_color_description') ?></p>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-adjust"></i> Thema Mode</h3>
+                        <h3 class="card-title"><i class="fas fa-adjust"></i> <?= $__('theme_mode') ?></h3>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Pagina Thema</label>
+                        <label class="form-label"><?= $__('page_theme') ?></label>
                         <select name="theme" class="form-control" id="themeMode">
-                            <option value="light" <?= ($business['theme'] ?? 'light') === 'light' ? 'selected' : '' ?>>Licht</option>
-                            <option value="dark" <?= ($business['theme'] ?? '') === 'dark' ? 'selected' : '' ?>>Donker</option>
+                            <option value="light" <?= ($business['theme'] ?? 'light') === 'light' ? 'selected' : '' ?>><?= $__('light') ?></option>
+                            <option value="dark" <?= ($business['theme'] ?? '') === 'dark' ? 'selected' : '' ?>><?= $__('dark') ?></option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Stijl Voorkeur</label>
+                        <label class="form-label"><?= $__('style_preference') ?></label>
                         <select name="gender_theme" class="form-control">
-                            <option value="neutral" <?= ($business['gender_theme'] ?? 'neutral') === 'neutral' ? 'selected' : '' ?>>Neutraal (Standaard)</option>
-                            <option value="feminine" <?= ($business['gender_theme'] ?? '') === 'feminine' ? 'selected' : '' ?>>Feminine (Zacht/Elegant)</option>
-                            <option value="masculine" <?= ($business['gender_theme'] ?? '') === 'masculine' ? 'selected' : '' ?>>Masculine (Sterk/Modern)</option>
+                            <option value="neutral" <?= ($business['gender_theme'] ?? 'neutral') === 'neutral' ? 'selected' : '' ?>><?= $__('neutral_default') ?></option>
+                            <option value="feminine" <?= ($business['gender_theme'] ?? '') === 'feminine' ? 'selected' : '' ?>><?= $__('feminine_soft') ?></option>
+                            <option value="masculine" <?= ($business['gender_theme'] ?? '') === 'masculine' ? 'selected' : '' ?>><?= $__('masculine_modern') ?></option>
                         </select>
-                        <p class="form-hint">Past subtiele styling aan voor jouw doelgroep</p>
+                        <p class="form-hint"><?= $__('style_preference_hint') ?></p>
                     </div>
                 </div>
             </div>
@@ -404,9 +404,9 @@
             <div class="tab-content" id="tab-fonts">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-heading"></i> Kop Lettertype</h3>
+                        <h3 class="card-title"><i class="fas fa-heading"></i> <?= $__('heading_font') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Kies het lettertype voor titels en koppen:</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('choose_font_titles') ?></p>
 
                     <div class="font-options">
                         <div class="font-option <?= ($settings['font_family'] ?? 'playfair') === 'playfair' ? 'active' : '' ?>" data-font="playfair">
@@ -463,16 +463,16 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-italic"></i> Tekst Stijl</h3>
+                        <h3 class="card-title"><i class="fas fa-italic"></i> <?= $__('text_style') ?></h3>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Lettertype Stijl</label>
+                        <label class="form-label"><?= $__('font_style') ?></label>
                         <select name="font_style" class="form-control" id="fontStyle">
-                            <option value="elegant" <?= ($settings['font_style'] ?? 'elegant') === 'elegant' ? 'selected' : '' ?>>Elegant (Cursief koppen)</option>
-                            <option value="modern" <?= ($settings['font_style'] ?? '') === 'modern' ? 'selected' : '' ?>>Modern (Rechte letters)</option>
-                            <option value="bold" <?= ($settings['font_style'] ?? '') === 'bold' ? 'selected' : '' ?>>Bold (Vetgedrukt)</option>
-                            <option value="light" <?= ($settings['font_style'] ?? '') === 'light' ? 'selected' : '' ?>>Light (Dun/Licht)</option>
+                            <option value="elegant" <?= ($settings['font_style'] ?? 'elegant') === 'elegant' ? 'selected' : '' ?>><?= $__('elegant_italic') ?></option>
+                            <option value="modern" <?= ($settings['font_style'] ?? '') === 'modern' ? 'selected' : '' ?>><?= $__('modern_straight') ?></option>
+                            <option value="bold" <?= ($settings['font_style'] ?? '') === 'bold' ? 'selected' : '' ?>><?= $__('bold_style') ?></option>
+                            <option value="light" <?= ($settings['font_style'] ?? '') === 'light' ? 'selected' : '' ?>><?= $__('light_thin') ?></option>
                         </select>
                     </div>
                 </div>
@@ -482,9 +482,9 @@
             <div class="tab-content" id="tab-layout">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-columns"></i> Pagina Layout</h3>
+                        <h3 class="card-title"><i class="fas fa-columns"></i> <?= $__('page_layout') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Kies een layout voor je bedrijfspagina:</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('choose_layout') ?></p>
 
                     <div class="layout-options">
                         <div class="layout-option <?= ($settings['layout_template'] ?? 'classic') === 'classic' ? 'active' : '' ?>" data-layout="classic">
@@ -495,7 +495,7 @@
                                 </div>
                             </div>
                             <div class="layout-option-name">Classic</div>
-                            <div class="layout-option-desc">Eenvoudig en overzichtelijk</div>
+                            <div class="layout-option-desc"><?= $__('layout_classic_desc') ?></div>
                         </div>
 
                         <div class="layout-option <?= ($settings['layout_template'] ?? '') === 'sidebar' ? 'active' : '' ?>" data-layout="sidebar">
@@ -506,8 +506,8 @@
                                     <div class="layout-preview-main"></div>
                                 </div>
                             </div>
-                            <div class="layout-option-name">Met Sidebar</div>
-                            <div class="layout-option-desc">Info aan de zijkant</div>
+                            <div class="layout-option-name"><?= $__('layout_sidebar') ?></div>
+                            <div class="layout-option-desc"><?= $__('layout_sidebar_desc') ?></div>
                         </div>
 
                         <div class="layout-option <?= ($settings['layout_template'] ?? '') === 'hero' ? 'active' : '' ?>" data-layout="hero">
@@ -518,7 +518,7 @@
                                 </div>
                             </div>
                             <div class="layout-option-name">Hero Banner</div>
-                            <div class="layout-option-desc">Grote header afbeelding</div>
+                            <div class="layout-option-desc"><?= $__('layout_hero_desc') ?></div>
                         </div>
 
                         <div class="layout-option <?= ($settings['layout_template'] ?? '') === 'minimal' ? 'active' : '' ?>" data-layout="minimal">
@@ -527,8 +527,8 @@
                                     <div class="layout-preview-main" style="min-height:70px;"></div>
                                 </div>
                             </div>
-                            <div class="layout-option-name">Minimaal</div>
-                            <div class="layout-option-desc">Focus op inhoud</div>
+                            <div class="layout-option-name"><?= $__('layout_minimal') ?></div>
+                            <div class="layout-option-desc"><?= $__('layout_minimal_desc') ?></div>
                         </div>
 
                         <div class="layout-option <?= ($settings['layout_template'] ?? '') === 'cards' ? 'active' : '' ?>" data-layout="cards">
@@ -539,8 +539,8 @@
                                     <div class="layout-preview-main" style="min-height:30px;"></div>
                                 </div>
                             </div>
-                            <div class="layout-option-name">Kaarten</div>
-                            <div class="layout-option-desc">Diensten als kaarten</div>
+                            <div class="layout-option-name"><?= $__('layout_cards') ?></div>
+                            <div class="layout-option-desc"><?= $__('layout_cards_desc') ?></div>
                         </div>
 
                         <div class="layout-option <?= ($settings['layout_template'] ?? '') === 'magazine' ? 'active' : '' ?>" data-layout="magazine">
@@ -552,7 +552,7 @@
                                 </div>
                             </div>
                             <div class="layout-option-name">Magazine</div>
-                            <div class="layout-option-desc">Creatieve grid layout</div>
+                            <div class="layout-option-desc"><?= $__('layout_magazine_desc') ?></div>
                         </div>
                     </div>
                     <input type="hidden" name="layout_template" id="layoutTemplate" value="<?= htmlspecialchars($settings['layout_template'] ?? 'classic') ?>">
@@ -560,15 +560,15 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-images"></i> Galerij Stijl</h3>
+                        <h3 class="card-title"><i class="fas fa-images"></i> <?= $__('gallery_style') ?></h3>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Foto Galerij Weergave</label>
+                        <label class="form-label"><?= $__('photo_gallery_display') ?></label>
                         <select name="gallery_style" class="form-control">
-                            <option value="grid" <?= ($settings['gallery_style'] ?? 'grid') === 'grid' ? 'selected' : '' ?>>Grid (Raster)</option>
-                            <option value="carousel" <?= ($settings['gallery_style'] ?? '') === 'carousel' ? 'selected' : '' ?>>Carousel (Slider)</option>
-                            <option value="masonry" <?= ($settings['gallery_style'] ?? '') === 'masonry' ? 'selected' : '' ?>>Masonry (Pinterest stijl)</option>
+                            <option value="grid" <?= ($settings['gallery_style'] ?? 'grid') === 'grid' ? 'selected' : '' ?>><?= $__('gallery_grid') ?></option>
+                            <option value="carousel" <?= ($settings['gallery_style'] ?? '') === 'carousel' ? 'selected' : '' ?>><?= $__('gallery_carousel') ?></option>
+                            <option value="masonry" <?= ($settings['gallery_style'] ?? '') === 'masonry' ? 'selected' : '' ?>><?= $__('gallery_masonry') ?></option>
                         </select>
                     </div>
                 </div>
@@ -578,34 +578,34 @@
             <div class="tab-content" id="tab-styling">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-square"></i> Knop Stijl</h3>
+                        <h3 class="card-title"><i class="fas fa-square"></i> <?= $__('button_style') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Hoe moeten de knoppen eruit zien?</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('button_style_question') ?></p>
 
                     <div class="button-style-options">
                         <div class="button-style-option <?= ($settings['button_style'] ?? 'rounded') === 'rounded' ? 'active' : '' ?>" data-style="rounded">
                             <div class="button-style-preview">
-                                <span class="btn-preview rounded">Boek Nu</span>
+                                <span class="btn-preview rounded"><?= $__('book_now') ?></span>
                             </div>
-                            <div class="font-option-name">Afgerond</div>
+                            <div class="font-option-name"><?= $__('rounded') ?></div>
                         </div>
                         <div class="button-style-option <?= ($settings['button_style'] ?? '') === 'square' ? 'active' : '' ?>" data-style="square">
                             <div class="button-style-preview">
-                                <span class="btn-preview square">Boek Nu</span>
+                                <span class="btn-preview square"><?= $__('book_now') ?></span>
                             </div>
-                            <div class="font-option-name">Vierkant</div>
+                            <div class="font-option-name"><?= $__('square') ?></div>
                         </div>
                         <div class="button-style-option <?= ($settings['button_style'] ?? '') === 'pill' ? 'active' : '' ?>" data-style="pill">
                             <div class="button-style-preview">
-                                <span class="btn-preview pill">Boek Nu</span>
+                                <span class="btn-preview pill"><?= $__('book_now') ?></span>
                             </div>
                             <div class="font-option-name">Pill</div>
                         </div>
                         <div class="button-style-option <?= ($settings['button_style'] ?? '') === 'sharp' ? 'active' : '' ?>" data-style="sharp">
                             <div class="button-style-preview">
-                                <span class="btn-preview sharp">Boek Nu</span>
+                                <span class="btn-preview sharp"><?= $__('book_now') ?></span>
                             </div>
-                            <div class="font-option-name">Scherp</div>
+                            <div class="font-option-name"><?= $__('sharp') ?></div>
                         </div>
                     </div>
                     <input type="hidden" name="button_style" id="buttonStyle" value="<?= htmlspecialchars($settings['button_style'] ?? 'rounded') ?>">
@@ -613,50 +613,50 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-layer-group"></i> Header Stijl</h3>
+                        <h3 class="card-title"><i class="fas fa-layer-group"></i> <?= $__('header_style') ?></h3>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Header Achtergrond</label>
+                        <label class="form-label"><?= $__('header_background') ?></label>
                         <select name="header_style" class="form-control" id="headerStyle">
-                            <option value="gradient" <?= ($settings['header_style'] ?? 'gradient') === 'gradient' ? 'selected' : '' ?>>Gradient (Kleurverloop)</option>
-                            <option value="solid" <?= ($settings['header_style'] ?? '') === 'solid' ? 'selected' : '' ?>>Solid (Effen kleur)</option>
-                            <option value="image" <?= ($settings['header_style'] ?? '') === 'image' ? 'selected' : '' ?>>Afbeelding (Cover foto)</option>
-                            <option value="transparent" <?= ($settings['header_style'] ?? '') === 'transparent' ? 'selected' : '' ?>>Transparant</option>
+                            <option value="gradient" <?= ($settings['header_style'] ?? 'gradient') === 'gradient' ? 'selected' : '' ?>><?= $__('header_gradient') ?></option>
+                            <option value="solid" <?= ($settings['header_style'] ?? '') === 'solid' ? 'selected' : '' ?>><?= $__('header_solid') ?></option>
+                            <option value="image" <?= ($settings['header_style'] ?? '') === 'image' ? 'selected' : '' ?>><?= $__('header_image') ?></option>
+                            <option value="transparent" <?= ($settings['header_style'] ?? '') === 'transparent' ? 'selected' : '' ?>><?= $__('header_transparent') ?></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-eye"></i> Weergave Opties</h3>
+                        <h3 class="card-title"><i class="fas fa-eye"></i> <?= $__('display_options') ?></h3>
                     </div>
 
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
                             <input type="checkbox" name="show_reviews" value="1" <?= ($settings['show_reviews'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;">
-                            <span>Toon reviews op pagina</span>
+                            <span><?= $__('show_reviews') ?></span>
                         </label>
                     </div>
 
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
                             <input type="checkbox" name="show_prices" value="1" <?= ($settings['show_prices'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;">
-                            <span>Toon prijzen bij diensten</span>
+                            <span><?= $__('show_prices') ?></span>
                         </label>
                     </div>
 
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
                             <input type="checkbox" name="show_duration" value="1" <?= ($settings['show_duration'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;">
-                            <span>Toon duur bij diensten</span>
+                            <span><?= $__('show_duration') ?></span>
                         </label>
                     </div>
 
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;">
                             <input type="checkbox" name="show_availability" value="1" <?= ($settings['show_availability'] ?? 1) ? 'checked' : '' ?> style="width:20px;height:20px;">
-                            <span>Toon beschikbaarheid indicator</span>
+                            <span><?= $__('show_availability_indicator') ?></span>
                         </label>
                     </div>
                 </div>
@@ -666,35 +666,35 @@
             <div class="tab-content" id="tab-advanced">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-code"></i> Custom CSS</h3>
+                        <h3 class="card-title"><i class="fas fa-code"></i> <?= $__('custom_css') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Voeg je eigen CSS toe voor geavanceerde aanpassingen:</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('add_custom_css') ?></p>
 
                     <div class="form-group">
-                        <textarea name="custom_css" class="css-editor" id="customCss" placeholder="/* Jouw aangepaste CSS hier */
+                        <textarea name="custom_css" class="css-editor" id="customCss" placeholder="/* <?= $__('your_custom_css') ?> */
 .business-page .header {
-    /* voorbeeld */
+    /* <?= $__('example') ?> */
 }"><?= htmlspecialchars($settings['custom_css'] ?? '') ?></textarea>
-                        <p class="form-hint">Let op: ongeldige CSS kan de weergave van je pagina beïnvloeden.</p>
+                        <p class="form-hint"><?= $__('invalid_css_warning') ?></p>
                     </div>
 
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>Custom CSS is alleen beschikbaar voor gevorderde gebruikers. Gebruik dit op eigen risico.</span>
+                        <span><?= $__('custom_css_advanced_users') ?></span>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-info-circle"></i> CSS Variabelen</h3>
+                        <h3 class="card-title"><i class="fas fa-info-circle"></i> <?= $__('css_variables') ?></h3>
                     </div>
-                    <p class="text-muted" style="margin-bottom:1rem">Beschikbare CSS variabelen die je kunt gebruiken:</p>
+                    <p class="text-muted" style="margin-bottom:1rem"><?= $__('available_css_variables') ?></p>
 
                     <div style="background:#f5f5f5;border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;">
-                        <code>--business-primary</code> - Primaire kleur<br>
-                        <code>--business-secondary</code> - Secundaire kleur<br>
-                        <code>--business-accent</code> - Accent kleur<br>
-                        <code>--business-font</code> - Gekozen lettertype<br>
+                        <code>--business-primary</code> - <?= $__('primary_color') ?><br>
+                        <code>--business-secondary</code> - <?= $__('secondary_color') ?><br>
+                        <code>--business-accent</code> - <?= $__('accent_color') ?><br>
+                        <code>--business-font</code> - <?= $__('chosen_font') ?><br>
                         <code>--business-radius</code> - Border radius<br>
                     </div>
                 </div>
@@ -705,27 +705,27 @@
         <div>
             <div class="card" style="position:sticky;top:1rem;">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-eye"></i> Live Preview</h3>
+                    <h3 class="card-title"><i class="fas fa-eye"></i> <?= $__('live_preview') ?></h3>
                 </div>
 
                 <div class="preview-card" id="previewCard">
                     <div class="preview-header" id="previewHeader" style="background:linear-gradient(135deg, <?= htmlspecialchars($settings['primary_color'] ?? '#000000') ?>, <?= htmlspecialchars($settings['accent_color'] ?? '#fbbf24') ?>)">
-                        <h2 style="margin:0;font-family:'Playfair Display',serif;" id="previewTitle"><?= htmlspecialchars($business['company_name'] ?? 'Mijn Salon') ?></h2>
-                        <p style="opacity:0.9;margin-top:0.5rem"><?= htmlspecialchars($settings['tagline'] ?? 'Jouw schoonheidsexpert') ?></p>
+                        <h2 style="margin:0;font-family:'Playfair Display',serif;" id="previewTitle"><?= htmlspecialchars($business['company_name'] ?? $__('my_salon')) ?></h2>
+                        <p style="opacity:0.9;margin-top:0.5rem"><?= htmlspecialchars($settings['tagline'] ?? $__('your_beauty_expert')) ?></p>
                     </div>
                     <div class="preview-content">
-                        <h4 style="margin-bottom:0.5rem" id="previewSubtitle">Onze Diensten</h4>
-                        <p class="text-muted" style="font-size:0.9rem">Bekijk ons uitgebreide aanbod van schoonheidsbehandelingen.</p>
+                        <h4 style="margin-bottom:0.5rem" id="previewSubtitle"><?= $__('our_services') ?></h4>
+                        <p class="text-muted" style="font-size:0.9rem"><?= $__('preview_services_text') ?></p>
                         <div style="margin-top:1rem">
                             <a href="#" class="preview-btn" id="previewBtn" style="background:linear-gradient(135deg, <?= htmlspecialchars($settings['primary_color'] ?? '#000000') ?>, <?= htmlspecialchars($settings['accent_color'] ?? '#fbbf24') ?>)">
-                                <i class="fas fa-calendar-plus"></i> Boek Nu
+                                <i class="fas fa-calendar-plus"></i> <?= $__('book_now') ?>
                             </a>
                         </div>
                     </div>
                 </div>
 
                 <div style="margin-top:1rem;padding:1rem;background:#f9f9f9;border-radius:10px;">
-                    <h5 style="margin:0 0 0.5rem;font-size:0.85rem;color:#666;">Preview Opties</h5>
+                    <h5 style="margin:0 0 0.5rem;font-size:0.85rem;color:#666;"><?= $__('preview_options') ?></h5>
                     <div style="display:flex;gap:0.5rem;">
                         <button type="button" class="btn btn-sm btn-secondary" onclick="togglePreviewMode('desktop')">
                             <i class="fas fa-desktop"></i>
@@ -734,14 +734,14 @@
                             <i class="fas fa-mobile-alt"></i>
                         </button>
                         <button type="button" class="btn btn-sm btn-secondary" onclick="openFullPreview()">
-                            <i class="fas fa-external-link-alt"></i> Bekijk pagina
+                            <i class="fas fa-external-link-alt"></i> <?= $__('view_page') ?>
                         </button>
                     </div>
                 </div>
 
                 <div class="alert alert-info" style="margin-top:1rem">
                     <i class="fas fa-lightbulb"></i>
-                    <span>Wijzigingen worden direct getoond in de preview. Klik op 'Opslaan' om ze definitief te maken.</span>
+                    <span><?= $__('preview_changes_hint') ?></span>
                 </div>
             </div>
         </div>
@@ -750,10 +750,10 @@
     <div style="position:sticky;bottom:0;background:var(--secondary);padding:1rem 0;margin-top:2rem;border-top:1px solid var(--border)">
         <div style="display:flex;gap:1rem;align-items:center;">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Thema Opslaan
+                <i class="fas fa-save"></i> <?= $__('save_theme') ?>
             </button>
             <button type="button" class="btn btn-secondary" onclick="resetToDefaults()">
-                <i class="fas fa-undo"></i> Reset naar standaard
+                <i class="fas fa-undo"></i> <?= $__('reset_to_default') ?>
             </button>
         </div>
     </div>
@@ -917,7 +917,7 @@
 
     // Reset to defaults
     function resetToDefaults() {
-        if (confirm('<?= $translations['confirm_reset_theme'] ?? 'Are you sure you want to reset all theme settings to default?' ?>')) {
+        if (confirm('<?= $__('confirm_reset_theme') ?>')) {
             document.getElementById('primaryColor').value = '#000000';
             document.getElementById('primaryColorPicker').value = '#000000';
             document.getElementById('secondaryColor').value = '#333333';

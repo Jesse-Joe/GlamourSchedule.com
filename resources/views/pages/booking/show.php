@@ -561,16 +561,16 @@
 <div class="booking-page">
     <?php if (isset($_GET['success']) && $_GET['success'] === 'cancelled_refund'): ?>
     <div style="max-width:500px;margin:0 auto 1rem;background:#065f46;border:1px solid #10b981;border-radius:12px;padding:1rem;text-align:center;">
-        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> Boeking succesvol geannuleerd</p>
-        <p style="margin:0.5rem 0 0;color:#a7f3d0;font-size:0.9rem;">Je terugbetaling wordt binnen 3-5 werkdagen verwerkt.</p>
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> <?= $__('booking_cancelled_success') ?></p>
+        <p style="margin:0.5rem 0 0;color:#a7f3d0;font-size:0.9rem;"><?= $__('refund_processing') ?></p>
     </div>
     <?php elseif (isset($_GET['success']) && $_GET['success'] === 'cancelled'): ?>
     <div style="max-width:500px;margin:0 auto 1rem;background:#065f46;border:1px solid #10b981;border-radius:12px;padding:1rem;text-align:center;">
-        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> Boeking succesvol geannuleerd</p>
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-check-circle"></i> <?= $__('booking_cancelled_success') ?></p>
     </div>
     <?php elseif (isset($_GET['error'])): ?>
     <div style="max-width:500px;margin:0 auto 1rem;background:#7f1d1d;border:1px solid #ef4444;border-radius:12px;padding:1rem;text-align:center;">
-        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-exclamation-circle"></i> Er ging iets mis</p>
+        <p style="margin:0;color:#ffffff;font-weight:600;"><i class="fas fa-exclamation-circle"></i> <?= $__('something_went_wrong') ?></p>
         <p style="margin:0.5rem 0 0;color:#fca5a5;font-size:0.9rem;">
             <?php
             $error = $_GET['error'];
@@ -589,8 +589,8 @@
                 <div class="booking-status-icon danger">
                     <i class="fas fa-times"></i>
                 </div>
-                <h1 class="booking-title">Boeking Geannuleerd</h1>
-                <p class="booking-subtitle">Deze afspraak is geannuleerd</p>
+                <h1 class="booking-title"><?= $__('booking_cancelled') ?></h1>
+                <p class="booking-subtitle"><?= $__('appointment_cancelled') ?></p>
             <?php elseif ($booking['status'] === 'pending' && $booking['payment_status'] !== 'paid'): ?>
                 <div class="booking-status-icon warning">
                     <i class="fas fa-credit-card"></i>
@@ -601,8 +601,8 @@
                 <div class="booking-status-icon success">
                     <i class="fas fa-check"></i>
                 </div>
-                <h1 class="booking-title">Ingecheckt!</h1>
-                <p class="booking-subtitle">Je aanwezigheid is bevestigd</p>
+                <h1 class="booking-title"><?= $__('checked_in_success') ?></h1>
+                <p class="booking-subtitle"><?= $__('presence_confirmed') ?></p>
             <?php else: ?>
                 <div class="booking-status-icon success">
                     <i class="fas fa-check"></i>

@@ -382,22 +382,22 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     <div class="stat-card">
         <i class="fas fa-calendar-check" style="color:var(--primary)"></i>
         <h3><?= $stats['todayBookings'] ?></h3>
-        <p>Vandaag</p>
+        <p><?= $__('today') ?></p>
     </div>
     <div class="stat-card">
         <i class="fas fa-calendar-alt" style="color:var(--success)"></i>
         <h3><?= $stats['totalBookings'] ?></h3>
-        <p>Totaal Boekingen</p>
+        <p><?= $__('total_bookings') ?></p>
     </div>
     <div class="stat-card">
         <i class="fas fa-euro-sign" style="color:#fd7e14"></i>
         <h3>&euro;<?= number_format($stats['totalRevenue'], 0, ',', '.') ?></h3>
-        <p>Omzet</p>
+        <p><?= $__('revenue') ?></p>
     </div>
     <div class="stat-card">
         <i class="fas fa-star" style="color:#f5c518"></i>
         <h3><?= number_format($stats['avgRating'], 1) ?></h3>
-        <p>Beoordeling</p>
+        <p><?= $__('rating') ?></p>
     </div>
 </div>
 
@@ -408,8 +408,8 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
             <i class="fas fa-calendar-alt"></i>
         </div>
         <div class="action-text">
-            <h4>Boekingen</h4>
-            <p>Beheer afspraken</p>
+            <h4><?= $__('my_bookings') ?></h4>
+            <p><?= $__('manage_appointments') ?></p>
         </div>
     </a>
     <a href="/business/services" class="action-card">
@@ -417,8 +417,8 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
             <i class="fas fa-cut"></i>
         </div>
         <div class="action-text">
-            <h4>Diensten</h4>
-            <p>Beheer diensten & prijzen</p>
+            <h4><?= $__('services') ?></h4>
+            <p><?= $__('manage_services_prices') ?></p>
         </div>
     </a>
     <a href="/business/website" class="action-card">
@@ -426,8 +426,8 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
             <i class="fas fa-globe"></i>
         </div>
         <div class="action-text">
-            <h4>Webpagina</h4>
-            <p>Bewerk je pagina</p>
+            <h4><?= $__('website') ?></h4>
+            <p><?= $__('edit_your_page') ?></p>
         </div>
     </a>
 </div>
@@ -437,13 +437,13 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     <!-- Today's Bookings -->
     <div class="dash-card">
         <div class="dash-card-header">
-            <h3 class="dash-card-title"><i class="fas fa-calendar-day"></i> Vandaag</h3>
-            <a href="/business/calendar" class="btn-small">Bekijk Agenda</a>
+            <h3 class="dash-card-title"><i class="fas fa-calendar-day"></i> <?= $__('today') ?></h3>
+            <a href="/business/calendar" class="btn-small"><?= $__('view_agenda') ?></a>
         </div>
         <?php if (empty($todayBookings)): ?>
             <div class="empty-state">
                 <i class="fas fa-calendar-check"></i>
-                <p>Geen afspraken voor vandaag</p>
+                <p><?= $__('no_appointments_today') ?></p>
             </div>
         <?php else: ?>
             <div style="max-height:280px;overflow-y:auto">
@@ -466,13 +466,13 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     <!-- Recent Bookings -->
     <div class="dash-card">
         <div class="dash-card-header">
-            <h3 class="dash-card-title"><i class="fas fa-history"></i> Recente Boekingen</h3>
-            <a href="/business/bookings" class="btn-small">Bekijk Alle</a>
+            <h3 class="dash-card-title"><i class="fas fa-history"></i> <?= $__('recent_bookings') ?></h3>
+            <a href="/business/bookings" class="btn-small"><?= $__('view_all') ?></a>
         </div>
         <?php if (empty($recentBookings)): ?>
             <div class="empty-state">
                 <i class="fas fa-inbox"></i>
-                <p>Nog geen boekingen</p>
+                <p><?= $__('no_bookings_yet') ?></p>
             </div>
         <?php else: ?>
             <div style="max-height:280px;overflow-y:auto">

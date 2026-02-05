@@ -243,9 +243,9 @@
 <!-- Salon Banner Section -->
 <div class="card banner-section">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-panorama"></i> Salon Banner / Cover</h3>
+        <h3 class="card-title"><i class="fas fa-panorama"></i> <?= $__('salon_banner_cover') ?></h3>
     </div>
-    <p class="text-muted" style="margin-bottom:1rem">Je salon banner wordt prominent getoond op zoekresultaten en je bedrijfspagina. Een professionele banner trekt meer klanten aan!</p>
+    <p class="text-muted" style="margin-bottom:1rem"><?= $__('banner_description') ?></p>
 
     <?php
     $hasBanner = !empty($business['banner_image']);
@@ -261,7 +261,7 @@
         <?php else: ?>
             <div class="banner-preview-placeholder">
                 <i class="fas fa-image"></i>
-                <span>Nog geen banner geüpload</span>
+                <span><?= $__('no_banner_uploaded') ?></span>
             </div>
         <?php endif; ?>
     </div>
@@ -269,9 +269,9 @@
     <!-- Upload Zone (drag & drop) -->
     <div class="banner-upload-zone" id="bannerUploadZone" onclick="document.getElementById('bannerFileInput').click()">
         <i class="fas fa-cloud-upload-alt"></i>
-        <h4><?= $hasBanner ? 'Nieuwe banner uploaden' : 'Banner uploaden' ?></h4>
-        <p>Sleep een afbeelding hierheen of klik om te selecteren</p>
-        <p style="color:#666;font-size:0.75rem;margin-top:0.5rem">JPG, PNG of WebP • Max 5MB • Aanbevolen: 1200x400 px</p>
+        <h4><?= $hasBanner ? $__('upload_new_banner') : $__('upload_banner') ?></h4>
+        <p><?= $__('drag_image_here') ?></p>
+        <p style="color:#666;font-size:0.75rem;margin-top:0.5rem"><?= $__('image_specs_banner') ?></p>
     </div>
 
     <form method="POST" action="/business/banner/upload" enctype="multipart/form-data" id="bannerUploadForm" style="display:none">
@@ -285,19 +285,19 @@
             <!-- Position Control -->
             <form method="POST" action="/business/banner/position" class="banner-position-select">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                <label for="positionSelect"><i class="fas fa-crop-alt"></i> Positie:</label>
+                <label for="positionSelect"><i class="fas fa-crop-alt"></i> <?= $__('position') ?>:</label>
                 <select name="banner_position" id="positionSelect" onchange="this.form.submit()">
-                    <option value="top" <?= $bannerPosition === 'top' ? 'selected' : '' ?>>Boven</option>
-                    <option value="center" <?= $bannerPosition === 'center' ? 'selected' : '' ?>>Midden</option>
-                    <option value="bottom" <?= $bannerPosition === 'bottom' ? 'selected' : '' ?>>Onder</option>
+                    <option value="top" <?= $bannerPosition === 'top' ? 'selected' : '' ?>><?= $__('top') ?></option>
+                    <option value="center" <?= $bannerPosition === 'center' ? 'selected' : '' ?>><?= $__('center') ?></option>
+                    <option value="bottom" <?= $bannerPosition === 'bottom' ? 'selected' : '' ?>><?= $__('bottom') ?></option>
                 </select>
             </form>
 
             <!-- Delete Button -->
-            <form method="POST" action="/business/banner/delete" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_banner'] ?? 'Are you sure you want to delete the banner?' ?>')">
+            <form method="POST" action="/business/banner/delete" style="display:inline" onsubmit="return confirm('<?= $__('confirm_delete_banner') ?>')">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <button type="submit" class="banner-delete-btn">
-                    <i class="fas fa-trash-alt"></i> Verwijderen
+                    <i class="fas fa-trash-alt"></i> <?= $__('delete') ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -308,7 +308,7 @@
     <!-- Upload Section -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-upload"></i> Nieuwe Foto Uploaden</h3>
+            <h3 class="card-title"><i class="fas fa-upload"></i> <?= $__('upload_new_photo') ?></h3>
         </div>
 
         <form method="POST" action="/business/photos" enctype="multipart/form-data" id="uploadForm">
@@ -316,9 +316,9 @@
 
             <div class="upload-zone" id="uploadZone" onclick="document.getElementById('photoInput').click()">
                 <i class="fas fa-cloud-upload-alt"></i>
-                <h4>Sleep foto's hierheen</h4>
-                <p class="text-muted">of klik om te selecteren</p>
-                <p class="form-hint">JPG, PNG, WebP of GIF - Max 5MB</p>
+                <h4><?= $__('drag_photos_here') ?></h4>
+                <p class="text-muted"><?= $__('or_click_to_select') ?></p>
+                <p class="form-hint"><?= $__('image_specs_photo') ?></p>
             </div>
 
             <input type="file" name="photo" id="photoInput" accept="image/*" style="display:none" onchange="previewImage(this)">
@@ -328,28 +328,28 @@
             </div>
 
             <div class="form-group" style="margin-top:1rem">
-                <label class="form-label">Type Afbeelding</label>
+                <label class="form-label"><?= $__('image_type') ?></label>
                 <select name="image_type" class="form-control">
-                    <option value="gallery">Galerij</option>
-                    <option value="logo">Logo</option>
-                    <option value="cover">Cover/Banner</option>
-                    <option value="team">Team</option>
-                    <option value="work">Werk/Portfolio</option>
+                    <option value="gallery"><?= $__('gallery') ?></option>
+                    <option value="logo"><?= $__('logo') ?></option>
+                    <option value="cover"><?= $__('cover_banner') ?></option>
+                    <option value="team"><?= $__('team') ?></option>
+                    <option value="work"><?= $__('work_portfolio') ?></option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Onderschrift (optioneel)</label>
-                <input type="text" name="caption" class="form-control" placeholder="Beschrijving van de foto">
+                <label class="form-label"><?= $__('caption_optional') ?></label>
+                <input type="text" name="caption" class="form-control" placeholder="<?= $__('photo_description') ?>">
             </div>
 
             <div class="form-group">
-                <label class="form-label">Alt Tekst (optioneel)</label>
-                <input type="text" name="alt_text" class="form-control" placeholder="Beschrijving voor toegankelijkheid">
+                <label class="form-label"><?= $__('alt_text_optional') ?></label>
+                <input type="text" name="alt_text" class="form-control" placeholder="<?= $__('accessibility_description') ?>">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%">
-                <i class="fas fa-upload"></i> Uploaden
+                <i class="fas fa-upload"></i> <?= $__('upload') ?>
             </button>
         </form>
     </div>
@@ -358,38 +358,38 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-lightbulb"></i> Tips voor goede foto's</h3>
+                <h3 class="card-title"><i class="fas fa-lightbulb"></i> <?= $__('photo_tips_title') ?></h3>
             </div>
             <ul style="padding-left:1.25rem;color:var(--text-light);line-height:1.8">
-                <li>Gebruik goed belichte foto's</li>
-                <li>Toon je beste werk en je salon</li>
-                <li>Upload een professionele logo</li>
-                <li>Maak een aantrekkelijke cover foto</li>
-                <li>Voeg foto's van je team toe</li>
-                <li>Toon voor/na resultaten</li>
+                <li><?= $__('photo_tip_1') ?></li>
+                <li><?= $__('photo_tip_2') ?></li>
+                <li><?= $__('photo_tip_3') ?></li>
+                <li><?= $__('photo_tip_4') ?></li>
+                <li><?= $__('photo_tip_5') ?></li>
+                <li><?= $__('photo_tip_6') ?></li>
             </ul>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-info-circle"></i> Afbeelding Types</h3>
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> <?= $__('image_types') ?></h3>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.75rem">
                 <div style="display:flex;align-items:start;gap:0.75rem">
                     <span style="background:#ffffff;color:#000000;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem;border:1px solid #333333">LOGO</span>
-                    <span class="text-muted" style="font-size:0.85rem">Je bedrijfslogo, wordt klein weergegeven</span>
+                    <span class="text-muted" style="font-size:0.85rem"><?= $__('logo_description') ?></span>
                 </div>
                 <div style="display:flex;align-items:start;gap:0.75rem">
                     <span style="background:var(--success);color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">COVER</span>
-                    <span class="text-muted" style="font-size:0.85rem">Grote banner bovenaan je pagina</span>
+                    <span class="text-muted" style="font-size:0.85rem"><?= $__('cover_description') ?></span>
                 </div>
                 <div style="display:flex;align-items:start;gap:0.75rem">
-                    <span style="background:#000000;color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">GALERIJ</span>
-                    <span class="text-muted" style="font-size:0.85rem">Algemene foto's in de galerij</span>
+                    <span style="background:#000000;color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem"><?= strtoupper($__('gallery')) ?></span>
+                    <span class="text-muted" style="font-size:0.85rem"><?= $__('gallery_description') ?></span>
                 </div>
                 <div style="display:flex;align-items:start;gap:0.75rem">
-                    <span style="background:#000000;color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem">WERK</span>
-                    <span class="text-muted" style="font-size:0.85rem">Portfolio van je werk</span>
+                    <span style="background:#000000;color:white;padding:0.25rem 0.5rem;border-radius:5px;font-size:0.7rem"><?= strtoupper($__('work')) ?></span>
+                    <span class="text-muted" style="font-size:0.85rem"><?= $__('work_description') ?></span>
                 </div>
             </div>
         </div>
@@ -399,14 +399,14 @@
 <!-- Photo Gallery -->
 <div class="card" style="margin-top:1.5rem">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-images"></i> Mijn Foto's (<?= count($images) ?>)</h3>
+        <h3 class="card-title"><i class="fas fa-images"></i> <?= $__('my_photos') ?> (<?= count($images) ?>)</h3>
     </div>
 
     <?php if (empty($images)): ?>
         <div class="text-center" style="padding:3rem">
             <i class="fas fa-images" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-            <h4>Nog geen foto's</h4>
-            <p class="text-muted">Upload je eerste foto om je pagina aantrekkelijker te maken</p>
+            <h4><?= $__('no_photos_yet') ?></h4>
+            <p class="text-muted"><?= $__('upload_first_photo') ?></p>
         </div>
     <?php else: ?>
         <div class="photo-grid" id="photoGrid">
@@ -429,11 +429,11 @@
                             <p style="color:white;font-size:0.85rem;margin-bottom:0.5rem"><?= htmlspecialchars($image['caption']) ?></p>
                         <?php endif; ?>
                         <div class="photo-item-actions">
-                            <form method="POST" action="/business/photos/delete" style="flex:1" onsubmit="return confirm('<?= $translations['confirm_delete_photo'] ?? 'Are you sure you want to delete this photo?' ?>')">
+                            <form method="POST" action="/business/photos/delete" style="flex:1" onsubmit="return confirm('<?= $__('confirm_delete_photo') ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="image_id" value="<?= $image['id'] ?>">
                                 <button type="submit" class="btn-delete" style="width:100%">
-                                    <i class="fas fa-trash"></i> Verwijderen
+                                    <i class="fas fa-trash"></i> <?= $__('delete') ?>
                                 </button>
                             </form>
                         </div>

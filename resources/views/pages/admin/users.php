@@ -2,9 +2,9 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-users"></i> Gebruikers (<?= number_format($totalUsers) ?>)</h3>
+        <h3 class="card-title"><i class="fas fa-users"></i> <?= $__('users') ?> (<?= number_format($totalUsers) ?>)</h3>
         <form method="GET" class="search-box">
-            <input type="text" name="search" class="form-control" placeholder="Zoeken op naam of email..." value="<?= htmlspecialchars($search) ?>">
+            <input type="text" name="search" class="form-control" placeholder="<?= $__('search_name_or_email') ?>" value="<?= htmlspecialchars($search) ?>">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
         </form>
     </div>
@@ -14,19 +14,19 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Naam</th>
-                    <th>Email</th>
-                    <th>Telefoon</th>
-                    <th>Status</th>
-                    <th>Aangemaakt</th>
-                    <th>Acties</th>
+                    <th><?= $__('name') ?></th>
+                    <th><?= $__('email') ?></th>
+                    <th><?= $__('phone') ?></th>
+                    <th><?= $__('status') ?></th>
+                    <th><?= $__('created') ?></th>
+                    <th><?= $__('actions') ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($users)): ?>
                 <tr>
                     <td colspan="7" style="text-align:center;color:var(--text-light);padding:2rem;">
-                        Geen gebruikers gevonden
+                        <?= $__('no_users_found') ?>
                     </td>
                 </tr>
                 <?php else: ?>
@@ -40,31 +40,31 @@
                     <td><?= htmlspecialchars($user['phone'] ?? '-') ?></td>
                     <td>
                         <?php if ($user['status'] === 'active'): ?>
-                            <span class="badge badge-success">Actief</span>
+                            <span class="badge badge-success"><?= $__('active') ?></span>
                         <?php else: ?>
-                            <span class="badge badge-secondary"><?= ucfirst($user['status']) ?></span>
+                            <span class="badge badge-secondary"><?= $__($user['status']) ?></span>
                         <?php endif; ?>
                     </td>
-                    <td><?= date('d-m-Y', strtotime($user['created_at'])) ?></td>
+                    <td><?= $formatDate($user['created_at']) ?></td>
                     <td>
                         <div class="actions">
                             <form method="POST" action="/admin/user/<?= $user['id'] ?>/update" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                                 <?php if ($user['status'] === 'active'): ?>
                                     <input type="hidden" name="status" value="inactive">
-                                    <button type="submit" class="btn btn-sm btn-secondary" title="Deactiveren">
+                                    <button type="submit" class="btn btn-sm btn-secondary" title="<?= $__('deactivate') ?>">
                                         <i class="fas fa-ban"></i>
                                     </button>
                                 <?php else: ?>
                                     <input type="hidden" name="status" value="active">
-                                    <button type="submit" class="btn btn-sm btn-success" title="Activeren">
+                                    <button type="submit" class="btn btn-sm btn-success" title="<?= $__('activate') ?>">
                                         <i class="fas fa-check"></i>
                                     </button>
                                 <?php endif; ?>
                             </form>
-                            <form method="POST" action="/admin/user/<?= $user['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('<?= $translations['confirm_delete_user'] ?? 'Are you sure you want to delete this user?' ?>');">
+                            <form method="POST" action="/admin/user/<?= $user['id'] ?>/delete" style="display:inline;" onsubmit="return confirm('<?= $__('confirm_delete_user') ?>');">
                                 <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
-                                <button type="submit" class="btn btn-sm btn-danger" title="Verwijderen">
+                                <button type="submit" class="btn btn-sm btn-danger" title="<?= $__('delete') ?>">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>

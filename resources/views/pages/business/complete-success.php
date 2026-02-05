@@ -163,40 +163,40 @@
             <i class="fas fa-check"></i>
         </div>
 
-        <h1>Gefeliciteerd!</h1>
-        <p>Je account is succesvol geactiveerd. Je kunt nu inloggen en aan de slag!</p>
+        <h1><?= $__('congratulations') ?></h1>
+        <p><?= $__('account_activated') ?></p>
 
         <div class="business-name">
             <i class="fas fa-store"></i> <?= htmlspecialchars($business['company_name'] ?? '') ?>
         </div>
 
         <div class="trial-box">
-            <h3><i class="fas fa-gift"></i> 14 Dagen Proefperiode</h3>
-            <p>Je proefperiode is gestart. Ontdek alle mogelijkheden van GlamourSchedule!</p>
+            <h3><i class="fas fa-gift"></i> <?= $__('free_trial_14_days') ?></h3>
+            <p><?= $__('trial_started') ?></p>
         </div>
 
         <div class="next-steps">
-            <h4><i class="fas fa-rocket"></i> Aan de slag</h4>
+            <h4><i class="fas fa-rocket"></i> <?= $__('get_started') ?></h4>
             <div class="step">
                 <span class="step-num">1</span>
-                <span>Voeg je diensten en prijzen toe</span>
+                <span><?= $__('add_services_prices') ?></span>
             </div>
             <div class="step">
                 <span class="step-num">2</span>
-                <span>Stel je openingstijden in</span>
+                <span><?= $__('set_opening_hours') ?></span>
             </div>
             <div class="step">
                 <span class="step-num">3</span>
-                <span>Personaliseer je salonpagina</span>
+                <span><?= $__('personalize_salon_page') ?></span>
             </div>
             <div class="step">
                 <span class="step-num">4</span>
-                <span>Deel je boekingslink met klanten</span>
+                <span><?= $__('share_booking_link') ?></span>
             </div>
         </div>
 
         <a href="/login" class="btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Nu Inloggen
+            <i class="fas fa-sign-in-alt"></i> <?= $__('log_in_now') ?>
         </a>
     </div>
 

@@ -163,9 +163,9 @@
 <div class="container security-container">
     <div class="card">
         <h2 style="margin:0 0 0.5rem;display:flex;align-items:center;gap:0.75rem">
-            <i class="fas fa-shield-alt" style="color:var(--primary)"></i> Beveiliging
+            <i class="fas fa-shield-alt" style="color:var(--primary)"></i> <?= $__('security') ?>
         </h2>
-        <p style="color:var(--text-light);margin:0 0 1.5rem">Beveilig je account met extra bescherming</p>
+        <p style="color:var(--text-light);margin:0 0 1.5rem"><?= $__('security_protect_account') ?></p>
 
         <?php if ($message): ?>
             <div class="alert alert-<?= $messageType ?>" style="margin-bottom:1.5rem">
@@ -180,12 +180,12 @@
                 <i class="fas fa-lock"></i>
             </div>
             <div class="security-feature-content">
-                <h4>PIN Code</h4>
-                <p>Vraag om een 6-cijferige PIN code wanneer de app wordt geopend</p>
+                <h4><?= $__('pin_code') ?></h4>
+                <p><?= $__('pin_code_description') ?></p>
                 <?php if ($pinEnabled): ?>
-                    <span class="status-badge status-active"><i class="fas fa-check"></i> Actief</span>
+                    <span class="status-badge status-active"><i class="fas fa-check"></i> <?= $__('active') ?></span>
                 <?php else: ?>
-                    <span class="status-badge status-inactive"><i class="fas fa-times"></i> Niet ingesteld</span>
+                    <span class="status-badge status-inactive"><i class="fas fa-times"></i> <?= $__('not_set') ?></span>
                 <?php endif; ?>
             </div>
         </div>
@@ -193,23 +193,23 @@
         <?php if ($pinEnabled): ?>
             <!-- Remove PIN Form -->
             <div class="card" style="background:var(--secondary);margin-top:1rem">
-                <h4 style="margin:0 0 1rem"><i class="fas fa-trash-alt"></i> PIN verwijderen</h4>
+                <h4 style="margin:0 0 1rem"><i class="fas fa-trash-alt"></i> <?= $__('remove_pin') ?></h4>
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                     <input type="hidden" name="action" value="remove_pin">
 
                     <div class="form-group">
-                        <label class="form-label">Bevestig met je wachtwoord</label>
+                        <label class="form-label"><?= $__('confirm_with_password') ?></label>
                         <div class="password-wrapper">
-                            <input type="password" name="current_password" id="current_password_remove" class="form-control" placeholder="Je huidige wachtwoord" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('current_password_remove', this)" aria-label="Wachtwoord tonen">
+                            <input type="password" name="current_password" id="current_password_remove" class="form-control" placeholder="<?= $__('your_current_password') ?>" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('current_password_remove', this)" aria-label="<?= $__('show_password') ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-danger" style="width:100%">
-                        <i class="fas fa-trash-alt"></i> PIN verwijderen
+                        <i class="fas fa-trash-alt"></i> <?= $__('remove_pin') ?>
                     </button>
                 </form>
             </div>
@@ -222,10 +222,10 @@
                 <input type="hidden" name="pin_confirm" id="pinConfirmValue">
 
                 <div style="margin-top:1.5rem">
-                    <h4 style="margin:0 0 0.5rem">Stel je PIN in</h4>
-                    <p style="color:var(--text-light);font-size:0.9rem;margin:0 0 1rem">Kies een 6-cijferige code die je kunt onthouden</p>
+                    <h4 style="margin:0 0 0.5rem"><?= $__('set_your_pin') ?></h4>
+                    <p style="color:var(--text-light);font-size:0.9rem;margin:0 0 1rem"><?= $__('choose_memorable_code') ?></p>
 
-                    <label style="font-weight:600;margin-bottom:0.5rem;display:block">PIN code</label>
+                    <label style="font-weight:600;margin-bottom:0.5rem;display:block"><?= $__('pin_code') ?></label>
                     <div class="pin-input-group" id="pinInputs">
                         <input type="tel" maxlength="1" class="pin-digit" data-index="0" inputmode="numeric" pattern="[0-9]" autocomplete="off">
                         <input type="tel" maxlength="1" class="pin-digit" data-index="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
@@ -235,7 +235,7 @@
                         <input type="tel" maxlength="1" class="pin-digit" data-index="5" inputmode="numeric" pattern="[0-9]" autocomplete="off">
                     </div>
 
-                    <label style="font-weight:600;margin:1.5rem 0 0.5rem;display:block">Bevestig PIN code</label>
+                    <label style="font-weight:600;margin:1.5rem 0 0.5rem;display:block"><?= $__('confirm_pin_code') ?></label>
                     <div class="pin-input-group" id="pinConfirmInputs">
                         <input type="tel" maxlength="1" class="pin-digit" data-index="0" inputmode="numeric" pattern="[0-9]" autocomplete="off">
                         <input type="tel" maxlength="1" class="pin-digit" data-index="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
@@ -246,17 +246,17 @@
                     </div>
 
                     <div class="form-group" style="margin-top:1.5rem">
-                        <label class="form-label">Bevestig met je wachtwoord</label>
+                        <label class="form-label"><?= $__('confirm_with_password') ?></label>
                         <div class="password-wrapper">
-                            <input type="password" name="current_password" id="current_password_set" class="form-control" placeholder="Je huidige wachtwoord" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('current_password_set', this)" aria-label="Wachtwoord tonen">
+                            <input type="password" name="current_password" id="current_password_set" class="form-control" placeholder="<?= $__('your_current_password') ?>" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('current_password_set', this)" aria-label="<?= $__('show_password') ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
                     <button type="submit" class="btn" style="width:100%;padding:1rem">
-                        <i class="fas fa-lock"></i> PIN code instellen
+                        <i class="fas fa-lock"></i> <?= $__('set_pin_code') ?>
                     </button>
                 </div>
             </form>
@@ -265,11 +265,11 @@
 
     <!-- Security Tips -->
     <div class="card" style="background:linear-gradient(135deg,#ffffff,#f5f5f5);color:#000000">
-        <h4 style="margin:0 0 0.75rem;color:#000000"><i class="fas fa-lightbulb"></i> Beveiligingstips</h4>
+        <h4 style="margin:0 0 0.75rem;color:#000000"><i class="fas fa-lightbulb"></i> <?= $__('security_tips') ?></h4>
         <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;opacity:0.8;line-height:1.8;color:#000000">
-            <li>Gebruik geen voor de hand liggende codes zoals 123456</li>
-            <li>Deel je PIN nooit met anderen</li>
-            <li>Gebruik een unieke PIN die je niet elders gebruikt</li>
+            <li><?= $__('security_tip_1') ?></li>
+            <li><?= $__('security_tip_2') ?></li>
+            <li><?= $__('security_tip_3') ?></li>
         </ul>
     </div>
 </div>

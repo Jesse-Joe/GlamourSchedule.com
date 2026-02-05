@@ -297,9 +297,9 @@
 <div class="page-header" style="margin-bottom:1.5rem">
     <h1 style="font-size:1.5rem;margin:0;display:flex;align-items:center;gap:0.5rem">
         <i class="fas fa-chart-line" style="color:var(--primary)"></i>
-        Inzichten & Statistieken
+        <?= $__('insights_statistics') ?>
     </h1>
-    <p style="color:var(--text-light);margin:0.5rem 0 0 0">Bekijk hoe je salon presteert</p>
+    <p style="color:var(--text-light);margin:0.5rem 0 0 0"><?= $__('see_how_salon_performs') ?></p>
 </div>
 
 <!-- Overzicht Stats -->
@@ -307,16 +307,16 @@
     <!-- Vandaag -->
     <div class="insight-card insight-card-dark">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-calendar-day"></i> Vandaag</h3>
+            <h3 class="insight-title"><i class="fas fa-calendar-day"></i> <?= $__('today') ?></h3>
         </div>
         <div class="stat-grid">
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['today']['total_bookings'] ?? 0 ?></div>
-                <div class="stat-label">Afspraken</div>
+                <div class="stat-label"><?= $__('appointments') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">&euro;<?= number_format($stats['today']['revenue'] ?? 0, 0, ',', '.') ?></div>
-                <div class="stat-label">Omzet</div>
+                <div class="stat-label"><?= $__('revenue') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['today']['completed'] ?? 0 ?></div>
@@ -399,7 +399,7 @@
         <?php if (empty($tips)): ?>
             <div class="empty-state">
                 <i class="fas fa-check-circle"></i>
-                <p>Alles ziet er goed uit!</p>
+                <p><?= $__('everything_looks_good') ?></p>
             </div>
         <?php else: ?>
             <div class="tips-list">

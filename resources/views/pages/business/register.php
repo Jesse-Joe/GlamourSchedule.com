@@ -507,7 +507,7 @@
                         <?php endif; ?>
                     </span>
                 </div>
-                <p style="color:#888;font-size:0.9rem;margin-top:0.5rem">Nog <?= $spotsLeft ?> plekken in <?= htmlspecialchars($countryName) ?></p>
+                <p style="color:#888;font-size:0.9rem;margin-top:0.5rem"><?= $__('spots_left', ['count' => $spotsLeft, 'country' => htmlspecialchars($countryName)]) ?></p>
             <?php endif; ?>
         </div>
 
@@ -541,22 +541,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-briefcase"></i> Bedrijfsvorm *</label>
+                    <label><i class="fas fa-briefcase"></i> <?= $__('business_form') ?> *</label>
                     <div class="business-type-selector">
                         <label class="business-type-option" id="type-eenmanszaak">
                             <input type="radio" name="business_type" value="eenmanszaak" checked onchange="updateBusinessType()">
                             <div class="business-type-card">
                                 <i class="fas fa-user"></i>
-                                <span class="type-title">Eenmanszaak</span>
-                                <span class="type-desc">Ik werk alleen</span>
+                                <span class="type-title"><?= $__('sole_proprietorship') ?></span>
+                                <span class="type-desc"><?= $__('i_work_alone') ?></span>
                             </div>
                         </label>
                         <label class="business-type-option" id="type-bv">
                             <input type="radio" name="business_type" value="bv" onchange="updateBusinessType()">
                             <div class="business-type-card">
                                 <i class="fas fa-users"></i>
-                                <span class="type-title">BV / Meerdere medewerkers</span>
-                                <span class="type-desc">Ik heb personeel</span>
+                                <span class="type-title"><?= $__('company_with_employees') ?></span>
+                                <span class="type-desc"><?= $__('i_have_staff') ?></span>
                             </div>
                         </label>
                     </div>
@@ -564,9 +564,9 @@
 
                 <!-- Employee count (only shown for BV) -->
                 <div class="form-group" id="employee-count-group" style="display: none;">
-                    <label><i class="fas fa-user-plus"></i> Aantal medewerkers (excl. uzelf)</label>
+                    <label><i class="fas fa-user-plus"></i> <?= $__('number_of_employees') ?></label>
                     <input type="number" name="employee_count" id="employee_count" class="form-control" placeholder="0" min="0" max="50" value="0" onchange="updatePricing()">
-                    <p class="field-hint"><i class="fas fa-info-circle"></i> Per medewerker: +&euro;4,99 eenmalig. U kunt later medewerkers toevoegen in het dashboard.</p>
+                    <p class="field-hint"><i class="fas fa-info-circle"></i> <?= $__('employee_price_note') ?></p>
                 </div>
 
                 <div class="grid grid-2">
@@ -585,7 +585,7 @@
                         <label><i class="fas fa-lock"></i> <?= $__('password') ?> * <span style="font-weight:400;color:#9ca3af">(<?= $__('min_chars', ['count' => 8]) ?>)</span></label>
                         <div class="password-wrapper">
                             <input type="password" name="password" id="password" class="form-control" placeholder="<?= $__('choose_strong_pw') ?>" minlength="8" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Wachtwoord tonen">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="<?= $__('show_password') ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -594,7 +594,7 @@
                         <label><i class="fas fa-lock"></i> <?= $__('confirm_password') ?> *</label>
                         <div class="password-wrapper">
                             <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="<?= $__('repeat_password') ?>" minlength="8" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="Wachtwoord tonen">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirm', this)" aria-label="<?= $__('show_password') ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -692,24 +692,24 @@
                     <div class="price-display">
                         <?php if ($showDualCurrency ?? false): ?>
                             <span class="price-amount"><?= $localPrice ?></span>
-                            <span class="price-period">(<?= $eurPrice ?>) eenmalig na 14 dagen proeftijd</span>
+                            <span class="price-period">(<?= $eurPrice ?>) <?= $__('one_time_after_trial') ?></span>
                         <?php else: ?>
                             <span class="price-amount"><?= $eurPrice ?></span>
-                            <span class="price-period">eenmalig na 14 dagen proeftijd</span>
+                            <span class="price-period"><?= $__('one_time_after_trial') ?></span>
                         <?php endif; ?>
                     </div>
                     <div class="price-note" id="employee-price-note" style="display:none; color: #fbbf24;">
                         <i class="fas fa-users"></i>
-                        <span>0 medewerker(s): +€0,00</span>
+                        <span data-employees-text="<?= $__('employees_cost') ?>">0 <?= $__('employees') ?>: +€0,00</span>
                     </div>
                     <div class="price-note">
                         <i class="fas fa-info-circle"></i>
-                        <span>Geen maandelijkse kosten, alleen <?= $feeDisplay ?? '€1,75' ?> per boeking</span>
+                        <span><?= $__('no_monthly_fees', ['fee' => $feeDisplay ?? '€1,75']) ?></span>
                     </div>
                     <?php if ($isEarlyAdopter): ?>
                     <div class="price-note" style="font-size: 0.8rem; opacity: 0.7;">
                         <i class="fas fa-tag"></i>
-                        <span>Normale prijs na early bird: <?= $showDualCurrency ? $localOriginal . ' (' . $eurOriginal . ')' : $eurOriginal ?></span>
+                        <span><?= $__('normal_price_after_earlybird') ?>: <?= $showDualCurrency ? $localOriginal . ' (' . $eurOriginal . ')' : $eurOriginal ?></span>
                     </div>
                     <?php endif; ?>
 
@@ -737,8 +737,8 @@
                         <i class="fas fa-gift" style="color: #22c55e;"></i>
                     </div>
                     <div class="qr-warning-content">
-                        <h4 style="color: #22c55e;"><i class="fas fa-clock"></i> 14 Dagen Gratis Proefperiode</h4>
-                        <p>De eerste 14 dagen zijn volledig gratis. Na de proefperiode wordt het afgesproken bedrag in rekening gebracht.</p>
+                        <h4 style="color: #22c55e;"><i class="fas fa-clock"></i> <?= $__('trial_period_title') ?></h4>
+                        <p><?= $__('trial_period_description') ?></p>
                     </div>
                 </div>
 
@@ -748,8 +748,8 @@
                         <i class="fas fa-qrcode"></i>
                     </div>
                     <div class="qr-warning-content">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Belangrijk: QR-Code Scannen Verplicht</h4>
-                        <p>Let op: bij elke boeking moet de QR-code bij aankomst worden gescand om de afspraak te bevestigen. Zonder gescande QR-code kunnen we de boeking niet goedkeuren en vindt er geen uitbetaling plaats.</p>
+                        <h4><i class="fas fa-exclamation-triangle"></i> <?= $__('qr_scan_required_title') ?></h4>
+                        <p><?= $__('qr_scan_required_description') ?></p>
                     </div>
                 </div>
 

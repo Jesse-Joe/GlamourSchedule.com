@@ -65,16 +65,16 @@
 <!-- Filter Tabs -->
 <div class="filter-tabs">
     <a href="/business/bookings?filter=upcoming" class="filter-tab <?= ($filter ?? 'upcoming') === 'upcoming' ? 'active' : '' ?>">
-        <i class="fas fa-calendar-alt"></i> Aankomend
+        <i class="fas fa-calendar-alt"></i> <?= $__('upcoming') ?>
     </a>
     <a href="/business/bookings?filter=past" class="filter-tab <?= ($filter ?? '') === 'past' ? 'active' : '' ?>">
-        <i class="fas fa-history"></i> Afgelopen
+        <i class="fas fa-history"></i> <?= $__('past') ?>
     </a>
     <a href="/business/bookings?filter=cancelled" class="filter-tab <?= ($filter ?? '') === 'cancelled' ? 'active' : '' ?>">
-        <i class="fas fa-times-circle"></i> Geannuleerd
+        <i class="fas fa-times-circle"></i> <?= $__('cancelled') ?>
     </a>
     <a href="/business/bookings?filter=all" class="filter-tab <?= ($filter ?? '') === 'all' ? 'active' : '' ?>">
-        <i class="fas fa-list"></i> Alle
+        <i class="fas fa-list"></i> <?= $__('all') ?>
     </a>
 </div>
 
@@ -83,8 +83,8 @@
         <h3 class="card-title">
             <i class="fas fa-clipboard-list"></i>
             <?php
-            $titles = ['upcoming' => 'Aankomende Boekingen', 'past' => 'Afgelopen Boekingen', 'cancelled' => 'Geannuleerde Boekingen', 'all' => 'Alle Boekingen'];
-            echo $titles[$filter ?? 'upcoming'] ?? 'Boekingen';
+            $titles = ['upcoming' => $__('upcoming_bookings'), 'past' => $__('past_bookings_title'), 'cancelled' => $__('cancelled_bookings'), 'all' => $__('all_bookings')];
+            echo $titles[$filter ?? 'upcoming'] ?? $__('my_bookings');
             ?>
             (<?= count($bookings) ?>)
         </h3>
@@ -93,8 +93,8 @@
     <?php if (empty($bookings)): ?>
         <div class="text-center" style="padding:3rem">
             <i class="fas fa-calendar-check" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-            <h4>Geen boekingen gevonden</h4>
-            <p class="text-muted">Er zijn geen boekingen in deze categorie.</p>
+            <h4><?= $__('no_bookings_found') ?></h4>
+            <p class="text-muted"><?= $__('no_bookings_in_category') ?></p>
         </div>
     <?php else: ?>
         <!-- Header -->

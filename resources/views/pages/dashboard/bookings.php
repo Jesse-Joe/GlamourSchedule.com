@@ -210,19 +210,19 @@
 <div class="dashboard-page">
 <div class="container">
     <h2 style="font-size:1.5rem;margin-bottom:1.5rem">
-        <i class="fas fa-calendar-alt"></i> Mijn Boekingen
+        <i class="fas fa-calendar-alt"></i> <?= $__('my_bookings') ?>
     </h2>
 
     <!-- Booking Tabs -->
     <div class="booking-tabs">
         <button class="booking-tab active" onclick="showTab('upcoming')">
-            <i class="fas fa-clock"></i> Aankomend
+            <i class="fas fa-clock"></i> <?= $__('upcoming') ?>
         </button>
         <button class="booking-tab" onclick="showTab('past')">
-            <i class="fas fa-history"></i> Afgelopen
+            <i class="fas fa-history"></i> <?= $__('past') ?>
         </button>
         <button class="booking-tab" onclick="showTab('all')">
-            <i class="fas fa-list"></i> Alles
+            <i class="fas fa-list"></i> <?= $__('all') ?>
         </button>
     </div>
 
@@ -246,9 +246,9 @@
         <?php if (empty($upcoming)): ?>
             <div class="empty-state">
                 <i class="fas fa-calendar-plus"></i>
-                <p>Je hebt geen aankomende afspraken</p>
+                <p><?= $__('no_upcoming_appointments') ?></p>
                 <a href="/search" class="btn">
-                    <i class="fas fa-plus"></i> Nieuwe afspraak maken
+                    <i class="fas fa-plus"></i> <?= $__('make_new_appointment') ?>
                 </a>
             </div>
         <?php else: ?>
@@ -295,22 +295,22 @@
 
                     <?php if ($booking['payment_status'] === 'paid' && $booking['status'] !== 'checked_in'): ?>
                         <div class="booking-card-qr">
-                            <img src="<?= $qrUrl ?>" alt="QR Code">
+                            <img src="<?= $qrUrl ?>" alt="<?= $__('qr_code') ?>">
                             <div class="booking-card-qr-text">
-                                <strong>Check-in Code</strong><br>
+                                <strong><?= $__('checkin_code') ?></strong><br>
                                 <span style="font-size:1.25rem;font-weight:700;letter-spacing:1px"><?= htmlspecialchars($booking['booking_number']) ?></span><br>
-                                <small>Toon QR of noem dit nummer bij aankomst</small>
+                                <small><?= $__('show_qr_or_number') ?></small>
                             </div>
                         </div>
                     <?php endif; ?>
 
                     <div class="booking-card-actions">
                         <a href="/booking/<?= $booking['uuid'] ?>" class="btn btn-secondary">
-                            <i class="fas fa-eye"></i> Details
+                            <i class="fas fa-eye"></i> <?= $__('details') ?>
                         </a>
                         <?php if ($booking['status'] === 'confirmed' || $booking['status'] === 'pending'): ?>
                             <a href="/booking/<?= $booking['uuid'] ?>" class="btn" style="background:var(--primary);color:white">
-                                <i class="fas fa-qrcode"></i> QR Code
+                                <i class="fas fa-qrcode"></i> <?= $__('qr_code') ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -324,7 +324,7 @@
         <?php if (empty($past)): ?>
             <div class="empty-state">
                 <i class="fas fa-history"></i>
-                <p>Je hebt nog geen afgelopen afspraken</p>
+                <p><?= $__('no_past_appointments') ?></p>
             </div>
         <?php else: ?>
             <?php foreach ($past as $booking):
@@ -365,11 +365,11 @@
 
                     <div class="booking-card-actions">
                         <a href="/booking/<?= $booking['uuid'] ?>" class="btn btn-secondary">
-                            <i class="fas fa-eye"></i> Details
+                            <i class="fas fa-eye"></i> <?= $__('details') ?>
                         </a>
                         <?php if ($booking['status'] === 'completed'): ?>
                             <a href="/business/<?= $booking['business_slug'] ?? '' ?>#reviews" class="btn" style="background:var(--warning);color:white">
-                                <i class="fas fa-star"></i> Beoordelen
+                                <i class="fas fa-star"></i> <?= $__('review') ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -383,9 +383,9 @@
         <?php if (empty($bookings)): ?>
             <div class="empty-state">
                 <i class="fas fa-calendar-alt"></i>
-                <p>Je hebt nog geen boekingen</p>
+                <p><?= $__('no_bookings_yet') ?></p>
                 <a href="/search" class="btn">
-                    <i class="fas fa-plus"></i> Nieuwe afspraak maken
+                    <i class="fas fa-plus"></i> <?= $__('make_new_appointment') ?>
                 </a>
             </div>
         <?php else: ?>
@@ -427,7 +427,7 @@
 
                     <div class="booking-card-actions">
                         <a href="/booking/<?= $booking['uuid'] ?>" class="btn btn-secondary">
-                            <i class="fas fa-eye"></i> Details
+                            <i class="fas fa-eye"></i> <?= $__('details') ?>
                         </a>
                     </div>
                 </div>

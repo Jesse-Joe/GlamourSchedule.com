@@ -216,11 +216,11 @@
             <div class="checkin-icon checkin-icon-success">
                 <i class="fas fa-check"></i>
             </div>
-            <h2 class="checkin-title">Ingecheckt!</h2>
-            <p class="checkin-subtitle"><?= htmlspecialchars($customerName) ?> is succesvol ingecheckt</p>
+            <h2 class="checkin-title"><?= $__('checked_in_success') ?></h2>
+            <p class="checkin-subtitle"><?= htmlspecialchars($customerName) ?> <?= $__('successfully_checked_in') ?></p>
 
             <div class="checkin-status-badge">
-                <i class="fas fa-check-circle"></i> Check-in voltooid
+                <i class="fas fa-check-circle"></i> <?= $__('checkin_completed') ?>
             </div>
 
             <div class="checkin-details">
@@ -251,11 +251,11 @@
             </div>
 
             <p class="checkin-note">
-                <i class="fas fa-euro-sign"></i> Uitbetaling vrijgegeven
+                <i class="fas fa-euro-sign"></i> <?= $__('payout_released') ?>
             </p>
 
             <a href="/business/bookings" class="checkin-btn checkin-btn-secondary" style="margin-top:1rem">
-                <i class="fas fa-arrow-left"></i> Terug naar boekingen
+                <i class="fas fa-arrow-left"></i> <?= $__('back_to_bookings') ?>
             </a>
         </div>
 
@@ -265,10 +265,10 @@
             <div class="checkin-icon checkin-icon-warning">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <h2 class="checkin-title">Niet geautoriseerd</h2>
-            <p class="checkin-subtitle">Log in als bedrijf om klanten in te checken.</p>
+            <h2 class="checkin-title"><?= $__('not_authorized') ?></h2>
+            <p class="checkin-subtitle"><?= $__('login_to_checkin') ?></p>
             <a href="/business/login" class="checkin-btn">
-                <i class="fas fa-sign-in-alt"></i> Inloggen als bedrijf
+                <i class="fas fa-sign-in-alt"></i> <?= $__('login_as_business') ?>
             </a>
         </div>
 
@@ -366,7 +366,7 @@
             </div>
 
             <a href="/business/login?redirect=<?= urlencode('/checkin/' . $booking['uuid']) ?>" class="checkin-btn">
-                <i class="fas fa-sign-in-alt"></i> Inloggen als bedrijf
+                <i class="fas fa-sign-in-alt"></i> <?= $__('login_as_business') ?>
             </a>
         </div>
     <?php endif; ?>
