@@ -728,7 +728,7 @@ $monthNames = [
     </h1>
     <span style="color:#999999">
         <i class="fas fa-calendar"></i>
-        <?= $dayNames[date('w')] ?>, <?= date('d') ?> <?= $monthNames[date('n') - 1] ?> <?= date('Y') ?>
+        <?= $dayNames[date('w')] ?>, <?= $formatDate(date('Y-m-d')) ?>
     </span>
 </div>
 
@@ -1115,6 +1115,9 @@ $monthNames = [
 
 <script>
 const csrfToken = '<?= $csrfToken ?>';
+const dateCountry = '<?= $dateFormatter->getCountry() ?>';
+const dateFormatPHP = '<?= addslashes($dateFormatter->formatDate('2000-01-02')) ?>';
+const timeIs12h = <?= in_array($dateFormatter->getCountry(), ['US','PH','GB','IE','AU','NZ','IN','PK','SA','AE','EG','CA']) ? 'true' : 'false' ?>;
 let selectedService = null;
 let selectedCustomer = null;
 let lastCreatedBookingUuid = null;
@@ -1260,7 +1263,7 @@ function updateSummary() {
 
     document.getElementById('summaryCustomer').textContent = customerName;
     document.getElementById('summaryService').textContent = serviceName;
-    document.getElementById('summaryDateTime').textContent = date && time ? formatDate(date) + ' om ' + time : '-';
+    document.getElementById('summaryDateTime').textContent = date && time ? formatDate(date) + ' om ' + formatTime(time) : '-';
     document.getElementById('summaryPayment').textContent = paymentMethod === 'cash' ? 'Contant' : 'Online';
 
     const platformFee = <?= $feeData['fee_amount'] ?? 1.75 ?>;
@@ -1542,9 +1545,30 @@ function cancelBooking(uuid) {
 }
 
 // Helpers
+// dateFormatPHP = PHP-rendered "02-01-2000" (Jan 2) to detect order & separator
 function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    const d = new Date(dateStr + 'T00:00:00');
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    if (dateFormatPHP.startsWith('2000')) {
+        const sep = dateFormatPHP.charAt(4);
+        return year + sep + month + sep + day;
+    } else if (dateFormatPHP.startsWith('01')) {
+        const sep = dateFormatPHP.charAt(2);
+        return month + sep + day + sep + year;
+    } else {
+        const sep = dateFormatPHP.charAt(2);
+        return day + sep + month + sep + year;
+    }
+}
+
+function formatTime(timeStr) {
+    if (!timeIs12h) return timeStr;
+    const [h, m] = timeStr.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return h12 + ':' + String(m).padStart(2, '0') + ' ' + period;
 }
 
 function escapeHtml(text) {
