@@ -602,7 +602,20 @@ abstract class Controller
 
     protected function verifyCsrf(): bool
     {
+        // 1. Check regular POST form data
         $token = $_POST['csrf_token'] ?? '';
+
+        // 2. Check JSON request body (for fetch/AJAX with Content-Type: application/json)
+        if ($token === '' && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== false) {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $token = $input['csrf_token'] ?? '';
+        }
+
+        // 3. Check X-CSRF-Token header as fallback
+        if ($token === '') {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+
         return hash_equals($_SESSION['csrf_token'] ?? '', $token);
     }
 
