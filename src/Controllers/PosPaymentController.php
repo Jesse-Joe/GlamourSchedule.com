@@ -236,8 +236,8 @@ class PosPaymentController extends Controller
         );
         $fullBooking = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        $appointmentDate = date('d-m-Y', strtotime($fullBooking['appointment_date']));
-        $appointmentTime = date('H:i', strtotime($fullBooking['appointment_time']));
+        $appointmentDate = $this->dateFormatter->formatDate($fullBooking['appointment_date']);
+        $appointmentTime = $this->dateFormatter->formatTime($fullBooking['appointment_time']);
         $totalPrice = number_format($fullBooking['total_price'], 2, ',', '.');
         $address = trim($fullBooking['street'] . ' ' . $fullBooking['house_number'] . ', ' . $fullBooking['postal_code'] . ' ' . $fullBooking['city']);
 

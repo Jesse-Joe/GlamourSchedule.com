@@ -388,12 +388,12 @@ $accentColor = $settings['accent_color'] ?? '#000000';
                     <div class="datetime-item">
                         <i class="fas fa-calendar"></i>
                         <div class="label"><?= $translations['date'] ?? 'Date' ?></div>
-                        <div class="value"><?= date('d-m-Y', strtotime($bookingData['date'])) ?></div>
+                        <div class="value"><?= $formatDate($bookingData['date']) ?></div>
                     </div>
                     <div class="datetime-item">
                         <i class="fas fa-clock"></i>
                         <div class="label"><?= $translations['time'] ?? 'Time' ?></div>
-                        <div class="value"><?= date('H:i', strtotime($bookingData['time'])) ?></div>
+                        <div class="value"><?= $formatTime($bookingData['time']) ?></div>
                     </div>
                 </div>
             </div>

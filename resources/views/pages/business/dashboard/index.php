@@ -450,7 +450,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
                 <?php foreach ($todayBookings as $booking): ?>
                     <div class="booking-item">
                         <div class="booking-info">
-                            <strong><?= date('H:i', strtotime($booking['appointment_time'])) ?></strong>
+                            <strong><?= $formatTime($booking['appointment_time']) ?></strong>
                             <span style="color:var(--text-light)"> - <?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></span>
                             <small><?= htmlspecialchars($booking['service_name']) ?></small>
                         </div>
@@ -482,7 +482,7 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
                             <strong><?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></strong>
                             <small><?= htmlspecialchars($booking['service_name']) ?></small>
                         </div>
-                        <small style="color:var(--text-light)"><?= date('d-m-Y', strtotime($booking['created_at'])) ?></small>
+                        <small style="color:var(--text-light)"><?= $formatDate($booking['created_at']) ?></small>
                     </div>
                 <?php endforeach; ?>
             </div>

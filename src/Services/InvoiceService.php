@@ -86,9 +86,10 @@ class InvoiceService
         $totalServiceAmount = number_format($payout['total_service_amount'], 2, ',', '.');
         $totalPlatformFee = number_format($payout['total_platform_fee'], 2, ',', '.');
         $bookingsCount = count($payout['bookings']);
-        $periodStart = isset($payout['period_start']) ? date('d-m-Y', strtotime($payout['period_start'])) : date('d-m-Y', strtotime('-7 days'));
-        $periodEnd = isset($payout['period_end']) ? date('d-m-Y', strtotime($payout['period_end'])) : date('d-m-Y');
-        $invoiceDate = date('d-m-Y');
+        $df = new \GlamourSchedule\Core\DateFormatter();
+        $periodStart = isset($payout['period_start']) ? $df->formatDate($payout['period_start']) : $df->formatDate(strtotime('-7 days'));
+        $periodEnd = isset($payout['period_end']) ? $df->formatDate($payout['period_end']) : $df->formatDate(time());
+        $invoiceDate = $df->formatDate(time());
 
         $bookingsHtml = '';
         foreach ($payout['bookings'] as $booking) {

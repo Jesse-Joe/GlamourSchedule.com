@@ -109,7 +109,7 @@
         <?php foreach ($bookings as $booking): ?>
             <div class="booking-row">
                 <div>
-                    <strong><?= !empty($booking['appointment_date']) ? date('d-m-Y', strtotime($booking['appointment_date'])) : '-' ?></strong>
+                    <strong><?= !empty($booking['appointment_date']) ? $formatDate($booking['appointment_date']) : '-' ?></strong>
                 </div>
                 <div>
                     <strong><?= htmlspecialchars($booking['first_name'] ?? $booking['guest_name'] ?? 'Gast') ?></strong>
@@ -125,9 +125,9 @@
                 </div>
                 <div>
                     <i class="fas fa-clock" style="color:var(--text-light)"></i>
-                    <?= !empty($booking['appointment_time']) ? date('H:i', strtotime($booking['appointment_time'])) : '-' ?>
+                    <?= !empty($booking['appointment_time']) ? $formatTime($booking['appointment_time']) : '-' ?>
                     <?php if (!empty($booking['duration_minutes'])): ?>
-                        - <?= date('H:i', strtotime($booking['appointment_time'] . ' +' . $booking['duration_minutes'] . ' minutes')) ?>
+                        - <?= $formatTime(date('H:i', strtotime($booking['appointment_time'] . ' +' . $booking['duration_minutes'] . ' minutes'))) ?>
                     <?php endif; ?>
                 </div>
                 <div>

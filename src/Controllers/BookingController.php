@@ -834,8 +834,8 @@ HTML;
         $priceFormatted = number_format($booking['total_price'], 2, ',', '.');
         $customerName = $booking['guest_name'] ?? $t('customer');
         $serviceName = $booking['service_name'] ?? $t('service');
-        $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
-        $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+        $appointmentDate = $this->dateFormatter->formatDate($booking['appointment_date']);
+        $appointmentTime = $this->dateFormatter->formatTime($booking['appointment_time']);
 
         $currentYear = date('Y');
         $feeNotice = '';
@@ -1358,7 +1358,7 @@ HTML;
         $to = $data['email'];
         $subject = $t('email_booking_confirmation_subject', ['booking_number' => $data['booking_number']]);
 
-        $dateFormatted = date('d-m-Y', strtotime($data['date']));
+        $dateFormatted = $this->dateFormatter->formatDate($data['date']);
         $priceFormatted = number_format($data['price'], 2, ',', '.');
 
         $message = "
@@ -1803,7 +1803,7 @@ HTML;
             return $text;
         };
 
-        $dateFormatted = date('d-m-Y', strtotime($data['date']));
+        $dateFormatted = $this->dateFormatter->formatDate($data['date']);
         $currentYear = date('Y');
         $subject = $t('email_waitlist_confirmation_subject', ['business_name' => $data['business_name']]);
 
@@ -1897,8 +1897,8 @@ HTML;
             return $text;
         };
 
-        $dateFormatted = date('d-m-Y', strtotime($data['date']));
-        $timeFormatted = date('H:i', strtotime($data['time']));
+        $dateFormatted = $this->dateFormatter->formatDate($data['date']);
+        $timeFormatted = $this->dateFormatter->formatTime($data['time']);
         $bookingUrl = "https://glamourschedule.com/business/{$data['business_slug']}?date={$data['date']}&time={$data['time']}";
         $subject = $t('email_spot_available_subject', ['business_name' => $data['business_name']]);
 

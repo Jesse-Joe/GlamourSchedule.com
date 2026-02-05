@@ -126,11 +126,11 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Datum</span>
-                    <span class="info-value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></span>
+                    <span class="info-value"><?= $formatDate($booking['appointment_date']) ?></span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Tijd</span>
-                    <span class="info-value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></span>
+                    <span class="info-value"><?= $formatTime($booking['appointment_time']) ?></span>
                 </div>
             </div>
 

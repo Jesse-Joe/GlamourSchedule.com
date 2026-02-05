@@ -167,8 +167,8 @@ class WebhookController extends Controller
                 return;
             }
 
-            $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
-            $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+            $appointmentDate = $this->dateFormatter->formatDate($booking['appointment_date']);
+            $appointmentTime = $this->dateFormatter->formatTime($booking['appointment_time']);
             $totalPrice = number_format($booking['total_price'], 2, ',', '.');
             $address = trim($booking['street'] . ' ' . $booking['house_number'] . ', ' . $booking['postal_code'] . ' ' . $booking['city']);
 

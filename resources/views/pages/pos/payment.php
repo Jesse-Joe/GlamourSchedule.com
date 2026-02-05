@@ -238,11 +238,11 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Datum</span>
-                    <span class="detail-value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></span>
+                    <span class="detail-value"><?= $formatDate($booking['appointment_date']) ?></span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Tijd</span>
-                    <span class="detail-value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></span>
+                    <span class="detail-value"><?= $formatTime($booking['appointment_time']) ?></span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Duur</span>

@@ -646,11 +646,11 @@
                 </div>
                 <div class="booking-row">
                     <span class="booking-label"><?= $__('date') ?></span>
-                    <span class="booking-value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></span>
+                    <span class="booking-value"><?= $formatDate($booking['appointment_date']) ?></span>
                 </div>
                 <div class="booking-row">
                     <span class="booking-label"><?= $__('time') ?></span>
-                    <span class="booking-value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></span>
+                    <span class="booking-value"><?= $formatTime($booking['appointment_time']) ?></span>
                 </div>
                 <div class="booking-row">
                     <span class="booking-label"><?= $__('duration') ?></span>

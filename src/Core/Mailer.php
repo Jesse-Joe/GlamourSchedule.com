@@ -18,6 +18,7 @@ class Mailer
     private string $baseUrl;
     private string $lang = 'en';
     private array $translations = [];
+    private DateFormatter $dateFormatter;
 
     public function __construct(string $lang = 'en')
     {
@@ -35,6 +36,8 @@ class Mailer
 
         // Load translations from central language files
         $this->loadTranslations();
+
+        $this->dateFormatter = new DateFormatter();
     }
 
     /**
@@ -484,7 +487,7 @@ HTML;
         $to = $booking['customer_email'];
         $subject = $this->t('email_subject_booking') . " #{$booking['booking_number']} - GlamourSchedule";
 
-        $dateFormatted = date('d-m-Y', strtotime($booking['date']));
+        $dateFormatted = $this->dateFormatter->formatDate($booking['date']);
         $priceFormatted = number_format($booking['price'], 2, ',', '.');
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
         $checkinUrl = "{$this->baseUrl}/checkin/{$booking['uuid']}";
@@ -496,7 +499,7 @@ HTML;
             'business_name' => $booking['business_name'],
             'service_name' => $booking['service_name'],
             'date' => $dateFormatted,
-            'time' => $booking['time'],
+            'time' => $this->dateFormatter->formatTime($booking['time']),
             'price' => $priceFormatted,
             'booking_url' => $bookingUrl,
             'qr_code_url' => $qrCodeUrl
@@ -515,7 +518,7 @@ HTML;
         $newBookingText = $this->t('new_booking');
         $subject = "{$newBookingText} #{$booking['booking_number']} - {$customerName}";
 
-        $dateFormatted = date('d-m-Y', strtotime($booking['date']));
+        $dateFormatted = $this->dateFormatter->formatDate($booking['date']);
         $priceFormatted = number_format($booking['price'], 2, ',', '.');
 
         $htmlBody = $this->getBusinessNotificationTemplate($this->sanitizeData([
@@ -526,7 +529,7 @@ HTML;
             'booking_number' => $booking['booking_number'],
             'service_name' => $booking['service_name'],
             'date' => $dateFormatted,
-            'time' => $booking['time'],
+            'time' => $this->dateFormatter->formatTime($booking['time']),
             'duration' => $booking['duration'] ?? '60',
             'price' => $priceFormatted,
             'notes' => $booking['notes'] ?? $this->t('no_notes'),
@@ -545,7 +548,7 @@ HTML;
         $businessName = $this->sanitize($booking['business_name']);
         $subject = $this->t('email_subject_reminder') . " {$businessName}";
 
-        $dateFormatted = date('d-m-Y', strtotime($booking['date']));
+        $dateFormatted = $this->dateFormatter->formatDate($booking['date']);
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
 
         $htmlBody = $this->getReminderTemplate($this->sanitizeData([
@@ -553,7 +556,7 @@ HTML;
             'business_name' => $booking['business_name'],
             'service_name' => $booking['service_name'],
             'date' => $dateFormatted,
-            'time' => $booking['time'],
+            'time' => $this->dateFormatter->formatTime($booking['time']),
             'address' => $booking['address'] ?? '',
             'city' => $booking['city'] ?? '',
             'booking_url' => $bookingUrl
@@ -571,7 +574,7 @@ HTML;
         $businessName = $this->sanitize($booking['business_name']);
         $subject = $this->t('email_subject_reminder_1h') . " {$businessName}";
 
-        $timeFormatted = date('H:i', strtotime($booking['time']));
+        $timeFormatted = $this->dateFormatter->formatTime($booking['time']);
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
 
         $htmlBody = $this->getReminder1HourTemplate($this->sanitizeData([

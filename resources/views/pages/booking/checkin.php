@@ -241,7 +241,7 @@
                     </tr>
                     <tr>
                         <td class="label">Tijd</td>
-                        <td class="value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></td>
+                        <td class="value"><?= $formatTime($booking['appointment_time']) ?></td>
                     </tr>
                     <tr>
                         <td class="label">Duur</td>
@@ -309,11 +309,11 @@
                     </tr>
                     <tr>
                         <td class="label">Datum</td>
-                        <td class="value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?></td>
+                        <td class="value"><?= $formatDate($booking['appointment_date']) ?></td>
                     </tr>
                     <tr>
                         <td class="label">Tijd</td>
-                        <td class="value"><?= date('H:i', strtotime($booking['appointment_time'])) ?></td>
+                        <td class="value"><?= $formatTime($booking['appointment_time']) ?></td>
                     </tr>
                     <tr>
                         <td class="label">Bedrag</td>
@@ -360,7 +360,7 @@
                     </tr>
                     <tr>
                         <td class="label">Datum</td>
-                        <td class="value"><?= date('d-m-Y', strtotime($booking['appointment_date'])) ?> om <?= date('H:i', strtotime($booking['appointment_time'])) ?></td>
+                        <td class="value"><?= $formatDate($booking['appointment_date']) ?> om <?= $formatTime($booking['appointment_time']) ?></td>
                     </tr>
                 </table>
             </div>

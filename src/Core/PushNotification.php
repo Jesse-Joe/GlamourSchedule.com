@@ -141,8 +141,9 @@ class PushNotification
     {
         $customerName = $booking['guest_name'] ?? $booking['customer_name'] ?? $this->getTranslation('customer', $lang);
         $serviceName = $booking['service_name'] ?? $this->getTranslation('treatment', $lang);
-        $date = date('j M', strtotime($booking['appointment_date']));
-        $time = date('H:i', strtotime($booking['appointment_time']));
+        $df = new DateFormatter();
+        $date = $df->formatShortDate($booking['appointment_date']);
+        $time = $df->formatTime($booking['appointment_time']);
 
         // Get translated title and message
         $title = $this->getTranslation('new_booking', $lang);

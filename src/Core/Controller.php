@@ -7,12 +7,14 @@ abstract class Controller
     protected array $config;
     protected string $lang = 'nl';
     protected ?string $detectedCountry = null;
+    protected DateFormatter $dateFormatter;
 
     public function __construct()
     {
         $this->config = require BASE_PATH . '/config/config.php';
         $this->db = new Database($this->config['database']);
         $this->lang = $this->detectLanguage();
+        $this->dateFormatter = new DateFormatter();
     }
 
     /**
@@ -436,6 +438,11 @@ abstract class Controller
         $data['currentDomain'] = Router::getCurrentDomain();
         $data['domainSwitchPopup'] = $this->getDomainSwitchPopupData();
         $data['detectedCountry'] = $_SESSION['detected_country'] ?? null;
+        $data['dateFormatter'] = $this->dateFormatter;
+        $df = $this->dateFormatter;
+        $data['formatDate'] = function($date) use ($df) { return $df->formatDate($date); };
+        $data['formatTime'] = function($time) use ($df) { return $df->formatTime($time); };
+        $data['formatDateTime'] = function($datetime) use ($df) { return $df->formatDateTime($datetime); };
 
         // Helper function for translations
         $translations = $data['translations'];

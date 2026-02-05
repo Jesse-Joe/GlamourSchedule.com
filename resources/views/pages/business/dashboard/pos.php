@@ -905,7 +905,7 @@ $monthNames = [
                 <?php else: ?>
                     <?php foreach ($todayBookings as $booking): ?>
                         <div class="booking-item" data-uuid="<?= $booking['uuid'] ?>">
-                            <div class="booking-time"><?= date('H:i', strtotime($booking['appointment_time'])) ?></div>
+                            <div class="booking-time"><?= $formatTime($booking['appointment_time']) ?></div>
                             <div class="booking-details">
                                 <div class="booking-customer"><?= htmlspecialchars($booking['customer_name']) ?></div>
                                 <div class="booking-service"><?= htmlspecialchars($booking['service_name']) ?></div>

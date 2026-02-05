@@ -176,7 +176,7 @@
                 <tr>
                     <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--text-light)"><?= $__('date_time') ?></td>
                     <td style="padding:0.75rem 0;border-bottom:1px solid var(--border);text-align:right;font-weight:500;color:var(--text)">
-                        <?= !empty($booking['appointment_date']) ? date('d-m-Y', strtotime($booking['appointment_date'])) : '-' ?> <?= $__('at') ?> <?= !empty($booking['appointment_time']) ? date('H:i', strtotime($booking['appointment_time'])) : '-' ?>
+                        <?= !empty($booking['appointment_date']) ? $formatDate($booking['appointment_date']) : '-' ?> <?= $__('at') ?> <?= !empty($booking['appointment_time']) ? $formatTime($booking['appointment_time']) : '-' ?>
                     </td>
                 </tr>
                 <?php if (!empty($booking['duration'])): ?>

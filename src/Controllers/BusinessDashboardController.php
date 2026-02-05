@@ -23,6 +23,7 @@ class BusinessDashboardController extends Controller
             exit;
         }
         $this->business = $business;
+        $this->dateFormatter = new \GlamourSchedule\Core\DateFormatter($this->business['country'] ?? 'NL');
 
         // Get fee data for business's country
         $this->feeData = $this->getBusinessFeeData();
@@ -2041,8 +2042,8 @@ HTML;
             'verification_code' => $booking['verification_code'] ?? null,
             'customer_name' => $customerName,
             'service_name' => $booking['service_name'],
-            'date' => date('d-m-Y', strtotime($booking['appointment_date'])),
-            'time' => date('H:i', strtotime($booking['appointment_time'])),
+            'date' => $this->dateFormatter->formatDate($booking['appointment_date']),
+            'time' => $this->dateFormatter->formatTime($booking['appointment_time']),
             'price' => number_format($booking['total_price'], 2, ',', '.')
         ];
     }
@@ -2321,7 +2322,7 @@ HTML;
                         [$newExpiry, $this->business['id']]
                     );
 
-                    $_SESSION['flash'] = ['type' => 'success', 'message' => 'Boost geactiveerd! Je bedrijf wordt nu uitgelicht op de homepage tot ' . date('d-m-Y', strtotime($newExpiry)) . '.'];
+                    $_SESSION['flash'] = ['type' => 'success', 'message' => 'Boost geactiveerd! Je bedrijf wordt nu uitgelicht op de homepage tot ' . $this->dateFormatter->formatDate($newExpiry) . '.'];
 
                 } elseif ($payment->isFailed() || $payment->isCanceled() || $payment->isExpired()) {
                     $this->db->query("UPDATE boost_payments SET status = 'failed' WHERE id = ?", [$boostPayment['id']]);
@@ -3201,8 +3202,8 @@ HTML;
                 'payment_link' => $paymentLink,
                 'service_name' => $service['name'],
                 'customer_name' => $customerName,
-                'date' => date('d-m-Y', strtotime($appointmentDate)),
-                'time' => $appointmentTime,
+                'date' => $this->dateFormatter->formatDate($appointmentDate),
+                'time' => $this->dateFormatter->formatTime($appointmentTime),
                 'total_price' => number_format($totalPrice, 2, ',', '.'),
                 'payment_method' => $paymentMethod,
                 'online_amount' => $paymentMethod === 'cash' ? number_format($serviceFee, 2, ',', '.') : number_format($totalPrice, 2, ',', '.')
@@ -3272,8 +3273,8 @@ HTML;
             : number_format($booking['total_price'], 2, ',', '.');
 
         $totalAmount = number_format($booking['total_price'], 2, ',', '.');
-        $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
-        $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+        $appointmentDate = $this->dateFormatter->formatDate($booking['appointment_date']);
+        $appointmentTime = $this->dateFormatter->formatTime($booking['appointment_time']);
 
         $cashNote = $booking['payment_method'] === 'cash'
             ? "<p style='color:#cccccc;font-size:14px;margin-top:15px;'><strong>Let op:</strong> Je betaalt €{$paymentAmount} online (reserveringskosten). Het resterende bedrag van €" . number_format($booking['total_price'] - $booking['service_fee'], 2, ',', '.') . " betaal je contant bij je afspraak.</p>"
@@ -3600,8 +3601,8 @@ HTML;
     {
         if (empty($booking['customer_email'])) return;
 
-        $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
-        $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
+        $appointmentDate = $this->dateFormatter->formatDate($booking['appointment_date']);
+        $appointmentTime = $this->dateFormatter->formatTime($booking['appointment_time']);
 
         $subject = "Afspraak Geannuleerd";
         $htmlBody = <<<HTML
