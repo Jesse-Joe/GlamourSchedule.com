@@ -373,13 +373,20 @@ return [
     // ═══════════════════════════════════════════════════════════════════════
     'mail' => [
         'driver' => 'smtp',
-        'host' => getenv('MAIL_HOST') ?: 'smtp.mailtrap.io',
-        'port' => getenv('MAIL_PORT') ?: 587,
+        'host' => getenv('MAIL_HOST') ?: 'localhost',
+        'port' => getenv('MAIL_PORT') ?: 25,
         'username' => getenv('MAIL_USERNAME') ?: '',
         'password' => getenv('MAIL_PASSWORD') ?: '',
-        'encryption' => 'tls',
+        'encryption' => getenv('MAIL_ENCRYPTION') ?: '',
         'from_address' => getenv('MAIL_FROM_ADDRESS') ?: 'noreply@glamourschedule.com',
         'from_name' => 'GlamourSchedule',
+        'fallback' => [
+            'host' => getenv('MAIL_FALLBACK_HOST') ?: '',
+            'port' => getenv('MAIL_FALLBACK_PORT') ?: 587,
+            'username' => getenv('MAIL_FALLBACK_USERNAME') ?: '',
+            'password' => getenv('MAIL_FALLBACK_PASSWORD') ?: '',
+            'encryption' => getenv('MAIL_FALLBACK_ENCRYPTION') ?: 'tls',
+        ],
     ],
     
     // ═══════════════════════════════════════════════════════════════════════

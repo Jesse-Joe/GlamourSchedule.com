@@ -210,17 +210,20 @@ HTML;
      */
     public function send(string $to, string $subject, string $htmlBody, string $textBody = ''): bool
     {
+        // Try primary (local Postfix)
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings
             if ($this->useSMTP) {
                 $mail->isSMTP();
-                $mail->Host = $this->config['mail']['host'] ?? 'smtp.mailtrap.io';
+                $mail->Host = $this->config['mail']['host'] ?? 'localhost';
                 $mail->SMTPAuth = true;
                 $mail->Username = $this->config['mail']['username'];
                 $mail->Password = $this->config['mail']['password'];
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $encryption = $this->config['mail']['encryption'] ?? '';
+                if ($encryption === 'tls') {
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                }
                 $mail->Port = $this->config['mail']['port'] ?? 587;
             } else {
                 // Use local sendmail (Postfix)
@@ -228,30 +231,70 @@ HTML;
                 $mail->Sendmail = '/usr/sbin/sendmail -t -i';
             }
 
-            // Recipients
             $mail->setFrom($this->fromEmail, $this->fromName);
             $mail->addAddress($to);
             $mail->addReplyTo($this->fromEmail, $this->fromName);
-
-            // Content
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
             $mail->Subject = $subject;
             $mail->Body = $htmlBody;
             $mail->AltBody = $textBody ?: strip_tags($htmlBody);
 
-            // Log email attempt
             $this->logEmail($to, $subject, 'attempt');
-
-            $result = $mail->send();
-
+            $mail->send();
             $this->logEmail($to, $subject, 'success');
             return true;
 
         } catch (Exception $e) {
+            $primaryError = $mail->ErrorInfo ?? $e->getMessage();
+            error_log("Mailer primary failed for {$to}: {$primaryError}");
+            $this->logEmail($to, $subject, 'primary failed: ' . $primaryError);
+
+            // Try fallback (Gmail SMTP)
+            return $this->sendViaFallback($to, $subject, $htmlBody, $textBody);
+        }
+    }
+
+    /**
+     * Send email via fallback SMTP (Gmail)
+     */
+    private function sendViaFallback(string $to, string $subject, string $htmlBody, string $textBody = ''): bool
+    {
+        $fallback = $this->config['mail']['fallback'] ?? [];
+        if (empty($fallback['host']) || empty($fallback['username']) || empty($fallback['password'])) {
+            $this->logEmail($to, $subject, 'failed: no fallback configured');
+            return false;
+        }
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = $fallback['host'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $fallback['username'];
+            $mail->Password = $fallback['password'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = $fallback['port'] ?? 587;
+
+            $mail->setFrom($this->fromEmail, $this->fromName);
+            $mail->addAddress($to);
+            $mail->addReplyTo($this->fromEmail, $this->fromName);
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = $subject;
+            $mail->Body = $htmlBody;
+            $mail->AltBody = $textBody ?: strip_tags($htmlBody);
+
+            $this->logEmail($to, $subject, 'fallback attempt');
+            $mail->send();
+            $this->logEmail($to, $subject, 'fallback success');
+            return true;
+
+        } catch (Exception $e) {
             $errorMsg = $mail->ErrorInfo ?? $e->getMessage();
-            error_log("Mailer Error for {$to}: {$errorMsg}");
-            $this->logEmail($to, $subject, 'failed: ' . $errorMsg);
+            error_log("Mailer fallback also failed for {$to}: {$errorMsg}");
+            $this->logEmail($to, $subject, 'fallback failed: ' . $errorMsg);
             return false;
         }
     }
@@ -264,52 +307,88 @@ HTML;
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings
             if ($this->useSMTP) {
                 $mail->isSMTP();
-                $mail->Host = $this->config['mail']['host'] ?? 'smtp.mailtrap.io';
+                $mail->Host = $this->config['mail']['host'] ?? 'localhost';
                 $mail->SMTPAuth = true;
                 $mail->Username = $this->config['mail']['username'];
                 $mail->Password = $this->config['mail']['password'];
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $encryption = $this->config['mail']['encryption'] ?? '';
+                if ($encryption === 'tls') {
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                }
                 $mail->Port = $this->config['mail']['port'] ?? 587;
             } else {
-                // Use local sendmail (Postfix)
                 $mail->isSendmail();
                 $mail->Sendmail = '/usr/sbin/sendmail -t -i';
             }
 
-            // Recipients
             $mail->setFrom($this->fromEmail, $this->fromName);
             $mail->addAddress($to);
             $mail->addReplyTo($this->fromEmail, $this->fromName);
-
-            // Content
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
             $mail->Subject = $subject;
             $mail->Body = $htmlBody;
             $mail->AltBody = strip_tags($htmlBody);
 
-            // Add attachment
             if (file_exists($attachmentPath)) {
                 $name = $attachmentName ?: basename($attachmentPath);
                 $mail->addAttachment($attachmentPath, $name);
             }
 
-            // Log email attempt
             $this->logEmail($to, $subject, 'attempt');
-
-            $result = $mail->send();
-
+            $mail->send();
             $this->logEmail($to, $subject, 'success');
             return true;
 
         } catch (Exception $e) {
-            $errorMsg = $mail->ErrorInfo ?? $e->getMessage();
-            error_log("Mailer Error for {$to}: {$errorMsg}");
-            $this->logEmail($to, $subject, 'failed: ' . $errorMsg);
-            return false;
+            $primaryError = $mail->ErrorInfo ?? $e->getMessage();
+            error_log("Mailer primary failed for {$to}: {$primaryError}");
+            $this->logEmail($to, $subject, 'primary failed: ' . $primaryError);
+
+            // Try fallback (Gmail SMTP) with attachment
+            $fallback = $this->config['mail']['fallback'] ?? [];
+            if (empty($fallback['host']) || empty($fallback['username'])) {
+                $this->logEmail($to, $subject, 'failed: no fallback configured');
+                return false;
+            }
+
+            $mail2 = new PHPMailer(true);
+            try {
+                $mail2->isSMTP();
+                $mail2->Host = $fallback['host'];
+                $mail2->SMTPAuth = true;
+                $mail2->Username = $fallback['username'];
+                $mail2->Password = $fallback['password'];
+                $mail2->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail2->Port = $fallback['port'] ?? 587;
+
+                $mail2->setFrom($this->fromEmail, $this->fromName);
+                $mail2->addAddress($to);
+                $mail2->addReplyTo($this->fromEmail, $this->fromName);
+                $mail2->isHTML(true);
+                $mail2->CharSet = 'UTF-8';
+                $mail2->Subject = $subject;
+                $mail2->Body = $htmlBody;
+                $mail2->AltBody = strip_tags($htmlBody);
+
+                if (file_exists($attachmentPath)) {
+                    $name = $attachmentName ?: basename($attachmentPath);
+                    $mail2->addAttachment($attachmentPath, $name);
+                }
+
+                $this->logEmail($to, $subject, 'fallback attempt');
+                $mail2->send();
+                $this->logEmail($to, $subject, 'fallback success');
+                return true;
+
+            } catch (Exception $e2) {
+                $errorMsg = $mail2->ErrorInfo ?? $e2->getMessage();
+                error_log("Mailer fallback also failed for {$to}: {$errorMsg}");
+                $this->logEmail($to, $subject, 'fallback failed: ' . $errorMsg);
+                return false;
+            }
         }
     }
 
