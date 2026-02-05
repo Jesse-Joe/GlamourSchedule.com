@@ -1893,10 +1893,18 @@ HTML;
 
         // Try to find booking by UUID (from QR URL), booking number, or verification code
         $booking = null;
+        $isPosBooking = false;
 
-        // Check if it's a URL with UUID (supports both /checkin/ and /booking/ URLs)
+        // Extract UUID from URL or use raw input
+        $uuid = null;
         if (preg_match('/(checkin|booking)\/([a-f0-9\-]+)/i', $qrData, $matches)) {
             $uuid = $matches[2];
+        } elseif (preg_match('/^[a-f0-9\-]{36}$/i', $qrData)) {
+            $uuid = $qrData;
+        }
+
+        if ($uuid) {
+            // Try regular bookings first
             $stmt = $this->db->query(
                 "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
                  FROM bookings b
@@ -1906,18 +1914,21 @@ HTML;
                 [$uuid, $this->business['id']]
             );
             $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
-        }
-        // Check if it's a raw UUID
-        elseif (preg_match('/^[a-f0-9\-]{36}$/i', $qrData)) {
-            $stmt = $this->db->query(
-                "SELECT b.*, b.language, s.name as service_name, u.first_name, u.last_name, u.email as user_email
-                 FROM bookings b
-                 JOIN services s ON b.service_id = s.id
-                 LEFT JOIN users u ON b.user_id = u.id
-                 WHERE b.uuid = ? AND b.business_id = ?",
-                [$qrData, $this->business['id']]
-            );
-            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            // Try POS bookings if not found
+            if (!$booking) {
+                $stmt = $this->db->query(
+                    "SELECT pb.*, s.name as service_name,
+                            pb.customer_name as guest_name, pb.customer_email as guest_email,
+                            pb.booking_status as status, pb.customer_phone as guest_phone
+                     FROM pos_bookings pb
+                     JOIN services s ON pb.service_id = s.id
+                     WHERE pb.uuid = ? AND pb.business_id = ?",
+                    [$uuid, $this->business['id']]
+                );
+                $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($booking) $isPosBooking = true;
+            }
         }
         // Check if it's a SHA256 verification code (format: XXXX-XXXX-XXXX)
         elseif (preg_match('/^[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/i', $qrData)) {
@@ -1954,19 +1965,24 @@ HTML;
             return json_encode(['success' => false, 'error' => 'Boeking niet gevonden of behoort niet tot uw bedrijf']);
         }
 
-        // Verify cryptographic signature (prevents forged bookings)
-        $signatureService = new BookingSignatureService();
-        if (!$signatureService->verifyBooking($this->business['id'], $booking)) {
-            error_log("Signature verification failed for booking {$booking['booking_number']} at business {$this->business['id']}");
-            return json_encode([
-                'success' => false,
-                'error' => 'Ongeldige boeking - handtekening verificatie mislukt',
-                'error_code' => 'SIGNATURE_INVALID'
-            ]);
+        // Verify cryptographic signature (skip for POS bookings - they don't have signatures)
+        if (!$isPosBooking) {
+            $signatureService = new BookingSignatureService();
+            if (!$signatureService->verifyBooking($this->business['id'], $booking)) {
+                error_log("Signature verification failed for booking {$booking['booking_number']} at business {$this->business['id']}");
+                return json_encode([
+                    'success' => false,
+                    'error' => 'Ongeldige boeking - handtekening verificatie mislukt',
+                    'error_code' => 'SIGNATURE_INVALID'
+                ]);
+            }
         }
 
+        // Check status field (regular bookings use 'status', POS uses 'booking_status')
+        $status = $booking['status'] ?? $booking['booking_status'] ?? '';
+
         // Check if already checked in
-        if ($booking['status'] === 'checked_in') {
+        if ($status === 'checked_in') {
             return json_encode([
                 'success' => false,
                 'error' => 'Klant is al ingecheckt',
@@ -1984,10 +2000,17 @@ HTML;
         }
 
         // Update status to checked_in
-        $this->db->query(
-            "UPDATE bookings SET status = 'checked_in', checked_in_at = NOW() WHERE uuid = ?",
-            [$booking['uuid']]
-        );
+        if ($isPosBooking) {
+            $this->db->query(
+                "UPDATE pos_bookings SET booking_status = 'checked_in' WHERE uuid = ?",
+                [$booking['uuid']]
+            );
+        } else {
+            $this->db->query(
+                "UPDATE bookings SET status = 'checked_in', checked_in_at = NOW() WHERE uuid = ?",
+                [$booking['uuid']]
+            );
+        }
 
         // Update business total revenue
         $bookingAmount = (float)($booking['total_price'] ?? 0);
@@ -1999,7 +2022,9 @@ HTML;
         }
 
         // Send confirmation email to customer
-        $this->sendCheckinConfirmation($booking);
+        if (!$isPosBooking) {
+            $this->sendCheckinConfirmation($booking);
+        }
 
         return json_encode([
             'success' => true,
@@ -2010,9 +2035,9 @@ HTML;
 
     private function formatBookingResponse(array $booking): array
     {
-        $customerName = $booking['guest_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?: 'Klant';
+        $customerName = $booking['guest_name'] ?? $booking['customer_name'] ?? trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')) ?: 'Klant';
         return [
-            'booking_number' => $booking['booking_number'],
+            'booking_number' => $booking['booking_number'] ?? substr($booking['uuid'] ?? '', 0, 8),
             'verification_code' => $booking['verification_code'] ?? null,
             'customer_name' => $customerName,
             'service_name' => $booking['service_name'],

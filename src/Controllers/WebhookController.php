@@ -182,29 +182,31 @@ class WebhookController extends Controller
 
             $subject = "Afspraak Bevestigd - " . $booking['company_name'];
             $currentYear = date('Y');
+            $checkinUrl = rtrim($_ENV['APP_URL'] ?? 'https://glamourschedule.com', '/') . "/checkin/{$posBookingUuid}";
+            $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=20&data=" . urlencode($checkinUrl);
             $htmlBody = <<<HTML
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <tr>
-                        <td style="background:linear-gradient(135deg,#000000,#333333);padding:40px;text-align:center;color:#fff;">
+                        <td style="background:#000000;padding:40px;text-align:center;color:#fff;">
                             <div style="font-size:48px;margin-bottom:10px;">✓</div>
                             <h1 style="margin:0;font-size:24px;">Afspraak Bevestigd!</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;">Beste {$booking['customer_name']},</p>
-                            <p style="color:#555;line-height:1.6;">
+                            <p style="font-size:18px;color:#333333;">Beste {$booking['customer_name']},</p>
+                            <p style="color:#555555;line-height:1.6;">
                                 Je afspraak bij <strong>{$booking['company_name']}</strong> is bevestigd.
                             </p>
 
-                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
+                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;border:1px solid #e5e7eb;">
                                 <p style="margin:0 0 10px;color:#333333;"><strong>Dienst:</strong> {$booking['service_name']}</p>
                                 <p style="margin:0 0 10px;color:#333333;"><strong>Datum:</strong> {$appointmentDate}</p>
                                 <p style="margin:0 0 10px;color:#333333;"><strong>Tijd:</strong> {$appointmentTime}</p>
@@ -212,17 +214,24 @@ class WebhookController extends Controller
                                 <p style="margin:0;color:#333333;"><strong>Totaal:</strong> €{$totalPrice}</p>
                             </div>
 
-                            <div style="background:#f0f0f0;border-radius:12px;padding:20px;margin:25px 0;">
+                            <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;border:1px solid #e5e7eb;">
                                 <p style="margin:0 0 5px;color:#333333;font-weight:600;">📍 Locatie</p>
-                                <p style="margin:0;color:#555;">{$booking['company_name']}<br>{$address}</p>
+                                <p style="margin:0;color:#555555;">{$booking['company_name']}<br>{$address}</p>
                             </div>
 
                             {$cashNote}
+
+                            <!-- QR Code -->
+                            <div style="text-align:center;padding:25px;background:#ffffff;border-radius:12px;margin:25px 0;border:1px solid #e5e7eb;">
+                                <p style="margin:0 0 15px;color:#333333;font-weight:bold;">📱 Check-in QR Code</p>
+                                <img src="{$qrCodeUrl}" alt="QR Code" style="width:200px;height:200px;display:block;margin:0 auto;">
+                                <p style="margin:10px 0 0;color:#666666;font-size:12px;">Toon deze QR code bij aankomst</p>
+                            </div>
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
+                        <td style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p style="margin:0;color:#888888;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

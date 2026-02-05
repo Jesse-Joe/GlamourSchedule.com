@@ -488,7 +488,7 @@ HTML;
         $priceFormatted = number_format($booking['price'], 2, ',', '.');
         $bookingUrl = "{$this->baseUrl}/booking/{$booking['uuid']}";
         $checkinUrl = "{$this->baseUrl}/checkin/{$booking['uuid']}";
-        $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($checkinUrl);
+        $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=20&data=" . urlencode($checkinUrl);
 
         $htmlBody = $this->getBookingConfirmationTemplate($this->sanitizeData([
             'customer_name' => $booking['customer_name'],
@@ -860,11 +860,11 @@ HTML;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
@@ -874,13 +874,14 @@ HTML;
                     </tr>
                     <!-- Content -->
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#333333;">
                             {$content}
 
                             <!-- QR Code -->
-                            <div style="text-align:center;padding:25px;background:#0a0a0a;border-radius:12px;margin:20px 0;border:1px solid #333;">
-                                <p style="margin:0 0 15px;color:#ffffff;font-weight:bold;">{$qrTitle}</p>
-                                <img src="{$data['qr_code_url']}" alt="QR Code" style="width:150px;height:150px;">
+                            <div style="text-align:center;padding:25px;background:#ffffff;border-radius:12px;margin:20px 0;border:1px solid #e5e7eb;">
+                                <p style="margin:0 0 15px;color:#333333;font-weight:bold;">{$qrTitle}</p>
+                                <img src="{$data['qr_code_url']}" alt="QR Code" style="width:200px;height:200px;display:block;margin:0 auto;">
+                                <p style="margin:10px 0 0;color:#666666;font-size:12px;">Toon deze QR code bij aankomst</p>
                             </div>
 
                             <p style="text-align:center;margin:25px 0;">
@@ -892,9 +893,9 @@ HTML;
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
-                            <p style="margin:5px 0 0;color:#cccccc;font-size:11px;">glamourschedule.com</p>
+                        <td style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p style="margin:0;color:#888888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                            <p style="margin:5px 0 0;color:#aaaaaa;font-size:11px;">glamourschedule.com</p>
                         </td>
                     </tr>
                 </table>
