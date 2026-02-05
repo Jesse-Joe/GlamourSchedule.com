@@ -9,6 +9,8 @@ class GeoIP
 {
     private Database $db;
     private array $cache = [];
+    private string $cacheDir;
+    private int $cacheTTL = 86400; // 24 hours
 
     // Country to language mapping
     private array $countryLanguages = [
@@ -225,6 +227,7 @@ class GeoIP
     public function __construct(Database $db)
     {
         $this->db = $db;
+        $this->cacheDir = dirname(__DIR__, 2) . '/storage/cache/geoip';
     }
 
     /**
@@ -260,7 +263,7 @@ class GeoIP
     {
         $ip = $ip ?? $this->getClientIP();
 
-        // Check cache first
+        // Check in-memory cache first
         if (isset($this->cache[$ip])) {
             return $this->cache[$ip];
         }
@@ -284,6 +287,13 @@ class GeoIP
         if ($this->isPrivateIP($ip)) {
             $default['success'] = true;
             return $default;
+        }
+
+        // Check file cache (persistent across requests)
+        $cached = $this->getFileCache($ip);
+        if ($cached !== null) {
+            $this->cache[$ip] = $cached;
+            return $cached;
         }
 
         try {
@@ -318,6 +328,7 @@ class GeoIP
                     ];
 
                     $this->cache[$ip] = $result;
+                    $this->setFileCache($ip, $result);
                     return $result;
                 }
             }
@@ -326,6 +337,45 @@ class GeoIP
         }
 
         return $default;
+    }
+
+    /**
+     * Get cached GeoIP result from file
+     */
+    private function getFileCache(string $ip): ?array
+    {
+        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $ip) . '.json';
+
+        if (!file_exists($file)) {
+            return null;
+        }
+
+        // Check TTL
+        if ((time() - filemtime($file)) > $this->cacheTTL) {
+            @unlink($file);
+            return null;
+        }
+
+        $data = @file_get_contents($file);
+        if ($data === false) {
+            return null;
+        }
+
+        $result = json_decode($data, true);
+        return is_array($result) ? $result : null;
+    }
+
+    /**
+     * Save GeoIP result to file cache
+     */
+    private function setFileCache(string $ip, array $result): void
+    {
+        if (!is_dir($this->cacheDir)) {
+            @mkdir($this->cacheDir, 0755, true);
+        }
+
+        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $ip) . '.json';
+        @file_put_contents($file, json_encode($result), LOCK_EX);
     }
 
     /**
