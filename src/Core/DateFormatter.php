@@ -56,9 +56,42 @@ class DateFormatter
 
     private const DEFAULT_FORMAT = ['date' => 'd-m-Y', 'time' => 'H:i', 'short' => 'j M', 'shortOrder' => 'dM'];
 
+    private const COUNTRY_NAME_MAP = [
+        'NEDERLAND' => 'NL', 'NETHERLANDS' => 'NL', 'THE NETHERLANDS' => 'NL',
+        'BELGIE' => 'BE', 'BELGIUM' => 'BE', 'BELGIË' => 'BE',
+        'DUITSLAND' => 'DE', 'GERMANY' => 'DE', 'DEUTSCHLAND' => 'DE',
+        'FRANKRIJK' => 'FR', 'FRANCE' => 'FR',
+        'SPANJE' => 'ES', 'SPAIN' => 'ES', 'ESPAÑA' => 'ES',
+        'ITALIE' => 'IT', 'ITALY' => 'IT', 'ITALIA' => 'IT', 'ITALIË' => 'IT',
+        'PORTUGAL' => 'PT', 'BRAZILIE' => 'BR', 'BRAZIL' => 'BR', 'BRASIL' => 'BR', 'BRAZILIË' => 'BR',
+        'VERENIGD KONINKRIJK' => 'GB', 'UNITED KINGDOM' => 'GB', 'GROOT-BRITTANNIE' => 'GB', 'GROOT-BRITTANNIË' => 'GB',
+        'IERLAND' => 'IE', 'IRELAND' => 'IE',
+        'VERENIGDE STATEN' => 'US', 'UNITED STATES' => 'US', 'USA' => 'US',
+        'CANADA' => 'CA',
+        'AUSTRALIE' => 'AU', 'AUSTRALIA' => 'AU', 'AUSTRALIË' => 'AU',
+        'NIEUW-ZEELAND' => 'NZ', 'NEW ZEALAND' => 'NZ',
+        'OOSTENRIJK' => 'AT', 'AUSTRIA' => 'AT', 'ÖSTERREICH' => 'AT',
+        'ZWITSERLAND' => 'CH', 'SWITZERLAND' => 'CH', 'SCHWEIZ' => 'CH',
+        'POLEN' => 'PL', 'POLAND' => 'PL', 'POLSKA' => 'PL',
+        'TSJECHIE' => 'CZ', 'CZECH REPUBLIC' => 'CZ', 'CZECHIA' => 'CZ', 'TSJECHIË' => 'CZ',
+        'RUSLAND' => 'RU', 'RUSSIA' => 'RU',
+        'TURKIJE' => 'TR', 'TURKEY' => 'TR', 'TÜRKIYE' => 'TR',
+        'GRIEKENLAND' => 'GR', 'GREECE' => 'GR',
+        'JAPAN' => 'JP', 'ZUID-KOREA' => 'KR', 'SOUTH KOREA' => 'KR',
+        'CHINA' => 'CN', 'ZWEDEN' => 'SE', 'SWEDEN' => 'SE',
+        'HONGARIJE' => 'HU', 'HUNGARY' => 'HU',
+        'INDIA' => 'IN', 'PAKISTAN' => 'PK',
+        'SAOEDI-ARABIE' => 'SA', 'SAUDI ARABIA' => 'SA', 'SAOEDI-ARABIË' => 'SA',
+        'VERENIGDE ARABISCHE EMIRATEN' => 'AE', 'UNITED ARAB EMIRATES' => 'AE',
+        'EGYPTE' => 'EG', 'EGYPT' => 'EG',
+        'FILIPPIJNEN' => 'PH', 'PHILIPPINES' => 'PH',
+        'ARGENTINIE' => 'AR', 'ARGENTINA' => 'AR', 'ARGENTINIË' => 'AR',
+    ];
+
     public function __construct(?string $country = null)
     {
-        $this->country = strtoupper($country ?? $_SESSION['detected_country'] ?? 'NL');
+        $raw = strtoupper(trim($country ?? $_SESSION['detected_country'] ?? 'NL'));
+        $this->country = self::COUNTRY_NAME_MAP[$raw] ?? (strlen($raw) === 2 ? $raw : 'NL');
     }
 
     private function getFormats(): array
