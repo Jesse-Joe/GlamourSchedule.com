@@ -170,8 +170,7 @@ class PosPaymentController extends Controller
                             [$uuid]
                         );
 
-                        // Send confirmation email
-                        $this->sendConfirmationEmail($booking);
+                        // Email is sent via webhook to prevent duplicates
 
                         return $this->redirect('/pay/' . $uuid . '/success');
 
@@ -274,15 +273,15 @@ class PosPaymentController extends Controller
                             </p>
 
                             <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Dienst:</strong> {$fullBooking['service_name']}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Datum:</strong> {$appointmentDate}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Tijd:</strong> {$appointmentTime}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Duur:</strong> {$fullBooking['duration_minutes']} minuten</p>
-                                <p style="margin:0;color:#ffffff;"><strong>Totaal:</strong> €{$totalPrice}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Dienst:</strong> {$fullBooking['service_name']}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Datum:</strong> {$appointmentDate}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Tijd:</strong> {$appointmentTime}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Duur:</strong> {$fullBooking['duration_minutes']} minuten</p>
+                                <p style="margin:0;color:#333333;"><strong>Totaal:</strong> €{$totalPrice}</p>
                             </div>
 
                             <div style="background:#f0f0f0;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0 0 5px;color:#ffffff;font-weight:600;"><i>📍</i> Locatie</p>
+                                <p style="margin:0 0 5px;color:#333333;font-weight:600;"><i>📍</i> Locatie</p>
                                 <p style="margin:0;color:#555;">{$fullBooking['company_name']}<br>{$address}</p>
                             </div>
 

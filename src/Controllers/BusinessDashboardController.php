@@ -302,16 +302,19 @@ class BusinessDashboardController extends Controller
                     (int)$_POST['duration']
                 ]
             );
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Dienst succesvol toegevoegd!'];
         } elseif ($action === 'delete') {
             $this->db->query(
                 "DELETE FROM services WHERE id = ? AND business_id = ?",
                 [(int)$_POST['service_id'], $this->business['id']]
             );
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Dienst succesvol verwijderd.'];
         }
     }
 
     private function getBookingsForDate(string $date): array
     {
+        // Regular bookings
         $stmt = $this->db->query(
             "SELECT b.*, s.name as service_name, s.duration_minutes, u.first_name, u.last_name
              FROM bookings b
@@ -321,7 +324,29 @@ class BusinessDashboardController extends Controller
              ORDER BY b.appointment_time",
             [$this->business['id'], $date]
         );
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // POS bookings
+        $stmt2 = $this->db->query(
+            "SELECT pb.*, s.name as service_name, s.duration_minutes,
+                    pb.customer_name as first_name, '' as last_name,
+                    pb.booking_status as status, pb.customer_email as guest_email,
+                    pb.customer_phone as guest_phone
+             FROM pos_bookings pb
+             JOIN services s ON pb.service_id = s.id
+             WHERE pb.business_id = ? AND pb.appointment_date = ? AND pb.booking_status != 'cancelled'
+             ORDER BY pb.appointment_time",
+            [$this->business['id'], $date]
+        );
+        $posBookings = $stmt2->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Merge and sort by appointment_time
+        $all = array_merge($bookings, $posBookings);
+        usort($all, function($a, $b) {
+            return strcmp($a['appointment_time'], $b['appointment_time']);
+        });
+
+        return $all;
     }
 
     private function getPayouts(): array

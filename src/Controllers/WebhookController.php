@@ -161,6 +161,12 @@ class WebhookController extends Controller
                 return;
             }
 
+            // Idempotency check: don't send if already sent
+            if (!empty($booking['confirmation_email_sent'])) {
+                error_log("POS confirmation email already sent for booking $posBookingUuid, skipping");
+                return;
+            }
+
             $appointmentDate = date('d-m-Y', strtotime($booking['appointment_date']));
             $appointmentTime = date('H:i', strtotime($booking['appointment_time']));
             $totalPrice = number_format($booking['total_price'], 2, ',', '.');
@@ -199,15 +205,15 @@ class WebhookController extends Controller
                             </p>
 
                             <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Dienst:</strong> {$booking['service_name']}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Datum:</strong> {$appointmentDate}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Tijd:</strong> {$appointmentTime}</p>
-                                <p style="margin:0 0 10px;color:#ffffff;"><strong>Duur:</strong> {$booking['duration_minutes']} minuten</p>
-                                <p style="margin:0;color:#ffffff;"><strong>Totaal:</strong> €{$totalPrice}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Dienst:</strong> {$booking['service_name']}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Datum:</strong> {$appointmentDate}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Tijd:</strong> {$appointmentTime}</p>
+                                <p style="margin:0 0 10px;color:#333333;"><strong>Duur:</strong> {$booking['duration_minutes']} minuten</p>
+                                <p style="margin:0;color:#333333;"><strong>Totaal:</strong> €{$totalPrice}</p>
                             </div>
 
                             <div style="background:#f0f0f0;border-radius:12px;padding:20px;margin:25px 0;">
-                                <p style="margin:0 0 5px;color:#ffffff;font-weight:600;">📍 Locatie</p>
+                                <p style="margin:0 0 5px;color:#333333;font-weight:600;">📍 Locatie</p>
                                 <p style="margin:0;color:#555;">{$booking['company_name']}<br>{$address}</p>
                             </div>
 
@@ -229,6 +235,12 @@ HTML;
 
             $mailer = new Mailer();
             $mailer->send($booking['customer_email'], $subject, $htmlBody);
+
+            // Mark email as sent to prevent duplicates
+            $this->db->query(
+                "UPDATE pos_bookings SET confirmation_email_sent = 1 WHERE uuid = ?",
+                [$posBookingUuid]
+            );
             error_log("Mollie webhook: POS confirmation email sent for $posBookingUuid");
 
         } catch (\Exception $e) {

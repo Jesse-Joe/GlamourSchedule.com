@@ -230,7 +230,7 @@ body {
 }
 
 .card-mono:hover p {
-    color: var(--gray);
+    color: #cccccc;
 }
 
 /* CTA - Full black */

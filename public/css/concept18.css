@@ -215,6 +215,7 @@ body {
 
 .search-silver button:hover {
     background: var(--black);
+    color: var(--white);
 }
 
 /* Grid */
