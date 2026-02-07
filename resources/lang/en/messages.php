@@ -3359,4 +3359,150 @@ return [
     'review_tip_4' => 'Ask satisfied customers to leave a review',
     'why_reviews_matter' => 'Why Reviews Matter',
     'reviews_boost_bookings' => 'Businesses with many positive reviews get up to 70% more bookings!',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS SUBSCRIPTION PAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'sub_already_active' => 'Subscription Active',
+    'sub_full_access' => 'You have full access to all features.',
+    'sub_back_to_dashboard' => 'Back to Dashboard',
+    'sub_trial_expired' => 'Your trial has expired',
+    'sub_trial_expired_desc' => 'Activate your subscription to continue using all features.',
+    'sub_trial_days_remaining' => ':days days remaining in your trial',
+    'sub_activate_now' => 'Activate now and secure your spot!',
+    'sub_early_bird_offer' => 'Early Bird Offer',
+    'sub_activate_subscription' => 'Activate Your Subscription',
+    'sub_early_bird_desc' => 'You are one of the first! Enjoy a special one-time price as Early Bird.',
+    'sub_activate_desc' => 'Activate your subscription to unlock all features.',
+    'sub_early_bird_fee' => 'Early Bird Fee',
+    'sub_activation_fee' => 'Activation Fee',
+    'sub_welcome_discount' => 'welcome discount',
+    'sub_one_time' => 'One-time payment',
+    'sub_no_monthly_costs' => 'No monthly costs',
+    'sub_one_time_activation' => 'One-time activation fee',
+    'sub_what_you_get' => 'What you get',
+    'sub_feature_booking' => 'Online booking system',
+    'sub_feature_salon_page' => 'Your own salon page',
+    'sub_feature_reminders' => 'Automatic reminders',
+    'sub_feature_payments' => 'Online payments',
+    'sub_feature_calendar' => 'Smart calendar',
+    'sub_feature_customers' => 'Customer management',
+    'sub_feature_early_bird' => 'Lifetime Early Bird benefits',
+    'sub_pay_amount' => 'Pay €:amount',
+    'sub_secure_payment_mollie' => 'Secure payment via Mollie',
+    'sub_questions_contact' => 'Questions? Contact us and we\'ll be happy to help.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS INSIGHTS PAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'insights_upcoming' => 'Upcoming',
+    'insights_this_week' => 'This week',
+    'insights_vs_last_week' => 'vs. last week',
+    'insights_this_month' => 'This month',
+    'insights_vs_last_month' => 'vs. last month',
+    'insights_net_revenue' => 'Net revenue',
+    'insights_no_shows' => 'No-shows',
+    'insights_tips_for_you' => 'Tips for you',
+    'insights_take_action' => 'Take action',
+    'insights_customers_this_month' => 'Customers this month',
+    'insights_unique_customers' => 'Unique customers',
+    'insights_new_customers' => 'New',
+    'insights_returning' => 'Returning',
+    'insights_retention' => 'Retention',
+    'insights_popular_services' => 'Popular services',
+    'insights_no_data' => 'No data available yet',
+    'insights_avg_booking' => 'Avg. per booking',
+    'insights_recent_notifications' => 'Recent notifications',
+    'insights_no_notifications' => 'No notifications yet',
+    'insights_avg_rating' => 'Average rating',
+    'insights_unanswered' => 'unanswered',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS PAYOUTS PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'payout_info_desc' => 'Payouts are processed every 14 days to your IBAN',
+    'payout_no_payouts' => 'No payouts yet',
+    'payout_history_hint' => 'Your payout history will appear here.',
+    'payout_status_pending' => 'Processing',
+    'payout_status_completed' => 'Completed',
+    'payout_status_failed' => 'Failed',
+    'payout_bank_details' => 'Bank Details',
+    'payout_account_holder' => 'Account holder',
+    'payout_add_iban_warning' => 'Add your IBAN to receive payouts.',
+    'payout_add_iban' => 'Add IBAN',
+    'payout_change_iban' => 'Change IBAN',
+    'payout_iban_change_cooldown' => 'IBAN change available in :days day(s)',
+    'payout_iban_change_frequency' => 'IBAN can be changed max. once per 30 days (with 2FA)',
+    'payout_calc_booking' => 'Booking amount - :fee administration fee = your earnings',
+    'payout_calc_frequency' => 'Payouts are processed every 14 days',
+    'payout_calc_minimum' => 'Minimum payout amount: €25.00',
+    'payout_calc_processing' => 'Payout within 2-3 business days after processing',
+    'payout_auto_title' => 'Automatic Payouts',
+    'payout_auto_desc' => 'Link your payment account for automatic splits per booking.',
+    'payout_questions' => 'Questions?',
+    'payout_questions_desc' => 'Contact our support team if you have questions about payouts.',
+    'connect' => 'Connect',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS PROFILE PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'profile_iban_verified_desc' => 'Your IBAN is verified. Payouts will be transferred to this account number.',
+    'profile_cash_fee_explanation' => 'For cash payments, the customer pays <strong style="color:#ffffff">:fee platform fee</strong> online during booking. This amount is deducted from your outstanding cash balance.',
+    'profile_cash_fee_example' => '<i class="fas fa-calculator"></i> Example: Service €50 → Customer pays :fee online + €:cash cash on arrival',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TERMINALS PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'terminal_payment_failed_start' => 'Failed to start payment',
+    'terminal' => 'Terminal',
+    'done' => 'Done',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MONTHS
+    // ═══════════════════════════════════════════════════════════════════════
+    'month_january' => 'January',
+    'month_february' => 'February',
+    'month_march' => 'March',
+    'month_april' => 'April',
+    'month_may' => 'May',
+    'month_june' => 'June',
+    'month_july' => 'July',
+    'month_august' => 'August',
+    'month_september' => 'September',
+    'month_october' => 'October',
+    'month_november' => 'November',
+    'month_december' => 'December',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CALENDAR PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'tomorrow' => 'Tomorrow',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // POS PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'cash' => 'Cash',
+    'copy' => 'Copy',
+    'copied' => 'Copied!',
+    'no_contact_details' => 'No contact details',
+    'enter_customer_name' => 'Please enter a customer name',
+    'select_date_time' => 'Please select a date and time',
+    'could_not_send_link' => 'Could not send link',
+    'error_sending' => 'Error sending',
+    'enter_name' => 'Please enter a name',
+    'could_not_add_customer' => 'Could not add customer',
+    'qr_not_available' => 'QR code not available',
+    'qr_loading' => 'Loading QR code...',
+    'enlarge_for_customer' => 'Enlarge for customer',
+    'phone_placeholder' => '06-12345678',
+    'pos_whatsapp_template' => 'Hi :customer, here is your payment link from :business for €:amount: :link',
+    'pos_sms_template' => 'Payment :business €:amount: :link',
+    'receipt_confirmation' => 'Appointment Confirmation',
+    'receipt_customer' => 'Customer',
+    'receipt_service' => 'Service',
+    'receipt_datetime' => 'Date & Time',
+    'receipt_to_pay' => 'To Pay',
+    'receipt_scan_to_pay' => 'Scan to pay',
+    'receipt_payment_link' => 'Payment Link',
+    'receipt_thanks' => 'Thank you for your visit!',
 ];

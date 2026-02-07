@@ -3352,4 +3352,150 @@ return [
     'review_tip_4' => 'Vraag tevreden klanten om een review achter te laten',
     'why_reviews_matter' => 'Waarom Reviews Belangrijk Zijn',
     'reviews_boost_bookings' => 'Bedrijven met veel positieve reviews krijgen tot 70% meer boekingen!',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS SUBSCRIPTION PAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'sub_already_active' => 'Abonnement Actief',
+    'sub_full_access' => 'Je hebt volledige toegang tot alle functies.',
+    'sub_back_to_dashboard' => 'Terug naar Dashboard',
+    'sub_trial_expired' => 'Je proefperiode is verlopen',
+    'sub_trial_expired_desc' => 'Activeer je abonnement om alle functies te blijven gebruiken.',
+    'sub_trial_days_remaining' => 'Nog :days dagen in je proefperiode',
+    'sub_activate_now' => 'Activeer nu en zeker je plek!',
+    'sub_early_bird_offer' => 'Early Bird Aanbieding',
+    'sub_activate_subscription' => 'Activeer je Abonnement',
+    'sub_early_bird_desc' => 'Je bent één van de eersten! Geniet van een speciaal eenmalig tarief als Early Bird.',
+    'sub_activate_desc' => 'Activeer je abonnement om alle functies te ontgrendelen.',
+    'sub_early_bird_fee' => 'Early Bird Tarief',
+    'sub_activation_fee' => 'Activeringskosten',
+    'sub_welcome_discount' => 'welkomstkorting',
+    'sub_one_time' => 'Eenmalige betaling',
+    'sub_no_monthly_costs' => 'Geen maandelijkse kosten',
+    'sub_one_time_activation' => 'Eenmalige activeringskosten',
+    'sub_what_you_get' => 'Wat je krijgt',
+    'sub_feature_booking' => 'Online boekingssysteem',
+    'sub_feature_salon_page' => 'Je eigen salonpagina',
+    'sub_feature_reminders' => 'Automatische herinneringen',
+    'sub_feature_payments' => 'Online betalingen',
+    'sub_feature_calendar' => 'Slimme agenda',
+    'sub_feature_customers' => 'Klantenbeheer',
+    'sub_feature_early_bird' => 'Levenslange Early Bird voordelen',
+    'sub_pay_amount' => 'Betaal €:amount',
+    'sub_secure_payment_mollie' => 'Veilige betaling via Mollie',
+    'sub_questions_contact' => 'Vragen? Neem contact met ons op en we helpen je graag.',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS INSIGHTS PAGE
+    // ═══════════════════════════════════════════════════════════════════════
+    'insights_upcoming' => 'Aankomend',
+    'insights_this_week' => 'Deze week',
+    'insights_vs_last_week' => 'vs. vorige week',
+    'insights_this_month' => 'Deze maand',
+    'insights_vs_last_month' => 'vs. vorige maand',
+    'insights_net_revenue' => 'Netto omzet',
+    'insights_no_shows' => 'No-shows',
+    'insights_tips_for_you' => 'Tips voor jou',
+    'insights_take_action' => 'Onderneem actie',
+    'insights_customers_this_month' => 'Klanten deze maand',
+    'insights_unique_customers' => 'Unieke klanten',
+    'insights_new_customers' => 'Nieuw',
+    'insights_returning' => 'Terugkerend',
+    'insights_retention' => 'Retentie',
+    'insights_popular_services' => 'Populaire diensten',
+    'insights_no_data' => 'Nog geen gegevens beschikbaar',
+    'insights_avg_booking' => 'Gem. per boeking',
+    'insights_recent_notifications' => 'Recente meldingen',
+    'insights_no_notifications' => 'Nog geen meldingen',
+    'insights_avg_rating' => 'Gemiddelde beoordeling',
+    'insights_unanswered' => 'onbeantwoord',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS PAYOUTS PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'payout_info_desc' => 'Uitbetalingen worden elke 14 dagen verwerkt naar je IBAN',
+    'payout_no_payouts' => 'Nog geen uitbetalingen',
+    'payout_history_hint' => 'Je uitbetalingsgeschiedenis verschijnt hier.',
+    'payout_status_pending' => 'In verwerking',
+    'payout_status_completed' => 'Voltooid',
+    'payout_status_failed' => 'Mislukt',
+    'payout_bank_details' => 'Bankgegevens',
+    'payout_account_holder' => 'Rekeninghouder',
+    'payout_add_iban_warning' => 'Voeg je IBAN toe om uitbetalingen te ontvangen.',
+    'payout_add_iban' => 'IBAN Toevoegen',
+    'payout_change_iban' => 'IBAN Wijzigen',
+    'payout_iban_change_cooldown' => 'IBAN wijzigen beschikbaar over :days dag(en)',
+    'payout_iban_change_frequency' => 'IBAN kan max. 1x per 30 dagen worden gewijzigd (met 2FA)',
+    'payout_calc_booking' => 'Boekingsbedrag - :fee administratiekosten = jouw verdiensten',
+    'payout_calc_frequency' => 'Uitbetalingen worden elke 14 dagen verwerkt',
+    'payout_calc_minimum' => 'Minimaal uitbetalingsbedrag: €25,00',
+    'payout_calc_processing' => 'Uitbetaling binnen 2-3 werkdagen na verwerking',
+    'payout_auto_title' => 'Automatische Uitbetalingen',
+    'payout_auto_desc' => 'Koppel je betaalaccount voor automatische splits bij elke boeking.',
+    'payout_questions' => 'Vragen?',
+    'payout_questions_desc' => 'Neem contact op met onze klantenservice als je vragen hebt over uitbetalingen.',
+    'connect' => 'Koppelen',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS PROFILE PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'profile_iban_verified_desc' => 'Je IBAN is geverifieerd. Uitbetalingen worden naar dit rekeningnummer overgemaakt.',
+    'profile_cash_fee_explanation' => 'Bij cash betalingen betaalt de klant <strong style="color:#ffffff">:fee platform fee</strong> online tijdens het boeken. Dit bedrag wordt afgetrokken van uw openstaande cash saldo.',
+    'profile_cash_fee_example' => '<i class="fas fa-calculator"></i> Voorbeeld: Dienst €50 → Klant betaalt :fee online + €:cash cash bij aankomst',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TERMINALS PAGE (additional keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'terminal_payment_failed_start' => 'Betaling starten mislukt',
+    'terminal' => 'Terminal',
+    'done' => 'Klaar',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MAANDEN
+    // ═══════════════════════════════════════════════════════════════════════
+    'month_january' => 'Januari',
+    'month_february' => 'Februari',
+    'month_march' => 'Maart',
+    'month_april' => 'April',
+    'month_may' => 'Mei',
+    'month_june' => 'Juni',
+    'month_july' => 'Juli',
+    'month_august' => 'Augustus',
+    'month_september' => 'September',
+    'month_october' => 'Oktober',
+    'month_november' => 'November',
+    'month_december' => 'December',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // KALENDER PAGINA (extra keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'tomorrow' => 'Morgen',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // POS PAGINA (extra keys)
+    // ═══════════════════════════════════════════════════════════════════════
+    'cash' => 'Contant',
+    'copy' => 'Kopieer',
+    'copied' => 'Gekopieerd!',
+    'no_contact_details' => 'Geen contactgegevens',
+    'enter_customer_name' => 'Vul een klantnaam in',
+    'select_date_time' => 'Selecteer een datum en tijd',
+    'could_not_send_link' => 'Kon link niet versturen',
+    'error_sending' => 'Fout bij versturen',
+    'enter_name' => 'Vul een naam in',
+    'could_not_add_customer' => 'Kon klant niet toevoegen',
+    'qr_not_available' => 'QR-code niet beschikbaar',
+    'qr_loading' => 'QR-code laden...',
+    'enlarge_for_customer' => 'Vergroot voor klant',
+    'phone_placeholder' => '06-12345678',
+    'pos_whatsapp_template' => 'Hoi :customer, hier is je betaallink van :business voor €:amount: :link',
+    'pos_sms_template' => 'Betaling :business €:amount: :link',
+    'receipt_confirmation' => 'Afspraakbevestiging',
+    'receipt_customer' => 'Klant',
+    'receipt_service' => 'Dienst',
+    'receipt_datetime' => 'Datum & Tijd',
+    'receipt_to_pay' => 'Te betalen',
+    'receipt_scan_to_pay' => 'Scan om te betalen',
+    'receipt_payment_link' => 'Betaallink',
+    'receipt_thanks' => 'Bedankt voor je bezoek!',
 ];

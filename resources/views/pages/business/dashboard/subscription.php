@@ -245,10 +245,10 @@
     <!-- Already Active -->
     <div class="already-active">
         <i class="fas fa-check-circle"></i>
-        <h2>Je abonnement is actief!</h2>
-        <p>Je hebt volledige toegang tot alle functies van GlamourSchedule.</p>
+        <h2><?= $__('sub_already_active') ?></h2>
+        <p><?= $__('sub_full_access') ?></p>
         <a href="/business/dashboard" style="display:inline-block;margin-top:1.5rem;background:#fff;color:#059669;padding:0.75rem 2rem;border-radius:25px;text-decoration:none;font-weight:600">
-            <i class="fas fa-arrow-left"></i> Terug naar Dashboard
+            <i class="fas fa-arrow-left"></i> <?= $__('sub_back_to_dashboard') ?>
         </a>
     </div>
 <?php else: ?>
@@ -257,11 +257,11 @@
         <i class="fas fa-<?= $trialExpired ? 'exclamation-triangle' : 'clock' ?>"></i>
         <div class="trial-status-text">
             <?php if ($trialExpired): ?>
-                <h4>Je proefperiode is verlopen</h4>
-                <p>Activeer je abonnement om weer volledige toegang te krijgen tot GlamourSchedule.</p>
+                <h4><?= $__('sub_trial_expired') ?></h4>
+                <p><?= $__('sub_trial_expired_desc') ?></p>
             <?php else: ?>
-                <h4>Nog <?= $daysRemaining ?> dag<?= $daysRemaining !== 1 ? 'en' : '' ?> in je proefperiode</h4>
-                <p>Activeer nu je abonnement en voorkom onderbreking van je diensten.</p>
+                <h4><?= $__('sub_trial_days_remaining', ['days' => $daysRemaining]) ?></h4>
+                <p><?= $__('sub_activate_now') ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -275,12 +275,12 @@
                 </span>
             <?php endif; ?>
             <i class="fas fa-<?= $isEarlyAdopter ? 'gift' : 'crown' ?> main-icon"></i>
-            <h1><?= $isEarlyAdopter ? 'Early Bird Aanbieding' : 'Abonnement Activeren' ?></h1>
+            <h1><?= $isEarlyAdopter ? $__('sub_early_bird_offer') : $__('sub_activate_subscription') ?></h1>
             <p>
                 <?php if ($isEarlyAdopter): ?>
-                    Profiteer van je exclusieve Early Bird prijs en krijg volledige toegang tot GlamourSchedule.
+                    <?= $__('sub_early_bird_desc') ?>
                 <?php else: ?>
-                    Activeer je abonnement en maak onbeperkt gebruik van alle functies van GlamourSchedule.
+                    <?= $__('sub_activate_desc') ?>
                 <?php endif; ?>
             </p>
         </div>
@@ -288,35 +288,35 @@
 
     <!-- Price Box -->
     <div class="price-box">
-        <h2><?= $isEarlyAdopter ? 'Early Bird Aanmeldkosten' : 'Activatiekosten' ?></h2>
+        <h2><?= $isEarlyAdopter ? $__('sub_early_bird_fee') : $__('sub_activation_fee') ?></h2>
 
         <?php if ($welcomeDiscount > 0): ?>
             <p class="original-price">&euro;<?= number_format($subscriptionPrice, 2, ',', '.') ?></p>
             <span class="discount-tag">
-                <i class="fas fa-tag"></i> -&euro;<?= number_format($welcomeDiscount, 2, ',', '.') ?> welkomstkorting
+                <i class="fas fa-tag"></i> -&euro;<?= number_format($welcomeDiscount, 2, ',', '.') ?> <?= $__('sub_welcome_discount') ?>
             </span>
         <?php endif; ?>
 
         <p class="price">&euro;<?= number_format($finalPrice, 2, ',', '.') ?></p>
         <p class="price-type">
             <?php if ($isEarlyAdopter): ?>
-                <strong>Eenmalig</strong> - geen maandelijkse kosten!
+                <strong><?= $__('sub_one_time') ?></strong> - <?= $__('sub_no_monthly_costs') ?>
             <?php else: ?>
-                Eenmalige activatiekosten
+                <?= $__('sub_one_time_activation') ?>
             <?php endif; ?>
         </p>
 
         <div class="features-list">
-            <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> Dit krijg je:</h3>
+            <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> <?= $__('sub_what_you_get') ?></h3>
             <ul>
-                <li><i class="fas fa-check"></i> Online boekingssysteem</li>
-                <li><i class="fas fa-check"></i> Eigen salonpagina op GlamourSchedule</li>
-                <li><i class="fas fa-check"></i> Automatische herinneringen voor klanten</li>
-                <li><i class="fas fa-check"></i> Online betalingen via Mollie</li>
-                <li><i class="fas fa-check"></i> Agenda- en afsprakenbeheer</li>
-                <li><i class="fas fa-check"></i> Klantenbeheer en statistieken</li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_booking') ?></li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_salon_page') ?></li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_reminders') ?></li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_payments') ?></li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_calendar') ?></li>
+                <li><i class="fas fa-check"></i> <?= $__('sub_feature_customers') ?></li>
                 <?php if ($isEarlyAdopter): ?>
-                    <li><i class="fas fa-check"></i> <strong>Levenslang Early Bird voordelen</strong></li>
+                    <li><i class="fas fa-check"></i> <strong><?= $__('sub_feature_early_bird') ?></strong></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -325,7 +325,7 @@
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <button type="submit" class="pay-btn <?= $isEarlyAdopter ? 'early-bird' : '' ?>">
                 <i class="fas fa-lock"></i>
-                Betaal &euro;<?= number_format($finalPrice, 2, ',', '.') ?>
+                <?= $__('sub_pay_amount', ['amount' => number_format($finalPrice, 2, ',', '.')]) ?>
             </button>
         </form>
 
@@ -337,14 +337,14 @@
         </div>
 
         <p style="margin-top:1.5rem;color:#999;font-size:0.85rem">
-            <i class="fas fa-shield-alt"></i> Veilig betalen via Mollie
+            <i class="fas fa-shield-alt"></i> <?= $__('sub_secure_payment_mollie') ?>
         </p>
     </div>
 
     <!-- FAQ / Info -->
     <div style="max-width:600px;margin:0 auto;text-align:center">
         <p style="color:#666;font-size:0.9rem">
-            Vragen? Neem contact op via <a href="mailto:info@glamourschedule.nl" style="color:#3b82f6">info@glamourschedule.nl</a>
+            <?= $__('sub_questions_contact') ?>
         </p>
     </div>
 <?php endif; ?>

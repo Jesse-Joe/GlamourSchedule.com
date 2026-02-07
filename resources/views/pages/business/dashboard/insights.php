@@ -320,11 +320,11 @@
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['today']['completed'] ?? 0 ?></div>
-                <div class="stat-label">Voltooid</div>
+                <div class="stat-label"><?= $__('status_completed') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['today']['upcoming'] ?? 0 ?></div>
-                <div class="stat-label">Nog te gaan</div>
+                <div class="stat-label"><?= $__('insights_upcoming') ?></div>
             </div>
         </div>
     </div>
@@ -332,29 +332,29 @@
     <!-- Deze Week -->
     <div class="insight-card">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-calendar-week"></i> Deze Week</h3>
+            <h3 class="insight-title"><i class="fas fa-calendar-week"></i> <?= $__('insights_this_week') ?></h3>
         </div>
         <div class="stat-grid">
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['week']['total_bookings'] ?? 0 ?></div>
-                <div class="stat-label">Boekingen</div>
+                <div class="stat-label"><?= $__('bookings_menu') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">&euro;<?= number_format($stats['week']['revenue'] ?? 0, 0, ',', '.') ?></div>
-                <div class="stat-label">Omzet</div>
+                <div class="stat-label"><?= $__('revenue') ?></div>
                 <?php $change = $stats['week']['revenue_change_percent'] ?? 0; ?>
                 <div class="stat-change <?= $change >= 0 ? 'positive' : 'negative' ?>">
                     <i class="fas fa-arrow-<?= $change >= 0 ? 'up' : 'down' ?>"></i>
-                    <?= abs($change) ?>% vs vorige week
+                    <?= abs($change) ?>% <?= $__('insights_vs_last_week') ?>
                 </div>
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['week']['completed'] ?? 0 ?></div>
-                <div class="stat-label">Voltooid</div>
+                <div class="stat-label"><?= $__('status_completed') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['week']['cancelled'] ?? 0 ?></div>
-                <div class="stat-label">Geannuleerd</div>
+                <div class="stat-label"><?= $__('status_cancelled') ?></div>
             </div>
         </div>
     </div>
@@ -362,29 +362,29 @@
     <!-- Deze Maand -->
     <div class="insight-card">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-calendar-alt"></i> Deze Maand</h3>
+            <h3 class="insight-title"><i class="fas fa-calendar-alt"></i> <?= $__('insights_this_month') ?></h3>
         </div>
         <div class="stat-grid">
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['month']['total_bookings'] ?? 0 ?></div>
-                <div class="stat-label">Boekingen</div>
+                <div class="stat-label"><?= $__('bookings_menu') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">&euro;<?= number_format($stats['month']['revenue'] ?? 0, 0, ',', '.') ?></div>
-                <div class="stat-label">Omzet</div>
+                <div class="stat-label"><?= $__('revenue') ?></div>
                 <?php $mchange = $stats['month']['revenue_change_percent'] ?? 0; ?>
                 <div class="stat-change <?= $mchange >= 0 ? 'positive' : 'negative' ?>">
                     <i class="fas fa-arrow-<?= $mchange >= 0 ? 'up' : 'down' ?>"></i>
-                    <?= abs($mchange) ?>% vs vorige maand
+                    <?= abs($mchange) ?>% <?= $__('insights_vs_last_month') ?>
                 </div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">&euro;<?= number_format($stats['month']['net_revenue'] ?? 0, 0, ',', '.') ?></div>
-                <div class="stat-label">Netto Omzet</div>
+                <div class="stat-label"><?= $__('insights_net_revenue') ?></div>
             </div>
             <div class="stat-item">
                 <div class="stat-value"><?= $stats['month']['no_shows'] ?? 0 ?></div>
-                <div class="stat-label">No-shows</div>
+                <div class="stat-label"><?= $__('insights_no_shows') ?></div>
             </div>
         </div>
     </div>
@@ -394,7 +394,7 @@
     <!-- Tips -->
     <div class="insight-card">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-lightbulb"></i> Tips voor jou</h3>
+            <h3 class="insight-title"><i class="fas fa-lightbulb"></i> <?= $__('insights_tips_for_you') ?></h3>
         </div>
         <?php if (empty($tips)): ?>
             <div class="empty-state">
@@ -423,7 +423,7 @@
                                 ];
                                 $link = $actionLinks[$tip['action']] ?? '#';
                                 ?>
-                                <a href="<?= $link ?>" class="tip-action">Actie ondernemen <i class="fas fa-arrow-right"></i></a>
+                                <a href="<?= $link ?>" class="tip-action"><?= $__('insights_take_action') ?> <i class="fas fa-arrow-right"></i></a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -435,25 +435,25 @@
     <!-- Klanten -->
     <div class="insight-card">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-users"></i> Klanten deze maand</h3>
+            <h3 class="insight-title"><i class="fas fa-users"></i> <?= $__('insights_customers_this_month') ?></h3>
         </div>
         <div class="customers-grid">
             <div class="customer-stat">
                 <div class="customer-value"><?= $stats['customers']['unique_this_month'] ?? 0 ?></div>
-                <div class="customer-label">Unieke klanten</div>
+                <div class="customer-label"><?= $__('insights_unique_customers') ?></div>
             </div>
             <div class="customer-stat">
                 <div class="customer-value"><?= $stats['customers']['new_customers'] ?? 0 ?></div>
-                <div class="customer-label">Nieuwe klanten</div>
+                <div class="customer-label"><?= $__('insights_new_customers') ?></div>
             </div>
             <div class="customer-stat">
                 <div class="customer-value"><?= $stats['customers']['returning_customers'] ?? 0 ?></div>
-                <div class="customer-label">Terugkerend</div>
+                <div class="customer-label"><?= $__('insights_returning') ?></div>
             </div>
         </div>
         <?php if (($stats['customers']['retention_rate'] ?? 0) > 0): ?>
             <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--secondary);border-radius:8px">
-                <span style="font-size:0.85rem;color:var(--text-light)">Retentie:</span>
+                <span style="font-size:0.85rem;color:var(--text-light)"><?= $__('insights_retention') ?>:</span>
                 <span style="font-weight:600;color:var(--primary)"><?= $stats['customers']['retention_rate'] ?>%</span>
             </div>
         <?php endif; ?>
@@ -462,12 +462,12 @@
     <!-- Populaire Diensten -->
     <div class="insight-card">
         <div class="insight-header">
-            <h3 class="insight-title"><i class="fas fa-fire"></i> Populaire Diensten</h3>
+            <h3 class="insight-title"><i class="fas fa-fire"></i> <?= $__('insights_popular_services') ?></h3>
         </div>
         <?php if (empty($stats['services']['popular_services'])): ?>
             <div class="empty-state">
                 <i class="fas fa-cut"></i>
-                <p>Nog geen data beschikbaar</p>
+                <p><?= $__('insights_no_data') ?></p>
             </div>
         <?php else: ?>
             <div class="services-list">
@@ -483,7 +483,7 @@
             </div>
             <?php if (($stats['services']['average_booking_value'] ?? 0) > 0): ?>
                 <div style="text-align:center;margin-top:1rem;padding:0.75rem;background:var(--secondary);border-radius:8px">
-                    <span style="font-size:0.85rem;color:var(--text-light)">Gem. boeking:</span>
+                    <span style="font-size:0.85rem;color:var(--text-light)"><?= $__('insights_avg_booking') ?>:</span>
                     <span style="font-weight:600;color:var(--primary)">&euro;<?= number_format($stats['services']['average_booking_value'], 2, ',', '.') ?></span>
                 </div>
             <?php endif; ?>
@@ -494,12 +494,12 @@
 <!-- Meldingen -->
 <div class="insight-card" style="margin-top:1.5rem">
     <div class="insight-header">
-        <h3 class="insight-title"><i class="fas fa-bell"></i> Recente Meldingen</h3>
+        <h3 class="insight-title"><i class="fas fa-bell"></i> <?= $__('insights_recent_notifications') ?></h3>
     </div>
     <?php if (empty($notifications)): ?>
         <div class="empty-state">
             <i class="fas fa-bell-slash"></i>
-            <p>Geen meldingen</p>
+            <p><?= $__('insights_no_notifications') ?></p>
         </div>
     <?php else: ?>
         <div class="notification-list">
@@ -533,26 +533,26 @@
 <div class="insight-card" style="margin-top:1.5rem">
     <div class="insight-header">
         <h3 class="insight-title"><i class="fas fa-star"></i> Reviews</h3>
-        <a href="/business/reviews" style="font-size:0.85rem;color:var(--primary);text-decoration:none">Bekijk alle <i class="fas fa-arrow-right"></i></a>
+        <a href="/business/reviews" style="font-size:0.85rem;color:var(--primary);text-decoration:none"><?= $__('view_all') ?> <i class="fas fa-arrow-right"></i></a>
     </div>
     <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="stat-item">
             <div class="stat-value"><?= $stats['reviews']['total_reviews'] ?? 0 ?></div>
-            <div class="stat-label">Totaal</div>
+            <div class="stat-label"><?= $__('total') ?></div>
         </div>
         <div class="stat-item">
             <div class="stat-value"><?= number_format($stats['reviews']['average_rating'] ?? 0, 1, ',', '.') ?></div>
-            <div class="stat-label">Gem. Rating</div>
+            <div class="stat-label"><?= $__('insights_avg_rating') ?></div>
         </div>
         <div class="stat-item">
             <div class="stat-value"><?= $stats['reviews']['reviews_this_month'] ?? 0 ?></div>
-            <div class="stat-label">Deze maand</div>
+            <div class="stat-label"><?= $__('insights_this_month') ?></div>
         </div>
         <div class="stat-item">
             <div class="stat-value" style="color:<?= ($stats['reviews']['unanswered_reviews'] ?? 0) > 0 ? '#f59e0b' : 'inherit' ?>">
                 <?= $stats['reviews']['unanswered_reviews'] ?? 0 ?>
             </div>
-            <div class="stat-label">Onbeantwoord</div>
+            <div class="stat-label"><?= $__('insights_unanswered') ?></div>
         </div>
     </div>
 </div>

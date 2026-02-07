@@ -180,7 +180,7 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-user-plus"></i> <?= $translations['add_new_employee'] ?? 'Add New Employee' ?></h3>
+                <h3 class="card-title"><i class="fas fa-user-plus"></i> <?= $__('add_new_employee') ?></h3>
             </div>
 
             <form method="POST" action="/business/employees" enctype="multipart/form-data">
@@ -188,51 +188,51 @@
                 <input type="hidden" name="action" value="add">
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['employee_name'] ?? 'Name' ?> *</label>
-                    <input type="text" name="name" class="form-control" placeholder="<?= $translations['employee_name_placeholder'] ?? 'E.g.: Lisa de Vries' ?>" required>
+                    <label class="form-label"><?= $__('employee_name') ?> *</label>
+                    <input type="text" name="name" class="form-control" placeholder="<?= $__('employee_name_placeholder') ?>" required>
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label class="form-label"><?= $translations['email_label'] ?? 'Email address' ?></label>
-                        <input type="email" name="email" class="form-control" placeholder="<?= $translations['employee_email_placeholder'] ?? 'employee@email.com' ?>">
+                        <label class="form-label"><?= $__('email_label') ?></label>
+                        <input type="email" name="email" class="form-control" placeholder="<?= $__('employee_email_placeholder') ?>">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label"><?= $translations['phone_label'] ?? 'Phone number' ?></label>
-                        <input type="tel" name="phone" class="form-control" placeholder="<?= $translations['phone_placeholder'] ?? '+1 234 567 890' ?>">
+                        <label class="form-label"><?= $__('phone_label') ?></label>
+                        <input type="tel" name="phone" class="form-control" placeholder="<?= $__('phone_placeholder') ?>">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['employee_bio'] ?? 'Bio / Description' ?></label>
-                    <textarea name="bio" class="form-control" rows="3" placeholder="<?= $translations['employee_bio_placeholder'] ?? 'Short description of the employee...' ?>"></textarea>
+                    <label class="form-label"><?= $__('employee_bio') ?></label>
+                    <textarea name="bio" class="form-control" rows="3" placeholder="<?= $__('employee_bio_placeholder') ?>"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['calendar_color'] ?? 'Calendar Color' ?></label>
+                    <label class="form-label"><?= $__('calendar_color') ?></label>
                     <input type="color" name="color" value="#000000" class="form-control" style="height:50px;padding:5px">
-                    <p class="form-hint"><?= $translations['calendar_color_hint'] ?? 'This color is used in the calendar to distinguish appointments for this employee.' ?></p>
+                    <p class="form-hint"><?= $__('calendar_color_hint') ?></p>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['photo'] ?? 'Photo' ?></label>
+                    <label class="form-label"><?= $__('photo') ?></label>
                     <input type="file" name="photo" class="form-control" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%">
-                    <i class="fas fa-plus"></i> <?= $translations['add_employee'] ?? 'Add Employee' ?>
+                    <i class="fas fa-plus"></i> <?= $__('add_employee') ?>
                 </button>
             </form>
         </div>
 
         <div class="card" style="background:linear-gradient(135deg,#000000,#262626);color:white">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $translations['employee_management'] ?? 'Employee Management' ?></h4>
+            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $__('employee_management') ?></h4>
             <ul style="padding-left:1.25rem;opacity:0.9;font-size:0.9rem;line-height:1.8">
-                <li><?= $translations['employee_tip_1'] ?? 'Each employee gets their own calendar' ?></li>
-                <li><?= $translations['employee_tip_2'] ?? 'Customers can choose an employee when booking' ?></li>
-                <li><?= $translations['employee_tip_3'] ?? 'Multiple appointments possible at the same time' ?></li>
-                <li><?= $translations['employee_tip_4'] ?? 'Per additional employee: €4.99 one-time' ?></li>
+                <li><?= $__('employee_tip_1') ?></li>
+                <li><?= $__('employee_tip_2') ?></li>
+                <li><?= $__('employee_tip_3') ?></li>
+                <li><?= $__('employee_tip_4') ?></li>
             </ul>
         </div>
     </div>
@@ -241,14 +241,14 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-users"></i> <?= $translations['employees'] ?? 'Employees' ?> (<?= count($employees) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-users"></i> <?= $__('employees') ?> (<?= count($employees) ?>)</h3>
             </div>
 
             <?php if (empty($employees)): ?>
                 <div class="text-center" style="padding:3rem">
                     <i class="fas fa-users" style="font-size:4rem;color:var(--border);margin-bottom:1rem"></i>
-                    <h4><?= $translations['no_employees_yet'] ?? 'No employees yet' ?></h4>
-                    <p class="text-muted"><?= $translations['no_employees_hint'] ?? 'Add your first employee to manage appointments per person.' ?></p>
+                    <h4><?= $__('no_employees_yet') ?></h4>
+                    <p class="text-muted"><?= $__('no_employees_hint') ?></p>
                 </div>
             <?php else: ?>
                 <?php foreach ($employees as $employee): ?>
@@ -273,7 +273,7 @@
                             <div style="margin-top:0.5rem">
                                 <span class="employee-status <?= $employee['is_active'] ? 'active' : 'inactive' ?>">
                                     <i class="fas fa-<?= $employee['is_active'] ? 'check-circle' : 'times-circle' ?>"></i>
-                                    <?= $employee['is_active'] ? ($translations['active'] ?? 'Active') : ($translations['inactive'] ?? 'Inactive') ?>
+                                    <?= $employee['is_active'] ? $__('active') : $__('inactive') ?>
                                 </span>
                             </div>
                             <?php if (!empty($employee['services'])): ?>
@@ -294,7 +294,7 @@
                             <button type="button" class="btn btn-secondary btn-sm" onclick="manageHours(<?= $employee['id'] ?>, '<?= htmlspecialchars($employee['name'], ENT_QUOTES) ?>')">
                                 <i class="fas fa-clock"></i>
                             </button>
-                            <form method="POST" action="/business/employees" style="display:inline" onsubmit="return confirm('<?= $translations['confirm_delete_employee'] ?? 'Are you sure you want to delete this employee?' ?>')">
+                            <form method="POST" action="/business/employees" style="display:inline" onsubmit="return confirm('<?= $__('confirm_delete_employee') ?>')">
                                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="employee_id" value="<?= $employee['id'] ?>">
@@ -314,7 +314,7 @@
 <div class="modal-overlay" id="editModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-user-edit"></i> <?= $translations['edit_employee'] ?? 'Edit Employee' ?></h3>
+            <h3><i class="fas fa-user-edit"></i> <?= $__('edit_employee') ?></h3>
             <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees" enctype="multipart/form-data" id="editForm">
@@ -323,49 +323,49 @@
             <input type="hidden" name="employee_id" id="edit_employee_id">
 
             <div class="form-group">
-                <label class="form-label"><?= $translations['employee_name'] ?? 'Name' ?> *</label>
+                <label class="form-label"><?= $__('employee_name') ?> *</label>
                 <input type="text" name="name" id="edit_name" class="form-control" required>
             </div>
 
             <div class="grid grid-2">
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['email_label'] ?? 'Email address' ?></label>
+                    <label class="form-label"><?= $__('email_label') ?></label>
                     <input type="email" name="email" id="edit_email" class="form-control">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['phone_label'] ?? 'Phone number' ?></label>
+                    <label class="form-label"><?= $__('phone_label') ?></label>
                     <input type="tel" name="phone" id="edit_phone" class="form-control">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label"><?= $translations['employee_bio'] ?? 'Bio / Description' ?></label>
+                <label class="form-label"><?= $__('employee_bio') ?></label>
                 <textarea name="bio" id="edit_bio" class="form-control" rows="3"></textarea>
             </div>
 
             <div class="grid grid-2">
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['calendar_color'] ?? 'Calendar Color' ?></label>
+                    <label class="form-label"><?= $__('calendar_color') ?></label>
                     <input type="color" name="color" id="edit_color" class="form-control" style="height:50px;padding:5px">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label"><?= $translations['status'] ?? 'Status' ?></label>
+                    <label class="form-label"><?= $__('status') ?></label>
                     <select name="is_active" id="edit_is_active" class="form-control">
-                        <option value="1"><?= $translations['active'] ?? 'Active' ?></option>
-                        <option value="0"><?= $translations['inactive'] ?? 'Inactive' ?></option>
+                        <option value="1"><?= $__('active') ?></option>
+                        <option value="0"><?= $__('inactive') ?></option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label"><?= $translations['new_photo'] ?? 'New Photo' ?></label>
+                <label class="form-label"><?= $__('new_photo') ?></label>
                 <input type="file" name="photo" class="form-control" accept="image/*">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%">
-                <i class="fas fa-save"></i> <?= $translations['save'] ?? 'Save' ?>
+                <i class="fas fa-save"></i> <?= $__('save') ?>
             </button>
         </form>
     </div>
@@ -375,7 +375,7 @@
 <div class="modal-overlay" id="servicesModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-cut"></i> <?= $translations['services_for'] ?? 'Services for' ?> <span id="services_employee_name"></span></h3>
+            <h3><i class="fas fa-cut"></i> <?= $__('services_for') ?> <span id="services_employee_name"></span></h3>
             <button class="modal-close" onclick="closeModal('servicesModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees">
@@ -383,7 +383,7 @@
             <input type="hidden" name="action" value="update_services">
             <input type="hidden" name="employee_id" id="services_employee_id">
 
-            <p class="text-muted" style="margin-bottom:1rem"><?= $translations['select_services_hint'] ?? 'Select which services this employee can perform:' ?></p>
+            <p class="text-muted" style="margin-bottom:1rem"><?= $__('select_services_hint') ?></p>
 
             <div class="services-grid">
                 <?php foreach ($allServices as $service): ?>
@@ -395,11 +395,11 @@
             </div>
 
             <?php if (empty($allServices)): ?>
-                <p class="text-muted text-center" style="padding:2rem"><?= $translations['add_services_first'] ?? 'Add services first before you can assign them to employees.' ?></p>
+                <p class="text-muted text-center" style="padding:2rem"><?= $__('add_services_first') ?></p>
             <?php endif; ?>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem">
-                <i class="fas fa-save"></i> <?= $translations['save_services'] ?? 'Save Services' ?>
+                <i class="fas fa-save"></i> <?= $__('save_services') ?>
             </button>
         </form>
     </div>
@@ -409,7 +409,7 @@
 <div class="modal-overlay" id="hoursModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-clock"></i> <?= $translations['working_hours_for'] ?? 'Working Hours for' ?> <span id="hours_employee_name"></span></h3>
+            <h3><i class="fas fa-clock"></i> <?= $__('working_hours_for') ?> <span id="hours_employee_name"></span></h3>
             <button class="modal-close" onclick="closeModal('hoursModal')">&times;</button>
         </div>
         <form method="POST" action="/business/employees">
@@ -417,17 +417,17 @@
             <input type="hidden" name="action" value="update_hours">
             <input type="hidden" name="employee_id" id="hours_employee_id">
 
-            <p class="text-muted" style="margin-bottom:1rem"><?= $translations['set_working_hours_hint'] ?? 'Set the working hours for this employee:' ?></p>
+            <p class="text-muted" style="margin-bottom:1rem"><?= $__('set_working_hours_hint') ?></p>
 
             <?php
             $days = [
-                $translations['monday'] ?? 'Monday',
-                $translations['tuesday'] ?? 'Tuesday',
-                $translations['wednesday'] ?? 'Wednesday',
-                $translations['thursday'] ?? 'Thursday',
-                $translations['friday'] ?? 'Friday',
-                $translations['saturday'] ?? 'Saturday',
-                $translations['sunday'] ?? 'Sunday'
+                $__('monday'),
+                $__('tuesday'),
+                $__('wednesday'),
+                $__('thursday'),
+                $__('friday'),
+                $__('saturday'),
+                $__('sunday')
             ];
             foreach ($days as $index => $day):
                 $dayIndex = ($index + 1) % 7; // Convert to 0=Sunday format
@@ -439,13 +439,13 @@
                     <input type="time" name="hours[<?= $dayIndex ?>][close]" class="form-control hour-close" style="flex:1" value="18:00">
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
                         <input type="checkbox" name="hours[<?= $dayIndex ?>][closed]" class="hour-closed" onchange="toggleDay(this)">
-                        <?= $translations['closed'] ?? 'Closed' ?>
+                        <?= $__('closed') ?>
                     </label>
                 </div>
             <?php endforeach; ?>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem">
-                <i class="fas fa-save"></i> <?= $translations['save_working_hours'] ?? 'Save Working Hours' ?>
+                <i class="fas fa-save"></i> <?= $__('save_working_hours') ?>
             </button>
         </form>
     </div>

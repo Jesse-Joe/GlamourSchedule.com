@@ -5,28 +5,28 @@ $today = date('Y-m-d');
 $selectedDate = $selectedDate ?? $today;
 $dateObj = new DateTime($selectedDate);
 $dayNames = [
-    $translations['sunday'] ?? 'Sunday',
-    $translations['monday'] ?? 'Monday',
-    $translations['tuesday'] ?? 'Tuesday',
-    $translations['wednesday'] ?? 'Wednesday',
-    $translations['thursday'] ?? 'Thursday',
-    $translations['friday'] ?? 'Friday',
-    $translations['saturday'] ?? 'Saturday'
+    $__('sunday'),
+    $__('monday'),
+    $__('tuesday'),
+    $__('wednesday'),
+    $__('thursday'),
+    $__('friday'),
+    $__('saturday')
 ];
 $dayName = $dayNames[$dateObj->format('w')];
 $monthNames = [
-    $translations['month_january'] ?? 'January',
-    $translations['month_february'] ?? 'February',
-    $translations['month_march'] ?? 'March',
-    $translations['month_april'] ?? 'April',
-    $translations['month_may'] ?? 'May',
-    $translations['month_june'] ?? 'June',
-    $translations['month_july'] ?? 'July',
-    $translations['month_august'] ?? 'August',
-    $translations['month_september'] ?? 'September',
-    $translations['month_october'] ?? 'October',
-    $translations['month_november'] ?? 'November',
-    $translations['month_december'] ?? 'December'
+    $__('month_january'),
+    $__('month_february'),
+    $__('month_march'),
+    $__('month_april'),
+    $__('month_may'),
+    $__('month_june'),
+    $__('month_july'),
+    $__('month_august'),
+    $__('month_september'),
+    $__('month_october'),
+    $__('month_november'),
+    $__('month_december')
 ];
 $monthName = $monthNames[$dateObj->format('n') - 1];
 ?>
@@ -341,7 +341,7 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
         <!-- Navigation -->
         <div class="calendar-nav">
             <a href="/business/calendar?date=<?= date('Y-m-d', strtotime($selectedDate . ' -1 day')) ?>" class="calendar-nav-btn">
-                <i class="fas fa-chevron-left"></i> <span><?= $translations['previous_day'] ?? 'Previous' ?></span>
+                <i class="fas fa-chevron-left"></i> <span><?= $__('previous_day') ?></span>
             </a>
 
             <div class="calendar-date">
@@ -350,7 +350,7 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
             </div>
 
             <a href="/business/calendar?date=<?= date('Y-m-d', strtotime($selectedDate . ' +1 day')) ?>" class="calendar-nav-btn">
-                <span><?= $translations['next_day'] ?? 'Next' ?></span> <i class="fas fa-chevron-right"></i>
+                <span><?= $__('next_day') ?></span> <i class="fas fa-chevron-right"></i>
             </a>
         </div>
 
@@ -375,7 +375,7 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
                         </div>
                         <div class="time-content">
                             <?php foreach ($hourBookings as $booking):
-                                $customerName = $booking['first_name'] ?? $booking['guest_name'] ?? 'Gast';
+                                $customerName = $booking['first_name'] ?? $booking['guest_name'] ?? $__('guest');
                                 $customerEmail = $booking['guest_email'] ?? $booking['user_email'] ?? '';
                                 $customerPhone = $booking['guest_phone'] ?? $booking['phone'] ?? '';
                                 $endTime = !empty($booking['duration_minutes'])
@@ -418,7 +418,7 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
     <div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-calendar"></i> <?= $translations['choose_date'] ?? 'Choose Date' ?></h3>
+                <h3 class="card-title"><i class="fas fa-calendar"></i> <?= $__('choose_date') ?></h3>
             </div>
 
             <form method="GET" action="/business/calendar" class="date-picker">
@@ -427,24 +427,24 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
 
             <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap">
                 <a href="/business/calendar?date=<?= date('Y-m-d') ?>" class="btn btn-secondary btn-sm <?= $selectedDate === date('Y-m-d') ? 'btn-primary' : '' ?>">
-                    <?= $translations['today'] ?? 'Today' ?>
+                    <?= $__('today') ?>
                 </a>
                 <a href="/business/calendar?date=<?= date('Y-m-d', strtotime('tomorrow')) ?>" class="btn btn-secondary btn-sm">
-                    <?= $translations['tomorrow'] ?? 'Tomorrow' ?>
+                    <?= $__('tomorrow') ?>
                 </a>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-list"></i> <?= $translations['appointments'] ?? 'Appointments' ?> (<?= count($bookings) ?>)</h3>
+                <h3 class="card-title"><i class="fas fa-list"></i> <?= $__('appointments') ?> (<?= count($bookings) ?>)</h3>
             </div>
 
             <?php if (empty($bookings)): ?>
-                <p class="text-muted text-center" style="padding:1rem 0"><?= $translations['no_appointments'] ?? 'No appointments this day' ?></p>
+                <p class="text-muted text-center" style="padding:1rem 0"><?= $__('no_appointments') ?></p>
             <?php else: ?>
                 <?php foreach ($bookings as $booking):
-                    $sidebarCustomerName = $booking['first_name'] ?? $booking['guest_name'] ?? 'Gast';
+                    $sidebarCustomerName = $booking['first_name'] ?? $booking['guest_name'] ?? $__('guest');
                     $sidebarCustomerEmail = $booking['guest_email'] ?? $booking['user_email'] ?? '';
                     $sidebarCustomerPhone = $booking['guest_phone'] ?? $booking['phone'] ?? '';
                     $sidebarEndTime = !empty($booking['duration_minutes'])
@@ -466,7 +466,7 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
                         <div style="display:flex;justify-content:space-between;align-items:center">
                             <strong><?= date('H:i', strtotime($booking['appointment_time'])) ?></strong>
                             <span style="background:<?= ($booking['status'] ?? 'pending') === 'confirmed' ? 'var(--success)' : 'var(--warning)' ?>;color:white;padding:0.2rem 0.5rem;border-radius:10px;font-size:0.7rem">
-                                <?= ($booking['status'] ?? 'pending') === 'confirmed' ? ($translations['status_confirmed'] ?? 'Confirmed') : ($translations['status_pending'] ?? 'Pending') ?>
+                                <?= ($booking['status'] ?? 'pending') === 'confirmed' ? $__('status_confirmed') : $__('status_pending') ?>
                             </span>
                         </div>
                         <p style="margin:0.25rem 0 0 0;font-size:0.9rem">
@@ -479,8 +479,8 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
         </div>
 
         <div class="card" style="background:linear-gradient(135deg,#ffffff,#f0f0f0);border:1px solid #333333">
-            <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-info-circle"></i> <?= $translations['calendar_tips'] ?? 'Calendar Tips' ?></h4>
-            <p style="font-size:0.85rem;color:#333333"><?= $translations['calendar_tips_text'] ?? 'Keep your calendar up-to-date so customers only see available times when booking.' ?></p>
+            <h4 style="margin-bottom:0.5rem;color:#000000"><i class="fas fa-info-circle"></i> <?= $__('calendar_tips') ?></h4>
+            <p style="font-size:0.85rem;color:#333333"><?= $__('calendar_tips_text') ?></p>
         </div>
     </div>
 </div>
@@ -489,55 +489,55 @@ $monthName = $monthNames[$dateObj->format('n') - 1];
 <div class="booking-modal-overlay" id="bookingOverlay" onclick="closeBookingModal()"></div>
 <div class="booking-modal" id="bookingModal">
     <div class="booking-modal-header">
-        <h3><i class="fas fa-calendar-check"></i> <?= $translations['appointment_details'] ?? 'Appointment Details' ?></h3>
+        <h3><i class="fas fa-calendar-check"></i> <?= $__('appointment_details') ?></h3>
         <button class="booking-modal-close" onclick="closeBookingModal()">
             <i class="fas fa-times"></i>
         </button>
     </div>
     <div class="booking-modal-content">
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['booking_number'] ?? 'Booking number' ?></span>
+            <span class="booking-detail-label"><?= $__('booking_number') ?></span>
             <span class="booking-detail-value" id="modalNumber">-</span>
         </div>
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['customer'] ?? 'Customer' ?></span>
+            <span class="booking-detail-label"><?= $__('customer') ?></span>
             <span class="booking-detail-value" id="modalCustomer">-</span>
         </div>
         <div class="booking-detail-row" id="modalEmailRow">
-            <span class="booking-detail-label"><?= $translations['email_label'] ?? 'Email' ?></span>
+            <span class="booking-detail-label"><?= $__('email_label') ?></span>
             <span class="booking-detail-value" id="modalEmail">-</span>
         </div>
         <div class="booking-detail-row" id="modalPhoneRow">
-            <span class="booking-detail-label"><?= $translations['phone_label'] ?? 'Phone' ?></span>
+            <span class="booking-detail-label"><?= $__('phone_label') ?></span>
             <span class="booking-detail-value" id="modalPhone">-</span>
         </div>
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['service'] ?? 'Service' ?></span>
+            <span class="booking-detail-label"><?= $__('service') ?></span>
             <span class="booking-detail-value" id="modalService">-</span>
         </div>
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['time'] ?? 'Time' ?></span>
+            <span class="booking-detail-label"><?= $__('time') ?></span>
             <span class="booking-detail-value" id="modalTime">-</span>
         </div>
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['price'] ?? 'Price' ?></span>
+            <span class="booking-detail-label"><?= $__('price') ?></span>
             <span class="booking-detail-value" id="modalPrice">-</span>
         </div>
         <div class="booking-detail-row">
-            <span class="booking-detail-label"><?= $translations['status'] ?? 'Status' ?></span>
+            <span class="booking-detail-label"><?= $__('status') ?></span>
             <span class="booking-detail-value" id="modalStatus">-</span>
         </div>
         <div class="booking-detail-row" id="modalNotesRow" style="display:none">
-            <span class="booking-detail-label"><?= $translations['notes'] ?? 'Notes' ?></span>
+            <span class="booking-detail-label"><?= $__('notes') ?></span>
             <span class="booking-detail-value" id="modalNotes" style="max-width:60%;word-break:break-word">-</span>
         </div>
     </div>
     <div class="booking-modal-actions">
         <a href="#" id="modalPhoneBtn" class="btn btn-secondary">
-            <i class="fas fa-phone"></i> <?= $translations['call'] ?? 'Call' ?>
+            <i class="fas fa-phone"></i> <?= $__('call') ?>
         </a>
         <a href="#" id="modalEmailBtn" class="btn btn-secondary">
-            <i class="fas fa-envelope"></i> <?= $translations['email'] ?? 'Email' ?>
+            <i class="fas fa-envelope"></i> <?= $__('email') ?>
         </a>
     </div>
 </div>
@@ -589,12 +589,12 @@ function showBookingDetails(element) {
 
     // Status
     const statusMap = {
-        'pending': <?= json_encode($translations['status_pending'] ?? 'Pending') ?>,
-        'confirmed': <?= json_encode($translations['status_confirmed'] ?? 'Confirmed') ?>,
-        'checked_in': <?= json_encode($translations['status_checked_in'] ?? 'Checked in') ?>,
-        'completed': <?= json_encode($translations['status_completed'] ?? 'Completed') ?>,
-        'cancelled': <?= json_encode($translations['status_cancelled'] ?? 'Cancelled') ?>,
-        'no_show': <?= json_encode($translations['status_no_show'] ?? 'No show') ?>
+        'pending': <?= json_encode($__('status_pending')) ?>,
+        'confirmed': <?= json_encode($__('status_confirmed')) ?>,
+        'checked_in': <?= json_encode($__('status_checked_in')) ?>,
+        'completed': <?= json_encode($__('status_completed')) ?>,
+        'cancelled': <?= json_encode($__('status_cancelled')) ?>,
+        'no_show': <?= json_encode($__('status_no_show')) ?>
     };
     const statusEl = document.getElementById('modalStatus');
     statusEl.textContent = statusMap[data.status] || data.status || '-';

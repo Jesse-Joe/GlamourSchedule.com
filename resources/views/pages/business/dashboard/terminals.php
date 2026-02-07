@@ -2,8 +2,8 @@
 
 <div class="dashboard-header">
     <div>
-        <h1><i class="fas fa-credit-card"></i> <?= $translations['terminals'] ?? 'PIN Terminals' ?></h1>
-        <p class="text-muted"><?= $translations['terminals_desc'] ?? 'Manage your Mollie payment terminals' ?></p>
+        <h1><i class="fas fa-credit-card"></i> <?= $__('terminals') ?></h1>
+        <p class="text-muted"><?= $__('terminals_desc') ?></p>
     </div>
 </div>
 
@@ -13,28 +13,28 @@
         <div class="stat-icon"><i class="fas fa-receipt"></i></div>
         <div class="stat-content">
             <span class="stat-value" id="statTransactions"><?= $todayStats['transaction_count'] ?? 0 ?></span>
-            <span class="stat-label"><?= $translations['transactions_today'] ?? 'Transactions Today' ?></span>
+            <span class="stat-label"><?= $__('transactions_today') ?></span>
         </div>
     </div>
     <div class="stat-card success">
         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
         <div class="stat-content">
             <span class="stat-value" id="statPaid">&euro;<?= number_format($todayStats['total_paid'] ?? 0, 2, ',', '.') ?></span>
-            <span class="stat-label"><?= $translations['total_received'] ?? 'Total Received' ?></span>
+            <span class="stat-label"><?= $__('total_received') ?></span>
         </div>
     </div>
     <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-clock"></i></div>
         <div class="stat-content">
             <span class="stat-value" id="statPaidCount"><?= $todayStats['paid_count'] ?? 0 ?></span>
-            <span class="stat-label"><?= $translations['successful'] ?? 'Successful' ?></span>
+            <span class="stat-label"><?= $__('successful') ?></span>
         </div>
     </div>
     <div class="stat-card warning">
         <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
         <div class="stat-content">
             <span class="stat-value" id="statFailed"><?= ($todayStats['failed_count'] ?? 0) + ($todayStats['canceled_count'] ?? 0) ?></span>
-            <span class="stat-label"><?= $translations['failed_canceled'] ?? 'Failed/Canceled' ?></span>
+            <span class="stat-label"><?= $__('failed_canceled') ?></span>
         </div>
     </div>
 </div>
@@ -43,14 +43,14 @@
     <!-- Linked Terminals -->
     <div class="dashboard-card">
         <div class="card-header">
-            <h3><i class="fas fa-link"></i> <?= $translations['linked_terminals'] ?? 'Linked Terminals' ?></h3>
+            <h3><i class="fas fa-link"></i> <?= $__('linked_terminals') ?></h3>
         </div>
         <div class="card-body">
             <?php if (empty($linkedTerminals)): ?>
                 <div class="empty-state">
                     <i class="fas fa-credit-card"></i>
-                    <p><?= $translations['no_terminals_linked'] ?? 'No terminals linked yet' ?></p>
-                    <p class="text-muted"><?= $translations['link_terminal_hint'] ?? 'Link a terminal from the list below to start accepting PIN payments' ?></p>
+                    <p><?= $__('no_terminals_linked') ?></p>
+                    <p class="text-muted"><?= $__('link_terminal_hint') ?></p>
                 </div>
             <?php else: ?>
                 <div class="terminal-list">
@@ -68,11 +68,11 @@
                                 </p>
                             </div>
                             <div class="terminal-status">
-                                <span class="badge badge-success"><?= $translations['active'] ?? 'Active' ?></span>
+                                <span class="badge badge-success"><?= $__('active') ?></span>
                             </div>
                             <div class="terminal-actions">
                                 <button class="btn btn-sm btn-primary" onclick="showPaymentModal('<?= htmlspecialchars($terminal['terminal_id']) ?>', '<?= htmlspecialchars($terminal['terminal_name']) ?>')">
-                                    <i class="fas fa-euro-sign"></i> <?= $translations['new_payment'] ?? 'New Payment' ?>
+                                    <i class="fas fa-euro-sign"></i> <?= $__('new_payment') ?>
                                 </button>
                                 <button class="btn btn-sm btn-outline" onclick="unlinkTerminal('<?= htmlspecialchars($terminal['terminal_id']) ?>')">
                                     <i class="fas fa-unlink"></i>
@@ -89,7 +89,7 @@
     <?php if (!empty($unlinkedTerminals)): ?>
     <div class="dashboard-card">
         <div class="card-header">
-            <h3><i class="fas fa-plus-circle"></i> <?= $translations['available_terminals'] ?? 'Available Terminals' ?></h3>
+            <h3><i class="fas fa-plus-circle"></i> <?= $__('available_terminals') ?></h3>
         </div>
         <div class="card-body">
             <div class="terminal-list">
@@ -113,7 +113,7 @@
                         </div>
                         <div class="terminal-actions">
                             <button class="btn btn-sm btn-success" onclick="linkTerminal('<?= htmlspecialchars($terminal['id']) ?>', '<?= htmlspecialchars($terminal['description']) ?>')">
-                                <i class="fas fa-link"></i> <?= $translations['link'] ?? 'Link' ?>
+                                <i class="fas fa-link"></i> <?= $__('link') ?>
                             </button>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
 <!-- Recent Transactions -->
 <div class="dashboard-card mt-4">
     <div class="card-header">
-        <h3><i class="fas fa-history"></i> <?= $translations['recent_transactions'] ?? 'Recent Transactions' ?></h3>
+        <h3><i class="fas fa-history"></i> <?= $__('recent_transactions') ?></h3>
         <button class="btn btn-sm btn-outline" onclick="refreshTransactions()">
             <i class="fas fa-sync"></i>
         </button>
@@ -136,18 +136,18 @@
         <?php if (empty($recentTransactions)): ?>
             <div class="empty-state">
                 <i class="fas fa-receipt"></i>
-                <p><?= $translations['no_transactions'] ?? 'No transactions yet' ?></p>
+                <p><?= $__('no_transactions') ?></p>
             </div>
         <?php else: ?>
             <div class="table-responsive">
                 <table class="table" id="transactionsTable">
                     <thead>
                         <tr>
-                            <th><?= $translations['date'] ?? 'Date' ?></th>
-                            <th><?= $translations['terminal'] ?? 'Terminal' ?></th>
-                            <th><?= $translations['description'] ?? 'Description' ?></th>
-                            <th><?= $translations['amount'] ?? 'Amount' ?></th>
-                            <th><?= $translations['status'] ?? 'Status' ?></th>
+                            <th><?= $__('date') ?></th>
+                            <th><?= $__('terminal') ?></th>
+                            <th><?= $__('description') ?></th>
+                            <th><?= $__('amount') ?></th>
+                            <th><?= $__('status') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -176,7 +176,7 @@
     <div class="modal-overlay" onclick="closePaymentModal()"></div>
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-credit-card"></i> <?= $translations['new_terminal_payment'] ?? 'New Terminal Payment' ?></h3>
+            <h3><i class="fas fa-credit-card"></i> <?= $__('new_terminal_payment') ?></h3>
             <button class="modal-close" onclick="closePaymentModal()">&times;</button>
         </div>
         <div class="modal-body">
@@ -185,12 +185,12 @@
                 <input type="hidden" name="terminal_id" id="paymentTerminalId">
 
                 <div class="form-group">
-                    <label><?= $translations['terminal'] ?? 'Terminal' ?></label>
+                    <label><?= $__('terminal') ?></label>
                     <input type="text" id="paymentTerminalName" class="form-control" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label><?= $translations['amount'] ?? 'Amount' ?> *</label>
+                    <label><?= $__('amount') ?> *</label>
                     <div class="input-group">
                         <span class="input-prefix">&euro;</span>
                         <input type="number" name="amount" id="paymentAmount" class="form-control" step="0.01" min="0.01" required placeholder="0.00">
@@ -198,14 +198,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label><?= $translations['description'] ?? 'Description' ?></label>
-                    <input type="text" name="description" id="paymentDescription" class="form-control" placeholder="<?= $translations['optional'] ?? 'Optional' ?>">
+                    <label><?= $__('description') ?></label>
+                    <input type="text" name="description" id="paymentDescription" class="form-control" placeholder="<?= $__('optional') ?>">
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closePaymentModal()"><?= $translations['cancel'] ?? 'Cancel' ?></button>
+                    <button type="button" class="btn btn-outline" onclick="closePaymentModal()"><?= $__('cancel') ?></button>
                     <button type="submit" class="btn btn-primary" id="startPaymentBtn">
-                        <i class="fas fa-play"></i> <?= $translations['start_payment'] ?? 'Start Payment' ?>
+                        <i class="fas fa-play"></i> <?= $__('start_payment') ?>
                     </button>
                 </div>
             </form>
@@ -216,13 +216,13 @@
                     <div class="status-icon pending">
                         <i class="fas fa-spinner fa-spin"></i>
                     </div>
-                    <h4 id="paymentStatusTitle"><?= $translations['waiting_for_payment'] ?? 'Waiting for payment...' ?></h4>
-                    <p class="text-muted" id="paymentStatusMessage"><?= $translations['customer_should_tap'] ?? 'Customer should tap or insert card on terminal' ?></p>
+                    <h4 id="paymentStatusTitle"><?= $__('waiting_for_payment') ?></h4>
+                    <p class="text-muted" id="paymentStatusMessage"><?= $__('customer_should_tap') ?></p>
                     <div class="payment-amount" id="paymentStatusAmount"></div>
 
                     <div class="payment-actions mt-4">
                         <button class="btn btn-outline" onclick="cancelCurrentPayment()">
-                            <i class="fas fa-times"></i> <?= $translations['cancel_payment'] ?? 'Cancel Payment' ?>
+                            <i class="fas fa-times"></i> <?= $__('cancel_payment') ?>
                         </button>
                     </div>
                 </div>
@@ -554,15 +554,15 @@ async function processPayment(e) {
             showPaymentStatus(formData.get('amount'));
             startPaymentCheck();
         } else {
-            alert(data.error || 'Failed to start payment');
+            alert(data.error || <?= json_encode($__('terminal_payment_failed_start')) ?>);
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-play"></i> Start Payment';
+            btn.innerHTML = '<i class="fas fa-play"></i> <?= $__('start_payment') ?>';
         }
     } catch (error) {
         console.error('Payment error:', error);
-        alert('Failed to start payment');
+        alert(<?= json_encode($__('terminal_payment_failed_start')) ?>);
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-play"></i> Start Payment';
+        btn.innerHTML = '<i class="fas fa-play"></i> <?= $__('start_payment') ?>';
     }
 }
 
@@ -598,11 +598,11 @@ function startPaymentCheck() {
 function showPaymentSuccess() {
     document.querySelector('.status-icon').className = 'status-icon success';
     document.querySelector('.status-icon i').className = 'fas fa-check';
-    document.getElementById('paymentStatusTitle').textContent = '<?= $translations['payment_successful'] ?? 'Payment Successful!' ?>';
-    document.getElementById('paymentStatusMessage').textContent = '<?= $translations['payment_received'] ?? 'Payment has been received' ?>';
+    document.getElementById('paymentStatusTitle').textContent = '<?= $__('payment_successful') ?>';
+    document.getElementById('paymentStatusMessage').textContent = '<?= $__('payment_received') ?>';
     document.querySelector('.payment-actions').innerHTML = `
         <button class="btn btn-primary" onclick="closePaymentModal(); refreshTransactions();">
-            <i class="fas fa-check"></i> <?= $translations['done'] ?? 'Done' ?>
+            <i class="fas fa-check"></i> <?= $__('done') ?>
         </button>
     `;
 }
@@ -610,14 +610,14 @@ function showPaymentSuccess() {
 function showPaymentFailed(status) {
     document.querySelector('.status-icon').className = 'status-icon failed';
     document.querySelector('.status-icon i').className = 'fas fa-times';
-    document.getElementById('paymentStatusTitle').textContent = '<?= $translations['payment_failed'] ?? 'Payment Failed' ?>';
-    document.getElementById('paymentStatusMessage').textContent = status === 'canceled' ? '<?= $translations['payment_canceled'] ?? 'Payment was canceled' ?>' : '<?= $translations['payment_not_completed'] ?? 'Payment could not be completed' ?>';
+    document.getElementById('paymentStatusTitle').textContent = '<?= $__('payment_failed') ?>';
+    document.getElementById('paymentStatusMessage').textContent = status === 'canceled' ? '<?= $__('payment_canceled') ?>' : '<?= $__('payment_not_completed') ?>';
     document.querySelector('.payment-actions').innerHTML = `
         <button class="btn btn-outline" onclick="closePaymentModal();">
-            <?= $translations['close'] ?? 'Close' ?>
+            <?= $__('close') ?>
         </button>
         <button class="btn btn-primary" onclick="resetPaymentForm();">
-            <i class="fas fa-redo"></i> <?= $translations['try_again'] ?? 'Try Again' ?>
+            <i class="fas fa-redo"></i> <?= $__('try_again') ?>
         </button>
     `;
 }
@@ -626,7 +626,7 @@ function resetPaymentForm() {
     document.getElementById('paymentForm').style.display = 'block';
     document.getElementById('paymentStatus').style.display = 'none';
     document.getElementById('startPaymentBtn').disabled = false;
-    document.getElementById('startPaymentBtn').innerHTML = '<i class="fas fa-play"></i> <?= $translations['start_payment'] ?? 'Start Payment' ?>';
+    document.getElementById('startPaymentBtn').innerHTML = '<i class="fas fa-play"></i> <?= $__('start_payment') ?>';
     document.querySelector('.status-icon').className = 'status-icon pending';
     document.querySelector('.status-icon i').className = 'fas fa-spinner fa-spin';
 }
@@ -670,16 +670,16 @@ async function linkTerminal(terminalId, terminalName) {
         if (data.success) {
             location.reload();
         } else {
-            alert(data.error || 'Failed to link terminal');
+            alert(data.error || <?= json_encode($__('terminal_link_failed')) ?>);
         }
     } catch (error) {
         console.error('Link error:', error);
-        alert('Failed to link terminal');
+        alert(<?= json_encode($__('terminal_link_failed')) ?>);
     }
 }
 
 async function unlinkTerminal(terminalId) {
-    if (!confirm('<?= $translations['confirm_unlink'] ?? 'Are you sure you want to remove this terminal?' ?>')) {
+    if (!confirm('<?= $__('confirm_unlink') ?>')) {
         return;
     }
 
@@ -697,11 +697,11 @@ async function unlinkTerminal(terminalId) {
         if (data.success) {
             location.reload();
         } else {
-            alert(data.error || 'Failed to remove terminal');
+            alert(data.error || <?= json_encode($__('terminal_unlink_failed')) ?>);
         }
     } catch (error) {
         console.error('Unlink error:', error);
-        alert('Failed to remove terminal');
+        alert(<?= json_encode($__('terminal_unlink_failed')) ?>);
     }
 }
 

@@ -3,27 +3,27 @@
 <?php
 $today = date('Y-m-d');
 $dayNames = [
-    $translations['sunday'] ?? 'Sunday',
-    $translations['monday'] ?? 'Monday',
-    $translations['tuesday'] ?? 'Tuesday',
-    $translations['wednesday'] ?? 'Wednesday',
-    $translations['thursday'] ?? 'Thursday',
-    $translations['friday'] ?? 'Friday',
-    $translations['saturday'] ?? 'Saturday'
+    $__('sunday'),
+    $__('monday'),
+    $__('tuesday'),
+    $__('wednesday'),
+    $__('thursday'),
+    $__('friday'),
+    $__('saturday')
 ];
 $monthNames = [
-    $translations['month_january'] ?? 'January',
-    $translations['month_february'] ?? 'February',
-    $translations['month_march'] ?? 'March',
-    $translations['month_april'] ?? 'April',
-    $translations['month_may'] ?? 'May',
-    $translations['month_june'] ?? 'June',
-    $translations['month_july'] ?? 'July',
-    $translations['month_august'] ?? 'August',
-    $translations['month_september'] ?? 'September',
-    $translations['month_october'] ?? 'October',
-    $translations['month_november'] ?? 'November',
-    $translations['month_december'] ?? 'December'
+    $__('month_january'),
+    $__('month_february'),
+    $__('month_march'),
+    $__('month_april'),
+    $__('month_may'),
+    $__('month_june'),
+    $__('month_july'),
+    $__('month_august'),
+    $__('month_september'),
+    $__('month_october'),
+    $__('month_november'),
+    $__('month_december')
 ];
 ?>
 
@@ -724,7 +724,7 @@ $monthNames = [
 <div class="pos-header">
     <h1 style="color:#ffffff">
         <i class="fas fa-cash-register"></i>
-        <?= $translations['pos_system'] ?? 'POS System' ?>
+        <?= $__('pos_system') ?>
     </h1>
     <span style="color:#999999">
         <i class="fas fa-calendar"></i>
@@ -737,7 +737,7 @@ $monthNames = [
     <div>
         <!-- Customer Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-user"></i> <?= $translations['customer'] ?? 'Customer' ?></h3>
+            <h3><i class="fas fa-user"></i> <?= $__('customer') ?></h3>
 
             <div id="selectedCustomerBadge" style="display:none" class="selected-customer">
                 <div class="avatar" id="customerAvatar">J</div>
@@ -745,7 +745,7 @@ $monthNames = [
                     <div class="name" id="customerName">Jan de Vries</div>
                     <div class="contact" id="customerContact">jan@email.nl</div>
                 </div>
-                <button class="remove" onclick="clearSelectedCustomer()" title="<?= $translations['remove'] ?? 'Remove' ?>">
+                <button class="remove" onclick="clearSelectedCustomer()" title="<?= $__('remove') ?>">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -755,7 +755,7 @@ $monthNames = [
                     <input type="text"
                            class="form-control"
                            id="customerSearch"
-                           placeholder="<?= $translations['search_customer_placeholder'] ?? 'Search customer by ID, name, email or phone...' ?>"
+                           placeholder="<?= $__('search_customer_placeholder') ?>"
                            autocomplete="off"
                            style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                     <div class="customer-search-results" id="customerResults">
@@ -764,8 +764,8 @@ $monthNames = [
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem">
-                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="<?= $translations['email_optional'] ?? 'Email (optional)' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
-                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="<?= $translations['phone_optional'] ?? 'Phone (optional)' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+                    <input type="email" class="form-control" id="newCustomerEmail" placeholder="<?= $__('email_optional') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+                    <input type="tel" class="form-control" id="newCustomerPhone" placeholder="<?= $__('phone_optional') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
 
@@ -774,10 +774,10 @@ $monthNames = [
 
         <!-- Service Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-concierge-bell"></i> <?= $translations['service'] ?? 'Service' ?></h3>
+            <h3><i class="fas fa-concierge-bell"></i> <?= $__('service') ?></h3>
 
             <?php if (empty($services)): ?>
-                <p style="color:#999999"><?= $translations['no_services_found'] ?? 'No services found.' ?> <a href="/business/services" style="color:#ffffff"><?= $translations['add_services'] ?? 'Add services' ?></a></p>
+                <p style="color:#999999"><?= $__('no_services_found') ?> <a href="/business/services" style="color:#ffffff"><?= $__('add_services') ?></a></p>
             <?php else: ?>
                 <div class="service-grid">
                     <?php foreach ($services as $service): ?>
@@ -803,9 +803,9 @@ $monthNames = [
         <?php if (!empty($employees)): ?>
         <!-- Employee Section (only for BV) -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-user-tie"></i> <?= $translations['employee'] ?? 'Employee' ?></h3>
+            <h3><i class="fas fa-user-tie"></i> <?= $__('employee') ?></h3>
             <select class="form-control" id="selectedEmployee" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
-                <option value="">-- <?= $translations['no_specific_employee'] ?? 'No specific employee' ?> --</option>
+                <option value="">-- <?= $__('no_specific_employee') ?> --</option>
                 <?php foreach ($employees as $emp): ?>
                     <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?></option>
                 <?php endforeach; ?>
@@ -815,14 +815,14 @@ $monthNames = [
 
         <!-- Date & Time Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-clock"></i> <?= $translations['date_and_time'] ?? 'Date & Time' ?></h3>
+            <h3><i class="fas fa-clock"></i> <?= $__('date_and_time') ?></h3>
             <div class="datetime-row">
                 <div>
-                    <label class="form-label" style="color:#ffffff"><?= $translations['date'] ?? 'Date' ?></label>
+                    <label class="form-label" style="color:#ffffff"><?= $__('date') ?></label>
                     <input type="date" class="form-control" id="appointmentDate" value="<?= $today ?>" min="<?= $today ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
                 <div>
-                    <label class="form-label" style="color:#ffffff"><?= $translations['time'] ?? 'Time' ?></label>
+                    <label class="form-label" style="color:#ffffff"><?= $__('time') ?></label>
                     <input type="time" class="form-control" id="appointmentTime" value="<?= date('H:00', strtotime('+1 hour')) ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
                 </div>
             </div>
@@ -830,17 +830,17 @@ $monthNames = [
 
         <!-- Payment Method Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-credit-card"></i> <?= $translations['payment_method'] ?? 'Payment Method' ?></h3>
+            <h3><i class="fas fa-credit-card"></i> <?= $__('payment_method') ?></h3>
             <div class="payment-methods">
                 <div class="payment-method selected" data-method="online" onclick="selectPaymentMethod(this)">
                     <i class="fas fa-globe"></i>
-                    <div class="title"><?= $translations['online_payment'] ?? 'Online Payment' ?></div>
-                    <div class="desc"><?= $translations['online_payment_desc'] ?? 'Customer pays full amount online' ?></div>
+                    <div class="title"><?= $__('online_payment') ?></div>
+                    <div class="desc"><?= $__('online_payment_desc') ?></div>
                 </div>
                 <div class="payment-method" data-method="cash" onclick="selectPaymentMethod(this)">
                     <i class="fas fa-money-bill-wave"></i>
-                    <div class="title"><?= $translations['cash_at_appointment'] ?? 'Cash at Appointment' ?></div>
-                    <div class="desc"><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $translations['cash_payment_desc'] ?? 'Customer pays :fee online + rest in cash') ?></div>
+                    <div class="title"><?= $__('cash_at_appointment') ?></div>
+                    <div class="desc"><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $__('cash_payment_desc')) ?></div>
                 </div>
             </div>
             <input type="hidden" id="selectedPaymentMethod" value="online">
@@ -848,40 +848,40 @@ $monthNames = [
 
         <!-- Notes Section -->
         <div class="pos-form-section">
-            <h3><i class="fas fa-sticky-note"></i> <?= $translations['notes_optional'] ?? 'Notes (optional)' ?></h3>
-            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="<?= $translations['notes_placeholder'] ?? 'Any comments...' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
+            <h3><i class="fas fa-sticky-note"></i> <?= $__('notes_optional') ?></h3>
+            <textarea class="form-control" id="bookingNotes" rows="2" placeholder="<?= $__('notes_placeholder') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
 
         <!-- Summary & Submit -->
         <div class="summary-card">
-            <h4><i class="fas fa-receipt"></i> <?= $translations['overview'] ?? 'Overview' ?></h4>
+            <h4><i class="fas fa-receipt"></i> <?= $__('overview') ?></h4>
             <div class="summary-row">
-                <span><?= $translations['customer'] ?? 'Customer' ?></span>
+                <span><?= $__('customer') ?></span>
                 <span id="summaryCustomer">-</span>
             </div>
             <div class="summary-row">
-                <span><?= $translations['service'] ?? 'Service' ?></span>
+                <span><?= $__('service') ?></span>
                 <span id="summaryService">-</span>
             </div>
             <div class="summary-row">
-                <span><?= $translations['date_and_time'] ?? 'Date & Time' ?></span>
+                <span><?= $__('date_and_time') ?></span>
                 <span id="summaryDateTime">-</span>
             </div>
             <div class="summary-row">
-                <span><?= $translations['payment_method'] ?? 'Payment method' ?></span>
-                <span id="summaryPayment"><?= $translations['online'] ?? 'Online' ?></span>
+                <span><?= $__('payment_method') ?></span>
+                <span id="summaryPayment"><?= $__('online') ?></span>
             </div>
             <div class="summary-row">
-                <span><?= $translations['online_amount'] ?? 'Online amount' ?></span>
+                <span><?= $__('online_amount') ?></span>
                 <span id="summaryOnlineAmount">€0,00</span>
             </div>
             <div class="summary-row total">
-                <span><?= $translations['total'] ?? 'Total' ?></span>
+                <span><?= $__('total') ?></span>
                 <span id="summaryTotal">€0,00</span>
             </div>
 
             <button class="btn btn-primary" style="width:100%;margin-top:1.25rem;padding:1rem" onclick="createBooking()" id="createBookingBtn">
-                <i class="fas fa-plus-circle"></i> <?= $translations['create_appointment_send_link'] ?? 'Create Appointment & Send Link' ?>
+                <i class="fas fa-plus-circle"></i> <?= $__('create_appointment_send_link') ?>
             </button>
         </div>
     </div>
@@ -891,16 +891,16 @@ $monthNames = [
         <div class="card" style="padding:0;background:#0a0a0a;border:1px solid #333333">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid #333333;display:flex;justify-content:space-between;align-items:center">
                 <h3 style="margin:0;font-size:1rem;color:#ffffff">
-                    <i class="fas fa-calendar-day"></i> <?= $translations['today'] ?? 'Today' ?>
+                    <i class="fas fa-calendar-day"></i> <?= $__('today') ?>
                 </h3>
-                <span class="badge" style="background:#ffffff;color:#000000"><?= count($todayBookings) ?> <?= $translations['appointments'] ?? 'appointments' ?></span>
+                <span class="badge" style="background:#ffffff;color:#000000"><?= count($todayBookings) ?> <?= $__('appointments') ?></span>
             </div>
 
             <div class="bookings-list">
                 <?php if (empty($todayBookings)): ?>
                     <div class="empty-state">
                         <i class="fas fa-calendar-plus"></i>
-                        <p><?= $translations['no_appointments_today'] ?? 'No appointments today' ?></p>
+                        <p><?= $__('no_appointments_today') ?></p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($todayBookings as $booking): ?>
@@ -911,19 +911,19 @@ $monthNames = [
                                 <div class="booking-service"><?= htmlspecialchars($booking['service_name']) ?></div>
                                 <div class="booking-badges">
                                     <span class="booking-badge badge-<?= $booking['payment_method'] ?>">
-                                        <?= $booking['payment_method'] === 'cash' ? ($translations['booking_payment_cash'] ?? 'Contant') : ($translations['booking_payment_online'] ?? 'Online') ?>
+                                        <?= $booking['payment_method'] === 'cash' ? $__('booking_payment_cash') : $__('booking_payment_online') ?>
                                     </span>
                                     <span class="booking-badge badge-payment-<?= $booking['payment_status'] ?>">
-                                        <?= $booking['payment_status'] === 'paid' ? ($translations['booking_payment_paid'] ?? 'Betaald') : ($translations['booking_payment_pending'] ?? 'Wacht op betaling') ?>
+                                        <?= $booking['payment_status'] === 'paid' ? $__('booking_payment_paid') : $__('booking_payment_pending') ?>
                                     </span>
                                     <span class="booking-badge badge-status-<?= $booking['booking_status'] ?>">
                                         <?php
                                         $statusLabels = [
-                                            'pending' => $translations['status_pending'] ?? 'In afwachting',
-                                            'confirmed' => $translations['status_confirmed'] ?? 'Bevestigd',
-                                            'completed' => $translations['status_completed'] ?? 'Voltooid',
-                                            'cancelled' => $translations['status_cancelled'] ?? 'Geannuleerd',
-                                            'no_show' => $translations['status_no_show'] ?? 'Niet verschenen'
+                                            'pending' => $__('status_pending'),
+                                            'confirmed' => $__('status_confirmed'),
+                                            'completed' => $__('status_completed'),
+                                            'cancelled' => $__('status_cancelled'),
+                                            'no_show' => $__('status_no_show')
                                         ];
                                         echo $statusLabels[$booking['booking_status']] ?? $booking['booking_status'];
                                         ?>
@@ -938,12 +938,12 @@ $monthNames = [
                                 <?php endif; ?>
                                 <?php if ($booking['booking_status'] === 'confirmed'): ?>
                                     <button class="booking-action-btn" onclick="markCompleted('<?= $booking['uuid'] ?>')">
-                                        <i class="fas fa-check"></i> <?= $translations['completed'] ?? 'Completed' ?>
+                                        <i class="fas fa-check"></i> <?= $__('completed') ?>
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($booking['booking_status'] !== 'cancelled' && $booking['booking_status'] !== 'completed'): ?>
                                     <button class="booking-action-btn danger" onclick="cancelBooking('<?= $booking['uuid'] ?>')">
-                                        <i class="fas fa-times"></i> <?= $translations['cancel'] ?? 'Cancel' ?>
+                                        <i class="fas fa-times"></i> <?= $__('cancel') ?>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -957,7 +957,7 @@ $monthNames = [
         <?php if (!empty($recentCustomers)): ?>
         <div class="card" style="margin-top:1rem;background:#0a0a0a;border:1px solid #333333">
             <div class="card-header">
-                <h3 class="card-title" style="font-size:0.95rem;color:#ffffff"><i class="fas fa-users"></i> <?= $translations['recent_customers'] ?? 'Recent Customers' ?></h3>
+                <h3 class="card-title" style="font-size:0.95rem;color:#ffffff"><i class="fas fa-users"></i> <?= $__('recent_customers') ?></h3>
             </div>
             <?php foreach (array_slice($recentCustomers, 0, 5) as $customer): ?>
                 <div style="padding:0.75rem 0;border-bottom:1px solid #333333;cursor:pointer;color:#ffffff"
@@ -973,11 +973,11 @@ $monthNames = [
 
         <!-- Help Card -->
         <div class="card" style="background:linear-gradient(135deg, #000, #333);color:white;margin-top:1rem">
-            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $translations['pos_tips'] ?? 'POS Tips' ?></h4>
+            <h4 style="margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> <?= $__('pos_tips') ?></h4>
             <ul style="margin:0;padding-left:1.25rem;font-size:0.85rem;opacity:0.9">
-                <li><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $translations['pos_tip_1'] ?? 'For cash payments, customer pays :fee online as reservation fee') ?></li>
-                <li><?= $translations['pos_tip_2'] ?? 'Click "Link" to resend payment links' ?></li>
-                <li><?= $translations['pos_tip_3'] ?? 'When cancelled, the online payment will be refunded' ?></li>
+                <li><?= str_replace(':fee', $feeData['fee_display'] ?? '€1.75', $__('pos_tip_1')) ?></li>
+                <li><?= $__('pos_tip_2') ?></li>
+                <li><?= $__('pos_tip_3') ?></li>
             </ul>
         </div>
     </div>
@@ -987,7 +987,7 @@ $monthNames = [
 <div class="pos-modal-overlay" id="successOverlay" onclick="closeSuccessModal()"></div>
 <div class="pos-modal" id="successModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> <?= $translations['appointment_created'] ?? 'Appointment Created' ?></h3>
+        <h3><i class="fas fa-check-circle" style="color:#22c55e"></i> <?= $__('appointment_created') ?></h3>
         <button class="pos-modal-close" onclick="closeSuccessModal()">
             <i class="fas fa-times"></i>
         </button>
@@ -995,42 +995,42 @@ $monthNames = [
     <div class="pos-modal-content">
         <div class="success-animation">
             <div class="checkmark"><i class="fas fa-check"></i></div>
-            <h3 style="margin:0 0 0.5rem 0;color:#ffffff" id="successTitle"><?= $translations['appointment_created_success'] ?? 'Appointment successfully created!' ?></h3>
-            <p style="color:#999999" id="successSubtitle"><?= $translations['payment_link_sent'] ?? 'The payment link has been sent to the customer.' ?></p>
+            <h3 style="margin:0 0 0.5rem 0;color:#ffffff" id="successTitle"><?= $__('appointment_created_success') ?></h3>
+            <p style="color:#999999" id="successSubtitle"><?= $__('payment_link_sent') ?></p>
         </div>
 
         <!-- Digital POS: QR Code for instant payment -->
         <div class="qr-code-section">
             <div class="qr-code-header">
                 <i class="fas fa-qrcode"></i>
-                <span><?= $translations['scan_to_pay'] ?? 'Scan to pay' ?></span>
+                <span><?= $__('scan_to_pay') ?></span>
             </div>
             <div id="qrCodeContainer" class="qr-code-display"></div>
-            <p class="qr-code-hint"><?= $translations['qr_scan_hint'] ?? 'Customer can scan this QR code with their phone' ?></p>
+            <p class="qr-code-hint"><?= $__('qr_scan_hint') ?></p>
         </div>
 
         <div class="payment-link-box">
             <input type="text" id="paymentLinkInput" readonly value="">
             <button class="copy-btn" onclick="copyPaymentLink()">
-                <i class="fas fa-copy"></i> Kopieer
+                <i class="fas fa-copy"></i> <?= $__('copy') ?>
             </button>
         </div>
 
         <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-top:1rem;border:1px solid #333333">
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span><?= $translations['customer'] ?? 'Customer' ?></span>
+                <span><?= $__('customer') ?></span>
                 <strong id="successCustomer" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span><?= $translations['service'] ?? 'Service' ?></span>
+                <span><?= $__('service') ?></span>
                 <strong id="successService" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#999999">
-                <span><?= $translations['date_and_time'] ?? 'Date & Time' ?></span>
+                <span><?= $__('date_and_time') ?></span>
                 <strong id="successDateTime" style="color:#ffffff">-</strong>
             </div>
             <div style="display:flex;justify-content:space-between;color:#999999">
-                <span><?= $translations['online_amount'] ?? 'Online amount' ?></span>
+                <span><?= $__('online_amount') ?></span>
                 <strong id="successAmount" style="color:#ffffff">-</strong>
             </div>
         </div>
@@ -1049,9 +1049,9 @@ $monthNames = [
         </div>
     </div>
     <div class="pos-modal-actions">
-        <button class="btn btn-secondary" onclick="closeSuccessModal()"><?= $translations['close'] ?? 'Close' ?></button>
+        <button class="btn btn-secondary" onclick="closeSuccessModal()"><?= $__('close') ?></button>
         <button class="btn btn-primary" onclick="sendPaymentLinkManual()">
-            <i class="fas fa-paper-plane"></i> <?= $translations['send_email'] ?? 'Send Email' ?>
+            <i class="fas fa-paper-plane"></i> <?= $__('send_email') ?>
         </button>
     </div>
 </div>
@@ -1060,7 +1060,7 @@ $monthNames = [
 <div class="pos-modal-overlay" id="fullQrOverlay" onclick="closeFullQrModal()"></div>
 <div class="pos-modal fullscreen-qr-modal" id="fullQrModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-qrcode"></i> <?= $translations['scan_to_pay'] ?? 'Scan to Pay' ?></h3>
+        <h3><i class="fas fa-qrcode"></i> <?= $__('scan_to_pay') ?></h3>
         <button class="pos-modal-close" onclick="closeFullQrModal()">
             <i class="fas fa-times"></i>
         </button>
@@ -1068,12 +1068,12 @@ $monthNames = [
     <div class="pos-modal-content" style="text-align:center;padding:2rem">
         <div id="fullQrCodeContainer" style="margin:0 auto 1.5rem"></div>
         <div class="full-qr-amount" id="fullQrAmount">-</div>
-        <p style="color:#999999;margin:0"><?= $translations['scan_phone_to_pay'] ?? 'Scan with your phone to pay' ?></p>
+        <p style="color:#999999;margin:0"><?= $__('scan_phone_to_pay') ?></p>
 
         <!-- Payment status indicator -->
         <div class="payment-status-indicator" id="paymentStatusIndicator">
             <div class="status-dot pending"></div>
-            <span><?= $translations['waiting_for_payment'] ?? 'Waiting for payment...' ?></span>
+            <span><?= $__('waiting_for_payment') ?></span>
         </div>
     </div>
 </div>
@@ -1082,39 +1082,74 @@ $monthNames = [
 <div class="pos-modal-overlay" id="addCustomerOverlay" onclick="closeAddCustomerModal()"></div>
 <div class="pos-modal" id="addCustomerModal">
     <div class="pos-modal-header">
-        <h3><i class="fas fa-user-plus"></i> <?= $translations['new_customer'] ?? 'New Customer' ?></h3>
+        <h3><i class="fas fa-user-plus"></i> <?= $__('new_customer') ?></h3>
         <button class="pos-modal-close" onclick="closeAddCustomerModal()">
             <i class="fas fa-times"></i>
         </button>
     </div>
     <div class="pos-modal-content">
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff"><?= $translations['name'] ?? 'Name' ?> *</label>
-            <input type="text" class="form-control" id="newCustomerName" placeholder="<?= $translations['full_name'] ?? 'Full name' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $__('name') ?> *</label>
+            <input type="text" class="form-control" id="newCustomerName" placeholder="<?= $__('full_name') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff"><?= $translations['email'] ?? 'Email' ?></label>
-            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="<?= $translations['email_placeholder'] ?? 'email@example.com' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $__('email') ?></label>
+            <input type="email" class="form-control" id="modalCustomerEmail" placeholder="<?= $__('email_placeholder') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div style="margin-bottom:1rem">
-            <label class="form-label" style="color:#ffffff"><?= $translations['phone'] ?? 'Phone' ?></label>
-            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="<?= $translations['phone_placeholder'] ?? '+1 234 567 890' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
+            <label class="form-label" style="color:#ffffff"><?= $__('phone') ?></label>
+            <input type="tel" class="form-control" id="modalCustomerPhone" placeholder="<?= $__('phone_placeholder') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333">
         </div>
         <div>
-            <label class="form-label" style="color:#ffffff"><?= $translations['notes'] ?? 'Notes' ?></label>
-            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="<?= $translations['optional_notes'] ?? 'Optional notes...' ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
+            <label class="form-label" style="color:#ffffff"><?= $__('notes') ?></label>
+            <textarea class="form-control" id="modalCustomerNotes" rows="2" placeholder="<?= $__('optional_notes') ?>" style="background:#1a1a1a;color:#ffffff;border-color:#333333"></textarea>
         </div>
     </div>
     <div class="pos-modal-actions">
-        <button class="btn btn-secondary" onclick="closeAddCustomerModal()"><?= $translations['cancel'] ?? 'Cancel' ?></button>
+        <button class="btn btn-secondary" onclick="closeAddCustomerModal()"><?= $__('cancel') ?></button>
         <button class="btn btn-primary" onclick="addNewCustomer()">
-            <i class="fas fa-plus"></i> <?= $translations['add_customer'] ?? 'Add Customer' ?>
+            <i class="fas fa-plus"></i> <?= $__('add_customer') ?>
         </button>
     </div>
 </div>
 
 <script>
 const csrfToken = '<?= $csrfToken ?>';
+const T = <?= json_encode([
+    'visits' => $__('visits'),
+    'add_new_customer' => '<i class="fas fa-plus"></i> ' . $__('add_new_customer'),
+    'guest' => $__('guest'),
+    'no_contact_details' => $__('no_contact_details'),
+    'at' => $__('at'),
+    'cash' => $__('cash'),
+    'online' => $__('online'),
+    'enter_customer_name' => $__('enter_customer_name'),
+    'select_service' => $__('select_service'),
+    'select_date_time' => $__('select_date_time'),
+    'processing' => '<i class="fas fa-spinner fa-spin"></i> ' . $__('processing'),
+    'create_appointment_send_link' => $__('create_appointment_send_link'),
+    'error_occurred' => $__('error_occurred'),
+    'copied' => '<i class="fas fa-check"></i> ' . $__('copied'),
+    'could_not_send_link' => $__('could_not_send_link'),
+    'error_sending' => $__('error_sending'),
+    'enter_name' => $__('enter_name'),
+    'could_not_add_customer' => $__('could_not_add_customer'),
+    'something_went_wrong' => $__('something_went_wrong'),
+    'qr_not_available' => $__('qr_not_available'),
+    'qr_loading' => $__('qr_loading'),
+    'whatsapp_template' => $__('pos_whatsapp_template'),
+    'sms_template' => $__('pos_sms_template'),
+    'receipt_confirmation' => $__('receipt_confirmation'),
+    'receipt_customer' => $__('receipt_customer'),
+    'receipt_service' => $__('receipt_service'),
+    'receipt_datetime' => $__('receipt_datetime'),
+    'receipt_to_pay' => $__('receipt_to_pay'),
+    'receipt_scan_to_pay' => $__('receipt_scan_to_pay'),
+    'receipt_payment_link' => $__('receipt_payment_link'),
+    'receipt_thanks' => $__('receipt_thanks'),
+    'payment_received' => $__('payment_received'),
+    'enlarge_for_customer' => '<i class="fas fa-expand"></i> ' . $__('enlarge_for_customer'),
+]) ?>;
 const dateCountry = '<?= $dateFormatter->getCountry() ?>';
 const dateFormatPHP = '<?= addslashes($dateFormatter->formatDate('2000-01-02')) ?>';
 const timeIs12h = <?= in_array($dateFormatter->getCountry(), ['US','PH','GB','IE','AU','NZ','IN','PK','SA','AE','EG','CA']) ? 'true' : 'false' ?>;
@@ -1168,7 +1203,7 @@ function searchCustomers(query) {
                 if (c.total_appointments > 0) {
                     const badge = document.createElement('span');
                     badge.className = 'badge';
-                    badge.textContent = c.total_appointments + ' bezoeken';
+                    badge.textContent = c.total_appointments + ' ' + T.visits;
                     div.appendChild(badge);
                 }
 
@@ -1179,7 +1214,7 @@ function searchCustomers(query) {
             // Add "New Customer" option
             const addNew = document.createElement('div');
             addNew.className = 'add-new-customer';
-            addNew.innerHTML = '<i class="fas fa-plus"></i> Nieuwe klant toevoegen';
+            addNew.innerHTML = T.add_new_customer;
             addNew.onclick = () => openAddCustomerModal(query);
             results.appendChild(addNew);
 
@@ -1199,12 +1234,12 @@ function selectCustomer(customer) {
     // Safe way to set customer name with ID span
     const nameEl = document.getElementById('customerName');
     nameEl.textContent = '';
-    nameEl.appendChild(document.createTextNode(customer.name || 'Gast'));
+    nameEl.appendChild(document.createTextNode(customer.name || T.guest));
     const idSpan = document.createElement('span');
     idSpan.style.cssText = 'color:var(--text-light);font-size:0.8rem;font-weight:normal';
     idSpan.textContent = ' #' + customer.id;
     nameEl.appendChild(idSpan);
-    document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || 'Geen contactgegevens';
+    document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || T.no_contact_details;
 
     document.getElementById('selectedCustomerBadge').style.display = 'flex';
     document.getElementById('customerSearchSection').style.display = 'none';
@@ -1263,8 +1298,8 @@ function updateSummary() {
 
     document.getElementById('summaryCustomer').textContent = customerName;
     document.getElementById('summaryService').textContent = serviceName;
-    document.getElementById('summaryDateTime').textContent = date && time ? formatDate(date) + ' om ' + formatTime(time) : '-';
-    document.getElementById('summaryPayment').textContent = paymentMethod === 'cash' ? 'Contant' : 'Online';
+    document.getElementById('summaryDateTime').textContent = date && time ? formatDate(date) + ' ' + T.at + ' ' + formatTime(time) : '-';
+    document.getElementById('summaryPayment').textContent = paymentMethod === 'cash' ? T.cash : T.online;
 
     const platformFee = <?= $feeData['fee_amount'] ?? 1.75 ?>;
     const currencySymbol = '<?= $feeData['currency_symbol'] ?? '€' ?>';
@@ -1290,21 +1325,21 @@ function createBooking() {
     const notes = document.getElementById('bookingNotes').value.trim();
 
     if (!customerName) {
-        alert('Vul een klantnaam in');
+        alert(T.enter_customer_name);
         return;
     }
     if (!serviceId) {
-        alert('Selecteer een dienst');
+        alert(T.select_service);
         return;
     }
     if (!date || !time) {
-        alert('Selecteer datum en tijd');
+        alert(T.select_date_time);
         return;
     }
 
     const btn = document.getElementById('createBookingBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Bezig...';
+    btn.innerHTML = T.processing;
 
     fetch('/business/pos/booking', {
         method: 'POST',
@@ -1329,7 +1364,7 @@ function createBooking() {
     .then(r => r.json())
     .then(data => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-plus-circle"></i> Afspraak Aanmaken & Link Versturen';
+        btn.innerHTML = '<i class="fas fa-plus-circle"></i> ' + T.create_appointment_send_link;
 
         if (data.success) {
             lastCreatedBookingUuid = data.booking.uuid;
@@ -1351,13 +1386,13 @@ function createBooking() {
             // Reload page to show new booking
             setTimeout(() => location.reload(), 3000);
         } else {
-            alert(data.error || 'Er is een fout opgetreden');
+            alert(data.error || T.error_occurred);
         }
     })
     .catch(err => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-plus-circle"></i> Afspraak Aanmaken & Link Versturen';
-        alert('Er is een fout opgetreden');
+        btn.innerHTML = '<i class="fas fa-plus-circle"></i> ' + T.create_appointment_send_link;
+        alert(T.error_occurred);
         console.error(err);
     });
 }
@@ -1367,7 +1402,7 @@ function showSuccessModal(booking) {
     document.getElementById('paymentLinkInput').value = booking.payment_link;
     document.getElementById('successCustomer').textContent = booking.customer_name;
     document.getElementById('successService').textContent = booking.service_name;
-    document.getElementById('successDateTime').textContent = booking.date + ' om ' + booking.time;
+    document.getElementById('successDateTime').textContent = booking.date + ' ' + T.at + ' ' + booking.time;
     document.getElementById('successAmount').textContent = '€' + booking.online_amount;
 
     document.getElementById('successOverlay').classList.add('active');
@@ -1388,7 +1423,7 @@ function copyPaymentLink() {
 
     const btn = event.target.closest('.copy-btn');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-check"></i> Gekopieerd!';
+    btn.innerHTML = T.copied;
     setTimeout(() => btn.innerHTML = originalText, 2000);
 }
 
@@ -1411,12 +1446,12 @@ function sendPaymentLinkManual() {
         if (data.success) {
             document.getElementById('successSubtitle').textContent = data.message;
         } else {
-            alert(data.error || 'Kon link niet versturen');
+            alert(data.error || T.could_not_send_link);
         }
     })
     .catch(err => {
         console.error('Send payment link error:', err);
-        alert('Er is een fout opgetreden bij het versturen');
+        alert(T.error_sending);
     });
 }
 
@@ -1448,7 +1483,7 @@ function addNewCustomer() {
     const notes = document.getElementById('modalCustomerNotes').value.trim();
 
     if (!name) {
-        alert('Vul een naam in');
+        alert(T.enter_name);
         return;
     }
 
@@ -1469,18 +1504,18 @@ function addNewCustomer() {
             selectCustomer(data.customer);
             closeAddCustomerModal();
         } else {
-            alert(data.error || 'Kon klant niet toevoegen');
+            alert(data.error || T.could_not_add_customer);
         }
     })
     .catch(err => {
         console.error('Add customer error:', err);
-        alert('Er is een fout opgetreden');
+        alert(T.error_occurred);
     });
 }
 
 // Booking Actions
 function resendPaymentLink(uuid) {
-    if (!confirm('<?= $translations['confirm_resend_link'] ?? 'Resend payment link?' ?>')) return;
+    if (!confirm('<?= $__('confirm_resend_link') ?>')) return;
 
     fetch('/business/pos/send-payment-link', {
         method: 'POST',
@@ -1492,16 +1527,16 @@ function resendPaymentLink(uuid) {
     })
     .then(r => r.json())
     .then(data => {
-        alert(data.success ? data.message : (data.error || 'Er ging iets mis'));
+        alert(data.success ? data.message : (data.error || T.something_went_wrong));
     })
     .catch(err => {
         console.error('Resend payment link error:', err);
-        alert('Er is een fout opgetreden');
+        alert(T.error_occurred);
     });
 }
 
 function markCompleted(uuid) {
-    if (!confirm('<?= $translations['confirm_mark_completed'] ?? 'Mark appointment as completed?' ?>')) return;
+    if (!confirm('<?= $__('confirm_mark_completed') ?>')) return;
 
     fetch('/business/pos/booking/status', {
         method: 'POST',
@@ -1514,16 +1549,16 @@ function markCompleted(uuid) {
     .then(r => r.json())
     .then(data => {
         if (data.success) location.reload();
-        else alert(data.error || 'Er ging iets mis');
+        else alert(data.error || T.something_went_wrong);
     })
     .catch(err => {
         console.error('Mark completed error:', err);
-        alert('Er is een fout opgetreden');
+        alert(T.error_occurred);
     });
 }
 
 function cancelBooking(uuid) {
-    if (!confirm('<?= $translations['confirm_cancel_booking'] ?? 'Are you sure you want to cancel this appointment? Online payment will be refunded.' ?>')) return;
+    if (!confirm('<?= $__('confirm_cancel_booking') ?>')) return;
 
     fetch('/business/pos/booking/cancel', {
         method: 'POST',
@@ -1536,11 +1571,11 @@ function cancelBooking(uuid) {
     .then(r => r.json())
     .then(data => {
         if (data.success) location.reload();
-        else alert(data.error || 'Er ging iets mis');
+        else alert(data.error || T.something_went_wrong);
     })
     .catch(err => {
         console.error('Cancel booking error:', err);
-        alert('Er is een fout opgetreden');
+        alert(T.error_occurred);
     });
 }
 
@@ -1607,13 +1642,13 @@ function generateQRCode(paymentLink, containerId, size = 180) {
         }, function(err, canvas) {
             if (err) {
                 console.error('QR generation error:', err);
-                container.innerHTML = '<p style="color:#999;font-size:0.8rem">QR code niet beschikbaar</p>';
+                container.innerHTML = '<p style="color:#999;font-size:0.8rem">' + T.qr_not_available + '</p>';
                 return;
             }
             container.appendChild(canvas);
         });
     } else {
-        container.innerHTML = '<p style="color:#999;font-size:0.8rem">QR code laden...</p>';
+        container.innerHTML = '<p style="color:#999;font-size:0.8rem">' + T.qr_loading + '</p>';
     }
 }
 
@@ -1624,7 +1659,7 @@ function shareViaWhatsApp() {
     const amount = document.getElementById('successAmount').textContent;
     const businessName = '<?= htmlspecialchars($business['company_name'] ?? 'GlamourSchedule') ?>';
 
-    const message = `Hallo ${customerName}! Hier is je betalingslink voor je afspraak bij ${businessName}. Bedrag: ${amount}. Betaal via: ${paymentLink}`;
+    const message = T.whatsapp_template.replace(':customer', customerName).replace(':business', businessName).replace(':amount', amount).replace(':link', paymentLink);
 
     window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
 }
@@ -1635,7 +1670,7 @@ function shareViaSMS() {
     const amount = document.getElementById('successAmount').textContent;
     const businessName = '<?= htmlspecialchars($business['company_name'] ?? 'GlamourSchedule') ?>';
 
-    const message = `Betaal ${amount} voor je afspraak bij ${businessName}: ${paymentLink}`;
+    const message = T.sms_template.replace(':amount', amount).replace(':business', businessName).replace(':link', paymentLink);
 
     // Mobile SMS link
     window.location.href = 'sms:?body=' + encodeURIComponent(message);
@@ -1675,28 +1710,28 @@ function printReceipt() {
         <body>
             <div class="header">
                 <h1>${businessName}</h1>
-                <p>Afspraakbevestiging</p>
+                <p>${T.receipt_confirmation}</p>
             </div>
 
             <div class="details">
-                <div class="row"><span>Klant:</span><span>${customerName}</span></div>
-                <div class="row"><span>Dienst:</span><span>${serviceName}</span></div>
-                <div class="row"><span>Datum & Tijd:</span><span>${dateTime}</span></div>
-                <div class="row total"><span>Te betalen:</span><span>${amount}</span></div>
+                <div class="row"><span>${T.receipt_customer}</span><span>${customerName}</span></div>
+                <div class="row"><span>${T.receipt_service}</span><span>${serviceName}</span></div>
+                <div class="row"><span>${T.receipt_datetime}</span><span>${dateTime}</span></div>
+                <div class="row total"><span>${T.receipt_to_pay}</span><span>${amount}</span></div>
             </div>
 
             <div class="qr-section">
                 <div id="printQrCode"></div>
-                <p>Scan om te betalen</p>
+                <p>${T.receipt_scan_to_pay}</p>
             </div>
 
             <div class="payment-link">
-                <strong>Betalingslink:</strong><br>
+                <strong>${T.receipt_payment_link}</strong><br>
                 ${paymentLink}
             </div>
 
             <div class="footer">
-                <p>Bedankt voor uw boeking!</p>
+                <p>${T.receipt_thanks}</p>
                 <p>GlamourSchedule</p>
             </div>
 
@@ -1748,7 +1783,7 @@ function startPaymentStatusPolling(uuid) {
             .then(data => {
                 if (data.payment_status === 'paid') {
                     dot.className = 'status-dot paid';
-                    text.textContent = 'Betaling ontvangen!';
+                    text.textContent = T.payment_received;
                     stopPaymentStatusPolling();
 
                     // Auto close and refresh
@@ -1787,7 +1822,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (qrSection) {
         const enlargeBtn = document.createElement('button');
         enlargeBtn.className = 'enlarge-btn';
-        enlargeBtn.innerHTML = '<i class="fas fa-expand"></i> Vergroot voor klant';
+        enlargeBtn.innerHTML = T.enlarge_for_customer;
         enlargeBtn.onclick = function() {
             const paymentLink = document.getElementById('paymentLinkInput').value;
             const amount = document.getElementById('successAmount').textContent;
