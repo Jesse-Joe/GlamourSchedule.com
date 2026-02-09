@@ -176,6 +176,20 @@ class Router
                 header('Location: /login');
                 exit;
 
+            case 'admin':
+                if (!isset($_SESSION['admin_id'])) {
+                    header('Location: /admin/login');
+                    exit;
+                }
+                return true;
+
+            case 'sales':
+                if (!isset($_SESSION['sales_id'])) {
+                    header('Location: /sales/login');
+                    exit;
+                }
+                return true;
+
             default:
                 return true;
         }

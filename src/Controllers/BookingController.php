@@ -340,8 +340,28 @@ class BookingController extends Controller
             return $this->redirect('/');
         }
 
-        // Re-check if time slot is still available
-        if (!$this->isTimeSlotAvailable($business['id'], $bookingData['date'], $bookingData['time'], $bookingData['duration_minutes'], $bookingData['employee_id'])) {
+        // Start transaction for atomic availability check + booking insert
+        $this->db->beginTransaction();
+
+        try {
+        // Re-check if time slot is still available (within transaction for atomicity)
+        // Lock existing bookings for this slot to prevent race conditions
+        $conflictCheck = $this->db->query(
+            "SELECT id FROM bookings
+             WHERE business_id = ? AND appointment_date = ? AND status NOT IN ('cancelled')
+             AND employee_id = ?
+             AND (
+                 (appointment_time <= ? AND ADDTIME(appointment_time, SEC_TO_TIME(duration_minutes * 60)) > ?)
+                 OR (appointment_time < ADDTIME(?, SEC_TO_TIME(? * 60)) AND appointment_time >= ?)
+             )
+             FOR UPDATE",
+            [$business['id'], $bookingData['date'], $bookingData['employee_id'],
+             $bookingData['time'], $bookingData['time'],
+             $bookingData['time'], $bookingData['duration_minutes'], $bookingData['time']]
+        );
+
+        if ($conflictCheck->rowCount() > 0) {
+            $this->db->rollBack();
             unset($_SESSION['pending_booking']);
             return $this->redirect('/book/' . $business['slug'] . '?error=slot_taken');
         }
@@ -441,7 +461,17 @@ class BookingController extends Controller
             ]
         );
 
-        // Redeem loyalty points if applicable
+        // Commit the transaction (booking inserted, slot secured)
+        $this->db->commit();
+
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            error_log("Booking creation failed: " . $e->getMessage());
+            unset($_SESSION['pending_booking']);
+            return $this->redirect('/book/' . $business['slug'] . '?error=booking_failed');
+        }
+
+        // Redeem loyalty points if applicable (outside transaction - non-critical)
         if ($loyaltyPointsRedeemed > 0 && $userId) {
             $stmt = $this->db->query("SELECT id FROM bookings WHERE uuid = ?", [$uuid]);
             $newBooking = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -591,9 +621,13 @@ class BookingController extends Controller
             return $this->redirect("/?error=not_found");
         }
 
-        // Anyone with the booking UUID link can cancel
-        // The UUID is secret and only shared via confirmation email
-        // No additional authorization check needed
+        $sessionUserId = $_SESSION['user_id'] ?? null;
+        $sessionBusinessId = $_SESSION['business_id'] ?? null;
+        $isOwner = $sessionUserId && (int)$booking['user_id'] === (int)$sessionUserId;
+        $isBusiness = $sessionBusinessId && (int)$booking['business_id'] === (int)$sessionBusinessId;
+        if (!$isOwner && !$isBusiness) {
+            return $this->redirect("/booking/$uuid?error=unauthorized");
+        }
 
         // Check if already cancelled
         if ($booking['status'] === 'cancelled') {
@@ -1014,10 +1048,15 @@ HTML;
 
     private function generateUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        return sprintf('%08s-%04s-%04s-%04s-%012s',
+            bin2hex(substr($bytes, 0, 4)),
+            bin2hex(substr($bytes, 4, 2)),
+            bin2hex(substr($bytes, 6, 2)),
+            bin2hex(substr($bytes, 8, 2)),
+            bin2hex(substr($bytes, 10, 6))
         );
     }
 
@@ -1032,8 +1071,12 @@ HTML;
      */
     private function generateVerificationCode(int $businessId, $customerIdentifier, string $uuid): string
     {
-        // Get secret key from environment
-        $secretKey = $_ENV['APP_KEY'] ?? 'glamourschedule-secret-key-2025';
+        // Get secret key from environment - no hardcoded fallback for security
+        $secretKey = $_ENV['APP_KEY'] ?? getenv('APP_KEY') ?: null;
+        if (!$secretKey) {
+            error_log('SECURITY CRITICAL: APP_KEY environment variable not set. Cannot generate verification code.');
+            throw new \RuntimeException('Application key not configured');
+        }
 
         // Create the data string: business_id + customer + uuid + timestamp seed
         $dataString = sprintf(
@@ -1062,8 +1105,12 @@ HTML;
      */
     public static function verifyCode(string $verificationCode, int $businessId, array $booking): bool
     {
-        // Regenerate the code and compare
-        $secretKey = $_ENV['APP_KEY'] ?? 'glamourschedule-secret-key-2025';
+        // Regenerate the code and compare - no hardcoded fallback for security
+        $secretKey = $_ENV['APP_KEY'] ?? getenv('APP_KEY') ?: null;
+        if (!$secretKey) {
+            error_log('SECURITY CRITICAL: APP_KEY environment variable not set. Cannot verify code.');
+            return false;
+        }
         $customerIdentifier = $booking['user_id'] ?? $booking['guest_email'] ?? '';
 
         $dataString = sprintf(

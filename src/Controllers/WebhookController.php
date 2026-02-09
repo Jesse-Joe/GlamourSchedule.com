@@ -63,7 +63,7 @@ class WebhookController extends Controller
             $platformFee = $payment->metadata->platform_fee ?? 1.75;
             $businessAmount = $payment->metadata->business_amount ?? null;
 
-            // Update booking with payment and split info
+            // Update booking with payment and split info (idempotent: only update if not already paid)
             if ($isSplitPayment && $businessAmount !== null) {
                 $this->db->query(
                     "UPDATE bookings
@@ -72,13 +72,13 @@ class WebhookController extends Controller
                          platform_fee = ?,
                          business_payout = ?,
                          payout_status = 'pending'
-                     WHERE uuid = ?",
+                     WHERE uuid = ? AND payment_status != 'paid'",
                     [$platformFee, $businessAmount, $bookingUuid]
                 );
                 error_log("Mollie webhook: Split payment confirmed for booking $bookingUuid (fee: €$platformFee, business: €$businessAmount)");
             } else {
                 $this->db->query(
-                    "UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE uuid = ?",
+                    "UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE uuid = ? AND payment_status != 'paid'",
                     [$bookingUuid]
                 );
                 error_log("Mollie webhook: Payment confirmed for booking $bookingUuid");
@@ -118,7 +118,7 @@ class WebhookController extends Controller
 
         if ($payment->isPaid()) {
             $this->db->query(
-                "UPDATE pos_bookings SET payment_status = 'paid', booking_status = 'confirmed', paid_at = NOW() WHERE uuid = ?",
+                "UPDATE pos_bookings SET payment_status = 'paid', booking_status = 'confirmed', paid_at = NOW() WHERE uuid = ? AND payment_status != 'paid'",
                 [$posBookingUuid]
             );
             error_log("Mollie webhook: POS payment confirmed for booking $posBookingUuid");
@@ -392,18 +392,13 @@ HTML;
 
         try {
             // Verify webhook signature - REQUIRED for security
-            if ($webhookSecret) {
-                $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
-            } else {
-                // WARNING: No webhook secret configured - this is a security risk!
-                error_log("SECURITY WARNING: Stripe webhook secret not configured. Webhook verification disabled.");
-                $event = json_decode($payload, false);
-                if (!$event || !isset($event->type)) {
-                    error_log("Stripe webhook: Invalid payload received");
-                    http_response_code(400);
-                    return json_encode(['error' => 'Invalid payload']);
-                }
+            if (!$webhookSecret) {
+                error_log("CRITICAL: Stripe webhook secret not configured. Rejecting webhook.");
+                http_response_code(500);
+                return json_encode(['error' => 'Webhook not configured']);
             }
+
+            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
 
             // Handle the event
             switch ($event->type) {
@@ -464,9 +459,9 @@ HTML;
             return;
         }
 
-        // Update booking status
+        // Update booking status (idempotent: only update if not already paid)
         $this->db->query(
-            "UPDATE bookings SET payment_status = 'paid', status = 'confirmed', payment_id = ? WHERE uuid = ?",
+            "UPDATE bookings SET payment_status = 'paid', status = 'confirmed', payment_id = ? WHERE uuid = ? AND payment_status != 'paid'",
             [$session->id, $bookingUuid]
         );
 

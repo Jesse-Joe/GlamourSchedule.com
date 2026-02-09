@@ -289,25 +289,42 @@ class BusinessRegisterController extends Controller
             // Get timezone for this country
             $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($countryCode);
 
-            $this->db->query(
-                "INSERT INTO businesses (
-                    uuid, company_name, slug, email, password_hash, phone,
-                    street, house_number, postal_code, city, country, timezone, language,
-                    description, kvk_number,
-                    is_early_adopter, is_early_bird, early_bird_number, registration_fee_paid, status,
-                    trial_ends_at, subscription_status, subscription_price, welcome_discount,
-                    referral_code, referred_by_sales_partner,
-                    registration_country, registration_ip, promo_applied
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [
-                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
-                    $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $countryCode, $businessTimezone, $detectedLanguage,
-                    $data['description'], $data['kvk_number'],
-                    $isPromo ? 1 : 0, $isPromo ? 1 : 0, $earlyBirdNumber,
-                    $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
-                    $countryCode, $location['ip'], $isPromo ? 1 : 0
-                ]
-            );
+            // Insert with retry loop to handle slug uniqueness race condition (TOCTOU)
+            $slugInserted = false;
+            for ($slugAttempt = 0; $slugAttempt < 5; $slugAttempt++) {
+                try {
+                    $this->db->query(
+                        "INSERT INTO businesses (
+                            uuid, company_name, slug, email, password_hash, phone,
+                            street, house_number, postal_code, city, country, timezone, language,
+                            description, kvk_number,
+                            is_early_adopter, is_early_bird, early_bird_number, registration_fee_paid, status,
+                            trial_ends_at, subscription_status, subscription_price, welcome_discount,
+                            referral_code, referred_by_sales_partner,
+                            registration_country, registration_ip, promo_applied
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
+                            $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $countryCode, $businessTimezone, $detectedLanguage,
+                            $data['description'], $data['kvk_number'],
+                            $isPromo ? 1 : 0, $isPromo ? 1 : 0, $earlyBirdNumber,
+                            $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
+                            $countryCode, $location['ip'], $isPromo ? 1 : 0
+                        ]
+                    );
+                    $slugInserted = true;
+                    break;
+                } catch (\Exception $slugEx) {
+                    if ($this->isDuplicateSlugError($slugEx)) {
+                        $slug = $this->regenerateSlugAfterConflict($slug);
+                        continue;
+                    }
+                    throw $slugEx;
+                }
+            }
+            if (!$slugInserted) {
+                throw new \RuntimeException('Failed to insert business: slug conflict after multiple retries');
+            }
             $businessId = $this->db->lastInsertId();
 
             // Increment country registration count if promo was applied
@@ -570,10 +587,9 @@ GlamourSchedule
                                     </div>
 
                                     <div style='background:#f8f9fa;border-radius:10px;padding:20px;margin:20px 0;'>
-                                        <p style='margin:0 0 10px;color:#ffffff;font-weight:600;'>Je tijdelijke inloggegevens:</p>
+                                        <p style='margin:0 0 10px;color:#ffffff;font-weight:600;'>Je inloggegevens:</p>
                                         <p style='margin:5px 0;color:#cccccc;'>E-mail: <strong>{$email}</strong></p>
-                                        <p style='margin:5px 0;color:#cccccc;'>Wachtwoord: <strong style='font-family:monospace;background:#e5e7eb;padding:2px 8px;border-radius:4px;'>{$tempPassword}</strong></p>
-                                        <p style='margin:10px 0 0;color:#999;font-size:13px;'>Je kunt je wachtwoord later wijzigen in je dashboard.</p>
+                                        <p style='margin:10px 0 0;color:#999;font-size:13px;'>Je stelt je wachtwoord in bij het voltooien van je registratie.</p>
                                     </div>
 
                                     <p style='font-size:14px;color:#cccccc;margin-top:20px;'>Of kopieer deze link in je browser:<br><a href='{$verifyUrl}' style='color:#ffffff;word-break:break-all;'>{$verifyUrl}</a></p>
@@ -604,11 +620,10 @@ Bedankt voor je registratie van {$companyName}!
 Klik op de link hieronder om je registratie te voltooien:
 {$verifyUrl}
 
-Je tijdelijke inloggegevens:
+Je inloggegevens:
 E-mail: {$email}
-Wachtwoord: {$tempPassword}
 
-Je kunt je wachtwoord later wijzigen in je dashboard.
+Je stelt je wachtwoord in bij het voltooien van je registratie.
 
 Met vriendelijke groet,
 GlamourSchedule
@@ -711,6 +726,10 @@ GlamourSchedule
         $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
         $slug = trim($slug, '-');
 
+        if (empty($slug)) {
+            $slug = 'business';
+        }
+
         $original = $slug;
         $i = 1;
         while ($this->slugExists($slug)) {
@@ -718,6 +737,26 @@ GlamourSchedule
             $i++;
         }
         return $slug;
+    }
+
+    /**
+     * Regenerate slug with a random suffix to resolve duplicate key conflicts.
+     * Called when an INSERT fails due to a duplicate slug (TOCTOU race condition).
+     */
+    private function regenerateSlugAfterConflict(string $slug): string
+    {
+        $baseSlug = preg_replace('/-\d+$/', '', $slug);
+        return $baseSlug . '-' . random_int(100, 9999);
+    }
+
+    /**
+     * Check if a PDO exception is a duplicate key error on the slug column.
+     */
+    private function isDuplicateSlugError(\Exception $e): bool
+    {
+        $message = $e->getMessage();
+        return (strpos($message, '1062') !== false || strpos($message, 'Duplicate entry') !== false)
+            && strpos($message, 'slug') !== false;
     }
 
     private function slugExists(string $slug): bool
@@ -728,10 +767,15 @@ GlamourSchedule
 
     private function generateUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        return sprintf('%08s-%04s-%04s-%04s-%012s',
+            bin2hex(substr($bytes, 0, 4)),
+            bin2hex(substr($bytes, 4, 2)),
+            bin2hex(substr($bytes, 6, 2)),
+            bin2hex(substr($bytes, 8, 2)),
+            bin2hex(substr($bytes, 10, 6))
         );
     }
 
@@ -887,19 +931,36 @@ GlamourSchedule
             $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($countryCode);
 
             // Business has its own password_hash - separate from customer accounts
-            $this->db->query(
-                "INSERT INTO businesses (
-                    uuid, company_name, slug, email, password_hash, country, timezone, language,
-                    is_early_adopter, registration_fee_paid, status,
-                    trial_ends_at, subscription_status, subscription_price, welcome_discount,
-                    referral_code, referred_by_sales_partner, verification_token
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
-                [
-                    $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $countryCode, $businessTimezone, $detectedLanguage,
-                    $isSalesEarlyAdopter ? 1 : 0,
-                    $trialEndsAt, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy, $verificationToken
-                ]
-            );
+            // Insert with retry loop to handle slug uniqueness race condition (TOCTOU)
+            $slugInserted = false;
+            for ($slugAttempt = 0; $slugAttempt < 5; $slugAttempt++) {
+                try {
+                    $this->db->query(
+                        "INSERT INTO businesses (
+                            uuid, company_name, slug, email, password_hash, country, timezone, language,
+                            is_early_adopter, registration_fee_paid, status,
+                            trial_ends_at, subscription_status, subscription_price, welcome_discount,
+                            referral_code, referred_by_sales_partner, verification_token
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, 'trial', ?, ?, ?, ?, ?)",
+                        [
+                            $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $countryCode, $businessTimezone, $detectedLanguage,
+                            $isSalesEarlyAdopter ? 1 : 0,
+                            $trialEndsAt, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy, $verificationToken
+                        ]
+                    );
+                    $slugInserted = true;
+                    break;
+                } catch (\Exception $slugEx) {
+                    if ($this->isDuplicateSlugError($slugEx)) {
+                        $slug = $this->regenerateSlugAfterConflict($slug);
+                        continue;
+                    }
+                    throw $slugEx;
+                }
+            }
+            if (!$slugInserted) {
+                throw new \RuntimeException('Failed to insert business: slug conflict after multiple retries');
+            }
             $businessId = $this->db->lastInsertId();
 
             // Create referral record
@@ -1233,7 +1294,8 @@ GlamourSchedule
         // Businesses are separate from customers - no JOIN with users needed
         $stmt = $this->db->query(
             "SELECT * FROM businesses
-             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)",
+             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)
+             AND updated_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -1270,7 +1332,8 @@ GlamourSchedule
         // Businesses are separate from customers - no JOIN with users needed
         $stmt = $this->db->query(
             "SELECT * FROM businesses
-             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)",
+             WHERE verification_token = ? AND (registration_fee_paid > 0 OR is_early_adopter = 1)
+             AND updated_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)",
             [$token]
         );
         $business = $stmt->fetch(\PDO::FETCH_ASSOC);

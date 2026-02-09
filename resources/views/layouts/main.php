@@ -16,7 +16,7 @@ if (!isset($promo)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $pageTitle ?? 'Glamourschedule' ?> - Booking Platform</title>
+    <title><?= htmlspecialchars($pageTitle ?? 'Glamourschedule', ENT_QUOTES, 'UTF-8') ?> - Booking Platform</title>
 
     <!-- Early Theme Detection (prevents flash of wrong theme) -->
     <script>
@@ -332,13 +332,20 @@ if (!isset($promo)) {
                         <i class="fas fa-chevron-down sidebar-lang-arrow"></i>
                     </button>
                     <div class="sidebar-lang-menu" id="mobileLangMenu">
-                        <?php foreach ($mobileLangFlags as $lCode => $lData): ?>
-                        <a href="<?= htmlspecialchars($buildMobileLangUrl($lCode)) ?>" class="sidebar-lang-item <?= $currentLangMobile === $lCode ? 'active' : '' ?>">
-                            <span class="lang-flag-badge" style="background: <?= $lData['color'] ?>"><?= $lData['code'] ?></span>
-                            <span class="sidebar-lang-item-name"><?= $lData['name'] ?></span>
-                            <?php if ($currentLangMobile === $lCode): ?><i class="fas fa-check"></i><?php endif; ?>
-                        </a>
-                        <?php endforeach; ?>
+                        <div class="sidebar-lang-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="sidebar-lang-search-input" id="mobileLangSearchInput" placeholder="Search language..." autocomplete="off" onclick="event.stopPropagation()">
+                        </div>
+                        <div class="sidebar-lang-list" id="mobileLangList">
+                            <?php foreach ($mobileLangFlags as $lCode => $lData): ?>
+                            <a href="<?= htmlspecialchars($buildMobileLangUrl($lCode)) ?>" class="sidebar-lang-item <?= $currentLangMobile === $lCode ? 'active' : '' ?>" data-lang="<?= htmlspecialchars(mb_strtolower(($lData['name'] ?? '') . ' ' . $lCode . ' ' . ($lData['code'] ?? ''), 'UTF-8')) ?>">
+                                <span class="lang-flag-badge" style="background: <?= $lData['color'] ?>"><?= $lData['code'] ?></span>
+                                <span class="sidebar-lang-item-name"><?= $lData['name'] ?></span>
+                                <?php if ($currentLangMobile === $lCode): ?><i class="fas fa-check"></i><?php endif; ?>
+                            </a>
+                            <?php endforeach; ?>
+                            <div class="sidebar-lang-no-results" id="mobileLangNoResults">No results</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -424,15 +431,22 @@ if (!isset($promo)) {
                     <i class="fas fa-chevron-down lang-arrow"></i>
                 </button>
                 <div class="lang-dropdown-menu" id="langDropdownMenu">
-                    <?php foreach ($langFlags as $langCode => $flagData): ?>
-                    <a href="<?= htmlspecialchars($buildLangUrl($langCode)) ?>" class="lang-dropdown-item <?= $currentLang === $langCode ? 'active' : '' ?>">
-                        <span class="lang-flag-badge" style="background: <?= $flagData['color'] ?>"><?= $flagData['code'] ?></span>
-                        <span class="lang-name"><?= $langNames[$langCode] ?? $langCode ?></span>
-                        <?php if ($currentLang === $langCode): ?>
-                        <i class="fas fa-check lang-check"></i>
-                        <?php endif; ?>
-                    </a>
-                    <?php endforeach; ?>
+                    <div class="lang-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="lang-search-input" id="langSearchInput" placeholder="Search language..." autocomplete="off" onclick="event.stopPropagation()">
+                    </div>
+                    <div class="lang-dropdown-list" id="langDropdownList">
+                        <?php foreach ($langFlags as $langCode => $flagData): ?>
+                        <a href="<?= htmlspecialchars($buildLangUrl($langCode)) ?>" class="lang-dropdown-item <?= $currentLang === $langCode ? 'active' : '' ?>" data-lang="<?= htmlspecialchars(mb_strtolower(($langNames[$langCode] ?? '') . ' ' . $langCode . ' ' . ($flagData['code'] ?? ''), 'UTF-8')) ?>">
+                            <span class="lang-flag-badge" style="background: <?= $flagData['color'] ?>"><?= $flagData['code'] ?></span>
+                            <span class="lang-name"><?= $langNames[$langCode] ?? $langCode ?></span>
+                            <?php if ($currentLang === $langCode): ?>
+                            <i class="fas fa-check lang-check"></i>
+                            <?php endif; ?>
+                        </a>
+                        <?php endforeach; ?>
+                        <div class="lang-no-results" id="langNoResults">No results</div>
+                    </div>
                 </div>
             </div>
 
@@ -468,7 +482,7 @@ if (!isset($promo)) {
     <main>
         <?php if (isset($flashMessage)): ?>
             <div class="container" style="padding-top: 6rem;">
-                <div class="alert alert-<?= $flashType ?? 'success' ?>"><?= $flashMessage ?></div>
+                <div class="alert alert-<?= htmlspecialchars($flashType ?? 'success', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($flashMessage, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
         <?php endif; ?>
 
@@ -582,7 +596,7 @@ if (!isset($promo)) {
             }
 
             searchTimeout = setTimeout(() => {
-                const lang = '<?= $lang ?? 'nl' ?>';
+                const lang = <?= json_encode($lang ?? 'nl') ?>;
                 fetch('/api/global-search?q=' + encodeURIComponent(query) + '&lang=' + lang)
                     .then(response => response.json())
                     .then(data => {
@@ -592,6 +606,13 @@ if (!isset($promo)) {
                         console.error('Search error:', err);
                     });
             }, 300);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
         }
 
         function displaySearchResults(data, query) {
@@ -604,11 +625,11 @@ if (!isset($promo)) {
                 data.salons.forEach(salon => {
                     const photo = salon.cover_image || salon.logo || '/images/placeholder-salon.jpg';
                     html += `
-                        <a href="/business/${salon.slug}" class="search-result-item" onclick="closeGlobalSearch()">
-                            <img src="${photo}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
+                        <a href="/business/${encodeURIComponent(salon.slug)}" class="search-result-item" onclick="closeGlobalSearch()">
+                            <img src="${escapeHtml(photo)}" alt="" class="search-result-avatar" onerror="this.src='/images/placeholder-salon.jpg'">
                             <div class="search-result-info">
-                                <span class="search-result-name">${salon.company_name}</span>
-                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${salon.city || '<?= addslashes($translations['netherlands'] ?? 'Netherlands') ?>'}</span>
+                                <span class="search-result-name">${escapeHtml(salon.company_name)}</span>
+                                <span class="search-result-meta"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(salon.city) || '<?= addslashes($translations['netherlands'] ?? 'Netherlands') ?>'}</span>
                             </div>
                         </a>
                     `;
@@ -621,9 +642,9 @@ if (!isset($promo)) {
                 data.services.forEach(service => {
                     const price = service.price ? ` <small style="opacity:0.6">€${parseFloat(service.price).toFixed(2)}</small>` : '';
                     html += `
-                        <a href="/business/${service.business_slug}?service=${service.id}" class="search-quick-link" onclick="closeGlobalSearch()">
+                        <a href="/business/${encodeURIComponent(service.business_slug)}?service=${encodeURIComponent(service.id)}" class="search-quick-link" onclick="closeGlobalSearch()">
                             <i class="fas fa-cut"></i>
-                            <span>${service.name}${price} <small style="opacity:0.6"><?= addslashes($translations['at'] ?? 'at') ?> ${service.business_name}</small></span>
+                            <span>${escapeHtml(service.name)}${price} <small style="opacity:0.6"><?= addslashes($translations['at'] ?? 'at') ?> ${escapeHtml(service.business_name)}</small></span>
                         </a>
                     `;
                 });
@@ -636,9 +657,9 @@ if (!isset($promo)) {
                     const icon = cat.icon ? (cat.icon.startsWith('fa-') ? cat.icon : 'fa-' + cat.icon) : 'fa-tag';
                     const count = cat.salon_count > 0 ? ` <small style="opacity:0.6">(${cat.salon_count} salons)</small>` : '';
                     html += `
-                        <a href="/search?category=${cat.slug}" class="search-quick-link" onclick="closeGlobalSearch()">
-                            <i class="fas ${icon}"></i>
-                            <span>${cat.name}${count}</span>
+                        <a href="/search?category=${encodeURIComponent(cat.slug)}" class="search-quick-link" onclick="closeGlobalSearch()">
+                            <i class="fas ${escapeHtml(icon)}"></i>
+                            <span>${escapeHtml(cat.name)}${count}</span>
                         </a>
                     `;
                 });
@@ -651,7 +672,7 @@ if (!isset($promo)) {
                     html += `
                         <a href="/search?location=${encodeURIComponent(loc.city)}" class="search-quick-link" onclick="closeGlobalSearch()">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>${loc.city} <small style="opacity:0.6">(${loc.salon_count} salons)</small></span>
+                            <span>${escapeHtml(loc.city)} <small style="opacity:0.6">(${parseInt(loc.salon_count) || 0} salons)</small></span>
                         </a>
                     `;
                 });
@@ -697,7 +718,7 @@ if (!isset($promo)) {
                 html = `
                     <div class="search-no-results">
                         <i class="fas fa-search"></i>
-                        <p><?= addslashes($translations['no_results_for'] ?? 'No results for') ?> "${query}"</p>
+                        <p><?= addslashes($translations['no_results_for'] ?? 'No results for') ?> "${escapeHtml(query)}"</p>
                         <a href="/search?q=${encodeURIComponent(query)}" class="btn btn-primary" style="margin-top:1rem" onclick="closeGlobalSearch()">
                             <?= addslashes($translations['search_all_salons'] ?? 'Search all salons') ?>
                         </a>
@@ -993,8 +1014,11 @@ if (!isset($promo)) {
         background: #000;
         border: 1px solid #333;
         border-radius: 12px;
-        min-width: 160px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        min-width: 220px;
+        max-height: 420px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         opacity: 0;
         visibility: hidden;
         transform: translateY(-10px);
@@ -1007,14 +1031,65 @@ if (!isset($promo)) {
         visibility: visible;
         transform: translateY(0);
     }
+    .lang-search-box {
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid #222;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        background: #000;
+        z-index: 1;
+    }
+    .lang-search-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem 0.5rem 2rem;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.8rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    .lang-search-input:focus {
+        border-color: #555;
+    }
+    .lang-search-input::placeholder {
+        color: rgba(255,255,255,0.3);
+    }
+    .lang-search-box i {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255,255,255,0.3);
+        font-size: 0.75rem;
+        pointer-events: none;
+    }
+    .lang-dropdown-list {
+        overflow-y: auto;
+        flex: 1;
+        scrollbar-width: thin;
+        scrollbar-color: #333 transparent;
+    }
+    .lang-dropdown-list::-webkit-scrollbar {
+        width: 4px;
+    }
+    .lang-dropdown-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .lang-dropdown-list::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+    }
     .lang-dropdown-item {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.75rem 1rem;
+        padding: 0.6rem 1rem;
         color: #fff;
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: all 0.2s;
     }
     .lang-dropdown-item:hover {
@@ -1022,6 +1097,16 @@ if (!isset($promo)) {
     }
     .lang-dropdown-item.active {
         background: rgba(255,255,255,0.08);
+    }
+    .lang-dropdown-item.lang-hidden {
+        display: none;
+    }
+    .lang-no-results {
+        padding: 1rem;
+        text-align: center;
+        color: rgba(255,255,255,0.3);
+        font-size: 0.8rem;
+        display: none;
     }
     .lang-name {
         flex: 1;
@@ -1083,17 +1168,61 @@ if (!isset($promo)) {
         bottom: 100%;
         left: 0;
         right: 0;
-        max-height: 300px;
-        overflow-y: auto;
+        max-height: 350px;
         background: #1a1a1a;
         border: 1px solid #333;
         border-radius: 10px;
         margin-bottom: 0.5rem;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
         z-index: 1000;
+        overflow: hidden;
+        flex-direction: column;
     }
     .sidebar-lang-dropdown.open .sidebar-lang-menu {
-        display: block;
+        display: flex;
+    }
+    .sidebar-lang-search-box {
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid #333;
+        flex-shrink: 0;
+        position: relative;
+    }
+    .sidebar-lang-search-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem 0.5rem 2rem;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.85rem;
+        outline: none;
+    }
+    .sidebar-lang-search-input::placeholder {
+        color: rgba(255,255,255,0.3);
+    }
+    .sidebar-lang-search-box i {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255,255,255,0.3);
+        font-size: 0.75rem;
+    }
+    .sidebar-lang-list {
+        overflow-y: auto;
+        flex: 1;
+        scrollbar-width: thin;
+        scrollbar-color: #444 transparent;
+    }
+    .sidebar-lang-item.lang-hidden {
+        display: none;
+    }
+    .sidebar-lang-no-results {
+        padding: 1rem;
+        text-align: center;
+        color: rgba(255,255,255,0.3);
+        font-size: 0.8rem;
+        display: none;
     }
     .sidebar-lang-item {
         display: flex;
@@ -1135,31 +1264,76 @@ if (!isset($promo)) {
     }
 
     function toggleLangDropdown() {
-        const dropdown = document.querySelector('.lang-dropdown');
-        dropdown.classList.toggle('open');
-        // Close account dropdown if open
+        var dropdown = document.querySelector('.lang-dropdown');
+        var isOpen = dropdown.classList.toggle('open');
         document.getElementById('accountDropdownMenu')?.classList.remove('active');
+        if (isOpen) {
+            var input = document.getElementById('langSearchInput');
+            if (input) { setTimeout(function() { input.focus(); }, 100); input.value = ''; filterLangItems('langDropdownList', '', 'langNoResults'); }
+        }
     }
 
     function toggleMobileLangDropdown() {
-        const dropdown = document.querySelector('.sidebar-lang-dropdown');
-        dropdown.classList.toggle('open');
+        var dropdown = document.querySelector('.sidebar-lang-dropdown');
+        var isOpen = dropdown.classList.toggle('open');
+        if (isOpen) {
+            var input = document.getElementById('mobileLangSearchInput');
+            if (input) { setTimeout(function() { input.focus(); }, 100); input.value = ''; filterLangItems('mobileLangList', '', 'mobileLangNoResults'); }
+        }
+    }
+
+    // Language search filter
+    function filterLangItems(listId, query, noResultsId) {
+        var list = document.getElementById(listId);
+        var noResults = document.getElementById(noResultsId);
+        if (!list) return;
+        var items = list.querySelectorAll('a[data-lang]');
+        var q = query.toLowerCase().trim();
+        var visible = 0;
+        items.forEach(function(item) {
+            var match = !q || item.getAttribute('data-lang').indexOf(q) !== -1;
+            item.classList.toggle('lang-hidden', !match);
+            if (match) visible++;
+        });
+        if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // Desktop search
+    var deskInput = document.getElementById('langSearchInput');
+    if (deskInput) {
+        deskInput.addEventListener('input', function() {
+            filterLangItems('langDropdownList', this.value, 'langNoResults');
+        });
+        deskInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { document.querySelector('.lang-dropdown')?.classList.remove('open'); }
+        });
+    }
+
+    // Mobile search
+    var mobInput = document.getElementById('mobileLangSearchInput');
+    if (mobInput) {
+        mobInput.addEventListener('input', function() {
+            filterLangItems('mobileLangList', this.value, 'mobileLangNoResults');
+        });
+        mobInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { document.querySelector('.sidebar-lang-dropdown')?.classList.remove('open'); }
+        });
     }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
-        const accountDropdown = document.querySelector('.account-dropdown');
-        const accountMenu = document.getElementById('accountDropdownMenu');
+        var accountDropdown = document.querySelector('.account-dropdown');
+        var accountMenu = document.getElementById('accountDropdownMenu');
         if (accountDropdown && accountMenu && !accountDropdown.contains(e.target)) {
             accountMenu.classList.remove('active');
         }
 
-        const langDropdown = document.querySelector('.lang-dropdown');
+        var langDropdown = document.querySelector('.lang-dropdown');
         if (langDropdown && !langDropdown.contains(e.target)) {
             langDropdown.classList.remove('open');
         }
 
-        const mobileLangDropdown = document.querySelector('.sidebar-lang-dropdown');
+        var mobileLangDropdown = document.querySelector('.sidebar-lang-dropdown');
         if (mobileLangDropdown && !mobileLangDropdown.contains(e.target)) {
             mobileLangDropdown.classList.remove('open');
         }
@@ -1177,25 +1351,41 @@ if (!isset($promo)) {
                     <i class="fas fa-globe-europe"></i>
                 </div>
 
-                <h2>We detected you're visiting from <?= htmlspecialchars($domainSwitchPopup['detected_country_name']) ?></h2>
-                <p>Would you like to view the website in <?= htmlspecialchars($domainSwitchPopup['detected_lang_native']) ?> (<?= htmlspecialchars($domainSwitchPopup['detected_lang_name']) ?>) or continue in English?</p>
+                <?php
+                $popupLangFlags = [
+                    'nl' => '🇳🇱', 'de' => '🇩🇪', 'fr' => '🇫🇷', 'es' => '🇪🇸', 'pt' => '🇵🇹', 'it' => '🇮🇹',
+                    'pl' => '🇵🇱', 'ru' => '🇷🇺', 'uk' => '🇺🇦', 'tr' => '🇹🇷', 'el' => '🇬🇷',
+                    'sv' => '🇸🇪', 'no' => '🇳🇴', 'da' => '🇩🇰', 'fi' => '🇫🇮',
+                    'cs' => '🇨🇿', 'hu' => '🇭🇺', 'ro' => '🇷🇴', 'bg' => '🇧🇬',
+                    'hr' => '🇭🇷', 'sr' => '🇷🇸', 'sk' => '🇸🇰', 'sl' => '🇸🇮',
+                    'ar' => '🇸🇦', 'he' => '🇮🇱', 'hi' => '🇮🇳', 'th' => '🇹🇭',
+                    'vi' => '🇻🇳', 'id' => '🇮🇩', 'ms' => '🇲🇾',
+                    'ja' => '🇯🇵', 'ko' => '🇰🇷', 'zh' => '🇨🇳', 'zh-TW' => '🇹🇼'
+                ];
+                $isMultilingual = !empty($domainSwitchPopup['is_multilingual']);
+                ?>
 
+                <h2>We detected you're visiting from <?= htmlspecialchars($domainSwitchPopup['detected_country_name']) ?></h2>
+
+                <?php if ($isMultilingual): ?>
+                <p>Which language would you prefer?</p>
+                <div class="language-popup-buttons">
+                    <?php foreach ($domainSwitchPopup['languages'] as $i => $lang): ?>
+                    <a href="<?= htmlspecialchars($lang['url']) ?>" class="language-popup-btn <?= $i === 0 ? 'language-popup-btn-primary' : 'language-popup-btn-option' ?>" onclick="setLanguageChoice('<?= $lang['code'] ?>')">
+                        <span class="lang-flag"><?= $popupLangFlags[$lang['code']] ?? '🌐' ?></span>
+                        <?= htmlspecialchars($lang['native']) ?> (<?= htmlspecialchars($lang['name']) ?>)
+                    </a>
+                    <?php endforeach; ?>
+                    <a href="<?= htmlspecialchars($domainSwitchPopup['stay_url']) ?>" class="language-popup-btn language-popup-btn-secondary" onclick="setLanguageChoice('en')">
+                        <span class="lang-flag">🇬🇧</span>
+                        Keep English
+                    </a>
+                </div>
+                <?php else: ?>
+                <p>Would you like to view the website in <?= htmlspecialchars($domainSwitchPopup['detected_lang_native']) ?> (<?= htmlspecialchars($domainSwitchPopup['detected_lang_name']) ?>) or continue in English?</p>
                 <div class="language-popup-buttons">
                     <a href="<?= htmlspecialchars($domainSwitchPopup['switch_url']) ?>" class="language-popup-btn language-popup-btn-primary" onclick="setLanguageChoice('<?= $domainSwitchPopup['detected_lang'] ?>')">
-                        <?php
-                        $langFlags = [
-                            'nl' => '🇳🇱', 'de' => '🇩🇪', 'fr' => '🇫🇷', 'es' => '🇪🇸', 'pt' => '🇵🇹', 'it' => '🇮🇹',
-                            'pl' => '🇵🇱', 'ru' => '🇷🇺', 'uk' => '🇺🇦', 'tr' => '🇹🇷', 'el' => '🇬🇷',
-                            'sv' => '🇸🇪', 'no' => '🇳🇴', 'da' => '🇩🇰', 'fi' => '🇫🇮',
-                            'cs' => '🇨🇿', 'hu' => '🇭🇺', 'ro' => '🇷🇴', 'bg' => '🇧🇬',
-                            'hr' => '🇭🇷', 'sr' => '🇷🇸', 'sk' => '🇸🇰', 'sl' => '🇸🇮',
-                            'ar' => '🇸🇦', 'he' => '🇮🇱', 'hi' => '🇮🇳', 'th' => '🇹🇭',
-                            'vi' => '🇻🇳', 'id' => '🇮🇩', 'ms' => '🇲🇾',
-                            'ja' => '🇯🇵', 'ko' => '🇰🇷', 'zh' => '🇨🇳', 'zh-TW' => '🇹🇼'
-                        ];
-                        $flag = $langFlags[$domainSwitchPopup['detected_lang']] ?? '🌐';
-                        ?>
-                        <span class="lang-flag"><?= $flag ?></span>
+                        <span class="lang-flag"><?= $popupLangFlags[$domainSwitchPopup['detected_lang']] ?? '🌐' ?></span>
                         Continue in <?= htmlspecialchars($domainSwitchPopup['detected_lang_native']) ?>
                     </a>
                     <a href="<?= htmlspecialchars($domainSwitchPopup['stay_url']) ?>" class="language-popup-btn language-popup-btn-secondary" onclick="setLanguageChoice('en')">
@@ -1203,6 +1393,7 @@ if (!isset($promo)) {
                         Keep English
                     </a>
                 </div>
+                <?php endif; ?>
 
                 <p class="language-popup-note">You can always change your language preference in the menu.</p>
             </div>
@@ -1226,7 +1417,9 @@ if (!isset($promo)) {
     .language-popup-btn .lang-flag { font-size: 1.4rem; }
     .language-popup-btn-primary { background: #fff; color: #000; }
     .language-popup-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
-    .language-popup-btn-secondary { background: transparent; color: #fff; border: 1px solid #444; }
+    .language-popup-btn-option { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid #444; }
+    .language-popup-btn-option:hover { background: rgba(255,255,255,0.15); border-color: #666; transform: translateY(-2px); }
+    .language-popup-btn-secondary { background: transparent; color: #fff; border: 1px solid #333; }
     .language-popup-btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: #666; }
     .language-popup-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0; }
     @media (max-width: 480px) {

@@ -467,8 +467,17 @@ HTML;
      */
     public function getInvoicePath(string $invoiceNumber): ?string
     {
-        $filename = "factuur-{$invoiceNumber}.pdf";
+        // Sanitize invoice number to prevent path traversal
+        $safeNumber = preg_replace('/[^a-zA-Z0-9\-_]/', '', $invoiceNumber);
+        $filename = "factuur-{$safeNumber}.pdf";
         $filepath = $this->storagePath . '/' . $filename;
+
+        // Verify the resolved path is within storage directory
+        $realPath = realpath($filepath);
+        $realStoragePath = realpath($this->storagePath);
+        if ($realPath === false || $realStoragePath === false || strpos($realPath, $realStoragePath) !== 0) {
+            return null;
+        }
 
         return file_exists($filepath) ? $filepath : null;
     }

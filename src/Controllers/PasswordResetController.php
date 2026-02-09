@@ -55,7 +55,8 @@ class PasswordResetController extends Controller
         $count = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
         if ($count >= 3) {
-            return $this->redirect('/forgot-password?error=rate_limit');
+            // Always show same success message to prevent information leak
+            return $this->redirect('/forgot-password?success=1');
         }
 
         // Generate secure token
@@ -193,15 +194,16 @@ class PasswordResetController extends Controller
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <!-- Header -->
                     <tr>
-                        <td style="background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;">
+                        <td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
                             <div style="font-size:48px;margin-bottom:10px;">🔐</div>
                             <h1 style="margin:0;font-size:26px;font-weight:700;">{$heading}</h1>
                         </td>
@@ -209,34 +211,34 @@ class PasswordResetController extends Controller
                     <!-- Content -->
                     <tr>
                         <td style="padding:40px;">
-                            <p style="font-size:18px;color:#ffffff;margin:0 0 20px;">{$greeting}</p>
+                            <p class="email-text" style="font-size:18px;color:#000000;margin:0 0 20px;">{$greeting}</p>
 
-                            <p style="font-size:16px;color:#555;line-height:1.6;margin:0 0 25px;">
+                            <p class="email-muted" style="font-size:16px;color:#666666;line-height:1.6;margin:0 0 25px;">
                                 {$body}
                             </p>
 
                             <p style="text-align:center;margin:35px 0;">
-                                <a href="{$resetUrl}" style="display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:18px 50px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:17px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                                <a href="{$resetUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:18px 50px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:17px;">
                                     {$buttonText}
                                 </a>
                             </p>
 
-                            <div style="background:#0a0a0a;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
-                                <p style="margin:0;color:#ffffff;font-size:14px;">
+                            <div style="background:#f5f5f5;border-left:4px solid #000000;padding:15px 20px;margin:25px 0;border-radius:0 8px 8px 0;">
+                                <p class="email-text" style="margin:0;color:#000000;font-size:14px;">
                                     {$notice}
                                 </p>
                             </div>
 
-                            <p style="font-size:13px;color:#999;margin:25px 0 0;">
+                            <p class="email-muted" style="font-size:13px;color:#666666;margin:25px 0 0;">
                                 {$linkNotWorking}<br>
-                                <a href="{$resetUrl}" style="color:#ffffff;word-break:break-all;">{$resetUrl}</a>
+                                <a href="{$resetUrl}" style="color:#000000;word-break:break-all;">{$resetUrl}</a>
                             </p>
                         </td>
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:25px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:13px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -248,7 +250,7 @@ class PasswordResetController extends Controller
 HTML;
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send password reset email: " . $e->getMessage());
@@ -260,7 +262,10 @@ HTML;
      */
     private function sendPasswordChangedEmail(string $email): void
     {
-        $subject = "Je wachtwoord is gewijzigd - GlamourSchedule";
+        $subject = $this->t('email_pw_changed_subject');
+        $heading = $this->t('email_pw_changed_heading');
+        $body = $this->t('email_pw_changed_body');
+        $warning = $this->t('email_pw_changed_warning');
         $currentYear = date('Y');
 
         $htmlBody = <<<HTML
@@ -268,32 +273,33 @@ HTML;
 <html>
 <head>
     <meta charset="UTF-8">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
-                        <td style="background:linear-gradient(135deg,#333333,#000000);color:#ffffff;padding:35px;text-align:center;">
+                        <td style="background:#000000;color:#ffffff;padding:35px;text-align:center;">
                             <div style="font-size:42px;margin-bottom:8px;">✓</div>
-                            <h1 style="margin:0;font-size:24px;">Wachtwoord gewijzigd</h1>
+                            <h1 style="margin:0;font-size:24px;">{$heading}</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:35px;">
-                            <p style="font-size:16px;color:#ffffff;line-height:1.6;">
-                                Je wachtwoord voor GlamourSchedule is succesvol gewijzigd.
+                            <p class="email-text" style="font-size:16px;color:#000000;line-height:1.6;">
+                                {$body}
                             </p>
-                            <p style="font-size:14px;color:#cccccc;margin-top:20px;">
-                                Heb je dit niet gedaan? Neem dan direct contact met ons op via
-                                <a href="mailto:support@glamourschedule.nl" style="color:#ffffff;">support@glamourschedule.nl</a>
+                            <p class="email-muted" style="font-size:14px;color:#666666;margin-top:20px;">
+                                {$warning}
+                                <a href="mailto:support@glamourschedule.nl" style="color:#000000;">support@glamourschedule.nl</a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#cccccc;font-size:12px;">&copy; {$currentYear} GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; {$currentYear} GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -305,7 +311,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send password changed email: " . $e->getMessage());

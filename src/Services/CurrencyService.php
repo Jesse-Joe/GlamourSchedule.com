@@ -146,7 +146,13 @@ class CurrencyService
             $this->fetchExchangeRates();
         }
 
-        return (float)($this->ratesCache['rates'][$key] ?? 1.0);
+        $rate = $this->ratesCache['rates'][$key] ?? null;
+        if ($rate === null) {
+            // No rate available - log warning and return null to signal failure
+            error_log("CurrencyService: No exchange rate for {$key}, falling back to EUR display");
+            return null;
+        }
+        return (float)$rate;
     }
 
     /**

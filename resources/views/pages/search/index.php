@@ -2498,8 +2498,8 @@ document.addEventListener('DOMContentLoaded', function() {
 let salonMap = null;
 let salonMarkers = null;
 let allSalonData = [];
-const detectedLang = '<?= $lang ?? 'nl' ?>';
-const searchCountry = '<?= $searchCountry ?? '' ?>';
+const detectedLang = <?= json_encode($lang ?? 'nl', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+const searchCountry = <?= json_encode($searchCountry ?? '', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 
 // Language to country mapping - comprehensive list
 const langCountryDefaults = {

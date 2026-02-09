@@ -36,6 +36,27 @@
         <div class="stat-label"><?= $translations['stats_customers'] ?? 'Happy Customers' ?></div>
     </div>
 </div>
+<?php if (!empty($showingGlobal)): ?>
+<div class="global-notice">
+    <i class="fas fa-globe"></i>
+    <?= $translations['no_local_salons'] ?? 'No salons in your area yet? We\'re expanding! Showing results from all countries.' ?>
+</div>
+<style>
+.global-notice {
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.global-notice i { color: rgba(255,255,255,0.4); }
+[data-theme="light"] .global-notice { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .global-notice i { color: rgba(0,0,0,0.3); }
+</style>
+<?php endif; ?>
 
 <!-- Boosted Businesses (Paid Promotion) - Now above categories -->
 <section class="section section-boosted">
@@ -292,32 +313,19 @@
     $totalSlots = 9;
     ?>
 
-    <?php if ($boostedCount === 0): ?>
-    <!-- No businesses in visitor's country -->
-    <div class="no-businesses-message" style="text-align:center;padding:3rem 1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border)">
-        <div style="width:80px;height:80px;background:var(--secondary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-            <i class="fas fa-store" style="font-size:2rem;color:var(--text-muted)"></i>
-        </div>
-        <h3 style="margin:0 0 0.5rem;color:var(--text)"><?= $translations['no_businesses_in_country'] ?? 'Momenteel nog geen bedrijven in uw land' ?></h3>
-        <p style="color:var(--text-muted);margin:0 0 1.5rem;max-width:400px;margin-left:auto;margin-right:auto"><?= $translations['no_businesses_in_country_desc'] ?? 'Wees de eerste! Registreer uw salon en bereik nieuwe klanten.' ?></p>
-        <a href="/register?type=business" class="btn btn-primary">
-            <i class="fas fa-rocket"></i> <?= $translations['register_your_salon'] ?? 'Registreer uw salon' ?>
-        </a>
-    </div>
-    <?php else: ?>
     <div class="boosted-grid">
         <?php
-        // Show boosted businesses
+        // Show boosted (paying) businesses
         foreach ($boostedBusinesses ?? [] as $biz):
-            $logoUrl = $biz['logo'] ?? '';
-            if ($logoUrl && !str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
-                $logoUrl = '/uploads/businesses/' . $logoUrl;
+            $cardImage = $biz['banner_image'] ?? $biz['logo'] ?? '';
+            if ($cardImage && !str_starts_with($cardImage, '/') && !str_starts_with($cardImage, 'http')) {
+                $cardImage = '/uploads/businesses/' . $cardImage;
             }
         ?>
         <a href="/business/<?= htmlspecialchars($biz['slug']) ?>" class="boosted-card">
             <div class="boosted-card-image">
-                <?php if ($logoUrl): ?>
-                    <img src="<?= htmlspecialchars($logoUrl) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
+                <?php if ($cardImage): ?>
+                    <img src="<?= htmlspecialchars($cardImage) ?>" alt="<?= htmlspecialchars($biz['name']) ?>" loading="lazy">
                 <?php else: ?>
                     <div class="placeholder"><i class="fas fa-spa"></i></div>
                 <?php endif; ?>
@@ -351,7 +359,7 @@
         <?php endforeach; ?>
 
         <?php
-        // Show empty slots as purchasable banners
+        // Fill remaining spots with available slot banners
         $emptySlots = $totalSlots - $boostedCount;
         for ($slot = 1; $slot <= $emptySlots; $slot++):
         ?>
@@ -366,8 +374,8 @@
         </a>
         <?php endfor; ?>
     </div>
-    <?php endif; ?>
 </section>
+
 
 <!-- Categories - 10 Groups with Photos -->
 <section class="section section-light">

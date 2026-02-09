@@ -7,6 +7,51 @@ use GlamourSchedule\Core\WebPush;
 class ApiController extends Controller
 {
     /**
+     * Check API rate limit using session-based throttling.
+     * Returns true if the request is allowed, or sends a 429 response and returns false.
+     *
+     * @param int $maxRequests Maximum requests allowed in the time window
+     * @param int $windowSeconds Time window in seconds
+     * @return bool True if allowed, false if rate limited (429 already sent)
+     */
+    private function checkApiRateLimit(int $maxRequests = 60, int $windowSeconds = 60): bool
+    {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        // Use first IP if X-Forwarded-For contains multiple
+        if (str_contains($ip, ',')) {
+            $ip = trim(explode(',', $ip)[0]);
+        }
+
+        $key = 'api_rate_' . md5($ip);
+        $now = time();
+
+        if (!isset($_SESSION[$key])) {
+            $_SESSION[$key] = [];
+        }
+
+        // Remove timestamps outside the current window
+        $_SESSION[$key] = array_filter($_SESSION[$key], function ($timestamp) use ($now, $windowSeconds) {
+            return ($now - $timestamp) < $windowSeconds;
+        });
+
+        if (count($_SESSION[$key]) >= $maxRequests) {
+            http_response_code(429);
+            header('Content-Type: application/json');
+            header('Retry-After: ' . $windowSeconds);
+            echo json_encode([
+                'error' => 'Too many requests. Please try again later.',
+                'retry_after' => $windowSeconds
+            ]);
+            exit;
+        }
+
+        // Record this request
+        $_SESSION[$key][] = $now;
+
+        return true;
+    }
+
+    /**
      * Get translations for a language
      */
     public function translations(string $lang): string
@@ -58,6 +103,8 @@ class ApiController extends Controller
      */
     public function globalSearch(): string
     {
+        $this->checkApiRateLimit(60, 60);
+
         $query = trim($_GET['q'] ?? '');
         $lang = $_GET['lang'] ?? 'nl';
 
@@ -275,19 +322,32 @@ class ApiController extends Controller
      */
     public function stats(): string
     {
+        $this->checkApiRateLimit(60, 60);
+
         $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM businesses WHERE status = 'active'");
-        $businesses = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+        $businesses = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
         $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM bookings WHERE status != 'cancelled'");
-        $bookings = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+        $bookings = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
         $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM users");
-        $users = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+        $users = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+        // Round counts to approximate values to avoid exposing exact numbers publicly
+        $roundCount = function(int $count): int {
+            if ($count < 10) {
+                return $count;  // Show exact count for small numbers
+            }
+            if ($count < 1000) {
+                return (int)round($count, -1);  // Round to nearest 10
+            }
+            return (int)round($count, -2);  // Round to nearest 100
+        };
 
         return $this->json([
-            'businesses' => (int)$businesses,
-            'bookings' => (int)$bookings,
-            'users' => (int)$users,
+            'businesses' => $roundCount($businesses),
+            'bookings' => $roundCount($bookings),
+            'users' => $roundCount($users),
             'timestamp' => time()
         ]);
     }
@@ -571,6 +631,8 @@ class ApiController extends Controller
      */
     public function glamoriChat(): string
     {
+        $this->checkApiRateLimit(60, 60);
+
         $data = json_decode(file_get_contents('php://input'), true);
         $message = trim($data['message'] ?? '');
 

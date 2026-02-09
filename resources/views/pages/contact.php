@@ -37,7 +37,7 @@
         margin-bottom: 2rem;
     }
     .info-card {
-        background: #fafafa;
+        background: var(--bg-secondary, #fafafa);
         border-radius: 12px;
         padding: 1.5rem;
         text-align: center;
@@ -49,21 +49,21 @@
     }
     .info-card i {
         font-size: 2rem;
-        color: #000000;
+        color: var(--text, #000000);
         margin-bottom: 1rem;
     }
     .info-card h3 {
-        color: #374151;
+        color: var(--text, #374151);
         margin: 0 0 0.5rem 0;
         font-size: 1rem;
     }
     .info-card p {
-        color: #6b7280;
+        color: var(--text-light, #6b7280);
         margin: 0;
         font-size: 0.95rem;
     }
     .info-card a {
-        color: #000000;
+        color: var(--text, #000000);
         text-decoration: none;
     }
     .info-card a:hover {
@@ -73,32 +73,36 @@
         margin-top: 2rem;
     }
     .faq-section h2 {
-        color: #374151;
+        color: var(--text, #374151);
         font-size: 1.3rem;
         margin-bottom: 1rem;
     }
+    .faq-section h2 i {
+        color: var(--text, #000000);
+        margin-right: 0.5rem;
+    }
     .faq-item {
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--border, #e5e7eb);
         border-radius: 12px;
         margin-bottom: 0.75rem;
         overflow: hidden;
     }
     .faq-question {
-        background: #fafafa;
+        background: var(--bg-secondary, #fafafa);
         padding: 1rem 1.25rem;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-weight: 500;
-        color: #374151;
+        color: var(--text, #374151);
         transition: background 0.2s;
     }
     .faq-question:hover {
-        background: #f5f5f5;
+        background: var(--bg-card, #f5f5f5);
     }
     .faq-question i {
-        color: #000000;
+        color: var(--text, #000000);
         transition: transform 0.3s;
     }
     .faq-item.active .faq-question i {
@@ -107,9 +111,9 @@
     .faq-answer {
         display: none;
         padding: 1rem 1.25rem;
-        color: #6b7280;
+        color: var(--text-light, #6b7280);
         line-height: 1.6;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--border, #e5e7eb);
     }
     .faq-item.active .faq-answer {
         display: block;
@@ -120,7 +124,7 @@
         gap: 1rem;
         margin-top: 2rem;
         padding-top: 2rem;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--border, #e5e7eb);
     }
     .social-link {
         width: 45px;
@@ -128,9 +132,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f5f5f5;
+        background: var(--bg-secondary, #f5f5f5);
         border-radius: 50%;
-        color: #6b7280;
+        color: var(--text-light, #6b7280);
         font-size: 1.2rem;
         transition: all 0.3s ease;
     }
@@ -148,67 +152,87 @@
         }
     }
 
-    /* Dark Mode */
-    [data-theme="dark"] .contact-card {
-        background: var(--bg-card);
+    /* Dark Mode - only overrides not handled by CSS variables */
+    [data-theme="light"] .contact-card {
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+    .contact-card {
         box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
-    [data-theme="dark"] .info-card {
-        background: var(--bg-secondary);
+    /* Contact Form */
+    .contact-form-section h2 {
+        color: var(--text, #374151);
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
     }
-    [data-theme="dark"] .info-card:hover {
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    .contact-form-section h2 i {
+        color: var(--text, #000000);
+        margin-right: 0.5rem;
     }
-    [data-theme="dark"] .info-card h3 {
-        color: var(--text);
+    .contact-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text, #374151);
     }
-    [data-theme="dark"] .info-card p {
-        color: var(--text-light);
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border, #e5e7eb);
+        border-radius: 10px;
+        font-size: 1rem;
+        background: var(--bg-card, #ffffff);
+        color: var(--text, #000000);
     }
-    [data-theme="dark"] .faq-section h2 {
-        color: var(--text);
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+        color: var(--text-light, #9ca3af);
     }
-    [data-theme="dark"] .faq-item {
-        border-color: var(--border);
+    .contact-form .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
     }
-    [data-theme="dark"] .faq-question {
-        background: var(--bg-secondary);
-        color: var(--text);
+    .contact-form .form-group {
+        margin-bottom: 1rem;
     }
-    [data-theme="dark"] .faq-question:hover {
-        background: var(--bg-card);
-    }
-    [data-theme="dark"] .faq-answer {
-        color: var(--text-light);
-        border-top-color: var(--border);
-        background: var(--bg-card);
-    }
-    [data-theme="dark"] .social-links {
-        border-top-color: var(--border);
-    }
-    [data-theme="dark"] .social-link {
-        background: var(--bg-secondary);
-        color: var(--text-light);
-    }
-    [data-theme="dark"] .social-link:hover {
-        background: #000000;
+    .contact-form button[type="submit"] {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #000000, #333333);
         color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
-    [data-theme="dark"] .contact-form input,
-    [data-theme="dark"] .contact-form select,
-    [data-theme="dark"] .contact-form textarea {
-        background: var(--bg-secondary);
-        border-color: var(--border);
-        color: var(--text);
+    .contact-form button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    [data-theme="dark"] .contact-form label {
-        color: var(--text);
+    .alert-success {
+        background: var(--bg-card, #ffffff);
+        border: 1px solid #86efac;
+        color: #22c55e;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
     }
-    [data-theme="dark"] .contact-form-section h2 {
-        color: var(--text);
+    .alert-error {
+        background: var(--bg-secondary, #f5f5f5);
+        border: 1px solid var(--border, #e5e5e5);
+        color: var(--text, #000000);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
     }
     @media (max-width: 600px) {
-        .form-row {
+        .contact-form .form-row {
             grid-template-columns: 1fr !important;
         }
     }
@@ -241,20 +265,20 @@
             </div>
 
             <?php if (!empty($success)): ?>
-            <div class="alert alert-success" style="background:#ffffff;border:1px solid #86efac;color:#166534;padding:1rem;border-radius:10px;margin-bottom:1.5rem;">
+            <div class="alert alert-success">
                 <i class="fas fa-check-circle"></i> <?= $success ?>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($error)): ?>
-            <div class="alert alert-error" style="background:#f5f5f5;border:1px solid #e5e5e5;color:#000000;padding:1rem;border-radius:10px;margin-bottom:1.5rem;">
+            <div class="alert alert-error">
                 <i class="fas fa-exclamation-circle"></i> <?= $error ?>
             </div>
             <?php endif; ?>
 
             <div class="contact-form-section" style="margin-bottom:2rem;">
-                <h2 style="color:#374151;font-size:1.3rem;margin-bottom:1rem;">
-                    <i class="fas fa-paper-plane" style="color:#000000;margin-right:0.5rem"></i>
+                <h2>
+                    <i class="fas fa-paper-plane"></i>
                     <?= $translations['send_message'] ?? 'Send us a message' ?>
                 </h2>
 
@@ -268,30 +292,28 @@
                         <input type="text" name="website_url" id="website_url" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
+                            <label>
                                 <?= $translations['your_name'] ?? 'Name' ?> *
                             </label>
                             <input type="text" name="name" required
-                                   value="<?= htmlspecialchars($formData['name'] ?? '') ?>"
-                                   style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;">
+                                   value="<?= htmlspecialchars($formData['name'] ?? '') ?>">
                         </div>
                         <div class="form-group">
-                            <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
+                            <label>
                                 <?= $translations['your_email'] ?? 'Email' ?> *
                             </label>
                             <input type="email" name="email" required
-                                   value="<?= htmlspecialchars($formData['email'] ?? '') ?>"
-                                   style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;">
+                                   value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom:1rem;">
-                        <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
+                    <div class="form-group">
+                        <label>
                             <?= $translations['message_type'] ?? 'Type of message' ?> *
                         </label>
-                        <select name="type" required style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;background:#ffffff;">
+                        <select name="type" required>
                             <option value=""><?= $translations['select_option'] ?? 'Select...' ?></option>
                             <option value="bug" <?= ($formData['type'] ?? '') === 'bug' ? 'selected' : '' ?>>
                                 <?= $translations['type_bug'] ?? 'Bug / Report error' ?>
@@ -308,25 +330,24 @@
                         </select>
                     </div>
 
-                    <div class="form-group" style="margin-bottom:1rem;">
-                        <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
+                    <div class="form-group">
+                        <label>
                             <?= $translations['subject'] ?? 'Subject' ?> *
                         </label>
                         <input type="text" name="subject" required
-                               value="<?= htmlspecialchars($formData['subject'] ?? '') ?>"
-                               style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;">
+                               value="<?= htmlspecialchars($formData['subject'] ?? '') ?>">
                     </div>
 
                     <div class="form-group" style="margin-bottom:1.5rem;">
-                        <label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">
+                        <label>
                             <?= $translations['message'] ?? 'Message' ?> *
                         </label>
                         <textarea name="message" required rows="5"
                                   placeholder="<?= $translations['message_placeholder'] ?? 'Describe your question, problem or request as clearly as possible...' ?>"
-                                  style="width:100%;padding:0.75rem 1rem;border:1px solid #e5e7eb;border-radius:10px;font-size:1rem;resize:vertical;"><?= htmlspecialchars($formData['message'] ?? '') ?></textarea>
+                                  style="resize:vertical;"><?= htmlspecialchars($formData['message'] ?? '') ?></textarea>
                     </div>
 
-                    <button type="submit" style="width:100%;padding:1rem;background:linear-gradient(135deg,#000000,#000000);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;">
+                    <button type="submit">
                         <i class="fas fa-paper-plane"></i>
                         <?= $translations['send_btn'] ?? 'Send message' ?>
                     </button>
@@ -334,7 +355,7 @@
             </div>
 
             <div class="faq-section">
-                <h2><i class="fas fa-question-circle" style="color:#000000;margin-right:0.5rem"></i><?= $translations['faq'] ?? 'FAQ' ?></h2>
+                <h2><i class="fas fa-question-circle"></i> <?= $translations['faq'] ?? 'FAQ' ?></h2>
 
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">

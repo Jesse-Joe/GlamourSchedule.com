@@ -56,6 +56,105 @@ class PagesController extends Controller
         ]);
     }
 
+    public function marketingBidding(): string
+    {
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $bidService = new \GlamourSchedule\Services\MarketingBidService($this->db, $currencyService);
+
+        $sections = $bidService->getSectionsWithStats();
+        $increment = $bidService->getMinimumIncrement($countryCode);
+        $currency = $currencyService->getCurrencyForCountry($countryCode);
+
+        // Get bid calculations for each section
+        $calculations = [];
+        foreach ($sections as $section) {
+            $calculations[$section['id']] = $bidService->getBidCalculation($section['id'], $countryCode);
+        }
+
+        // Check if business is logged in
+        $businessId = $_SESSION['business_id'] ?? null;
+        $businessBids = [];
+        if ($businessId) {
+            $businessBids = $bidService->getBusinessBids($businessId);
+        }
+
+        // Pre-calculate currency examples for the calculation table
+        $exampleCurrencies = [
+            ['code' => 'EUR', 'country' => 'NL', 'name' => 'Euro'],
+            ['code' => 'USD', 'country' => 'US', 'name' => 'US Dollar'],
+            ['code' => 'GBP', 'country' => 'GB', 'name' => 'Brits Pond'],
+            ['code' => 'SEK', 'country' => 'SE', 'name' => 'Zweedse Kroon'],
+            ['code' => 'PLN', 'country' => 'PL', 'name' => 'Poolse Zloty'],
+            ['code' => 'CZK', 'country' => 'CZ', 'name' => 'Tsjechische Kroon'],
+            ['code' => 'TRY', 'country' => 'TR', 'name' => 'Turkse Lira'],
+            ['code' => 'JPY', 'country' => 'JP', 'name' => 'Japanse Yen'],
+            ['code' => 'INR', 'country' => 'IN', 'name' => 'Indiase Roepie'],
+            ['code' => 'BRL', 'country' => 'BR', 'name' => 'Braziliaanse Real'],
+        ];
+
+        $calcExamples = [];
+        foreach ($exampleCurrencies as $ex) {
+            $incr = $bidService->getMinimumIncrement($ex['country']);
+            $startBid = $currencyService->convertFromEur(50, $ex['code']);
+            $calcExamples[] = array_merge($ex, [
+                'increment' => $incr,
+                'start_bid' => $startBid,
+                'is_current' => ($ex['code'] === $currency),
+            ]);
+        }
+
+        return $this->view('pages/marketing-bidding', [
+            'pageTitle' => 'Marketing Bidding',
+            'sections' => $sections,
+            'calculations' => $calculations,
+            'increment' => $increment,
+            'countryCode' => $countryCode,
+            'currency' => $currency,
+            'currencySymbol' => $currencyService->getSymbol($currency),
+            'businessId' => $businessId,
+            'businessBids' => $businessBids,
+            'showDualCurrency' => $currency !== 'EUR',
+            'csrfToken' => $this->csrf(),
+            'calcExamples' => $calcExamples
+        ]);
+    }
+
+    public function submitBid(): string
+    {
+        if (!$this->verifyCsrf()) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            exit;
+        }
+
+        $businessId = $_SESSION['business_id'] ?? null;
+        if (!$businessId) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Not logged in as business']);
+            exit;
+        }
+
+        $sectionId = (int)($_POST['section_id'] ?? 0);
+        $bidAmountEur = (float)($_POST['bid_amount_eur'] ?? 0);
+
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $bidService = new \GlamourSchedule\Services\MarketingBidService($this->db, $currencyService);
+
+        $result = $bidService->placeBid($businessId, $sectionId, $bidAmountEur, $countryCode);
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
     public function pricing(): string
     {
         // Get GeoIP data for localized pricing

@@ -192,9 +192,9 @@ class HybridPaymentService
                           && strpos($businessMollie['mollie_account_id'], 'org_test_') === false
                           && strpos($businessMollie['mollie_account_id'], 'org_') === 0;
 
-        // Calculate split amounts
+        // Calculate split amounts (ensure business amount is never negative)
         $platformFee = self::PLATFORM_FEE;
-        $businessAmount = $amount - $platformFee;
+        $businessAmount = max(0, $amount - $platformFee);
 
         $paymentData = [
             'amount' => [
@@ -297,7 +297,7 @@ class HybridPaymentService
     {
         $businessId = $data['business_id'] ?? null;
         $amount = (float)$data['amount'];
-        $amountCents = (int)($amount * 100);
+        $amountCents = (int)round($amount * 100);
 
         // Check if business has Stripe Connect for split payments
         $businessStripe = $this->getBusinessStripeInfo($businessId);
@@ -306,9 +306,9 @@ class HybridPaymentService
                           && $businessStripe['stripe_onboarding_status'] === 'completed'
                           && $businessStripe['stripe_charges_enabled'] == 1;
 
-        // Calculate split amounts
-        $platformFeeCents = (int)(self::PLATFORM_FEE * 100);
-        $businessAmountCents = $amountCents - $platformFeeCents;
+        // Calculate split amounts (ensure business amount is never negative)
+        $platformFeeCents = (int)round(self::PLATFORM_FEE * 100);
+        $businessAmountCents = max(0, $amountCents - $platformFeeCents);
 
         $sessionData = [
             'payment_method_types' => ['card'],

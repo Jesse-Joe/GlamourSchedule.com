@@ -94,8 +94,14 @@ abstract class Controller
         $isTrustedProxy = false;
         foreach ($trustedProxies as $proxy) {
             if (str_contains($proxy, '/')) {
-                // CIDR notation - simplified check for common ranges
-                $isTrustedProxy = str_starts_with($remoteAddr, explode('.', $proxy)[0] . '.');
+                // Proper CIDR check
+                [$subnet, $bits] = explode('/', $proxy);
+                if (inet_pton($remoteAddr) !== false && inet_pton($subnet) !== false) {
+                    $ip = ip2long($remoteAddr);
+                    $net = ip2long($subnet);
+                    $mask = -1 << (32 - (int)$bits);
+                    $isTrustedProxy = ($ip & $mask) === ($net & $mask);
+                }
             } else {
                 $isTrustedProxy = ($remoteAddr === $proxy);
             }
@@ -273,6 +279,15 @@ abstract class Controller
             return null;
         }
 
+        // Multilingual countries - show multiple language options
+        $multilingualCountries = [
+            'CH' => ['de', 'fr', 'it'],       // Switzerland: German, French, Italian
+            'BE' => ['nl', 'fr', 'de'],        // Belgium: Dutch, French, German
+            'LU' => ['fr', 'de'],              // Luxembourg: French, German
+            'CA' => ['en', 'fr'],              // Canada: English, French
+            'SG' => ['en', 'zh', 'ms'],        // Singapore: English, Chinese, Malay
+        ];
+
         // Language names: [lang_code => ['en' => English name, lang_code => native name]]
         $langNames = [
             'nl' => ['en' => 'Dutch', 'nl' => 'Nederlands'],
@@ -407,6 +422,22 @@ abstract class Controller
             'MZ' => 'Mozambique',
         ];
 
+        // Build language options for multilingual countries
+        $languages = [];
+        if (isset($multilingualCountries[$detectedCountry])) {
+            foreach ($multilingualCountries[$detectedCountry] as $langCode) {
+                if ($langCode === 'en') continue; // Skip English, it's the "Keep English" button
+                $languages[] = [
+                    'code' => $langCode,
+                    'name' => $langNames[$langCode]['en'] ?? $langCode,
+                    'native' => $langNames[$langCode][$langCode] ?? $langCode,
+                    'url' => '?lang=' . $langCode,
+                ];
+            }
+        }
+
+        $isMultilingual = !empty($languages);
+
         return [
             'show' => true,
             'detected_country' => $detectedCountry,
@@ -417,6 +448,8 @@ abstract class Controller
             'current_lang' => 'en',
             'switch_url' => '?lang=' . $detectedLang,
             'stay_url' => '?lang=en',
+            'is_multilingual' => $isMultilingual,
+            'languages' => $languages,
         ];
     }
 
@@ -434,7 +467,11 @@ abstract class Controller
         $data['lang'] = $this->lang;
         $data['translations'] = $this->getTranslations();
         $data['user'] = $this->getCurrentUser();
-        $data['config'] = $this->config;
+        // Only pass safe config to templates (no credentials)
+        $data['config'] = [
+            'app' => $this->config['app'] ?? [],
+            'stripe' => ['public_key' => $this->config['stripe']['public_key'] ?? ''],
+        ];
         $data['currentDomain'] = Router::getCurrentDomain();
         $data['domainSwitchPopup'] = $this->getDomainSwitchPopupData();
         $data['detectedCountry'] = $_SESSION['detected_country'] ?? null;
@@ -454,7 +491,7 @@ abstract class Controller
             return $text;
         };
 
-        extract($data);
+        extract($data, EXTR_SKIP);
 
         ob_start();
         $viewPath = BASE_PATH . '/resources/views/' . $template . '.php';
@@ -616,7 +653,14 @@ abstract class Controller
             $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
         }
 
-        return hash_equals($_SESSION['csrf_token'] ?? '', $token);
+        $valid = hash_equals($_SESSION['csrf_token'] ?? '', $token);
+
+        // Rotate token after successful verification to prevent replay attacks
+        if ($valid) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        return $valid;
     }
 
     /**

@@ -144,6 +144,9 @@ class BusinessDashboardController extends Controller
     public function services(): string
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!$this->verifyCsrf()) {
+                return $this->json(['error' => 'Invalid request'], 400);
+            }
             $this->handleServiceAction();
             return $this->redirect('/business/services');
         }
@@ -286,10 +289,7 @@ class BusinessDashboardController extends Controller
         $action = $_POST['action'] ?? '';
 
         if ($action === 'add') {
-            $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-                mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+            $uuid = $this->generateUuid();
 
             $this->db->query(
                 "INSERT INTO services (uuid, business_id, name, description, price, duration_minutes, is_active)
@@ -609,8 +609,10 @@ class BusinessDashboardController extends Controller
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
 
-        // Validate file type
-        if (!in_array($file['type'], $allowedTypes)) {
+        // Validate actual MIME type from file content (not client header)
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $detectedMime = $finfo->file($file['tmp_name']);
+        if (!in_array($detectedMime, $allowedTypes, true)) {
             $_SESSION['flash'] = ['type' => 'danger', 'message' => $this->t('banner_invalid_type') ?? 'Alleen JPG, PNG en WebP bestanden zijn toegestaan voor banners.'];
             return $this->redirect('/business/photos');
         }
@@ -649,7 +651,7 @@ class BusinessDashboardController extends Controller
         $relativePath = '/uploads/banners/' . $this->business['id'] . '/' . $filename;
 
         // Process and resize image to max 1200x400
-        $resized = $this->resizeBannerImage($file['tmp_name'], $filepath, $file['type']);
+        $resized = $this->resizeBannerImage($file['tmp_name'], $filepath, $detectedMime);
 
         if ($resized) {
             // Get banner position from form
@@ -2877,7 +2879,9 @@ HTML;
     private function uploadEmployeePhoto(array $file): ?string
     {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!in_array($file['type'], $allowedTypes)) {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $detectedMime = $finfo->file($file['tmp_name']);
+        if (!in_array($detectedMime, $allowedTypes, true)) {
             return null;
         }
 
@@ -3065,46 +3069,7 @@ HTML;
         }
         $posCustomers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // Also search the main users table
-        if (strlen($query) >= 2 || is_numeric($query)) {
-            $stmt = $this->db->query(
-                "SELECT id, CONCAT(first_name, ' ', last_name) as name, email, phone, 0 as total_appointments, 'main' as source
-                 FROM users
-                 WHERE (CONCAT(first_name, ' ', last_name) LIKE ? OR email LIKE ? OR phone LIKE ? OR first_name LIKE ? OR last_name LIKE ?)
-                 ORDER BY first_name, last_name LIMIT 10",
-                [$likeQuery, $likeQuery, $likeQuery, $likeQuery, $likeQuery]
-            );
-            $mainUsers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } else {
-            $mainUsers = [];
-        }
-
-        // Merge and deduplicate by email
-        $seen = [];
-        $merged = [];
-
-        // POS customers first (they are business-specific)
-        foreach ($posCustomers as $c) {
-            $key = !empty($c['email']) ? strtolower($c['email']) : 'pos_' . $c['id'];
-            if (!isset($seen[$key])) {
-                $seen[$key] = true;
-                $merged[] = $c;
-            }
-        }
-
-        // Then main users (skip duplicates by email)
-        foreach ($mainUsers as $u) {
-            $key = !empty($u['email']) ? strtolower($u['email']) : 'main_' . $u['id'];
-            if (!isset($seen[$key])) {
-                $seen[$key] = true;
-                $merged[] = $u;
-            }
-        }
-
-        // Limit total results
-        $merged = array_slice($merged, 0, 15);
-
-        return json_encode(['customers' => $merged]);
+        return json_encode(['customers' => array_slice($posCustomers, 0, 15)]);
     }
 
     /**
@@ -3151,10 +3116,7 @@ HTML;
         $totalPrice = $servicePrice;
 
         // Generate UUID
-        $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+        $uuid = $this->generateUuid();
 
         // Customer details
         $customerId = !empty($input['customer_id']) ? (int)$input['customer_id'] : null;
@@ -3683,10 +3645,7 @@ HTML;
         $action = $_POST['action'] ?? '';
 
         if ($action === 'add') {
-            $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-                mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+            $uuid = $this->generateUuid();
 
             $quantity = (int)$_POST['quantity'];
 
@@ -3882,15 +3841,26 @@ HTML;
 
     private function logInventoryTransaction(int $inventoryId, string $type, int $quantity, int $before, int $after, string $notes = '', ?int $bookingId = null): void
     {
-        $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+        $uuid = $this->generateUuid();
 
         $this->db->query(
             "INSERT INTO inventory_transactions (uuid, inventory_id, business_id, booking_id, transaction_type, quantity, quantity_before, quantity_after, notes)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [$uuid, $inventoryId, $this->business['id'], $bookingId, $type, $quantity, $before, $after, $notes]
+        );
+    }
+
+    private function generateUuid(): string
+    {
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        return sprintf('%08s-%04s-%04s-%04s-%012s',
+            bin2hex(substr($bytes, 0, 4)),
+            bin2hex(substr($bytes, 4, 2)),
+            bin2hex(substr($bytes, 6, 2)),
+            bin2hex(substr($bytes, 8, 2)),
+            bin2hex(substr($bytes, 10, 6))
         );
     }
 }

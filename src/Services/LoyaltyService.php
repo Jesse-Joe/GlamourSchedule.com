@@ -197,8 +197,10 @@ class LoyaltyService
         // Get business max redeem setting
         $maxBusinessPoints = $this->getMaxRedeemSetting($businessId);
 
-        // Calculate max points that would give 100% discount (we cap at service price)
-        $maxForPrice = (int)floor(($servicePrice / $servicePrice) * 100 * self::POINTS_PER_PERCENT);
+        // Calculate max points that would give 100% discount (cap at service price)
+        // 100 points = 1% discount, so 10000 points = 100% discount on any price
+        // Max points for this price = (servicePrice / (servicePrice * 1%)) = 100 * POINTS_PER_PERCENT
+        $maxForPrice = (int)floor(100 * self::POINTS_PER_PERCENT);
 
         // The maximum is the minimum of: user balance, business setting, and price limit
         return min($userPoints, $maxBusinessPoints, $maxForPrice);
@@ -292,29 +294,43 @@ class LoyaltyService
         ?int $reviewId,
         string $description
     ): bool {
-        $currentBalance = $this->getBalance($userId, $businessId);
-        $newBalance = $currentBalance + $points;
+        try {
+            $this->db->beginTransaction();
 
-        // Update or create balance record
-        $this->db->query(
-            "INSERT INTO loyalty_points (user_id, business_id, total_points, lifetime_points)
-             VALUES (?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE
-             total_points = total_points + VALUES(total_points),
-             lifetime_points = lifetime_points + VALUES(total_points)",
-            [$userId, $businessId, $points, $points]
-        );
+            // Atomic update or create balance record
+            $this->db->query(
+                "INSERT INTO loyalty_points (user_id, business_id, total_points, lifetime_points)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE
+                 total_points = total_points + VALUES(total_points),
+                 lifetime_points = lifetime_points + VALUES(total_points)",
+                [$userId, $businessId, $points, $points]
+            );
 
-        // Record transaction
-        $uuid = $this->generateUuid();
-        $this->db->query(
-            "INSERT INTO loyalty_transactions
-             (uuid, user_id, business_id, booking_id, review_id, transaction_type, points, points_before, points_after, description)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [$uuid, $userId, $businessId, $bookingId, $reviewId, $type, $points, $currentBalance, $newBalance, $description]
-        );
+            // Get updated balance for transaction log
+            $stmt = $this->db->query(
+                "SELECT total_points FROM loyalty_points WHERE user_id = ? AND business_id = ?",
+                [$userId, $businessId]
+            );
+            $newBalance = (int)($stmt->fetch(\PDO::FETCH_ASSOC)['total_points'] ?? $points);
+            $currentBalance = $newBalance - $points;
 
-        return true;
+            // Record transaction
+            $uuid = $this->generateUuid();
+            $this->db->query(
+                "INSERT INTO loyalty_transactions
+                 (uuid, user_id, business_id, booking_id, review_id, transaction_type, points, points_before, points_after, description)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [$uuid, $userId, $businessId, $bookingId, $reviewId, $type, $points, $currentBalance, $newBalance, $description]
+            );
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            error_log("LoyaltyService addPoints failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -329,29 +345,50 @@ class LoyaltyService
         ?int $reviewId,
         string $description
     ): bool {
-        $currentBalance = $this->getBalance($userId, $businessId);
-        $newBalance = $currentBalance - $points;
+        try {
+            $this->db->beginTransaction();
 
-        if ($newBalance < 0) {
+            // Lock the row and get current balance atomically
+            $stmt = $this->db->query(
+                "SELECT total_points FROM loyalty_points WHERE user_id = ? AND business_id = ? FOR UPDATE",
+                [$userId, $businessId]
+            );
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $currentBalance = (int)($row['total_points'] ?? 0);
+            $newBalance = $currentBalance - $points;
+
+            if ($newBalance < 0) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            // Atomic update with balance check in WHERE clause
+            $result = $this->db->query(
+                "UPDATE loyalty_points SET total_points = total_points - ? WHERE user_id = ? AND business_id = ? AND total_points >= ?",
+                [$points, $userId, $businessId, $points]
+            );
+
+            if ($result->rowCount() === 0) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            // Record transaction (negative points)
+            $uuid = $this->generateUuid();
+            $this->db->query(
+                "INSERT INTO loyalty_transactions
+                 (uuid, user_id, business_id, booking_id, review_id, transaction_type, points, points_before, points_after, description)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [$uuid, $userId, $businessId, $bookingId, $reviewId, $type, -$points, $currentBalance, $newBalance, $description]
+            );
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            error_log("LoyaltyService subtractPoints failed: " . $e->getMessage());
             return false;
         }
-
-        // Update balance
-        $this->db->query(
-            "UPDATE loyalty_points SET total_points = ? WHERE user_id = ? AND business_id = ?",
-            [$newBalance, $userId, $businessId]
-        );
-
-        // Record transaction (negative points)
-        $uuid = $this->generateUuid();
-        $this->db->query(
-            "INSERT INTO loyalty_transactions
-             (uuid, user_id, business_id, booking_id, review_id, transaction_type, points, points_before, points_after, description)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [$uuid, $userId, $businessId, $bookingId, $reviewId, $type, -$points, $currentBalance, $newBalance, $description]
-        );
-
-        return true;
     }
 
     /**
@@ -359,11 +396,10 @@ class LoyaltyService
      */
     private function generateUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // Version 4
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // Variant RFC 4122
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**

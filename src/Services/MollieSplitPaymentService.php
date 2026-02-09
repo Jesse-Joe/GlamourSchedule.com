@@ -286,7 +286,7 @@ class MollieSplitPaymentService
     {
         $stmt = $this->db->prepare(
             "SELECT id, company_name, email, mollie_account_id, mollie_profile_id,
-                    mollie_onboarding_status, mollie_access_token
+                    mollie_onboarding_status
              FROM businesses
              WHERE id = ?"
         );

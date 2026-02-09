@@ -26,6 +26,11 @@ class PaymentController extends Controller
             return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
         }
 
+        if (!$this->verifyBookingOwnership($booking)) {
+            http_response_code(403);
+            return $this->view('pages/errors/404', ['pageTitle' => $this->t('page_not_found')]);
+        }
+
         if ($booking['payment_status'] === 'paid') {
             return $this->redirect("/booking/$bookingUuid");
         }
@@ -55,6 +60,10 @@ class PaymentController extends Controller
         if (!$booking) {
             http_response_code(404);
             return $this->json(['error' => 'Boeking niet gevonden'], 404);
+        }
+
+        if (!$this->verifyBookingOwnership($booking)) {
+            return $this->json(['error' => 'Geen toegang tot deze boeking'], 403);
         }
 
         if ($booking['payment_status'] === 'paid') {
@@ -198,10 +207,44 @@ class PaymentController extends Controller
         ]);
     }
 
+    /**
+     * Verify that the current request is authorized to access this booking's payment.
+     * Allows access if:
+     * 1. The booking's user_id matches the session user_id, OR
+     * 2. The booking's guest_email matches the session pending_booking guest_email, OR
+     * 3. The booking was created within the last 30 minutes
+     */
+    private function verifyBookingOwnership(array $booking): bool
+    {
+        // 1. Logged-in user owns this booking
+        $sessionUserId = $_SESSION['user_id'] ?? null;
+        if ($sessionUserId && !empty($booking['user_id']) && (int)$booking['user_id'] === (int)$sessionUserId) {
+            return true;
+        }
+
+        // 2. Guest email matches pending booking session
+        $pendingBooking = $_SESSION['pending_booking'] ?? null;
+        if ($pendingBooking && !empty($booking['guest_email']) && !empty($pendingBooking['guest_email'])) {
+            if (strtolower($booking['guest_email']) === strtolower($pendingBooking['guest_email'])) {
+                return true;
+            }
+        }
+
+        // 3. Booking was created recently (within last 30 minutes)
+        if (!empty($booking['created_at'])) {
+            $createdAt = strtotime($booking['created_at']);
+            if ($createdAt !== false && (time() - $createdAt) < 1800) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function getBooking(string $uuid): ?array
     {
         $stmt = $this->db->query(
-            "SELECT b.*, biz.company_name as business_name, biz.email as business_email,
+            "SELECT b.*, b.created_at as created_at, biz.company_name as business_name, biz.email as business_email,
                     s.name as service_name, s.duration_minutes as duration,
                     u.email as user_email, u.first_name as user_first_name, u.last_name as user_last_name
              FROM bookings b

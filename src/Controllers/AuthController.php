@@ -297,17 +297,6 @@ class AuthController extends Controller
         // Rate limiting - max 5 registrations per IP per hour
         $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         try {
-            // Try to use rate_limits table
-            $this->db->query(
-                "CREATE TABLE IF NOT EXISTS rate_limits (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    ip_address VARCHAR(45) NOT NULL,
-                    action_type VARCHAR(50) NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    INDEX idx_ip_action (ip_address, action_type)
-                ) ENGINE=InnoDB"
-            );
-
             // Clean old entries
             $this->db->query("DELETE FROM rate_limits WHERE created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
 
@@ -465,6 +454,10 @@ class AuthController extends Controller
         );
 
         $userId = $this->db->lastInsertId();
+
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
+
         $_SESSION['user_id'] = $userId;
         $_SESSION['user_type'] = 'customer';
         $_SESSION['lang'] = $userLanguage;
@@ -647,12 +640,15 @@ HTML;
 
     private function generateUuid(): string
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40); // Version 4
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80); // Variant 1
+        return sprintf('%08s-%04s-%04s-%04s-%012s',
+            bin2hex(substr($bytes, 0, 4)),
+            bin2hex(substr($bytes, 4, 2)),
+            bin2hex(substr($bytes, 6, 2)),
+            bin2hex(substr($bytes, 8, 2)),
+            bin2hex(substr($bytes, 10, 6))
         );
     }
 

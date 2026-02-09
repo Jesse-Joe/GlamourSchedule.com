@@ -190,30 +190,36 @@ class VerifyEmailController extends Controller
 
     private function sendVerificationEmail(string $email, string $companyName, string $code): void
     {
-        $subject = "Bevestig je GlamourSchedule account - Code: {$code}";
+        $subject = str_replace('{code}', $code, $this->t('email_verify_subject'));
+        $heading = $this->t('email_verify_title');
+        $dear = $this->t('email_verify_dear') . ' ' . $companyName . ',';
+        $codeText = $this->t('email_verify_use_code');
+        $validText = $this->t('email_verify_valid_10min');
 
         $htmlBody = "
         <!DOCTYPE html>
         <html>
-        <head><meta charset='UTF-8'></head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
+        <head><meta charset='UTF-8'>
+        <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .code-box { background:#1a1a1a !important; border-color:#333333 !important; } .code-text { color:#ffffff !important; } .email-footer { background:#111111 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+        </head>
+        <body class='email-body' style='margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;'>
+            <table width='100%' cellpadding='0' cellspacing='0' class='email-outer' style='background:#ffffff;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='500' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
+                        <table width='500' cellpadding='0' cellspacing='0' class='email-content' style='background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;'>
                             <tr>
-                                <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
-                                    <h1 style='margin:0;font-size:24px;'>Bevestig je account</h1>
+                                <td style='background:#000000;color:#ffffff;padding:30px;text-align:center;'>
+                                    <h1 style='margin:0;font-size:24px;'>{$heading}</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td style='padding:40px;text-align:center;'>
-                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$companyName}</strong>,</p>
-                                    <p style='font-size:16px;color:#ffffff;'>Je verificatiecode is:</p>
-                                    <div style='background:#000000;border:2px solid #333333;border-radius:10px;padding:30px;margin:20px 0;'>
-                                        <span style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#ffffff;font-family:monospace;'>{$code}</span>
+                                    <p class='email-text' style='font-size:16px;color:#000000;'>{$dear}</p>
+                                    <p class='email-text' style='font-size:16px;color:#000000;'>{$codeText}</p>
+                                    <div class='code-box' style='background:#f5f5f5;border:2px solid #e0e0e0;border-radius:10px;padding:30px;margin:20px 0;'>
+                                        <span class='code-text' style='font-size:42px;font-weight:bold;letter-spacing:8px;color:#000000;font-family:monospace;'>{$code}</span>
                                     </div>
-                                    <p style='font-size:14px;color:#cccccc;'>Deze code is 10 minuten geldig.</p>
+                                    <p class='email-muted' style='font-size:14px;color:#666666;'>{$validText}</p>
                                 </td>
                             </tr>
                         </table>
@@ -224,7 +230,7 @@ class VerifyEmailController extends Controller
         </html>";
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($email, $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send verification email: " . $e->getMessage());
@@ -242,52 +248,66 @@ class VerifyEmailController extends Controller
         $dashboardUrl = "https://glamourschedule.com/business/dashboard";
         $businessUrl = "https://glamourschedule.com/business/{$business['slug']}";
 
-        $subject = "Welkom bij GlamourSchedule - Je account is geactiveerd!";
+        $subject = $this->t('email_welcome_activated_subject');
+        $heading = $this->t('email_welcome_heading');
+        $subtitle = $this->t('email_welcome_activated_msg');
+        $dear = $this->t('email_verify_dear') . ' ' . $business['company_name'] . ',';
+        $congrats = $this->t('email_welcome_congrats_text');
+        $nextSteps = $this->t('email_welcome_next_steps_title');
+        $step1 = $this->t('email_welcome_step1');
+        $step2 = $this->t('email_welcome_step2');
+        $step3 = $this->t('email_welcome_step3');
+        $step4 = $this->t('email_welcome_step4');
+        $goBtn = $this->t('email_welcome_dashboard_button');
+        $yourPage = $this->t('email_welcome_your_page_text');
+        $year = date('Y');
 
         $htmlBody = "
         <!DOCTYPE html>
         <html>
-        <head><meta charset='UTF-8'></head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
+        <head><meta charset='UTF-8'>
+        <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-link { color:#ffffff !important; } .steps-box { background:#1a1a1a !important; border-color:#333333 !important; } .email-footer { background:#111111 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+        </head>
+        <body class='email-body' style='margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;'>
+            <table width='100%' cellpadding='0' cellspacing='0' class='email-outer' style='background:#ffffff;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:10px;overflow:hidden;'>
+                        <table width='600' cellpadding='0' cellspacing='0' class='email-content' style='background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;'>
                             <tr>
-                                <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:40px;text-align:center;'>
-                                    <h1 style='margin:0;font-size:28px;'>Welkom bij GlamourSchedule!</h1>
-                                    <p style='margin:10px 0 0;opacity:0.9;'>Je account is succesvol geactiveerd</p>
+                                <td style='background:#000000;color:#ffffff;padding:40px;text-align:center;'>
+                                    <h1 style='margin:0;font-size:28px;'>{$heading}</h1>
+                                    <p style='margin:10px 0 0;opacity:0.9;'>{$subtitle}</p>
                                 </td>
                             </tr>
                             <tr>
                                 <td style='padding:40px;'>
-                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$business['company_name']}</strong>,</p>
-                                    <p style='font-size:16px;color:#ffffff;line-height:1.6;'>
-                                        Gefeliciteerd! Je account is geverifieerd en je kunt nu beginnen met het opzetten van je bedrijfspagina.
+                                    <p class='email-text' style='font-size:16px;color:#000000;'>{$dear}</p>
+                                    <p class='email-text' style='font-size:16px;color:#000000;line-height:1.6;'>
+                                        {$congrats}
                                     </p>
 
-                                    <div style='background:#1a1a1a;border-left:4px solid #000000;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;'>
-                                        <h3 style='margin:0 0 15px;color:#ffffff;'>Volgende stappen:</h3>
-                                        <ol style='margin:0;padding-left:20px;color:#ffffff;'>
-                                            <li style='margin:10px 0;'>Upload je logo en cover foto</li>
-                                            <li style='margin:10px 0;'>Voeg je diensten toe met prijzen en tijdsduur</li>
-                                            <li style='margin:10px 0;'>Stel je openingstijden in</li>
-                                            <li style='margin:10px 0;'>Betaal de registratievergoeding</li>
+                                    <div class='steps-box' style='background:#f5f5f5;border-left:4px solid #000000;padding:20px;margin:20px 0;border-radius:0 8px 8px 0;'>
+                                        <h3 class='email-text' style='margin:0 0 15px;color:#000000;'>{$nextSteps}</h3>
+                                        <ol class='email-text' style='margin:0;padding-left:20px;color:#000000;'>
+                                            <li style='margin:10px 0;'>{$step1}</li>
+                                            <li style='margin:10px 0;'>{$step2}</li>
+                                            <li style='margin:10px 0;'>{$step3}</li>
+                                            <li style='margin:10px 0;'>{$step4}</li>
                                         </ol>
                                     </div>
 
                                     <p style='text-align:center;margin:30px 0;'>
-                                        <a href='{$dashboardUrl}' style='display:inline-block;background:#000000;color:#ffffff;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;'>Ga naar je Dashboard</a>
+                                        <a href='{$dashboardUrl}' style='display:inline-block;background:#000000;color:#ffffff;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;'>{$goBtn}</a>
                                     </p>
 
-                                    <p style='font-size:14px;color:#cccccc;'>
-                                        Je bedrijfspagina: <a href='{$businessUrl}' style='color:#ffffff;'>{$businessUrl}</a>
+                                    <p class='email-muted' style='font-size:14px;color:#666666;'>
+                                        {$yourPage} <a class='email-link' href='{$businessUrl}' style='color:#000000;'>{$businessUrl}</a>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#cccccc;font-size:12px;'>
-                                    <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule</p>
+                                <td class='email-footer' style='background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;'>
+                                    <p class='email-footer-text' style='margin:0;color:#666666;font-size:12px;'>&copy; {$year} GlamourSchedule</p>
                                 </td>
                             </tr>
                         </table>
@@ -298,7 +318,7 @@ class VerifyEmailController extends Controller
         </html>";
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($business['email'], $subject, $htmlBody);
             // Dashboard reminder will be sent 24h later via cron job
         } catch (\Exception $e) {
@@ -313,50 +333,63 @@ class VerifyEmailController extends Controller
         $photosUrl = "https://glamourschedule.com/business/photos";
         $profileUrl = "https://glamourschedule.com/business/profile";
 
-        $subject = "Vergeet niet je dashboard te verkennen! - GlamourSchedule";
+        $subject = $this->t('email_dash_reminder_subject');
+        $heading = $this->t('email_dash_reminder_heading');
+        $dear = $this->t('email_verify_dear') . ' ' . $business['company_name'] . ',';
+        $bodyText = $this->t('email_dash_reminder_body');
+        $completeTitle = $this->t('email_dash_reminder_complete_title');
+        $photosTitle = $this->t('email_dash_photos_title');
+        $photosDesc = $this->t('email_dash_photos_desc');
+        $servicesTitle = $this->t('email_dash_services_title');
+        $servicesDesc = $this->t('email_dash_services_desc');
+        $profileTitle = $this->t('email_dash_profile_title');
+        $profileDesc = $this->t('email_dash_profile_desc');
+        $tip = $this->t('email_dash_tip');
+        $goBtn = $this->t('email_dash_button');
 
         $htmlBody = "
         <!DOCTYPE html>
         <html>
-        <head><meta charset='UTF-8'></head>
-        <body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
-            <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
+        <head><meta charset='UTF-8'>
+        <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .card-item { background:#1a1a1a !important; border-color:#333333 !important; } .card-icon { background:#333333 !important; } .card-subtitle { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+        </head>
+        <body class='email-body' style='margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;'>
+            <table width='100%' cellpadding='0' cellspacing='0' class='email-outer' style='background:#ffffff;padding:20px;'>
                 <tr>
                     <td align='center'>
-                        <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:16px;overflow:hidden;'>
+                        <table width='600' cellpadding='0' cellspacing='0' class='email-content' style='background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;'>
                             <tr>
                                 <td style='background:#000000;color:#ffffff;padding:40px;text-align:center;'>
                                     <div style='width:60px;height:60px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;'>
                                         <span style='font-size:28px;color:#000;font-weight:bold;'>&#10003;</span>
                                     </div>
-                                    <h1 style='margin:0;font-size:24px;'>Vergeet niet je pagina compleet te maken!</h1>
+                                    <h1 style='margin:0;font-size:24px;'>{$heading}</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td style='padding:40px;'>
-                                    <p style='font-size:16px;color:#ffffff;'>Beste <strong>{$business['company_name']}</strong>,</p>
-                                    <p style='font-size:16px;color:#cccccc;line-height:1.6;'>
-                                        Je account is geactiveerd, maar je pagina is nog niet compleet.
-                                        Een complete pagina trekt meer klanten aan en zorgt voor meer boekingen!
+                                    <p class='email-text' style='font-size:16px;color:#000000;'>{$dear}</p>
+                                    <p class='email-muted' style='font-size:16px;color:#666666;line-height:1.6;'>
+                                        {$bodyText}
                                     </p>
 
-                                    <div style='background:#0a0a0a;border-radius:12px;padding:25px;margin:25px 0;'>
-                                        <h3 style='margin:0 0 20px;color:#ffffff;font-size:18px;'>Maak je pagina compleet:</h3>
+                                    <div style='background:#f5f5f5;border-radius:12px;padding:25px;margin:25px 0;'>
+                                        <h3 class='email-text' style='margin:0 0 20px;color:#000000;font-size:18px;'>{$completeTitle}</h3>
 
                                         <table width='100%' cellpadding='0' cellspacing='0'>
                                             <tr>
                                                 <td style='padding:8px 0;'>
-                                                    <a href='{$photosUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                    <a href='{$photosUrl}' class='card-item' style='color:#000000;text-decoration:none;display:block;padding:15px;background:#ffffff;border-radius:8px;border:1px solid #e0e0e0;'>
                                                         <table cellpadding='0' cellspacing='0'>
                                                             <tr>
                                                                 <td style='width:45px;vertical-align:top;'>
-                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                    <div class='card-icon' style='width:36px;height:36px;background:#f5f5f5;border-radius:8px;text-align:center;line-height:36px;'>
                                                                         <span style='color:#f59e0b;font-size:18px;'>&#9634;</span>
                                                                     </div>
                                                                 </td>
                                                                 <td style='vertical-align:top;'>
-                                                                    <strong style='color:#fff;'>Upload foto's</strong><br>
-                                                                    <span style='color:#888;font-size:13px;'>Logo, cover foto en portfolio</span>
+                                                                    <strong class='email-text' style='color:#000;'>{$photosTitle}</strong><br>
+                                                                    <span class='card-subtitle' style='color:#666666;font-size:13px;'>{$photosDesc}</span>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -365,17 +398,17 @@ class VerifyEmailController extends Controller
                                             </tr>
                                             <tr>
                                                 <td style='padding:8px 0;'>
-                                                    <a href='{$servicesUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                    <a href='{$servicesUrl}' class='card-item' style='color:#000000;text-decoration:none;display:block;padding:15px;background:#ffffff;border-radius:8px;border:1px solid #e0e0e0;'>
                                                         <table cellpadding='0' cellspacing='0'>
                                                             <tr>
                                                                 <td style='width:45px;vertical-align:top;'>
-                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                    <div class='card-icon' style='width:36px;height:36px;background:#f5f5f5;border-radius:8px;text-align:center;line-height:36px;'>
                                                                         <span style='color:#f59e0b;font-size:18px;'>&#9986;</span>
                                                                     </div>
                                                                 </td>
                                                                 <td style='vertical-align:top;'>
-                                                                    <strong style='color:#fff;'>Voeg diensten toe</strong><br>
-                                                                    <span style='color:#888;font-size:13px;'>Prijzen, tijdsduur en beschrijvingen</span>
+                                                                    <strong class='email-text' style='color:#000;'>{$servicesTitle}</strong><br>
+                                                                    <span class='card-subtitle' style='color:#666666;font-size:13px;'>{$servicesDesc}</span>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -384,17 +417,17 @@ class VerifyEmailController extends Controller
                                             </tr>
                                             <tr>
                                                 <td style='padding:8px 0;'>
-                                                    <a href='{$profileUrl}' style='color:#ffffff;text-decoration:none;display:block;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;'>
+                                                    <a href='{$profileUrl}' class='card-item' style='color:#000000;text-decoration:none;display:block;padding:15px;background:#ffffff;border-radius:8px;border:1px solid #e0e0e0;'>
                                                         <table cellpadding='0' cellspacing='0'>
                                                             <tr>
                                                                 <td style='width:45px;vertical-align:top;'>
-                                                                    <div style='width:36px;height:36px;background:#333;border-radius:8px;text-align:center;line-height:36px;'>
+                                                                    <div class='card-icon' style='width:36px;height:36px;background:#f5f5f5;border-radius:8px;text-align:center;line-height:36px;'>
                                                                         <span style='color:#f59e0b;font-size:18px;'>&#9673;</span>
                                                                     </div>
                                                                 </td>
                                                                 <td style='vertical-align:top;'>
-                                                                    <strong style='color:#fff;'>Vul je profiel aan</strong><br>
-                                                                    <span style='color:#888;font-size:13px;'>Adres, openingstijden en KVK</span>
+                                                                    <strong class='email-text' style='color:#000;'>{$profileTitle}</strong><br>
+                                                                    <span class='card-subtitle' style='color:#666666;font-size:13px;'>{$profileDesc}</span>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -412,7 +445,7 @@ class VerifyEmailController extends Controller
                                                 </td>
                                                 <td>
                                                     <p style='margin:0;color:#000;font-weight:600;font-size:15px;'>
-                                                        <strong>Tip:</strong> Salons met complete profielen krijgen tot 3x meer boekingen!
+                                                        {$tip}
                                                     </p>
                                                 </td>
                                             </tr>
@@ -421,14 +454,14 @@ class VerifyEmailController extends Controller
 
                                     <p style='text-align:center;margin:30px 0;'>
                                         <a href='{$dashboardUrl}' style='display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:16px;'>
-                                            Naar mijn Dashboard &#8594;
+                                            {$goBtn} &#8594;
                                         </a>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td style='background:#0a0a0a;padding:20px;text-align:center;color:#666;font-size:12px;border-top:1px solid #333;'>
-                                    <p style='margin:0;'>&copy; " . date('Y') . " GlamourSchedule - Beauty & Wellness Bookings</p>
+                                <td class='email-footer' style='background:#f5f5f5;padding:20px;text-align:center;font-size:12px;border-top:1px solid #e0e0e0;'>
+                                    <p class='email-footer-text' style='margin:0;color:#666666;'>&copy; " . date('Y') . " GlamourSchedule</p>
                                 </td>
                             </tr>
                         </table>
@@ -439,7 +472,7 @@ class VerifyEmailController extends Controller
         </html>";
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($business['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send dashboard reminder email: " . $e->getMessage());
@@ -540,8 +573,8 @@ class VerifyEmailController extends Controller
         $webPush = new WebPush();
 
         $payload = [
-            'title' => 'Nieuw bij GlamourSchedule!',
-            'body' => "{$business['company_name']} in {$business['city']} is nu beschikbaar voor boekingen!",
+            'title' => $this->t('push_new_biz_title'),
+            'body' => str_replace([':name', ':city'], [$business['company_name'], $business['city']], $this->t('push_new_biz_body')),
             'icon' => '/images/icon-192.png',
             'badge' => '/images/badge-72.png',
             'tag' => 'new-business-' . $business['id'],
@@ -551,7 +584,7 @@ class VerifyEmailController extends Controller
                 'type' => 'new_business'
             ],
             'actions' => [
-                ['action' => 'view', 'title' => 'Bekijk']
+                ['action' => 'view', 'title' => $this->t('push_new_biz_view')]
             ]
         ];
 
@@ -564,9 +597,9 @@ class VerifyEmailController extends Controller
      */
     private function sendNewBusinessEmails(array $users, array $business, string $businessUrl, string $categoryName): void
     {
-        $mailer = new Mailer();
+        $mailer = new Mailer($this->lang);
 
-        $subject = "Nieuw op GlamourSchedule: {$business['company_name']} in {$business['city']}!";
+        $subject = str_replace([':name', ':city'], [$business['company_name'], $business['city']], $this->t('email_new_biz_subject'));
 
         foreach ($users as $user) {
             $firstName = $user['first_name'] ?: 'daar';
@@ -590,7 +623,13 @@ class VerifyEmailController extends Controller
         $location = trim("{$business['city']}");
         $description = !empty($business['description'])
             ? substr(strip_tags($business['description']), 0, 150) . '...'
-            : "Ontdek de diensten van {$business['company_name']}";
+            : str_replace(':name', $business['company_name'], $this->t('email_new_biz_fallback'));
+        $nbHeading = $this->t('email_new_biz_heading');
+        $nbHi = str_replace(':name', $firstName, $this->t('email_new_biz_hi'));
+        $nbIntro = $this->t('email_new_biz_intro');
+        $nbCta = $this->t('email_new_biz_cta');
+        $nbHurry = $this->t('email_new_biz_hurry');
+        $nbFooter = $this->t('email_new_biz_email_footer');
 
         return <<<HTML
 <!DOCTYPE html>
@@ -598,69 +637,70 @@ class VerifyEmailController extends Controller
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style='margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;'>
-    <table width='100%' cellpadding='0' cellspacing='0' style='background:#0a0a0a;padding:20px;'>
+<body class='email-body' style='margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;'>
+    <table width='100%' cellpadding='0' cellspacing='0' class='email-outer' style='background:#ffffff;padding:20px;'>
         <tr>
             <td align='center'>
-                <table width='600' cellpadding='0' cellspacing='0' style='background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);'>
+                <table width='600' cellpadding='0' cellspacing='0' class='email-content' style='background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;'>
                     <!-- Header -->
                     <tr>
-                        <td style='background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:30px;text-align:center;'>
+                        <td style='background:#000000;color:#ffffff;padding:30px;text-align:center;'>
                             <div style='font-size:2.5rem;margin-bottom:10px;'>✨</div>
-                            <h1 style='margin:0;font-size:24px;font-weight:700;'>Nieuw bij GlamourSchedule!</h1>
+                            <h1 style='margin:0;font-size:24px;font-weight:700;'>{$nbHeading}</h1>
                         </td>
                     </tr>
 
                     <!-- Content -->
                     <tr>
                         <td style='padding:40px 30px;'>
-                            <p style='font-size:16px;color:#ffffff;margin:0 0 20px;'>
-                                Hoi <strong>{$firstName}</strong>,
+                            <p class='email-text' style='font-size:16px;color:#000000;margin:0 0 20px;'>
+                                {$nbHi}
                             </p>
 
-                            <p style='font-size:16px;color:#ffffff;margin:0 0 25px;line-height:1.6;'>
-                                Er is een nieuwe salon toegevoegd die perfect bij jou zou kunnen passen!
+                            <p class='email-text' style='font-size:16px;color:#000000;margin:0 0 25px;line-height:1.6;'>
+                                {$nbIntro}
                             </p>
 
                             <!-- Business Card -->
-                            <div style='background:linear-gradient(135deg,#fffbeb,#f5f3ff);border-radius:12px;padding:25px;margin:25px 0;border:2px solid #f5f5f5;'>
-                                <h2 style='margin:0 0 10px;color:#ffffff;font-size:20px;'>{$business['company_name']}</h2>
+                            <div style='background:#f5f5f5;border-radius:12px;padding:25px;margin:25px 0;border:2px solid #e0e0e0;'>
+                                <h2 class='email-text' style='margin:0 0 10px;color:#000000;font-size:20px;'>{$business['company_name']}</h2>
 
-                                <p style='margin:0 0 8px;color:#6b7280;font-size:14px;'>
-                                    <span style='color:#ffffff;'>📍</span> {$location}
+                                <p style='margin:0 0 8px;color:#666666;font-size:14px;'>
+                                    📍 {$location}
                                 </p>
 
-                                <p style='margin:0 0 8px;color:#6b7280;font-size:14px;'>
-                                    <span style='color:#ffffff;'>💅</span> {$categoryName}
+                                <p style='margin:0 0 8px;color:#666666;font-size:14px;'>
+                                    💅 {$categoryName}
                                 </p>
 
-                                <p style='margin:15px 0 0;color:#4b5563;font-size:14px;line-height:1.5;'>
+                                <p style='margin:15px 0 0;color:#666666;font-size:14px;line-height:1.5;'>
                                     {$description}
                                 </p>
                             </div>
 
                             <!-- CTA Button -->
                             <p style='text-align:center;margin:30px 0;'>
-                                <a href='{$businessUrl}' style='display:inline-block;background:linear-gradient(135deg,#000000,#000000);color:#ffffff;padding:16px 40px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:16px;box-shadow:0 4px 15px rgba(0,0,0,0.3);'>
-                                    Bekijk & Boek Nu
+                                <a href='{$businessUrl}' style='display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;text-decoration:none;border-radius:50px;font-weight:bold;font-size:16px;'>
+                                    {$nbCta}
                                 </a>
                             </p>
 
-                            <p style='font-size:14px;color:#9ca3af;text-align:center;margin:20px 0 0;'>
-                                Wees er snel bij en boek jouw afspraak!
+                            <p class='email-muted' style='font-size:14px;color:#666666;text-align:center;margin:20px 0 0;'>
+                                {$nbHurry}
                             </p>
                         </td>
                     </tr>
 
                     <!-- Footer -->
                     <tr>
-                        <td style='background:#0a0a0a;padding:25px;text-align:center;border-top:1px solid #e5e7eb;'>
-                            <p style='margin:0 0 10px;color:#6b7280;font-size:12px;'>
-                                Je ontvangt deze email omdat je een account hebt bij GlamourSchedule.
+                        <td class='email-footer' style='background:#f5f5f5;padding:25px;text-align:center;border-top:1px solid #e0e0e0;'>
+                            <p class='email-footer-text' style='margin:0 0 10px;color:#666666;font-size:12px;'>
+                                {$nbFooter}
                             </p>
-                            <p style='margin:0;color:#9ca3af;font-size:12px;'>
-                                &copy; 2026 GlamourSchedule - <a href='https://glamourschedule.nl' style='color:#ffffff;text-decoration:none;'>glamourschedule.nl</a>
+                            <p class='email-footer-text' style='margin:0;color:#666666;font-size:12px;'>
+                                &copy; 2026 GlamourSchedule - <a href='https://glamourschedule.nl' style='color:#000000;text-decoration:none;'>glamourschedule.nl</a>
                             </p>
                         </td>
                     </tr>
@@ -677,62 +717,78 @@ HTML;
     {
         $profileUrl = "https://glamourschedule.nl/business/profile";
 
-        $subject = "Belangrijk: Voeg je KVK-nummer toe om boekingen te ontvangen";
+        $subject = $this->t('email_kvk_warning_subject');
+
+        $kvkHeading = $this->t('email_kvk_action_required');
+        $kvkSub = $this->t('email_kvk_not_active');
+        $kvkDear = $this->t('email_verify_dear') . ' ' . $businessData['name'] . ',';
+        $kvkWaiting = $this->t('email_kvk_waiting_verification');
+        $kvkWithout = $this->t('email_kvk_without_text');
+        $kvkWhy = $this->t('email_kvk_why_important');
+        $kvkR1 = $this->t('email_kvk_reason1');
+        $kvkR2 = $this->t('email_kvk_reason2');
+        $kvkR3 = $this->t('email_kvk_reason3');
+        $kvkR4 = $this->t('email_kvk_reason4');
+        $kvkSolution = $this->t('email_kvk_solution_title');
+        $kvkAddText = $this->t('email_kvk_add_text');
+        $kvkAddBtn = $this->t('email_kvk_add_button');
+        $kvkNoWorries = $this->t('email_kvk_no_worries');
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<html><head><meta charset="UTF-8">
+<style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-list { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+</head>
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;">
+            <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                 <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
                     <div style="font-size:50px;margin-bottom:15px;">&#9888;</div>
-                    <h1 style="margin:0;font-size:24px;">Actie Vereist</h1>
-                    <p style="margin:10px 0 0;opacity:0.95;">Je account is nog niet volledig actief</p>
+                    <h1 style="margin:0;font-size:24px;">{$kvkHeading}</h1>
+                    <p style="margin:10px 0 0;opacity:0.95;">{$kvkSub}</p>
                 </td></tr>
                 <tr><td style="padding:35px;">
-                    <p style="font-size:16px;color:#ffffff;margin:0 0 20px;">Beste {$businessData['name']},</p>
+                    <p class="email-text" style="font-size:16px;color:#000000;margin:0 0 20px;">{$kvkDear}</p>
 
                     <div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:20px;margin-bottom:25px;">
                         <h3 style="margin:0 0 10px;color:#92400e;display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:24px;">&#128274;</span> Je account wacht op verificatie
+                            <span style="font-size:24px;">&#128274;</span> {$kvkWaiting}
                         </h3>
                         <p style="margin:0;color:#92400e;line-height:1.6;">
-                            Zonder KVK-nummer wordt je account handmatig geverifieerd door ons team.
-                            Dit kan tot <strong>24 uur</strong> duren. Tot die tijd kun je <strong>geen boekingen ontvangen</strong>.
+                            {$kvkWithout}
                         </p>
                     </div>
 
-                    <h3 style="color:#ffffff;margin:0 0 15px;">Waarom is een KVK-nummer belangrijk?</h3>
-                    <ul style="color:#555;line-height:1.8;padding-left:20px;margin:0 0 25px;">
-                        <li><strong>Directe activatie</strong> - Met KVK wordt je account direct actief</li>
-                        <li><strong>Vertrouwen</strong> - Klanten zien dat je een geregistreerd bedrijf bent</li>
-                        <li><strong>Uitbetalingen</strong> - Nodig voor correcte facturatie en uitbetalingen</li>
-                        <li><strong>Geen wachttijd</strong> - Begin direct met het ontvangen van boekingen</li>
+                    <h3 class="email-text" style="color:#000000;margin:0 0 15px;">{$kvkWhy}</h3>
+                    <ul class="email-list" style="color:#666666;line-height:1.8;padding-left:20px;margin:0 0 25px;">
+                        <li>{$kvkR1}</li>
+                        <li>{$kvkR2}</li>
+                        <li>{$kvkR3}</li>
+                        <li>{$kvkR4}</li>
                     </ul>
 
                     <div style="background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:20px;margin-bottom:25px;">
                         <h3 style="margin:0 0 10px;color:#166534;">
-                            <span style="font-size:20px;">&#10003;</span> Oplossing
+                            <span style="font-size:20px;">&#10003;</span> {$kvkSolution}
                         </h3>
                         <p style="margin:0;color:#166534;line-height:1.6;">
-                            Voeg je KVK-nummer toe in je profiel en je account wordt <strong>direct geverifieerd</strong>.
+                            {$kvkAddText}
                         </p>
                     </div>
 
                     <div style="text-align:center;margin:30px 0;">
-                        <a href="{$profileUrl}" style="display:inline-block;background:linear-gradient(135deg,#000,#333);color:#fff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;">
-                            KVK-nummer Toevoegen
+                        <a href="{$profileUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;">
+                            {$kvkAddBtn}
                         </a>
                     </div>
 
-                    <p style="font-size:14px;color:#cccccc;text-align:center;margin:0;">
-                        Geen KVK-nummer? Geen zorgen - ons team verifieert je account binnen 24 uur.
+                    <p class="email-muted" style="font-size:14px;color:#666666;text-align:center;margin:0;">
+                        {$kvkNoWorries}
                     </p>
                 </td></tr>
-                <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                    <p style="margin:0;color:#cccccc;font-size:12px;">&copy; 2025 GlamourSchedule - Beauty & Wellness Bookings</p>
+                <tr><td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                    <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule - Beauty & Wellness Bookings</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -741,7 +797,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             $mailer->send($businessData['email'], $subject, $htmlBody);
         } catch (\Exception $e) {
             error_log("Failed to send KVK warning email: " . $e->getMessage());
@@ -763,14 +819,24 @@ HTML;
             );
         }
 
-        $verificationStatus = $isAutoVerified ? 'Automatisch geverifieerd (KVK aanwezig)' : 'Wacht op handmatige verificatie';
+        $verificationStatus = $isAutoVerified ? $this->t('email_admin_auto_verified') : $this->t('email_admin_waiting');
         $statusColor = $isAutoVerified ? '#22c55e' : '#f59e0b';
 
         $subject = $isAutoVerified
-            ? "Nieuw bedrijf geregistreerd: {$businessData['name']}"
-            : "ACTIE VEREIST: Nieuw bedrijf wacht op verificatie - {$businessData['name']}";
+            ? str_replace(':name', $businessData['name'], $this->t('email_admin_new_biz_subject'))
+            : str_replace(':name', $businessData['name'], $this->t('email_admin_action_subject'));
 
-        $kvkDisplay = !empty($businessData['kvk_number']) ? $businessData['kvk_number'] : '<span style="color:#dc2626;">Niet ingevuld</span>';
+        $kvkNotFilled = $this->t('email_admin_not_filled');
+        $kvkDisplay = !empty($businessData['kvk_number']) ? $businessData['kvk_number'] : '<span style="color:#dc2626;">' . $kvkNotFilled . '</span>';
+        $adminHeading = $this->t('email_admin_heading');
+        $adminNotif = $this->t('email_admin_notification');
+        $adminEmailLabel = $this->t('email_admin_email_label');
+        $adminKvkLabel = $this->t('email_admin_kvk_label');
+        $adminStatusLabel = $this->t('email_admin_status_label');
+        $adminAccept = $this->t('email_admin_accept');
+        $adminReject = $this->t('email_admin_reject');
+        $adminVerifyPrompt = $this->t('email_admin_verify_prompt');
+        $adminViewPanel = $this->t('email_admin_view_panel');
 
         // Build action buttons for non-verified businesses
         $actionButtons = '';
@@ -778,12 +844,12 @@ HTML;
             $verifyUrl = "https://glamourschedule.nl/admin/verify-business/{$verificationToken}";
             $actionButtons = <<<HTML
                     <div style="margin-top:30px;text-align:center;">
-                        <p style="margin:0 0 20px;color:#cccccc;font-size:14px;">Klik op een knop om het bedrijf te verifiëren of af te wijzen:</p>
+                        <p class="email-muted" style="margin:0 0 20px;color:#666666;font-size:14px;">{$adminVerifyPrompt}</p>
                         <a href="{$verifyUrl}?action=approve" style="display:inline-block;background:#000000;color:#ffffff;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;margin:5px;">
-                            ✓ Accepteren
+                            ✓ {$adminAccept}
                         </a>
-                        <a href="{$verifyUrl}?action=reject" style="display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;border:2px solid #333;margin:5px;">
-                            ✗ Weigeren
+                        <a href="{$verifyUrl}?action=reject" style="display:inline-block;background:#ffffff;color:#000000;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:600;border:2px solid #e0e0e0;margin:5px;">
+                            ✗ {$adminReject}
                         </a>
                     </div>
 HTML;
@@ -791,7 +857,7 @@ HTML;
             $actionButtons = <<<HTML
                     <div style="margin-top:30px;text-align:center;">
                         <a href="https://glamourschedule.nl/admin/businesses" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 30px;border-radius:8px;text-decoration:none;font-weight:600;">
-                            Bekijk in Admin Panel
+                            {$adminViewPanel}
                         </a>
                     </div>
 HTML;
@@ -799,42 +865,44 @@ HTML;
 
         $htmlBody = <<<HTML
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#000000;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#000000;padding:40px 20px;">
+<html><head><meta charset="UTF-8">
+<style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+</head>
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:40px 20px;">
         <tr><td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+            <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid #e0e0e0;">
                 <tr><td style="background:#000000;color:#ffffff;padding:40px;text-align:center;">
                     <div style="font-size:40px;margin-bottom:15px;">🏢</div>
-                    <h1 style="margin:0;font-size:24px;font-weight:700;">Nieuw Bedrijf Geregistreerd</h1>
-                    <p style="margin:10px 0 0;opacity:0.8;font-size:14px;">GlamourSchedule Admin Notificatie</p>
+                    <h1 style="margin:0;font-size:24px;font-weight:700;">{$adminHeading}</h1>
+                    <p style="margin:10px 0 0;opacity:0.8;font-size:14px;">{$adminNotif}</p>
                 </td></tr>
                 <tr><td style="padding:40px;">
                     <div style="background:{$statusColor};color:#fff;padding:12px 24px;border-radius:50px;margin-bottom:30px;display:inline-block;font-weight:600;">
                         {$verificationStatus}
                     </div>
 
-                    <h2 style="margin:0 0 25px 0;color:#ffffff;font-size:28px;">{$businessData['name']}</h2>
+                    <h2 class="email-text" style="margin:0 0 25px 0;color:#000000;font-size:28px;">{$businessData['name']}</h2>
 
                     <table style="width:100%;border-collapse:collapse;background:#f9fafb;border-radius:12px;overflow:hidden;">
                         <tr>
-                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;width:140px;font-weight:500;">E-mail</td>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;width:140px;font-weight:500;">{$adminEmailLabel}</td>
                             <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#111827;font-weight:600;">{$businessData['email']}</td>
                         </tr>
                         <tr>
-                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-weight:500;">KVK-nummer</td>
+                            <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-weight:500;">{$adminKvkLabel}</td>
                             <td style="padding:15px 20px;border-bottom:1px solid #e5e7eb;color:#111827;font-weight:600;">{$kvkDisplay}</td>
                         </tr>
                         <tr>
-                            <td style="padding:15px 20px;color:#6b7280;font-weight:500;">Status</td>
+                            <td style="padding:15px 20px;color:#6b7280;font-weight:500;">{$adminStatusLabel}</td>
                             <td style="padding:15px 20px;color:#111827;font-weight:600;">{$verificationStatus}</td>
                         </tr>
                     </table>
 
                     {$actionButtons}
                 </td></tr>
-                <tr><td style="background:#000000;padding:25px;text-align:center;">
-                    <p style="margin:0;color:#ffffff;font-size:12px;opacity:0.7;">&copy; 2025 GlamourSchedule - Admin Portal</p>
+                <tr><td class="email-footer" style="background:#f5f5f5;padding:25px;text-align:center;border-top:1px solid #e0e0e0;">
+                    <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule - Admin Portal</p>
                 </td></tr>
             </table>
         </td></tr>
@@ -843,7 +911,7 @@ HTML;
 HTML;
 
         try {
-            $mailer = new Mailer();
+            $mailer = new Mailer($this->lang);
             foreach ($adminEmails as $adminEmail) {
                 $mailer->send($adminEmail, $subject, $htmlBody);
             }

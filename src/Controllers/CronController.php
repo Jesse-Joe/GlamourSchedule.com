@@ -9,16 +9,24 @@ use GlamourSchedule\Services\InvoiceService;
 
 class CronController extends Controller
 {
-    private const CRON_SECRET = 'glamour-cron-2024-secret';
+    private static function getCronSecret(): string
+    {
+        $secret = $_ENV['CRON_SECRET'] ?? '';
+        if (empty($secret)) {
+            error_log('CRITICAL: CRON_SECRET not configured in .env');
+            return '';
+        }
+        return $secret;
+    }
 
     /**
      * Check for expired trials and send warning emails
-     * Run daily: /cron/trial-expiry?key=glamour-cron-2024-secret
+     * Run daily: /cron/trial-expiry?key={CRON_SECRET}
      */
     public function trialExpiry(): string
     {
         // Verify cron secret
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -69,12 +77,12 @@ class CronController extends Controller
 
     /**
      * Deactivate businesses 3 days after trial expiry warning
-     * Run daily: /cron/deactivate-expired?key=glamour-cron-2024-secret
+     * Run daily: /cron/deactivate-expired?key={CRON_SECRET}
      */
     public function deactivateExpired(): string
     {
         // Verify cron secret
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -283,7 +291,7 @@ class CronController extends Controller
 
     /**
      * Process automatic payouts to businesses via Wise (IBAN only)
-     * Runs hourly: /cron/process-payouts?key=glamour-cron-2024-secret
+     * Runs hourly: /cron/process-payouts?key={CRON_SECRET}
      *
      * Requirements:
      * - Booking status = 'checked_in' (QR scanned)
@@ -292,7 +300,7 @@ class CronController extends Controller
      */
     public function processPayouts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -352,7 +360,7 @@ class CronController extends Controller
                 // Calculate payout: service price - €1.75 platform fee
                 $servicePrice = (float) $booking['service_price'];
                 $platformFee = self::PLATFORM_FEE;
-                $payoutAmount = $servicePrice - $platformFee;
+                $payoutAmount = max(0, $servicePrice - $platformFee);
 
                 $businessPayouts[$businessId]['bookings'][] = [
                     'id' => $booking['id'],
@@ -555,11 +563,11 @@ class CronController extends Controller
 
     /**
      * Mark payouts as completed (called after manual Mollie transfer)
-     * /cron/complete-payouts?key=glamour-cron-2024-secret&payout_id=123
+     * /cron/complete-payouts?key={CRON_SECRET}&payout_id=123
      */
     public function completePayouts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -567,37 +575,37 @@ class CronController extends Controller
         $payoutId = $_GET['payout_id'] ?? null;
 
         if ($payoutId) {
-            // Complete specific payout
+            // Only complete if payout is currently processing and has a transaction_id (transfer verified)
+            $stmt = $this->db->query(
+                "SELECT business_id FROM business_payouts WHERE id = ? AND status = 'processing' AND transaction_id IS NOT NULL",
+                [$payoutId]
+            );
+            $payout = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$payout) {
+                return json_encode(['error' => 'Payout not found, not in processing status, or no transaction_id']);
+            }
+
             $this->db->query(
-                "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE() WHERE id = ?",
+                "UPDATE business_payouts SET status = 'completed', payout_date = CURDATE() WHERE id = ? AND status = 'processing'",
                 [$payoutId]
             );
 
-            // Get business_id for this payout
-            $stmt = $this->db->query("SELECT business_id FROM business_payouts WHERE id = ?", [$payoutId]);
-            $payout = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-            if ($payout) {
-                // Update all processing bookings for this business to completed
-                $this->db->query(
-                    "UPDATE bookings SET payout_status = 'completed' WHERE business_id = ? AND payout_status = 'processing'",
-                    [$payout['business_id']]
-                );
-            }
+            $this->db->query(
+                "UPDATE bookings SET payout_status = 'completed' WHERE business_id = ? AND payout_status = 'processing'",
+                [$payout['business_id']]
+            );
 
             return json_encode(['success' => true, 'payout_id' => $payoutId]);
         }
 
-        // Complete all processing payouts
-        $this->db->query("UPDATE business_payouts SET status = 'completed', payout_date = CURDATE() WHERE status = 'processing'");
-        $this->db->query("UPDATE bookings SET payout_status = 'completed' WHERE payout_status = 'processing'");
-
-        return json_encode(['success' => true, 'message' => 'All processing payouts marked as completed']);
+        // Require a specific payout_id - refuse to blindly complete all processing payouts
+        return json_encode(['error' => 'payout_id is required to complete a specific payout']);
     }
 
     /**
      * Process automatic QR payouts - 24 hours after QR check-in
-     * Runs hourly: /cron/qr-payouts?key=glamour-cron-2024-secret
+     * Runs hourly: /cron/qr-payouts?key={CRON_SECRET}
      *
      * This processes payments via Wise (IBAN):
      * - Platform fee (€1.75) is retained by platform
@@ -606,7 +614,7 @@ class CronController extends Controller
      */
     public function qrPayouts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -892,7 +900,7 @@ HTML;
 
     /**
      * Process weekly payouts for businesses WITHOUT Mollie Connect
-     * Runs every Wednesday 08:00: /cron/weekly-payouts?key=glamour-cron-2024-secret
+     * Runs every Wednesday 08:00: /cron/weekly-payouts?key={CRON_SECRET}
      *
      * Schedule rationale:
      * - Mon-Sun: Bookings completed (QR scanned)
@@ -902,7 +910,7 @@ HTML;
      */
     public function weeklyPayouts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -962,7 +970,7 @@ HTML;
 
                 $servicePrice = (float) $booking['service_price'];
                 $platformFee = self::PLATFORM_FEE;
-                $payoutAmount = $servicePrice - $platformFee;
+                $payoutAmount = max(0, $servicePrice - $platformFee);
 
                 $businessPayouts[$businessId]['bookings'][] = [
                     'id' => $booking['id'],
@@ -1352,7 +1360,7 @@ HTML;
         <p>
             Na het overmaken, markeer als voltooid:<br>
             <code style='background:#0a0a0a;padding:5px 10px;border-radius:4px;display:inline-block;margin-top:10px;font-size:12px;'>
-                /cron/complete-payouts?key=glamour-cron-2024-secret
+                /cron/complete-payouts?key={CRON_SECRET}
             </code>
         </p>" : "";
 
@@ -1632,7 +1640,7 @@ HTML;
 
                 <p style='margin-top:20px;'>
                     <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
-                        curl \"https://glamourschedule.com/cron/weekly-payouts?key=glamour-cron-2024-secret\"
+                        curl \"https://glamourschedule.com/cron/weekly-payouts?key={CRON_SECRET}\"
                     </code>
                 </p>
             </div>
@@ -1709,7 +1717,7 @@ HTML;
 
                 <p style='margin-top:20px;'>
                     <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
-                        curl \"https://glamourschedule.com/cron/weekly-payouts?key=glamour-cron-2024-secret\"
+                        curl \"https://glamourschedule.com/cron/weekly-payouts?key={CRON_SECRET}\"
                     </code>
                 </p>
             </div>
@@ -1730,7 +1738,7 @@ HTML;
 
     /**
      * Process weekly payouts for sales partners
-     * Runs every Wednesday 08:00: /cron/sales-payouts?key=glamour-cron-2024-secret
+     * Runs every Wednesday 08:00: /cron/sales-payouts?key={CRON_SECRET}
      *
      * Sales partners earn commission per converted salon (after trial, when they pay registration fee).
      * Commission amount is stored in sales_referrals.commission column.
@@ -1739,7 +1747,7 @@ HTML;
      */
     public function salesPayouts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -2180,7 +2188,7 @@ HTML;
                 </ul>
                 <p style='margin-top:20px;'>
                     <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
-                        curl \"https://glamourschedule.com/cron/sales-payouts?key=glamour-cron-2024-secret\"
+                        curl \"https://glamourschedule.com/cron/sales-payouts?key={CRON_SECRET}\"
                     </code>
                 </p>
             </div>
@@ -2223,7 +2231,7 @@ HTML;
                 <p><strong>" . count($partners) . " sales partner(s)</strong> wachten op uitbetaling.</p>
                 <p style='margin-top:20px;'>
                     <code style='background:#0a0a0a;padding:8px 12px;border-radius:4px;display:block;font-size:12px;'>
-                        curl \"https://glamourschedule.com/cron/sales-payouts?key=glamour-cron-2024-secret\"
+                        curl \"https://glamourschedule.com/cron/sales-payouts?key={CRON_SECRET}\"
                     </code>
                 </p>
             </div>
@@ -2241,11 +2249,11 @@ HTML;
 
     /**
      * Expire waitlist offers after 60 minutes
-     * Run every 5 minutes: /cron/waitlist-expire?key=glamour-cron-2024-secret
+     * Run every 5 minutes: /cron/waitlist-expire?key={CRON_SECRET}
      */
     public function waitlistExpire(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -2433,11 +2441,11 @@ HTML;
 
     /**
      * Process booking reminders (24h and 1h before appointments)
-     * Run every 5 minutes: /cron/process-reminders?key=glamour-cron-2024-secret
+     * Run every 5 minutes: /cron/process-reminders?key={CRON_SECRET}
      */
     public function processReminders(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -2632,7 +2640,7 @@ HTML;
 
     /**
      * Process daily AI Manager tasks for all businesses
-     * Run daily at 8:00 AM: /cron/ai-manager?key=glamour-cron-2024-secret
+     * Run daily at 8:00 AM: /cron/ai-manager?key={CRON_SECRET}
      *
      * This processes:
      * - Daily summary emails to business owners
@@ -2642,7 +2650,7 @@ HTML;
      */
     public function aiManager(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -2686,11 +2694,11 @@ HTML;
 
     /**
      * Process hourly AI Manager alerts (new bookings, cancellations)
-     * Run hourly: /cron/ai-manager-alerts?key=glamour-cron-2024-secret
+     * Run hourly: /cron/ai-manager-alerts?key={CRON_SECRET}
      */
     public function aiManagerAlerts(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }
@@ -2770,11 +2778,11 @@ HTML;
 
     /**
      * Send reminder email if there are pending payouts that need manual approval
-     * Run daily: /cron/payout-reminder?key=glamour-cron-2024-secret
+     * Run daily: /cron/payout-reminder?key={CRON_SECRET}
      */
     public function payoutReminder(): string
     {
-        if (($_GET['key'] ?? '') !== self::CRON_SECRET) {
+        if (($_GET['key'] ?? '') !== self::getCronSecret()) {
             http_response_code(403);
             return json_encode(['error' => 'Unauthorized']);
         }

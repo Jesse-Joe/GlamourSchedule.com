@@ -43,6 +43,8 @@ class Application
         $this->router->get('/faq', 'PagesController@faq');
         $this->router->get('/veelgestelde-vragen', 'PagesController@faq'); // Dutch alias
         $this->router->get('/marketing', 'PagesController@marketing');
+        $this->router->get('/marketing/bidding', 'PagesController@marketingBidding');
+        $this->router->post('/marketing/bidding', 'PagesController@submitBid');
         $this->router->get('/contact', 'PagesController@contact');
         $this->router->post('/contact', 'PagesController@submitContact');
         $this->router->get('/pricing', 'PagesController@pricing');
@@ -327,7 +329,7 @@ class Application
             $router->post('/api/verify-pin', 'DashboardController@verifyPin');
         });
 
-        // Sales dashboard routes
+        // Sales public routes (login, register, password reset)
         $this->router->get('/sales', 'SalesController@index');
         $this->router->get('/sales/login', 'SalesController@showLogin');
         $this->router->post('/sales/login', 'SalesController@login');
@@ -337,24 +339,10 @@ class Application
         $this->router->get('/sales/2fa/resend', 'SalesController@resend2FA');
         $this->router->get('/sales/register', 'SalesController@showRegister');
         $this->router->post('/sales/register', 'SalesController@register');
-        $this->router->get('/sales/dashboard', 'SalesController@dashboard');
-        $this->router->get('/sales/referrals', 'SalesController@referrals');
-        $this->router->get('/sales/mijn-salons', 'SalesController@mijnSalons');
-        $this->router->get('/sales/early-birds', 'SalesController@earlyBirds');
-        $this->router->post('/sales/early-birds/register', 'SalesController@registerEarlyBird');
-        $this->router->get('/sales/early-birds/resend/{id}', 'SalesController@resendEarlyBirdInvite');
-        $this->router->get('/sales/payouts', 'SalesController@payouts');
-        $this->router->get('/sales/materials', 'SalesController@materials');
-        $this->router->post('/sales/send-referral-email', 'SalesController@sendReferralEmail');
-        $this->router->get('/sales/guide', 'SalesController@guide');
-
-        // Sales password reset
         $this->router->get('/sales/forgot-password', 'SalesController@showForgotPassword');
         $this->router->post('/sales/forgot-password', 'SalesController@sendResetCode');
         $this->router->get('/sales/reset-password', 'SalesController@showResetPassword');
         $this->router->post('/sales/reset-password', 'SalesController@resetPassword');
-
-        // Sales registration verification & payment
         $this->router->get('/sales/payment-complete', 'SalesController@paymentComplete');
         $this->router->get('/sales/verify-email', 'SalesController@showVerifyEmail');
         $this->router->post('/sales/verify-email', 'SalesController@verifyEmail');
@@ -364,14 +352,26 @@ class Application
         $this->router->get('/sales/payment/complete', 'SalesController@paymentComplete');
         $this->router->post('/sales/payment/webhook', 'SalesController@paymentWebhook');
 
-        // Sales account settings
-        $this->router->get('/sales/account', 'SalesController@showAccountSettings');
-        $this->router->post('/sales/account', 'SalesController@updateAccount');
-        $this->router->post('/sales/account/password', 'SalesController@updatePassword');
-        $this->router->post('/sales/account/delete', 'SalesController@deleteAccount');
-        $this->router->get('/sales/verify-iban', 'SalesController@showVerifyIban');
-        $this->router->post('/sales/verify-iban', 'SalesController@initiateIbanVerification');
-        $this->router->get('/sales/iban/complete', 'SalesController@ibanVerificationComplete');
+        // Sales dashboard routes (authenticated)
+        $this->router->group(['middleware' => 'sales'], function($router) {
+            $router->get('/sales/dashboard', 'SalesController@dashboard');
+            $router->get('/sales/referrals', 'SalesController@referrals');
+            $router->get('/sales/mijn-salons', 'SalesController@mijnSalons');
+            $router->get('/sales/early-birds', 'SalesController@earlyBirds');
+            $router->post('/sales/early-birds/register', 'SalesController@registerEarlyBird');
+            $router->get('/sales/early-birds/resend/{id}', 'SalesController@resendEarlyBirdInvite');
+            $router->get('/sales/payouts', 'SalesController@payouts');
+            $router->get('/sales/materials', 'SalesController@materials');
+            $router->post('/sales/send-referral-email', 'SalesController@sendReferralEmail');
+            $router->get('/sales/guide', 'SalesController@guide');
+            $router->get('/sales/account', 'SalesController@showAccountSettings');
+            $router->post('/sales/account', 'SalesController@updateAccount');
+            $router->post('/sales/account/password', 'SalesController@updatePassword');
+            $router->post('/sales/account/delete', 'SalesController@deleteAccount');
+            $router->get('/sales/verify-iban', 'SalesController@showVerifyIban');
+            $router->post('/sales/verify-iban', 'SalesController@initiateIbanVerification');
+            $router->get('/sales/iban/complete', 'SalesController@ibanVerificationComplete');
+        });
 
         // Cron routes (protected by secret key)
         $this->router->get('/cron/trial-expiry', 'CronController@trialExpiry');
@@ -389,25 +389,29 @@ class Application
         $this->router->get('/admin/verify-business/{token}', 'AdminController@showVerifyBusiness');
         $this->router->post('/admin/verify-business/{token}', 'AdminController@processVerifyBusiness');
 
-        // Admin routes
+        // Admin public routes (login)
         $this->router->get('/admin', 'AdminController@showLogin');
         $this->router->get('/admin/login', 'AdminController@showLogin');
         $this->router->post('/admin/login', 'AdminController@login');
         $this->router->get('/admin/logout', 'AdminController@logout');
-        $this->router->get('/admin/dashboard', 'AdminController@dashboard');
-        $this->router->get('/admin/users', 'AdminController@users');
-        $this->router->get('/admin/businesses', 'AdminController@businesses');
-        $this->router->get('/admin/sales-partners', 'AdminController@salesPartners');
-        $this->router->get('/admin/revenue', 'AdminController@revenue');
-        $this->router->get('/admin/payouts', 'AdminController@payouts');
-        $this->router->post('/admin/payouts/mark/{type}/{id}', 'AdminController@markPayoutComplete');
-        $this->router->post('/admin/user/{id}/update', 'AdminController@updateUser');
-        $this->router->post('/admin/user/{id}/delete', 'AdminController@deleteUser');
-        $this->router->post('/admin/business/{id}/update', 'AdminController@updateBusiness');
-        $this->router->post('/admin/business/{id}/delete', 'AdminController@deleteBusiness');
-        $this->router->post('/admin/business/{id}/activate', 'AdminController@activateBusiness');
-        $this->router->post('/admin/sales-partner/{id}/update', 'AdminController@updateSalesPartner');
-        $this->router->post('/admin/sales-partner/{id}/delete', 'AdminController@deleteSalesPartner');
+
+        // Admin dashboard routes (authenticated)
+        $this->router->group(['middleware' => 'admin'], function($router) {
+            $router->get('/admin/dashboard', 'AdminController@dashboard');
+            $router->get('/admin/users', 'AdminController@users');
+            $router->get('/admin/businesses', 'AdminController@businesses');
+            $router->get('/admin/sales-partners', 'AdminController@salesPartners');
+            $router->get('/admin/revenue', 'AdminController@revenue');
+            $router->get('/admin/payouts', 'AdminController@payouts');
+            $router->post('/admin/payouts/mark/{type}/{id}', 'AdminController@markPayoutComplete');
+            $router->post('/admin/user/{id}/update', 'AdminController@updateUser');
+            $router->post('/admin/user/{id}/delete', 'AdminController@deleteUser');
+            $router->post('/admin/business/{id}/update', 'AdminController@updateBusiness');
+            $router->post('/admin/business/{id}/delete', 'AdminController@deleteBusiness');
+            $router->post('/admin/business/{id}/activate', 'AdminController@activateBusiness');
+            $router->post('/admin/sales-partner/{id}/update', 'AdminController@updateSalesPartner');
+            $router->post('/admin/sales-partner/{id}/delete', 'AdminController@deleteSalesPartner');
+        });
     }
     
     public function run(): void

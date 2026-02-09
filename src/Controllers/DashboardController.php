@@ -403,6 +403,15 @@ class DashboardController extends Controller
 
         $pin = $input['pin'] ?? '';
 
+        // Rate limiting: max 5 attempts per 15 minutes
+        $attempts = $_SESSION['pin_attempts'] ?? 0;
+        $lockoutUntil = $_SESSION['pin_lockout_until'] ?? 0;
+
+        if ($lockoutUntil > time()) {
+            $remaining = ceil(($lockoutUntil - time()) / 60);
+            return json_encode(['success' => false, 'error' => "Te veel pogingen. Probeer het over {$remaining} minuten opnieuw."]);
+        }
+
         $stmt = $this->db->query(
             "SELECT pin_hash FROM users WHERE id = ? AND pin_enabled = 1",
             [$_SESSION['user_id']]
@@ -416,7 +425,17 @@ class DashboardController extends Controller
         if (password_verify($pin, $user['pin_hash'])) {
             $_SESSION['pin_verified'] = true;
             $_SESSION['pin_verified_at'] = time();
+            $_SESSION['pin_attempts'] = 0;
+            unset($_SESSION['pin_lockout_until']);
             return json_encode(['success' => true]);
+        }
+
+        // Track failed attempts
+        $_SESSION['pin_attempts'] = $attempts + 1;
+        if ($_SESSION['pin_attempts'] >= 5) {
+            $_SESSION['pin_lockout_until'] = time() + (15 * 60);
+            $_SESSION['pin_attempts'] = 0;
+            return json_encode(['success' => false, 'error' => 'Te veel pogingen. Account geblokkeerd voor 15 minuten.']);
         }
 
         return json_encode(['success' => false, 'error' => 'Onjuiste PIN']);

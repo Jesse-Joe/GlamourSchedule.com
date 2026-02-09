@@ -40,6 +40,7 @@ $config = require BASE_PATH . '/config/config.php';
 // Configure session for 24 hours (security best practice)
 ini_set('session.gc_maxlifetime', 86400); // 24 uur
 ini_set('session.cookie_lifetime', 86400); // 24 uur
+ini_set('session.use_strict_mode', 1);
 session_set_cookie_params([
     'lifetime' => 86400, // 24 uur
     'path' => '/',

@@ -235,12 +235,19 @@ class GeoIP
      */
     public function getClientIP(): string
     {
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        // Only trust proxy headers if request comes from localhost (Nginx reverse proxy)
+        $trustedProxies = ['127.0.0.1', '::1'];
+        if (!in_array($remoteAddr, $trustedProxies, true)) {
+            return $remoteAddr;
+        }
+
+        // Trusted proxy - check forwarded headers in priority order
         $headers = [
             'HTTP_CF_CONNECTING_IP',     // Cloudflare
-            'HTTP_X_FORWARDED_FOR',      // Proxy
             'HTTP_X_REAL_IP',            // Nginx
-            'HTTP_CLIENT_IP',            // Other proxies
-            'REMOTE_ADDR'                // Direct connection
+            'HTTP_X_FORWARDED_FOR',      // Proxy
         ];
 
         foreach ($headers as $header) {
@@ -253,7 +260,7 @@ class GeoIP
             }
         }
 
-        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        return $remoteAddr;
     }
 
     /**
@@ -344,7 +351,8 @@ class GeoIP
      */
     private function getFileCache(string $ip): ?array
     {
-        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $ip) . '.json';
+        $safeIp = preg_replace('/[^a-fA-F0-9._:-]/', '', $ip);
+        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $safeIp) . '.json';
 
         if (!file_exists($file)) {
             return null;
@@ -374,7 +382,8 @@ class GeoIP
             @mkdir($this->cacheDir, 0755, true);
         }
 
-        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $ip) . '.json';
+        $safeIp = preg_replace('/[^a-fA-F0-9._:-]/', '', $ip);
+        $file = $this->cacheDir . '/' . str_replace(['.', ':'], '_', $safeIp) . '.json';
         @file_put_contents($file, json_encode($result), LOCK_EX);
     }
 

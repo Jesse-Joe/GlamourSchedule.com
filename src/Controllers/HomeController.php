@@ -17,7 +17,16 @@ class HomeController extends Controller
         $boostedBusinesses = $this->getBoostedBusinesses($countryCode);
         $featuredBusinesses = $this->getFeaturedBusinesses($countryCode);
         $categories = $this->getCategories();
-        $stats = $this->getPlatformStats();
+        $stats = $this->getPlatformStats($countryCode);
+
+        // If no businesses in visitor's country, fall back to global results
+        $showingGlobal = false;
+        if (empty($boostedBusinesses) && empty($featuredBusinesses) && $stats['businesses'] == 0) {
+            $showingGlobal = true;
+            $boostedBusinesses = $this->getBoostedBusinessesGlobal();
+            $featuredBusinesses = $this->getFeaturedBusinessesGlobal();
+            $stats = $this->getPlatformStatsGlobal();
+        }
 
         $countryStats = $this->getCountryStats();
 
@@ -32,7 +41,9 @@ class HomeController extends Controller
             'stats' => $stats,
             'countryStats' => $countryStats,
             'promo' => $promo,
-            'showDualCurrency' => $promo['show_dual'] ?? false
+            'showDualCurrency' => $promo['show_dual'] ?? false,
+            'visitorCountry' => $countryCode,
+            'showingGlobal' => $showingGlobal
         ]);
     }
 
@@ -43,6 +54,9 @@ class HomeController extends Controller
      */
     private function getBoostedBusinesses(string $visitorCountry): array
     {
+        $countryNames = $this->getCountryVariants($visitorCountry);
+        $placeholders = implode(',', array_fill(0, count($countryNames), '?'));
+
         $stmt = $this->db->query(
             "SELECT b.*, b.company_name as name,
                     COALESCE(AVG(r.rating), 0) as avg_rating,
@@ -54,11 +68,11 @@ class HomeController extends Controller
              WHERE b.status = 'active'
                AND b.is_boosted = 1
                AND b.boost_expires_at > NOW()
-               AND b.country = ?
+               AND b.country IN ({$placeholders})
              GROUP BY b.id
              ORDER BY b.boost_expires_at DESC
              LIMIT 9",
-            [$visitorCountry]
+            $countryNames
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -69,6 +83,9 @@ class HomeController extends Controller
      */
     private function getFeaturedBusinesses(string $visitorCountry): array
     {
+        $countryNames = $this->getCountryVariants($visitorCountry);
+        $placeholders = implode(',', array_fill(0, count($countryNames), '?'));
+
         // Get top 9 salons based on monthly bookings (salon leaderboard)
         // Excludes boosted businesses to avoid duplicates
         // Filtered by visitor's country
@@ -86,11 +103,11 @@ class HomeController extends Controller
              LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
              WHERE b.status = 'active'
                AND (b.is_boosted = 0 OR b.is_boosted IS NULL OR b.boost_expires_at <= NOW())
-               AND b.country = ?
+               AND b.country IN ({$placeholders})
              GROUP BY b.id
              ORDER BY monthly_bookings DESC, avg_rating DESC
              LIMIT 9",
-            [$visitorCountry]
+            $countryNames
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -112,15 +129,35 @@ class HomeController extends Controller
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function getPlatformStats(): array
+    private function getPlatformStats(string $countryCode): array
     {
-        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM businesses");
+        $countryNames = $this->getCountryVariants($countryCode);
+        $placeholders = implode(',', array_fill(0, count($countryNames), '?'));
+
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as cnt FROM businesses
+             WHERE status = 'active' AND (UPPER(country) IN ({$placeholders}))",
+            $countryNames
+        );
         $businesses = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
-        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM bookings WHERE status != 'cancelled'");
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as cnt FROM bookings bk
+             JOIN businesses b ON bk.business_id = b.id
+             WHERE bk.status != 'cancelled'
+               AND (b.country IN ({$placeholders}))",
+            $countryNames
+        );
         $bookings = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
-        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM users");
+        $stmt = $this->db->query(
+            "SELECT COUNT(DISTINCT bk.user_id) as cnt FROM bookings bk
+             JOIN businesses b ON bk.business_id = b.id
+             WHERE bk.status != 'cancelled'
+               AND bk.user_id IS NOT NULL
+               AND (b.country IN ({$placeholders}))",
+            $countryNames
+        );
         $users = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
 
         return [
@@ -128,6 +165,115 @@ class HomeController extends Controller
             'bookings' => $bookings,
             'users' => $users
         ];
+    }
+
+    /**
+     * Global fallback methods - used when no businesses exist in visitor's country
+     */
+    private function getBoostedBusinessesGlobal(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT b.*, b.company_name as name,
+                    COALESCE(AVG(r.rating), 0) as avg_rating,
+                    COUNT(DISTINCT r.id) as review_count,
+                    MIN(s.price) as min_price
+             FROM businesses b
+             LEFT JOIN reviews r ON b.id = r.business_id
+             LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
+             WHERE b.status = 'active'
+               AND b.is_boosted = 1
+               AND b.boost_expires_at > NOW()
+             GROUP BY b.id
+             ORDER BY b.boost_expires_at DESC
+             LIMIT 9"
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function getFeaturedBusinessesGlobal(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT b.*, b.company_name as name,
+                    COALESCE(AVG(r.rating), 0) as avg_rating,
+                    COUNT(DISTINCT r.id) as review_count,
+                    MIN(s.price) as min_price,
+                    (SELECT COUNT(*) FROM bookings bk
+                     WHERE bk.business_id = b.id
+                     AND bk.status NOT IN ('cancelled')
+                     AND bk.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)) as monthly_bookings
+             FROM businesses b
+             LEFT JOIN reviews r ON b.id = r.business_id
+             LEFT JOIN services s ON b.id = s.business_id AND s.is_active = 1
+             WHERE b.status = 'active'
+               AND (b.is_boosted = 0 OR b.is_boosted IS NULL OR b.boost_expires_at <= NOW())
+             GROUP BY b.id
+             ORDER BY monthly_bookings DESC, avg_rating DESC
+             LIMIT 9"
+        );
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    private function getPlatformStatsGlobal(): array
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM businesses WHERE status = 'active'");
+        $businesses = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+        $stmt = $this->db->query("SELECT COUNT(*) as cnt FROM bookings WHERE status != 'cancelled'");
+        $bookings = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+        $stmt = $this->db->query("SELECT COUNT(DISTINCT user_id) as cnt FROM bookings WHERE status != 'cancelled' AND user_id IS NOT NULL");
+        $users = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+        return [
+            'businesses' => $businesses,
+            'bookings' => $bookings,
+            'users' => $users
+        ];
+    }
+
+    /**
+     * Get all variants for a country code (code + common names)
+     * Handles mixed data where country column may store 'NL', 'Nederland', 'Netherlands', etc.
+     */
+    private function getCountryVariants(string $countryCode): array
+    {
+        $code = strtoupper($countryCode);
+        $variants = [$code];
+
+        $nameMap = [
+            'NL' => ['Nederland', 'Netherlands', 'The Netherlands'],
+            'BE' => ['België', 'Belgium', 'Belgique'],
+            'DE' => ['Duitsland', 'Germany', 'Deutschland'],
+            'FR' => ['Frankrijk', 'France'],
+            'GB' => ['United Kingdom', 'UK', 'England', 'Groot-Brittannië'],
+            'ES' => ['Spanje', 'Spain', 'España'],
+            'IT' => ['Italië', 'Italy', 'Italia'],
+            'PT' => ['Portugal'],
+            'AT' => ['Oostenrijk', 'Austria', 'Österreich'],
+            'CH' => ['Zwitserland', 'Switzerland', 'Schweiz', 'Suisse', 'Svizzera'],
+            'LU' => ['Luxemburg', 'Luxembourg'],
+            'PL' => ['Polen', 'Poland', 'Polska'],
+            'CZ' => ['Tsjechië', 'Czech Republic', 'Česko'],
+            'DK' => ['Denemarken', 'Denmark', 'Danmark'],
+            'SE' => ['Zweden', 'Sweden', 'Sverige'],
+            'NO' => ['Noorwegen', 'Norway', 'Norge'],
+            'FI' => ['Finland', 'Suomi'],
+            'IE' => ['Ierland', 'Ireland'],
+            'GR' => ['Griekenland', 'Greece'],
+            'TR' => ['Turkije', 'Turkey', 'Türkiye'],
+            'US' => ['United States', 'USA', 'Verenigde Staten'],
+            'CA' => ['Canada', 'Kanada'],
+            'AU' => ['Australië', 'Australia'],
+            'ZA' => ['Zuid-Afrika', 'South Africa'],
+            'MA' => ['Marokko', 'Morocco'],
+            'AE' => ['Verenigde Arabische Emiraten', 'UAE'],
+        ];
+
+        if (isset($nameMap[$code])) {
+            $variants = array_merge($variants, $nameMap[$code]);
+        }
+
+        return $variants;
     }
 
     /**

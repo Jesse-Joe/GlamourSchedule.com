@@ -167,7 +167,7 @@ class Mailer
         $content = $texts[$this->lang] ?? $texts['en'] ?? $texts['nl'] ?? '';
 
         return <<<HTML
-        <div style="color:#ffffff;font-size:14px;line-height:1.6;">
+        <div class="email-text" style="color:#000000;font-size:14px;line-height:1.6;">
             {$content}
         </div>
 HTML;
@@ -862,9 +862,10 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
@@ -988,12 +989,13 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <!-- Header -->
                     <tr>
                         <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
@@ -1003,7 +1005,7 @@ HTML;
                     </tr>
                     <!-- Content -->
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
 
                             <p style="text-align:center;margin:25px 0;">
@@ -1015,8 +1017,8 @@ HTML;
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1188,12 +1190,13 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
@@ -1201,7 +1204,7 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$content}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1211,8 +1214,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1384,12 +1387,13 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
@@ -1397,7 +1401,7 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$content}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1407,8 +1411,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1490,12 +1494,13 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">Welcome / Welkom</h1>
@@ -1503,7 +1508,7 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1513,8 +1518,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1623,19 +1628,20 @@ TEXT;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">Trial Ending / Proefperiode Eindigt</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1645,8 +1651,8 @@ TEXT;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1717,19 +1723,20 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">Account Deactivated / Account Gedeactiveerd</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1739,8 +1746,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1818,19 +1825,20 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">Set Up Your Page / Stel Je Pagina In</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
                             <p style="text-align:center;margin:25px 0;">
                                 <a href="{$data['dashboard_url']}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
@@ -1840,8 +1848,8 @@ HTML;
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1870,7 +1878,7 @@ HTML;
                 <p><strong>Bankrekening:</strong> {$data['iban']}<br>
                 <strong>Reden:</strong> {$data['reason']}</p>
                 <p><strong>Verwachte verwerkingstijd:</strong> 1-3 werkdagen</p>
-                <p style='color:#cccccc;font-size:13px;'>Het bedrag wordt overgemaakt naar je geregistreerde bankrekening. De daadwerkelijke verwerkingstijd hangt af van je bank.</p>
+                <p class='email-muted' style='color:#666666;font-size:13px;'>Het bedrag wordt overgemaakt naar je geregistreerde bankrekening. De daadwerkelijke verwerkingstijd hangt af van je bank.</p>
             ",
             'en' => "
                 <p><strong>Dear {$data['name']},</strong></p>
@@ -1881,7 +1889,7 @@ HTML;
                 <p><strong>Bank account:</strong> {$data['iban']}<br>
                 <strong>Reason:</strong> {$data['reason']}</p>
                 <p><strong>Expected processing time:</strong> 1-3 business days</p>
-                <p style='color:#cccccc;font-size:13px;'>The amount will be transferred to your registered bank account. Actual processing time depends on your bank.</p>
+                <p class='email-muted' style='color:#666666;font-size:13px;'>The amount will be transferred to your registered bank account. Actual processing time depends on your bank.</p>
             ",
             'de' => "
                 <p><strong>Liebe/r {$data['name']},</strong></p>
@@ -1892,7 +1900,7 @@ HTML;
                 <p><strong>Bankkonto:</strong> {$data['iban']}<br>
                 <strong>Grund:</strong> {$data['reason']}</p>
                 <p><strong>Erwartete Bearbeitungszeit:</strong> 1-3 Werktage</p>
-                <p style='color:#cccccc;font-size:13px;'>Der Betrag wird auf Ihr registriertes Bankkonto uberwiesen. Die tatsachliche Bearbeitungszeit hangt von Ihrer Bank ab.</p>
+                <p class='email-muted' style='color:#666666;font-size:13px;'>Der Betrag wird auf Ihr registriertes Bankkonto uberwiesen. Die tatsachliche Bearbeitungszeit hangt von Ihrer Bank ab.</p>
             ",
             'fr' => "
                 <p><strong>Cher/Chere {$data['name']},</strong></p>
@@ -1903,7 +1911,7 @@ HTML;
                 <p><strong>Compte bancaire:</strong> {$data['iban']}<br>
                 <strong>Raison:</strong> {$data['reason']}</p>
                 <p><strong>Delai de traitement prevu:</strong> 1-3 jours ouvrables</p>
-                <p style='color:#cccccc;font-size:13px;'>Le montant sera transfere sur votre compte bancaire enregistre. Le delai reel depend de votre banque.</p>
+                <p class='email-muted' style='color:#666666;font-size:13px;'>Le montant sera transfere sur votre compte bancaire enregistre. Le delai reel depend de votre banque.</p>
             ",
             'bg' => "
                 <p><strong>Уважаеми/а {$data['name']},</strong></p>
@@ -1914,7 +1922,7 @@ HTML;
                 <p><strong>Банкова сметка:</strong> {$data['iban']}<br>
                 <strong>Причина:</strong> {$data['reason']}</p>
                 <p><strong>Очаквано време за обработка:</strong> 1-3 работни дни</p>
-                <p style='color:#cccccc;font-size:13px;'>Сумата ще бъде преведена по регистрираната ви банкова сметка. Реалното време за обработка зависи от вашата банка.</p>
+                <p class='email-muted' style='color:#666666;font-size:13px;'>Сумата ще бъде преведена по регистрираната ви банкова сметка. Реалното време за обработка зависи от вашата банка.</p>
             "
         ]);
 
@@ -1924,25 +1932,26 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
 </head>
-<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#0a0a0a;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
                     <tr>
                         <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
                             <h1 style="margin:0;font-size:24px;font-weight:700;">Payout / Uitbetaling</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#ffffff;">
+                        <td style="padding:30px;color:#000000;">
                             {$multiLangContent}
                         </td>
                     </tr>
                     <tr>
-                        <td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #333;">
-                            <p style="margin:0;color:#888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

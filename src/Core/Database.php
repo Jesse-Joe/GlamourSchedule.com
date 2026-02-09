@@ -97,21 +97,39 @@ class Database
         return $this->query($sql, $params)->fetchAll();
     }
     
+    /**
+     * Validate an identifier (table or column name) to prevent SQL injection
+     */
+    private function validateIdentifier(string $name): string
+    {
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+            throw new \InvalidArgumentException("Invalid identifier: {$name}");
+        }
+        return '`' . $name . '`';
+    }
+
     public function insert(string $table, array $data): int
     {
-        $columns = implode(', ', array_keys($data));
+        $safeTable = $this->validateIdentifier($table);
+        $safeColumns = array_map([$this, 'validateIdentifier'], array_keys($data));
+        $columns = implode(', ', $safeColumns);
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
-        
-        $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+
+        $sql = "INSERT INTO {$safeTable} ({$columns}) VALUES ({$placeholders})";
         $this->query($sql, array_values($data));
-        
+
         return (int) $this->getConnection()->lastInsertId();
     }
-    
+
     public function update(string $table, array $data, string $where, array $whereParams = []): int
     {
-        $set = implode(' = ?, ', array_keys($data)) . ' = ?';
-        $sql = "UPDATE {$table} SET {$set} WHERE {$where}";
+        $safeTable = $this->validateIdentifier($table);
+        $setParts = [];
+        foreach (array_keys($data) as $col) {
+            $setParts[] = $this->validateIdentifier($col) . ' = ?';
+        }
+        $set = implode(', ', $setParts);
+        $sql = "UPDATE {$safeTable} SET {$set} WHERE {$where}";
 
         $stmt = $this->query($sql, array_merge(array_values($data), $whereParams));
         return $stmt->rowCount();
@@ -135,5 +153,13 @@ class Database
     public function rollBack(): bool
     {
         return $this->getConnection()->rollBack();
+    }
+
+    /**
+     * Clean up database connection on object destruction
+     */
+    public function __destruct()
+    {
+        self::$instance = null;
     }
 }
