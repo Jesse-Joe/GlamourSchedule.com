@@ -550,6 +550,21 @@
         </div>
     </section>
 
+    <!-- Bidding Section -->
+    <section class="marketing-section-dark">
+        <div class="marketing-section-inner">
+            <div class="marketing-section-header">
+                <h2>Marketing Bidding</h2>
+                <p>Bied op premium plekken en bereik meer klanten. Bekijk live reserveringsdata per sectie.</p>
+            </div>
+            <div style="text-align:center;">
+                <a href="/marketing/bidding" class="pricing-btn" style="display:inline-flex;align-items:center;gap:0.75rem;width:auto;padding:1rem 2.5rem;">
+                    <i class="fas fa-gavel"></i> Bekijk secties & bied
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA -->
     <section class="marketing-cta">
         <h2>Klaar om te groeien?</h2>
