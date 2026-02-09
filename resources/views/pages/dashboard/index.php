@@ -107,8 +107,8 @@
     width: 20px;
 }
 .booking-card-qr {
-    background: linear-gradient(135deg, #ffffff, #f5f5f5);
-    border: 1px solid #e0e0e0;
+    background: #000000;
+    border: 1px solid #333333;
     border-radius: 12px;
     padding: 1rem;
     display: flex;
@@ -124,10 +124,10 @@
 .booking-card-qr-text {
     flex: 1;
     font-size: 0.85rem;
-    color: #000000;
+    color: #ffffff;
 }
 .booking-card-qr-text small {
-    color: #666666;
+    color: #aaaaaa;
 }
 .booking-card-actions {
     display: flex;
@@ -146,6 +146,11 @@
 .dashboard-page .btn-primary {
     background: #ffffff;
     color: #000000;
+}
+.booking-card-actions .btn-qr {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid #333333;
 }
 @media (max-width: 480px) {
     .booking-card-datetime {
@@ -230,8 +235,8 @@
             <?php foreach ($upcomingBookings as $booking):
                 $checkinUrl = 'https://glamourschedule.nl/checkin/' . $booking['uuid'];
                 $theme = $_COOKIE['theme'] ?? 'dark';
-                $qrColor = '000000';
-                $qrBg = 'ffffff';
+                $qrColor = 'ffffff';
+                $qrBg = '000000';
                 $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&color={$qrColor}&bgcolor={$qrBg}&data=" . urlencode($checkinUrl);
             ?>
                 <div class="booking-card">
@@ -274,7 +279,7 @@
                             <i class="fas fa-eye"></i> Bekijken
                         </a>
                         <?php if ($booking['status'] !== 'checked_in' && $booking['status'] !== 'cancelled'): ?>
-                            <a href="/booking/<?= $booking['uuid'] ?>" class="btn" style="background:var(--primary);color:white">
+                            <a href="/booking/<?= $booking['uuid'] ?>" class="btn btn-qr">
                                 <i class="fas fa-qrcode"></i> QR Code
                             </a>
                         <?php endif; ?>

@@ -701,8 +701,8 @@
                     <h4 class="booking-qr-title"><i class="fas fa-qrcode"></i> Check-in QR Code</h4>
                     <?php
                         $theme = $_COOKIE['theme'] ?? 'dark';
-                        $qrColor = $theme === 'light' ? '000000' : 'ffffff';
-                        $qrBg = $theme === 'light' ? 'ffffff' : '000000';
+                        $qrColor = 'ffffff';
+                        $qrBg = '000000';
                     ?>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=<?= $qrColor ?>&bgcolor=<?= $qrBg ?>&data=<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>" alt="QR" class="qr-code-img" data-checkin-url="<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>">
 

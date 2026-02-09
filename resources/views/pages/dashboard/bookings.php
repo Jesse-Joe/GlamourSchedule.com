@@ -101,8 +101,8 @@
     color: #ffffff;
 }
 .booking-card-qr {
-    background: linear-gradient(135deg, #ffffff, #f5f5f5);
-    border: 1px solid #e0e0e0;
+    background: #000000;
+    border: 1px solid #333333;
     border-radius: 12px;
     padding: 1rem;
     display: flex;
@@ -118,10 +118,10 @@
 .booking-card-qr-text {
     flex: 1;
     font-size: 0.85rem;
-    color: #000000;
+    color: #ffffff;
 }
 .booking-card-qr-text small {
-    color: #666666;
+    color: #aaaaaa;
 }
 .booking-card-actions {
     display: flex;
@@ -245,8 +245,8 @@
             <?php foreach ($upcoming as $booking):
                 $checkinUrl = 'https://glamourschedule.nl/checkin/' . $booking['uuid'];
                 $theme = $_COOKIE['theme'] ?? 'dark';
-                $qrColor = '000000';
-                $qrBg = 'ffffff';
+                $qrColor = 'ffffff';
+                $qrBg = '000000';
                 $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&color={$qrColor}&bgcolor={$qrBg}&data=" . urlencode($checkinUrl);
                 $statusLabels = [
                     'pending' => $translations['status_pending'] ?? 'In afwachting',
@@ -299,7 +299,7 @@
                             <i class="fas fa-eye"></i> <?= $__('details') ?>
                         </a>
                         <?php if ($booking['status'] === 'confirmed' || $booking['status'] === 'pending'): ?>
-                            <a href="/booking/<?= $booking['uuid'] ?>" class="btn" style="background:var(--primary);color:white">
+                            <a href="/booking/<?= $booking['uuid'] ?>" class="btn" style="background:#000000;color:#ffffff;border:1px solid #333">
                                 <i class="fas fa-qrcode"></i> <?= $__('qr_code') ?>
                             </a>
                         <?php endif; ?>
