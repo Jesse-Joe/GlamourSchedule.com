@@ -89,7 +89,7 @@ class LanguageManager {
      */
     async detectCountryFromIP() {
         try {
-            const response = await fetch('http://ip-api.com/json/?fields=countryCode,country');
+            const response = await fetch('https://ipapi.co/json/');
             const data = await response.json();
 
             const countryToLanguage = {
@@ -108,9 +108,9 @@ class LanguageManager {
             };
 
             return {
-                country: data.countryCode || null,
-                countryName: data.country || null,
-                lang: countryToLanguage[data.countryCode] || 'en'
+                country: data.country_code || null,
+                countryName: data.country_name || null,
+                lang: countryToLanguage[data.country_code] || 'en'
             };
         } catch (error) {
             console.warn('Could not detect country from IP:', error);
