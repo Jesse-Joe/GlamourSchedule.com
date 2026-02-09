@@ -8,3 +8,9 @@ storage/bunq/
 
 # GeoIP cache
 storage/cache/geoip/
+
+# Logs
+storage/logs/
+
+# Backups
+backups/
