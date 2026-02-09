@@ -198,8 +198,10 @@
 
 /* QR Code Section */
 .booking-qr {
-    text-align: center;
-    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
     background: #111111;
     border: 2px dashed #333333;
     border-radius: 16px;
@@ -210,6 +212,7 @@
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 1rem 0;
+    text-align: center;
 }
 .booking-qr-title i {
     color: #ec4899;
@@ -222,34 +225,39 @@
     padding: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
-.booking-qr-number {
+.booking-qr-codes {
+    display: flex;
+    gap: 0.75rem;
     margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: #0a0a0a;
+    width: 100%;
+    max-width: 320px;
+}
+.booking-qr-codes > div {
+    flex: 1;
+    padding: 0.625rem;
     border-radius: 8px;
-    display: inline-block;
+    text-align: center;
+}
+.booking-qr-number {
+    background: #0a0a0a;
 }
 .booking-qr-number .label {
     color: #666666;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
 }
 .booking-qr-number .number {
     color: #ffffff;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     font-family: monospace;
+    margin-top: 0.25rem;
 }
-
 /* Verification Code */
 .booking-verification {
-    margin-top: 1rem;
-    padding: 0.875rem;
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
     border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 12px;
-    display: inline-block;
 }
 .booking-verification .label {
     color: #f59e0b;
@@ -259,9 +267,9 @@
 }
 .booking-verification .code {
     color: #fbbf24;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 800;
-    letter-spacing: 3px;
+    letter-spacing: 1px;
     font-family: monospace;
     margin-top: 0.25rem;
 }
@@ -269,6 +277,7 @@
     color: #666666;
     font-size: 0.75rem;
     margin: 1rem 0 0 0;
+    text-align: center;
 }
 
 /* Checked In State */
@@ -706,17 +715,18 @@
                     ?>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=<?= $qrColor ?>&bgcolor=<?= $qrBg ?>&data=<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>" alt="QR" class="qr-code-img" data-checkin-url="<?= urlencode('https://glamourschedule.nl/checkin/' . $booking['uuid']) ?>">
 
-                    <div class="booking-qr-number">
-                        <div class="label">Boekingsnummer</div>
-                        <div class="number"><?= htmlspecialchars($booking['booking_number']) ?></div>
+                    <div class="booking-qr-codes">
+                        <div class="booking-qr-number">
+                            <div class="label">Boekingsnummer</div>
+                            <div class="number"><?= htmlspecialchars($booking['booking_number']) ?></div>
+                        </div>
+                        <?php if (!empty($booking['verification_code'])): ?>
+                        <div class="booking-verification">
+                            <div class="label"><i class="fas fa-shield-alt"></i> Verificatiecode</div>
+                            <div class="code"><?= htmlspecialchars($booking['verification_code']) ?></div>
+                        </div>
+                        <?php endif; ?>
                     </div>
-
-                    <?php if (!empty($booking['verification_code'])): ?>
-                    <div class="booking-verification">
-                        <div class="label"><i class="fas fa-shield-alt"></i> Verificatiecode</div>
-                        <div class="code"><?= htmlspecialchars($booking['verification_code']) ?></div>
-                    </div>
-                    <?php endif; ?>
 
                     <p class="booking-qr-hint"><i class="fas fa-info-circle"></i> Toon bij aankomst in de salon</p>
                 </div>
