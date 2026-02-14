@@ -604,7 +604,14 @@
                     <i class="fas fa-check-circle"></i>
                     <div>
                         <h4><?= $promo['fee_display'] ?? '€1,75' ?> <?= $translations['per_booking'] ?? 'per boeking' ?></h4>
-                        <p><?= $translations['booking_fee_desc'] ?? 'Alleen wanneer een klant betaalt via het platform. Geen boeking = geen kosten.' ?></p>
+                        <p><?= $translations['booking_fee_desc'] ?? 'Alleen voor de eerste 25 boekingen per maand. Daarna is elke boeking gratis. Geen boekingen = geen kosten.' ?></p>
+                    </div>
+                </div>
+                <div class="transaction-fee-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h4><?= $translations['free_after_25'] ?? 'Na 25 boekingen gratis' ?></h4>
+                        <p><?= $translations['free_after_25_desc'] ?? 'Vanaf de 26e boeking in dezelfde maand betaal je geen transactiekosten meer. De teller reset elke maand.' ?></p>
                     </div>
                 </div>
                 <div class="transaction-fee-item">
@@ -619,13 +626,6 @@
                     <div>
                         <h4><?= $translations['automatic_payout'] ?? 'Automatische uitbetaling' ?></h4>
                         <p><?= $translations['automatic_payout_desc'] ?? 'Je ontvangt je geld automatisch na de afspraak op je gekoppelde bankrekening.' ?></p>
-                    </div>
-                </div>
-                <div class="transaction-fee-item">
-                    <i class="fas fa-check-circle"></i>
-                    <div>
-                        <h4><?= $translations['transparent_pricing'] ?? 'Transparante prijzen' ?></h4>
-                        <p><?= $translations['transparent_pricing_desc'] ?? 'Je ziet altijd precies wat je ontvangt per boeking in je dashboard.' ?></p>
                     </div>
                 </div>
             </div>
@@ -678,7 +678,7 @@
                 </div>
                 <div class="faq-item">
                     <h4><i class="fas fa-question-circle"></i> <?= $translations['faq_transaction_fee_q'] ?? 'Wanneer betaal ik transactiekosten?' ?></h4>
-                    <p><?= $translations['faq_transaction_fee_a'] ?? 'Alleen wanneer een klant online boekt en betaalt. Contante betalingen in je salon zijn kosteloos.' ?></p>
+                    <p><?= $translations['faq_transaction_fee_a'] ?? 'Alleen bij de eerste 25 online boekingen per maand. Daarna is elke boeking die maand gratis. Geen boekingen? Dan betaal je niets.' ?></p>
                 </div>
                 <div class="faq-item">
                     <h4><i class="fas fa-question-circle"></i> <?= $translations['faq_lifetime_q'] ?? 'Wat betekent levenslange toegang?' ?></h4>
