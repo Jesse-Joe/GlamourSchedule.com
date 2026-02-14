@@ -67,6 +67,7 @@ return [
         
         // Per boeking
         'admin_fee_per_booking' => 1.75,
+        'monthly_fee_booking_limit' => 25,
         
         // Annulering
         'cancellation_percentage' => 50,

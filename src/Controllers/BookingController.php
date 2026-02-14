@@ -411,7 +411,9 @@ class BookingController extends Controller
         // Platform fee wordt van bedrijf afgetrokken, NIET van klant
         $servicePrice = $bookingData['service_price'];
         $finalServicePrice = max(0, $servicePrice - $loyaltyDiscount);
-        $platformFee = 1.75; // Platform fee wordt van bedrijf afgetrokken
+        $monthlyCount = $this->getMonthlyPaidBookingCount($business['id']);
+        $monthlyLimit = $this->config['pricing']['monthly_fee_booking_limit'] ?? 25;
+        $platformFee = ($monthlyCount < $monthlyLimit) ? 1.75 : 0.00;
         $totalPrice = $finalServicePrice; // Klant betaalt alleen serviceprijs (minus korting)
         $businessPayout = max(0, $finalServicePrice - $platformFee); // Bedrijf ontvangt dit na aftrek platform fee
 
@@ -981,6 +983,19 @@ HTML;
         } catch (\Exception $e) {
             error_log("Failed to send business cancellation notice: " . $e->getMessage());
         }
+    }
+
+    private function getMonthlyPaidBookingCount(int $businessId): int
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) FROM bookings
+             WHERE business_id = ?
+               AND YEAR(created_at) = YEAR(CURDATE())
+               AND MONTH(created_at) = MONTH(CURDATE())
+               AND status != 'cancelled'",
+            [$businessId]
+        );
+        return (int)$stmt->fetchColumn();
     }
 
     private function getBusinessBySlug(string $slug): ?array

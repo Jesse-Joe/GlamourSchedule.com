@@ -193,7 +193,7 @@ class HybridPaymentService
                           && strpos($businessMollie['mollie_account_id'], 'org_') === 0;
 
         // Calculate split amounts (ensure business amount is never negative)
-        $platformFee = self::PLATFORM_FEE;
+        $platformFee = $data['platform_fee'] ?? self::PLATFORM_FEE;
         $businessAmount = max(0, $amount - $platformFee);
 
         $paymentData = [
@@ -307,7 +307,8 @@ class HybridPaymentService
                           && $businessStripe['stripe_charges_enabled'] == 1;
 
         // Calculate split amounts (ensure business amount is never negative)
-        $platformFeeCents = (int)round(self::PLATFORM_FEE * 100);
+        $platformFee = $data['platform_fee'] ?? self::PLATFORM_FEE;
+        $platformFeeCents = (int)round($platformFee * 100);
         $businessAmountCents = max(0, $amountCents - $platformFeeCents);
 
         $sessionData = [
@@ -328,8 +329,8 @@ class HybridPaymentService
             'metadata' => array_merge($data['metadata'] ?? [], [
                 'split_payment' => $useSplitPayment ? 'true' : 'false',
                 'business_id' => $businessId,
-                'platform_fee' => self::PLATFORM_FEE,
-                'business_amount' => $amount - self::PLATFORM_FEE
+                'platform_fee' => $platformFee,
+                'business_amount' => $amount - $platformFee
             ])
         ];
 

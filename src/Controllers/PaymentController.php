@@ -86,6 +86,7 @@ class PaymentController extends Controller
                 'country' => $country,
                 'provider' => $provider,
                 'business_id' => $booking['business_id'], // For split payment routing
+                'platform_fee' => (float)($booking['platform_fee'] ?? 1.75),
                 'redirect_url' => "https://{$_SERVER['HTTP_HOST']}/payment/return/{$bookingUuid}",
                 'cancel_url' => "https://{$_SERVER['HTTP_HOST']}/booking/{$bookingUuid}",
                 'webhook_url' => "https://{$_SERVER['HTTP_HOST']}/api/webhooks/{$provider}",

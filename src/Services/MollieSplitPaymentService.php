@@ -57,7 +57,7 @@ class MollieSplitPaymentService
         }
 
         // Calculate split amounts
-        $platformFee = self::PLATFORM_FEE;
+        $platformFee = $data['platform_fee'] ?? self::PLATFORM_FEE;
         $businessAmount = $amount - $platformFee;
 
         // Create payment with routing (split payment)
