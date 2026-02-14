@@ -384,6 +384,8 @@ class Application
         $this->router->get('/cron/payout-reminder', 'CronController@payoutReminder'); // Daily reminder for pending payouts
         $this->router->get('/cron/waitlist-expire', 'CronController@waitlistExpire');
         $this->router->get('/cron/process-reminders', 'CronController@processReminders');
+        $this->router->get('/cron/ai-manager', 'CronController@aiManager');
+        $this->router->get('/cron/ai-manager-alerts', 'CronController@aiManagerAlerts');
 
         // Admin business verification (public link from email)
         $this->router->get('/admin/verify-business/{token}', 'AdminController@showVerifyBusiness');

@@ -2664,10 +2664,11 @@ HTML;
             $results = $manager->processDailyTasks();
 
             $this->logAiManager(sprintf(
-                "AI Manager complete. Summaries: %d, Reminders: %d, Notifications: %d, Errors: %d",
+                "AI Manager complete. Summaries: %d, Reminders: %d, Notifications: %d, Setup reminders: %d, Errors: %d",
                 $results['summaries_sent'],
                 $results['reminders_sent'],
                 $results['notifications_created'],
+                $results['setup_reminders_sent'] ?? 0,
                 count($results['errors'])
             ));
 
@@ -2681,6 +2682,7 @@ HTML;
                 'summaries_sent' => $results['summaries_sent'],
                 'reminders_sent' => $results['reminders_sent'],
                 'notifications_created' => $results['notifications_created'],
+                'setup_reminders_sent' => $results['setup_reminders_sent'] ?? 0,
                 'errors' => count($results['errors']),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);

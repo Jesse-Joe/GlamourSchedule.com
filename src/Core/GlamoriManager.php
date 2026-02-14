@@ -45,7 +45,21 @@ class GlamoriManager
             'new_booking_alert' => 'Nieuwe boeking: %s op %s om %s',
             'cancellation_alert' => 'Annulering: %s heeft de afspraak van %s geannuleerd',
             'rating_improved' => 'Gefeliciteerd! Je rating is gestegen naar %s sterren',
-            'milestone_bookings' => 'Milestone bereikt: %d boekingen via GlamourSchedule!'
+            'milestone_bookings' => 'Milestone bereikt: %d boekingen via GlamourSchedule!',
+            'setup_reminder_subject_1' => 'Maak je salon compleet - bijna klaar!',
+            'setup_reminder_subject_2' => 'Je salon mist nog een paar stappen',
+            'setup_reminder_subject_3' => 'Mis geen klanten - rond je profiel af!',
+            'setup_reminder_subject_4' => 'Laatste herinnering: maak je profiel af',
+            'setup_reminder_intro_1' => 'Welkom bij GlamourSchedule! Je salon staat er al op, maar er zijn nog een paar stappen nodig voordat klanten bij je kunnen boeken. Rond onderstaande punten af zodat je klaar bent om afspraken te ontvangen:',
+            'setup_reminder_intro_2' => 'We zien dat je salon nog niet helemaal compleet is. We helpen je graag! Rond de onderstaande stappen af en je bent klaar om klanten te ontvangen:',
+            'setup_reminder_intro_3' => 'Je salon is nog niet volledig ingericht en daardoor mis je mogelijk klanten. Rond je profiel vandaag nog af zodat klanten je kunnen vinden en boeken:',
+            'setup_reminder_intro_4' => 'Dit is onze laatste herinnering. Je profiel is nog niet compleet, waardoor klanten niet bij je kunnen boeken. Rond de laatste stappen nu af:',
+            'setup_reminder_progress' => 'Nog %d %s te gaan!',
+            'setup_reminder_step_singular' => 'stap',
+            'setup_reminder_step_plural' => 'stappen',
+            'setup_reminder_cta' => 'Ga naar je Dashboard',
+            'setup_reminder_help' => 'Hulp nodig? Neem gerust contact met ons op via',
+            'setup_reminder_greeting' => 'Beste'
         ],
         'en' => [
             'greeting_morning' => 'Good morning',
@@ -76,7 +90,21 @@ class GlamoriManager
             'new_booking_alert' => 'New booking: %s on %s at %s',
             'cancellation_alert' => 'Cancellation: %s cancelled the appointment on %s',
             'rating_improved' => 'Congratulations! Your rating has increased to %s stars',
-            'milestone_bookings' => 'Milestone reached: %d bookings via GlamourSchedule!'
+            'milestone_bookings' => 'Milestone reached: %d bookings via GlamourSchedule!',
+            'setup_reminder_subject_1' => 'Complete your salon - almost there!',
+            'setup_reminder_subject_2' => 'Your salon is missing a few steps',
+            'setup_reminder_subject_3' => 'Don\'t miss customers - complete your profile!',
+            'setup_reminder_subject_4' => 'Last reminder: complete your profile',
+            'setup_reminder_intro_1' => 'Welcome to GlamourSchedule! Your salon is already listed, but a few steps are still needed before customers can book with you. Complete the steps below to start receiving appointments:',
+            'setup_reminder_intro_2' => 'We noticed your salon isn\'t fully set up yet. We\'re happy to help! Complete the steps below and you\'ll be ready to receive customers:',
+            'setup_reminder_intro_3' => 'Your salon is not fully set up and you may be missing customers. Complete your profile today so customers can find and book you:',
+            'setup_reminder_intro_4' => 'This is our last reminder. Your profile is not yet complete, which means customers cannot book with you. Complete the final steps now:',
+            'setup_reminder_progress' => '%d %s to go!',
+            'setup_reminder_step_singular' => 'step',
+            'setup_reminder_step_plural' => 'steps',
+            'setup_reminder_cta' => 'Go to your Dashboard',
+            'setup_reminder_help' => 'Need help? Feel free to contact us at',
+            'setup_reminder_greeting' => 'Dear'
         ],
         'de' => [
             'greeting_morning' => 'Guten Morgen',
@@ -107,7 +135,21 @@ class GlamoriManager
             'new_booking_alert' => 'Neue Buchung: %s am %s um %s',
             'cancellation_alert' => 'Stornierung: %s hat den Termin am %s storniert',
             'rating_improved' => 'Herzlichen Gluckwunsch! Deine Bewertung ist auf %s Sterne gestiegen',
-            'milestone_bookings' => 'Meilenstein erreicht: %d Buchungen uber GlamourSchedule!'
+            'milestone_bookings' => 'Meilenstein erreicht: %d Buchungen uber GlamourSchedule!',
+            'setup_reminder_subject_1' => 'Vervollstandige deinen Salon - fast fertig!',
+            'setup_reminder_subject_2' => 'Deinem Salon fehlen noch ein paar Schritte',
+            'setup_reminder_subject_3' => 'Verpasse keine Kunden - vervollstandige dein Profil!',
+            'setup_reminder_subject_4' => 'Letzte Erinnerung: vervollstandige dein Profil',
+            'setup_reminder_intro_1' => 'Willkommen bei GlamourSchedule! Dein Salon ist bereits gelistet, aber es fehlen noch einige Schritte, bevor Kunden bei dir buchen konnen. Schliesse die folgenden Punkte ab, um Termine empfangen zu konnen:',
+            'setup_reminder_intro_2' => 'Wir haben bemerkt, dass dein Salon noch nicht vollstandig eingerichtet ist. Wir helfen gerne! Schliesse die folgenden Schritte ab und du bist bereit fur Kunden:',
+            'setup_reminder_intro_3' => 'Dein Salon ist noch nicht vollstandig eingerichtet und du verpasst moglicherweise Kunden. Vervollstandige dein Profil heute noch, damit Kunden dich finden und buchen konnen:',
+            'setup_reminder_intro_4' => 'Dies ist unsere letzte Erinnerung. Dein Profil ist noch nicht vollstandig, weshalb Kunden nicht bei dir buchen konnen. Schliesse die letzten Schritte jetzt ab:',
+            'setup_reminder_progress' => 'Noch %d %s!',
+            'setup_reminder_step_singular' => 'Schritt',
+            'setup_reminder_step_plural' => 'Schritte',
+            'setup_reminder_cta' => 'Zum Dashboard',
+            'setup_reminder_help' => 'Brauchst du Hilfe? Kontaktiere uns gerne unter',
+            'setup_reminder_greeting' => 'Hallo'
         ],
         'fr' => [
             'greeting_morning' => 'Bonjour',
@@ -138,7 +180,21 @@ class GlamoriManager
             'new_booking_alert' => 'Nouvelle reservation: %s le %s a %s',
             'cancellation_alert' => 'Annulation: %s a annule le rendez-vous du %s',
             'rating_improved' => 'Felicitations! Votre note est passee a %s etoiles',
-            'milestone_bookings' => 'Jalon atteint: %d reservations via GlamourSchedule!'
+            'milestone_bookings' => 'Jalon atteint: %d reservations via GlamourSchedule!',
+            'setup_reminder_subject_1' => 'Completez votre salon - presque fini!',
+            'setup_reminder_subject_2' => 'Votre salon manque encore quelques etapes',
+            'setup_reminder_subject_3' => 'Ne manquez pas de clients - completez votre profil!',
+            'setup_reminder_subject_4' => 'Dernier rappel: completez votre profil',
+            'setup_reminder_intro_1' => 'Bienvenue sur GlamourSchedule! Votre salon est deja liste, mais quelques etapes sont encore necessaires avant que les clients puissent reserver chez vous. Completez les etapes ci-dessous pour commencer a recevoir des rendez-vous:',
+            'setup_reminder_intro_2' => 'Nous avons remarque que votre salon n\'est pas encore completement configure. Nous sommes la pour vous aider! Completez les etapes ci-dessous et vous serez pret a recevoir des clients:',
+            'setup_reminder_intro_3' => 'Votre salon n\'est pas entierement configure et vous manquez peut-etre des clients. Completez votre profil aujourd\'hui pour que les clients puissent vous trouver et reserver:',
+            'setup_reminder_intro_4' => 'Ceci est notre dernier rappel. Votre profil n\'est pas encore complet, ce qui signifie que les clients ne peuvent pas reserver chez vous. Completez les dernieres etapes maintenant:',
+            'setup_reminder_progress' => 'Encore %d %s!',
+            'setup_reminder_step_singular' => 'etape',
+            'setup_reminder_step_plural' => 'etapes',
+            'setup_reminder_cta' => 'Aller au tableau de bord',
+            'setup_reminder_help' => 'Besoin d\'aide? N\'hesitez pas a nous contacter a',
+            'setup_reminder_greeting' => 'Cher/Chere'
         ]
     ];
 
@@ -150,11 +206,44 @@ class GlamoriManager
     }
 
     /**
+     * Laad vertalingen uit het centrale taalsysteem (resources/lang/{lang}/messages.php)
+     */
+    private function loadCentralTranslations(string $lang): array
+    {
+        static $cache = [];
+        if (isset($cache[$lang])) {
+            return $cache[$lang];
+        }
+
+        $basePath = defined('BASE_PATH') ? BASE_PATH : dirname(__DIR__, 2);
+        $file = $basePath . '/resources/lang/' . $lang . '/messages.php';
+        if (file_exists($file)) {
+            $cache[$lang] = require $file;
+            return $cache[$lang];
+        }
+        // Fallback naar Engels, dan Nederlands
+        $enFile = $basePath . '/resources/lang/en/messages.php';
+        if (file_exists($enFile)) {
+            $cache[$lang] = require $enFile;
+            return $cache[$lang];
+        }
+        $cache[$lang] = [];
+        return $cache[$lang];
+    }
+
+    /**
      * Haal tekst op in de juiste taal
+     * Zoekt eerst in centrale vertalingen, dan in lokale $texts array
      */
     private function getText(string $key, ...$args): string
     {
-        $text = $this->texts[$this->language][$key] ?? $this->texts['nl'][$key] ?? $key;
+        // Eerst centraal taalsysteem proberen
+        $central = $this->loadCentralTranslations($this->language);
+        $text = $central[$key]
+            ?? $this->texts[$this->language][$key]
+            ?? $this->texts['nl'][$key]
+            ?? $key;
+
         if (!empty($args)) {
             return sprintf($text, ...$args);
         }
@@ -1142,6 +1231,291 @@ class GlamoriManager
     }
 
     // =========================================================================
+    // SETUP REMINDERS
+    // =========================================================================
+
+    /**
+     * Bepaal ontbrekende setup-stappen voor een salon
+     */
+    public function getSetupMissingSteps(int $businessId): array
+    {
+        $biz = $this->db->query(
+            "SELECT b.*, (SELECT COUNT(*) FROM services s WHERE s.business_id = b.id) as service_count
+             FROM businesses b WHERE b.id = ?",
+            [$businessId]
+        )->fetch();
+
+        if (!$biz) {
+            return [];
+        }
+
+        // Stel taal in voor vertalingen
+        $this->language = $biz['language'] ?? $this->language;
+
+        $missing = [];
+
+        if (empty($biz['kvk_number'])) {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_kvk'),
+                'desc'  => $this->getText('setup_reminder_missing_kvk_desc'),
+                'icon'  => '&#128196;',
+            ];
+        }
+        if (empty($biz['logo'])) {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_logo'),
+                'desc'  => $this->getText('setup_reminder_missing_logo_desc'),
+                'icon'  => '&#127912;',
+            ];
+        }
+        if (empty($biz['cover_image'])) {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_cover'),
+                'desc'  => $this->getText('setup_reminder_missing_cover_desc'),
+                'icon'  => '&#128247;',
+            ];
+        }
+        if ((int)($biz['service_count'] ?? 0) === 0) {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_services'),
+                'desc'  => $this->getText('setup_reminder_missing_services_desc'),
+                'icon'  => '&#9989;',
+            ];
+        }
+        if (empty($biz['iban'])) {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_iban'),
+                'desc'  => $this->getText('setup_reminder_missing_iban_desc'),
+                'icon'  => '&#127974;',
+            ];
+        }
+        if (empty($biz['mollie_account_id']) || ($biz['mollie_onboarding_status'] ?? '') !== 'completed') {
+            $missing[] = [
+                'label' => $this->getText('setup_reminder_missing_mollie'),
+                'desc'  => $this->getText('setup_reminder_missing_mollie_desc'),
+                'icon'  => '&#128179;',
+            ];
+        }
+
+        return $missing;
+    }
+
+    /**
+     * Verstuur een setup-herinnering email met escalerende toon
+     */
+    public function sendSetupReminderEmail(array $business, array $missingSteps, int $reminderNumber): bool
+    {
+        if (!$this->mailer || empty($business['email'])) {
+            return false;
+        }
+
+        $this->language = $business['language'] ?? 'nl';
+        $reminderNumber = max(1, min(4, $reminderNumber));
+
+        $subject = $this->getText('setup_reminder_subject_' . $reminderNumber);
+        $intro = $this->getText('setup_reminder_intro_' . $reminderNumber);
+        $greeting = $this->getText('setup_reminder_greeting');
+        $cta = $this->getText('setup_reminder_cta');
+        $helpText = $this->getText('setup_reminder_help');
+        $closing = $this->getText('setup_reminder_closing');
+
+        $count = count($missingSteps);
+        $stepWord = $count === 1
+            ? $this->getText('setup_reminder_step_singular')
+            : $this->getText('setup_reminder_step_plural');
+        $progressText = $this->getText('setup_reminder_progress', $count, $stepWord);
+
+        $companyName = htmlspecialchars($business['company_name'], ENT_QUOTES, 'UTF-8');
+        $dashboardUrl = 'https://glamourschedule.com/business/dashboard';
+
+        // Build steps HTML
+        $stepsHtml = '';
+        foreach ($missingSteps as $step) {
+            $label = htmlspecialchars($step['label'], ENT_QUOTES, 'UTF-8');
+            $desc = htmlspecialchars($step['desc'], ENT_QUOTES, 'UTF-8');
+            $stepsHtml .= "
+                <tr>
+                    <td style=\"padding:12px 15px;border-bottom:1px solid #f0f0f0;\">
+                        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">
+                            <tr>
+                                <td width=\"40\" style=\"vertical-align:top;font-size:20px;\">{$step['icon']}</td>
+                                <td style=\"vertical-align:top;\">
+                                    <strong style=\"color:#333333;font-size:15px;\">{$label}</strong>
+                                    <p style=\"margin:4px 0 0;color:#666666;font-size:13px;line-height:1.5;\">{$desc}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>";
+        }
+
+        // Header color escalates: green -> green -> orange -> red
+        $headerColors = [
+            1 => ['bg' => '#000000', 'accent' => '#4CAF50'],
+            2 => ['bg' => '#000000', 'accent' => '#4CAF50'],
+            3 => ['bg' => '#000000', 'accent' => '#FF9800'],
+            4 => ['bg' => '#000000', 'accent' => '#e74c3c'],
+        ];
+        $accentColor = $headerColors[$reminderNumber]['accent'];
+
+        $html = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+</head>
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:#000000;color:#ffffff;padding:30px;text-align:center;">
+                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$subject}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;color:{$accentColor};font-weight:bold;">{$progressText}</p>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:30px;color:#333333;font-size:15px;line-height:1.7;">
+                            <p><strong>{$greeting} {$companyName},</strong></p>
+
+                            <p>{$intro}</p>
+
+                            <!-- Missing steps -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background:#fafafa;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;">
+                                {$stepsHtml}
+                            </table>
+
+                            <p style="text-align:center;margin:25px 0;">
+                                <a href="{$dashboardUrl}" style="display:inline-block;background:#000000;color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                    {$cta}
+                                </a>
+                            </p>
+
+                            <p>{$helpText} <a href="mailto:support@glamourschedule.com" style="color:#000000;">support@glamourschedule.com</a></p>
+
+                            <p style="color:#666666;font-size:13px;">{$closing}<br><strong>Team GlamourSchedule</strong></p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
+                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+
+        return $this->mailer->send($business['email'], $subject, $html);
+    }
+
+    /**
+     * Verwerk setup-herinneringen voor alle incomplete salons
+     *
+     * Escalerend schema:
+     * - Herinnering 1: 1 dag na registratie (welkom, vriendelijk)
+     * - Herinnering 2: 3 dagen na registratie (behulpzaam)
+     * - Herinnering 3: 7 dagen na registratie (urgenter)
+     * - Herinnering 4: 14 dagen na registratie (laatste herinnering)
+     *
+     * @return int Aantal verstuurde herinneringen
+     */
+    public function processSetupReminders(): int
+    {
+        $reminderSchedule = [
+            1 => 1,   // 1 dag na registratie
+            2 => 3,   // 3 dagen na registratie
+            3 => 7,   // 7 dagen na registratie
+            4 => 14,  // 14 dagen na registratie
+        ];
+
+        // Haal alle actieve salons op die nog niet alle 4 herinneringen hebben gehad
+        $businesses = $this->db->query(
+            "SELECT b.id, b.company_name, b.email, b.language, b.created_at,
+                    b.setup_reminder_count, b.setup_reminder_last_sent_at
+             FROM businesses b
+             WHERE b.status = 'active'
+               AND b.subscription_status IN ('active', 'trial')
+               AND b.setup_reminder_count < 4"
+        )->fetchAll();
+
+        $sent = 0;
+
+        foreach ($businesses as $business) {
+            try {
+                // Check welke stappen ontbreken
+                $missingSteps = $this->getSetupMissingSteps((int)$business['id']);
+
+                // Salon is compleet — sla over
+                if (empty($missingSteps)) {
+                    continue;
+                }
+
+                $currentCount = (int)$business['setup_reminder_count'];
+                $nextReminder = $currentCount + 1;
+
+                // Bepaal hoeveel dagen na registratie deze herinnering gestuurd moet worden
+                $requiredDays = $reminderSchedule[$nextReminder] ?? null;
+                if ($requiredDays === null) {
+                    continue;
+                }
+
+                // Bereken dagen sinds registratie
+                $registrationDate = strtotime($business['created_at']);
+                $daysSinceRegistration = (int)((time() - $registrationDate) / 86400);
+
+                // Alleen sturen als we op of voorbij het vereiste aantal dagen zijn
+                if ($daysSinceRegistration < $requiredDays) {
+                    continue;
+                }
+
+                // Voorkom dubbel sturen op dezelfde dag
+                if ($business['setup_reminder_last_sent_at'] && date('Y-m-d', strtotime($business['setup_reminder_last_sent_at'])) === date('Y-m-d')) {
+                    continue;
+                }
+
+                // Stuur de herinnering
+                if ($this->sendSetupReminderEmail($business, $missingSteps, $nextReminder)) {
+                    // Update tracking kolommen
+                    $this->db->query(
+                        "UPDATE businesses
+                         SET setup_reminder_count = ?,
+                             setup_reminder_last_sent_at = NOW()
+                         WHERE id = ?",
+                        [$nextReminder, $business['id']]
+                    );
+
+                    // Maak ook een notificatie aan
+                    $this->createNotification(
+                        (int)$business['id'],
+                        'setup_reminder',
+                        $this->getText('setup_reminder_subject_' . $nextReminder),
+                        ['reminder_number' => $nextReminder, 'missing_steps' => count($missingSteps)]
+                    );
+
+                    $sent++;
+                }
+            } catch (\Exception $e) {
+                // Log fout maar ga door met volgende salon
+                error_log("Setup reminder error for business {$business['id']}: " . $e->getMessage());
+            }
+        }
+
+        return $sent;
+    }
+
+    // =========================================================================
     // CRON METHODES
     // =========================================================================
 
@@ -1154,8 +1528,19 @@ class GlamoriManager
             'summaries_sent' => 0,
             'reminders_sent' => 0,
             'notifications_created' => 0,
+            'setup_reminders_sent' => 0,
             'errors' => []
         ];
+
+        // Verwerk setup-herinneringen (buiten de per-business loop)
+        try {
+            $results['setup_reminders_sent'] = $this->processSetupReminders();
+        } catch (\Exception $e) {
+            $results['errors'][] = [
+                'business_id' => 0,
+                'error' => 'Setup reminders: ' . $e->getMessage()
+            ];
+        }
 
         // Haal actieve bedrijven op
         $businesses = $this->db->query(
