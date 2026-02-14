@@ -74,7 +74,7 @@
 }
 @media (min-width: 1024px) {
     .pricing-cards {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -470,56 +470,6 @@
     padding-left: 1.75rem;
 }
 
-/* Comparison Table */
-.comparison-section {
-    margin-bottom: 4rem;
-}
-.comparison-section h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #ffffff;
-    text-align: center;
-    margin: 0 0 2rem;
-}
-.comparison-table {
-    background: #111111;
-    border: 2px solid #333333;
-    border-radius: 20px;
-    overflow: hidden;
-}
-.comparison-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.comparison-table th,
-.comparison-table td {
-    padding: 1rem 1.25rem;
-    text-align: left;
-    border-bottom: 1px solid #333333;
-}
-.comparison-table th {
-    background: #1a1a1a;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-.comparison-table td {
-    color: rgba(255,255,255,0.85);
-    font-size: 0.9rem;
-}
-.comparison-table tr:last-child td {
-    border-bottom: none;
-}
-.comparison-table td:first-child {
-    font-weight: 500;
-}
-.comparison-table .check {
-    color: #22c55e;
-}
-.comparison-table .cross {
-    color: rgba(255,255,255,0.3);
-}
-
 /* Bottom CTA */
 .pricing-bottom-cta {
     background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
@@ -562,35 +512,6 @@
     <!-- Pricing Cards -->
     <div class="pricing-container">
         <div class="pricing-cards">
-            <!-- Customer Card - Free -->
-            <div class="pricing-card">
-                <div class="pricing-card-header">
-                    <div class="pricing-card-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h3><?= $translations['for_customers'] ?? 'Voor Klanten' ?></h3>
-                    <p class="pricing-card-subtitle"><?= $translations['customer_subtitle'] ?? 'Boek bij jouw favoriete salon' ?></p>
-                </div>
-
-                <div class="pricing-price">
-                    <div class="pricing-price-amount"><span class="currency"><?= $promo['local_symbol'] ?? '€' ?></span>0</div>
-                    <div class="pricing-price-period"><?= $translations['always_free'] ?? 'Altijd gratis' ?></div>
-                </div>
-
-                <ul class="pricing-features">
-                    <li><i class="fas fa-check"></i> <?= $translations['unlimited_bookings'] ?? 'Onbeperkt boekingen maken' ?></li>
-                    <li><i class="fas fa-check"></i> <?= $translations['search_salons'] ?? 'Salons zoeken in je buurt' ?></li>
-                    <li><i class="fas fa-check"></i> <?= $translations['secure_payment'] ?? 'Veilig online betalen' ?></li>
-                    <li><i class="fas fa-check"></i> <?= $translations['email_confirmations'] ?? 'E-mail bevestigingen' ?></li>
-                    <li><i class="fas fa-check"></i> <?= $translations['qr_checkin'] ?? 'QR-code check-in' ?></li>
-                    <li><i class="fas fa-check"></i> <?= $translations['leave_reviews'] ?? 'Reviews achterlaten' ?></li>
-                </ul>
-
-                <a href="/search" class="pricing-cta pricing-cta-secondary">
-                    <i class="fas fa-search"></i> <?= $translations['find_salon'] ?? 'Vind een Salon' ?>
-                </a>
-            </div>
-
             <!-- Early Bird Card -->
             <?php if (($promo['is_promo'] ?? false) && ($promo['spots_left'] ?? 0) > 0): ?>
             <div class="pricing-card featured">
@@ -732,71 +653,6 @@
                     <li><i class="fas fa-redo-alt"></i> <?= $translations['boost_feature_4'] ?? 'Geen automatische verlenging' ?></li>
                 </ul>
                 <p class="boost-note"><?= $translations['boost_note'] ?? 'Eenmalige betaling, activeer wanneer je wilt vanuit je dashboard.' ?></p>
-            </div>
-        </div>
-
-        <!-- Comparison Table -->
-        <div class="comparison-section">
-            <h2><?= $translations['what_you_get'] ?? 'Wat krijg je?' ?></h2>
-            <div class="comparison-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><?= $translations['feature'] ?? 'Functie' ?></th>
-                            <th><?= $translations['included'] ?? 'Inbegrepen' ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><?= $translations['own_salon_page'] ?? 'Eigen salonpagina' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['unlimited_services'] ?? 'Onbeperkt diensten toevoegen' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['online_booking_system'] ?? 'Online boekingssysteem' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['secure_payments'] ?? 'Veilige betalingen (Mollie)' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['automatic_payout'] ?? 'Automatische uitbetalingen' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['dashboard_analytics'] ?? 'Dashboard & statistieken' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['qr_checkin_system'] ?? 'QR-code check-in systeem' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['email_notifications'] ?? 'E-mail notificaties' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['photo_gallery'] ?? 'Foto galerij' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['review_management'] ?? 'Review management' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['pos_system'] ?? 'Digitaal kassasysteem' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                        <tr>
-                            <td><?= $translations['international_support'] ?? 'International support' ?></td>
-                            <td><i class="fas fa-check check"></i></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
