@@ -509,6 +509,21 @@
                 </div>
                 <p style="color:#888;font-size:0.9rem;margin-top:0.5rem"><?= $__('spots_left', ['count' => $spotsLeft, 'country' => htmlspecialchars($countryName)]) ?></p>
             <?php endif; ?>
+
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;margin-top:1rem;font-size:0.85rem">
+                <span style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.1);padding:0.4rem 0.8rem;border-radius:20px">
+                    <i class="fas fa-receipt" style="color:#fbbf24;font-size:0.75rem"></i>
+                    <?= $__('reg_fee_step1_title') ?>: <?= $feeDisplay ?? '€1,75' ?>
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(34,197,94,0.15);color:#4ade80;padding:0.4rem 0.8rem;border-radius:20px;font-weight:600">
+                    <i class="fas fa-gift" style="font-size:0.75rem"></i>
+                    <?= $__('reg_fee_step2_title') ?>
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.06);padding:0.4rem 0.8rem;border-radius:20px;opacity:0.7">
+                    <i class="fas fa-sync-alt" style="font-size:0.7rem"></i>
+                    <?= $__('reg_fee_reset_monthly') ?>
+                </span>
+            </div>
         </div>
 
         <div style="padding:2rem;background:#000000">
