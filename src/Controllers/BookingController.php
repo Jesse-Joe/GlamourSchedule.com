@@ -50,6 +50,37 @@ class BookingController extends Controller
     /**
      * Render the booking create form
      */
+    /**
+     * Build shared view data for the booking create form
+     */
+    private function getCreateFormData(array $business): array
+    {
+        $employees = [];
+        if (($business['business_type'] ?? 'eenmanszaak') === 'bv') {
+            $employees = $this->getEmployees($business['id']);
+        }
+
+        $settings = $this->getBusinessSettings($business['id']);
+
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $countryCode = $location['country_code'] ?? 'NL';
+        $currencyService = new \GlamourSchedule\Services\CurrencyService();
+        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
+        $showDualCurrency = ($visitorCurrency !== 'EUR');
+
+        return [
+            'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
+            'business' => $business,
+            'services' => $this->getServices($business['id']),
+            'employees' => $employees,
+            'settings' => $settings,
+            'currencyService' => $currencyService,
+            'visitorCurrency' => $visitorCurrency,
+            'showDualCurrency' => $showDualCurrency
+        ];
+    }
+
     private function renderCreateForm(array $business): string
     {
         // Check if business needs verification (KVK not verified and not admin verified)
@@ -60,37 +91,10 @@ class BookingController extends Controller
             ]);
         }
 
-        $services = $this->getServices($business['id']);
-        $selectedService = $_GET['service'] ?? null;
+        $data = $this->getCreateFormData($business);
+        $data['selectedService'] = $_GET['service'] ?? null;
 
-        // Get employees for BV businesses
-        $employees = [];
-        if (($business['business_type'] ?? 'eenmanszaak') === 'bv') {
-            $employees = $this->getEmployees($business['id']);
-        }
-
-        // Get business settings for theme
-        $settings = $this->getBusinessSettings($business['id']);
-
-        // Get GeoIP data for localized pricing
-        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
-        $location = $geoIP->lookup();
-        $countryCode = $location['country_code'] ?? 'NL';
-        $currencyService = new \GlamourSchedule\Services\CurrencyService();
-        $visitorCurrency = $currencyService->getCurrencyForCountry($countryCode);
-        $showDualCurrency = ($visitorCurrency !== 'EUR');
-
-        return $this->view('pages/booking/create', [
-            'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
-            'business' => $business,
-            'services' => $services,
-            'selectedService' => $selectedService,
-            'employees' => $employees,
-            'settings' => $settings,
-            'currencyService' => $currencyService,
-            'visitorCurrency' => $visitorCurrency,
-            'showDualCurrency' => $showDualCurrency
-        ]);
+        return $this->view('pages/booking/create', $data);
     }
 
     public function store(string $businessSlug): string
@@ -130,44 +134,31 @@ class BookingController extends Controller
 
         // Validate terms acceptance
         if (!$acceptTerms) {
-            return $this->view('pages/booking/create', [
-                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
-                'business' => $business,
-                'services' => $this->getServices($business['id']),
-                'error' => 'U moet akkoord gaan met de algemene voorwaarden om te boeken.'
-            ]);
+            $formData = $this->getCreateFormData($business);
+            $formData['error'] = 'U moet akkoord gaan met de algemene voorwaarden om te boeken.';
+            return $this->view('pages/booking/create', $formData);
         }
 
         $service = $this->getServiceById($serviceId);
         if (!$service || $service['business_id'] != $business['id']) {
-            return $this->view('pages/booking/create', [
-                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
-                'business' => $business,
-                'services' => $this->getServices($business['id']),
-                'error' => 'Ongeldige dienst geselecteerd'
-            ]);
+            $formData = $this->getCreateFormData($business);
+            $formData['error'] = 'Ongeldige dienst geselecteerd';
+            return $this->view('pages/booking/create', $formData);
         }
 
         $userId = $_SESSION['user_id'] ?? null;
 
         if (!$userId && !$guestEmail) {
-            return $this->view('pages/booking/create', [
-                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
-                'business' => $business,
-                'services' => $this->getServices($business['id']),
-                'error' => 'Log in of vul je gegevens in'
-            ]);
+            $formData = $this->getCreateFormData($business);
+            $formData['error'] = 'Log in of vul je gegevens in';
+            return $this->view('pages/booking/create', $formData);
         }
 
         // Check if time slot is available (consider employee if BV business)
         if (!$this->isTimeSlotAvailable($business['id'], $date, $time, $service['duration_minutes'], $employeeId)) {
-            return $this->view('pages/booking/create', [
-                'pageTitle' => $this->t('page_book_at') . ' ' . $business['name'],
-                'business' => $business,
-                'services' => $this->getServices($business['id']),
-                'employees' => ($business['business_type'] ?? 'eenmanszaak') === 'bv' ? $this->getEmployees($business['id']) : [],
-                'error' => 'Dit tijdslot is helaas niet meer beschikbaar. Kies een andere tijd.'
-            ]);
+            $formData = $this->getCreateFormData($business);
+            $formData['error'] = 'Dit tijdslot is helaas niet meer beschikbaar. Kies een andere tijd.';
+            return $this->view('pages/booking/create', $formData);
         }
 
         // Get customer info
