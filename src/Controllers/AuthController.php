@@ -280,11 +280,22 @@ class AuthController extends Controller
 
     public function register(): string
     {
+        // Load business-tab data for all error re-render paths
+        $geoIP = new \GlamourSchedule\Core\GeoIP($this->db);
+        $location = $geoIP->lookup();
+        $promo = $geoIP->getPromotionPriceWithCurrency($location['country_code'] ?? 'NL');
+        $categories = $this->getCategories();
+        $businessTabData = [
+            'categories' => $categories,
+            'promo' => $promo,
+            'showDualCurrency' => $promo['show_dual'] ?? false
+        ];
+
         if (!$this->verifyCsrf()) {
-            return $this->view('pages/auth/register', [
+            return $this->view('pages/auth/register', array_merge($businessTabData, [
                 'pageTitle' => $this->t('page_register'),
                 'error' => $this->t('validation_invalid_request')
-            ]);
+            ]));
         }
 
         // Honeypot check - if filled, it's a bot
@@ -308,10 +319,10 @@ class AuthController extends Controller
             $recentRegs = $stmt->fetch(\PDO::FETCH_ASSOC)['cnt'] ?? 0;
 
             if ($recentRegs >= 5) {
-                return $this->view('pages/auth/register', [
+                return $this->view('pages/auth/register', array_merge($businessTabData, [
                     'pageTitle' => $this->t('page_register'),
                     'error' => $this->t('error_too_many_attempts') ?? 'Too many registration attempts. Please try again later.'
-                ]);
+                ]));
             }
 
             // Log this attempt
@@ -368,11 +379,11 @@ class AuthController extends Controller
         }
 
         if (!empty($errors)) {
-            return $this->view('pages/auth/register', [
+            return $this->view('pages/auth/register', array_merge($businessTabData, [
                 'pageTitle' => $this->t('page_register'),
                 'errors' => $errors,
                 'data' => $data
-            ]);
+            ]));
         }
 
         // Store registration data in session and send verification code
