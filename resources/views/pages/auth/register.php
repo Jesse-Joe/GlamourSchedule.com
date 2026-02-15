@@ -605,6 +605,21 @@
                     <span><?= $translations['register_business_info'] ?? 'Register your salon or business and receive bookings from customers.' ?></span>
                 </div>
 
+                <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;margin-bottom:1.25rem;font-size:0.8rem">
+                    <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(255,255,255,0.08);padding:0.35rem 0.7rem;border-radius:20px;color:var(--auth-text, #fff)">
+                        <i class="fas fa-receipt" style="color:#fbbf24;font-size:0.7rem"></i>
+                        <?= $translations['reg_fee_step1_title'] ?? 'First 25 bookings' ?>: <?= $promo['fee_display'] ?? '€1,75' ?>
+                    </span>
+                    <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(34,197,94,0.15);color:#4ade80;padding:0.35rem 0.7rem;border-radius:20px;font-weight:600">
+                        <i class="fas fa-gift" style="font-size:0.7rem"></i>
+                        <?= $translations['reg_fee_step2_title'] ?? 'After 25 bookings: FREE!' ?>
+                    </span>
+                    <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(255,255,255,0.04);padding:0.35rem 0.7rem;border-radius:20px;opacity:0.7;color:var(--auth-text, #fff)">
+                        <i class="fas fa-sync-alt" style="font-size:0.65rem"></i>
+                        <?= $translations['reg_fee_reset_monthly'] ?? 'The counter resets automatically every month' ?>
+                    </span>
+                </div>
+
                 <form method="POST" action="/business/register" id="formBusiness">
                     <input type="hidden" name="csrf_token" value="<?= $this->csrf() ?>">
                     <!-- Honeypot - hidden from humans, bots will fill this -->

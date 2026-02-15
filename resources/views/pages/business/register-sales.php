@@ -254,6 +254,21 @@
                 Via: <?= htmlspecialchars($salesPartner['name'] ?? 'GlamourSchedule Partner') ?>
             </div>
             <?php endif; ?>
+
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;margin-top:0.75rem;font-size:0.8rem">
+                <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(0,0,0,0.06);padding:0.35rem 0.7rem;border-radius:20px;color:#334155">
+                    <i class="fas fa-receipt" style="color:#d97706;font-size:0.7rem"></i>
+                    Eerste 25 boekingen: €1,75
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(34,197,94,0.12);color:#16a34a;padding:0.35rem 0.7rem;border-radius:20px;font-weight:600">
+                    <i class="fas fa-gift" style="font-size:0.7rem"></i>
+                    Na 25 boekingen: GRATIS!
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(0,0,0,0.04);padding:0.35rem 0.7rem;border-radius:20px;color:#64748b">
+                    <i class="fas fa-sync-alt" style="font-size:0.65rem"></i>
+                    Maandelijkse reset
+                </span>
+            </div>
         </div>
 
         <?php if (!empty($errors)): ?>
