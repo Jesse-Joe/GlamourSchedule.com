@@ -307,6 +307,21 @@
                 <div style="color:#000000;font-size:0.85rem;margin-top:0.5rem">Geen betaling vooraf nodig</div>
             </div>
 
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:0.85rem;margin-bottom:1rem;font-size:0.85rem;color:#334155">
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.4rem">
+                    <span style="background:#000000;color:#ffffff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0">1</span>
+                    <div><strong>Eerste 25 boekingen</strong>: €1,75 per boeking</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.4rem">
+                    <span style="background:#22c55e;color:#ffffff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="font-size:0.6rem"></i></span>
+                    <div><strong style="color:#16a34a">Na 25 boekingen: GRATIS!</strong></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.4rem;opacity:0.6;font-size:0.8rem;padding-top:0.3rem;border-top:1px solid #e2e8f0">
+                    <i class="fas fa-sync-alt" style="font-size:0.65rem"></i>
+                    <span>De teller reset elke maand automatisch</span>
+                </div>
+            </div>
+
             <div class="form-group" style="margin-bottom:1.5rem">
                 <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;color:#999999;font-weight:400">
                     <input type="checkbox" name="terms" id="terms" required

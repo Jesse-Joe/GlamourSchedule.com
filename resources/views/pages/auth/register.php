@@ -719,9 +719,25 @@
                             <i class="fas fa-info-circle"></i>
                             <span><?= str_replace('&euro;99.99', $promo['local_original'] ?? '€99,99', $translations['after_price_new_business'] ?? 'Then &euro;99.99 one-time for new businesses') ?></span>
                         </div>
-                        <div class="price-note">
-                            <i class="fas fa-receipt"></i>
-                            <span><?= str_replace(':amount', $promo['fee_display'] ?? '€1,75', $translations['per_booking_fee'] ?? ':amount per successful booking') ?></span>
+                        <div class="fee-explanation" style="margin-top:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.06);border-radius:10px;font-size:0.85rem">
+                            <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.5rem">
+                                <span style="background:#ffffff;color:#000000;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;flex-shrink:0">1</span>
+                                <div>
+                                    <strong><?= $translations['reg_fee_step1_title'] ?? 'First 25 bookings' ?></strong><br>
+                                    <span style="opacity:0.8"><?= str_replace(':fee', $promo['fee_display'] ?? '€1,75', $translations['reg_fee_step1_desc'] ?? ':fee per booking for the first 25 per month') ?></span>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.5rem">
+                                <span style="background:#22c55e;color:#ffffff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="font-size:0.65rem"></i></span>
+                                <div>
+                                    <strong style="color:#4ade80"><?= $translations['reg_fee_step2_title'] ?? 'After 25 bookings: FREE!' ?></strong><br>
+                                    <span style="opacity:0.8"><?= $translations['reg_fee_step2_desc'] ?? 'All bookings after the first 25 are completely free' ?></span>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:0.5rem;opacity:0.7;font-size:0.8rem;padding-top:0.25rem;border-top:1px solid rgba(255,255,255,0.1)">
+                                <i class="fas fa-sync-alt" style="font-size:0.7rem"></i>
+                                <span><?= $translations['reg_fee_reset_monthly'] ?? 'The counter resets automatically every month' ?></span>
+                            </div>
                         </div>
 
                         <div class="benefits-list">

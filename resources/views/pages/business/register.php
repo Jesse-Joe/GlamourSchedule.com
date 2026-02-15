@@ -721,9 +721,25 @@
                         <i class="fas fa-users"></i>
                         <span data-employees-text="<?= $__('employees_cost') ?>">0 <?= $__('employees') ?>: +€0,00</span>
                     </div>
-                    <div class="price-note">
-                        <i class="fas fa-info-circle"></i>
-                        <span><?= $__('no_monthly_fees', ['fee' => $feeDisplay ?? '€1,75']) ?></span>
+                    <div class="fee-explanation" style="margin-top:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.06);border-radius:10px;font-size:0.85rem">
+                        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.5rem">
+                            <span style="background:#ffffff;color:#000000;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;flex-shrink:0">1</span>
+                            <div>
+                                <strong><?= $__('reg_fee_step1_title') ?></strong><br>
+                                <span style="opacity:0.8"><?= $__('reg_fee_step1_desc', ['fee' => $feeDisplay ?? '€1,75']) ?></span>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.5rem">
+                            <span style="background:#22c55e;color:#ffffff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-check" style="font-size:0.65rem"></i></span>
+                            <div>
+                                <strong style="color:#4ade80"><?= $__('reg_fee_step2_title') ?></strong><br>
+                                <span style="opacity:0.8"><?= $__('reg_fee_step2_desc') ?></span>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.5rem;opacity:0.7;font-size:0.8rem;padding-top:0.25rem;border-top:1px solid rgba(255,255,255,0.1)">
+                            <i class="fas fa-sync-alt" style="font-size:0.7rem"></i>
+                            <span><?= $__('reg_fee_reset_monthly') ?></span>
+                        </div>
                     </div>
                     <?php if ($isEarlyAdopter): ?>
                     <div class="price-note" style="font-size: 0.8rem; opacity: 0.7;">

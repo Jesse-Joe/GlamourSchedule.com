@@ -3677,4 +3677,16 @@ return [
     'validation_country_required' => 'Selecteer je land',
     'validation_reg_number_invalid' => 'Registratienummer is te kort',
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // FEE MODEL TRANSPARENCY
+    // ═══════════════════════════════════════════════════════════════════════
+    'reg_fee_step1_title' => 'Eerste 25 boekingen',
+    'reg_fee_step1_desc' => ':fee per boeking voor de eerste 25 per maand',
+    'reg_fee_step2_title' => 'Na 25 boekingen: GRATIS!',
+    'reg_fee_step2_desc' => 'Alle boekingen na de eerste 25 zijn volledig gratis',
+    'reg_fee_reset_monthly' => 'De teller reset elke maand automatisch',
+    'dashboard_fee_title' => 'Boekingskosten deze maand',
+    'dashboard_fee_free_now' => 'Alle overige boekingen deze maand zijn GRATIS!',
+    'dashboard_fee_remaining' => 'Nog :count boekingen met :fee kosten, daarna gratis',
+
 ];

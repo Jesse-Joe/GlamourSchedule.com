@@ -72,6 +72,9 @@ class BusinessDashboardController extends Controller
         // Check if KVK verification is needed (no KVK verified and not admin verified)
         $kvkVerificationNeeded = empty($this->business['kvk_verified']) && empty($this->business['is_verified']);
 
+        // Get monthly booking fee stats for progress bar
+        $monthlyFeeStats = $this->getMonthlyBookingFeeStats();
+
         return $this->view('pages/business/dashboard/index', [
             'pageTitle' => $this->getTranslations()['page_business_dashboard'] ?? 'Business Dashboard',
             'business' => $this->business,
@@ -82,8 +85,43 @@ class BusinessDashboardController extends Controller
             'profileCompletion' => $profileCompletion,
             'aiManager' => $aiManagerData,
             'kvkVerificationNeeded' => $kvkVerificationNeeded,
-            'feeData' => $this->feeData
+            'feeData' => $this->feeData,
+            'monthlyFeeStats' => $monthlyFeeStats
         ]);
+    }
+
+    /**
+     * Get monthly booking fee statistics for the progress bar widget
+     */
+    private function getMonthlyBookingFeeStats(): array
+    {
+        $businessId = $this->business['id'];
+        $feeLimit = $this->config['pricing']['monthly_fee_booking_limit'] ?? 25;
+
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as cnt FROM bookings
+             WHERE business_id = ?
+             AND status != 'cancelled'
+             AND MONTH(created_at) = MONTH(CURDATE())
+             AND YEAR(created_at) = YEAR(CURDATE())",
+            [$businessId]
+        );
+        $monthlyCount = (int)$stmt->fetch(\PDO::FETCH_ASSOC)['cnt'];
+
+        $feeBookingsUsed = min($monthlyCount, $feeLimit);
+        $feeBookingsRemaining = max(0, $feeLimit - $monthlyCount);
+        $isFreeZone = $monthlyCount >= $feeLimit;
+        $percentage = min(100, round(($monthlyCount / $feeLimit) * 100));
+
+        return [
+            'monthly_count' => $monthlyCount,
+            'fee_limit' => $feeLimit,
+            'fee_bookings_used' => $feeBookingsUsed,
+            'fee_bookings_remaining' => $feeBookingsRemaining,
+            'is_free_zone' => $isFreeZone,
+            'percentage' => $percentage,
+            'fee_display' => $this->feeData['fee_display'] ?? '€1,75'
+        ];
     }
 
     private function getProfileCompletion(): array
@@ -1051,22 +1089,23 @@ class BusinessDashboardController extends Controller
             // Delete related records in order of dependencies
             $this->db->query("DELETE FROM bookings WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM pos_bookings WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM pos_customers WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM services WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM employees WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM business_hours WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM business_categories WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM business_images WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_photos WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM reviews WHERE business_id = ?", [$businessId]);
             $this->db->query("DELETE FROM business_settings WHERE business_id = ?", [$businessId]);
-            $this->db->query("DELETE FROM business_employees WHERE business_id = ?", [$businessId]);
-            $this->db->query("DELETE FROM push_subscriptions WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM business_payouts WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM favorites WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM loyalty_points WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM notifications WHERE business_id = ?", [$businessId]);
+            $this->db->query("DELETE FROM inventory WHERE business_id = ?", [$businessId]);
 
             // Delete the business itself
             $this->db->query("DELETE FROM businesses WHERE id = ?", [$businessId]);
-
-            // Update user's business_id
-            if ($userId) {
-                $this->db->query("UPDATE users SET business_id = NULL WHERE id = ?", [$userId]);
-            }
 
             // Clear session
             unset($_SESSION['business_id']);

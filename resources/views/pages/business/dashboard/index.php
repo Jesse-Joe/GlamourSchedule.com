@@ -401,6 +401,35 @@ $finalPrice = max(0, $subscriptionPrice - $welcomeDiscount);
     </div>
 </div>
 
+<!-- Fee Progress Widget -->
+<?php
+$feeStats = $monthlyFeeStats ?? ['monthly_count' => 0, 'fee_limit' => 25, 'fee_bookings_used' => 0, 'fee_bookings_remaining' => 25, 'is_free_zone' => false, 'percentage' => 0, 'fee_display' => '€1,75'];
+?>
+<div class="fee-progress-widget" style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+        <h4 style="margin:0;font-size:0.95rem;color:var(--text)">
+            <i class="fas fa-receipt" style="margin-right:0.4rem;opacity:0.7"></i>
+            <?= $__('dashboard_fee_title') ?>
+        </h4>
+        <span style="font-weight:700;font-size:0.95rem;color:var(--text)"><?= $feeStats['fee_bookings_used'] ?>/<?= $feeStats['fee_limit'] ?></span>
+    </div>
+    <div style="background:var(--secondary, #e5e7eb);border-radius:8px;height:10px;overflow:hidden">
+        <div style="height:100%;border-radius:8px;transition:width 0.5s ease;width:<?= $feeStats['percentage'] ?>%;background:<?= $feeStats['is_free_zone'] ? 'linear-gradient(90deg, #22c55e, #16a34a)' : 'linear-gradient(90deg, #000000, #333333)' ?>"></div>
+    </div>
+    <div style="margin-top:0.6rem;font-size:0.82rem">
+        <?php if ($feeStats['is_free_zone']): ?>
+            <span style="display:inline-flex;align-items:center;gap:0.35rem;background:#dcfce7;color:#16a34a;padding:0.3rem 0.7rem;border-radius:20px;font-weight:600;font-size:0.8rem">
+                <i class="fas fa-check-circle"></i>
+                <?= $__('dashboard_fee_free_now') ?>
+            </span>
+        <?php else: ?>
+            <span style="color:var(--text-light)">
+                <?= $__('dashboard_fee_remaining', ['count' => $feeStats['fee_bookings_remaining'], 'fee' => $feeStats['fee_display']]) ?>
+            </span>
+        <?php endif; ?>
+    </div>
+</div>
+
 <!-- Quick Actions -->
 <div class="actions-grid">
     <a href="/business/bookings" class="action-card">

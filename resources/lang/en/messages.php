@@ -3684,4 +3684,16 @@ return [
     'validation_country_required' => 'Please select your country',
     'validation_reg_number_invalid' => 'Registration number is too short',
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // FEE MODEL TRANSPARENCY
+    // ═══════════════════════════════════════════════════════════════════════
+    'reg_fee_step1_title' => 'First 25 bookings',
+    'reg_fee_step1_desc' => ':fee per booking for the first 25 per month',
+    'reg_fee_step2_title' => 'After 25 bookings: FREE!',
+    'reg_fee_step2_desc' => 'All bookings after the first 25 are completely free',
+    'reg_fee_reset_monthly' => 'The counter resets automatically every month',
+    'dashboard_fee_title' => 'Booking fees this month',
+    'dashboard_fee_free_now' => 'All remaining bookings this month are FREE!',
+    'dashboard_fee_remaining' => ':count more bookings at :fee, then free',
+
 ];
