@@ -2869,4 +2869,10 @@ return array (
     'setup_reminder_missing_mollie' => 'Mollie ödeme hesabını bağla',
     'setup_reminder_missing_mollie_desc' => 'Bu, müşterilerin çevrimiçi ödeme yapmasını ve paranı otomatik olarak almanı sağlar.',
 
+    'select_country' => 'Ülkenizi seçin',
+    'other_country' => 'Diğer ülke',
+    'house_number' => 'Numara',
+    'business_registration' => 'Şirket Kaydı',
+    'validation_country_required' => 'Lütfen ülkenizi seçin',
+    'validation_reg_number_invalid' => 'Kayıt numarası çok kısa',
 );

@@ -153,8 +153,14 @@ class BusinessRegisterController extends Controller
             'house_number' => trim($_POST['house_number'] ?? ''),
             'city' => trim($_POST['city'] ?? ''),
             'postal_code' => trim($_POST['postal_code'] ?? ''),
+            'country' => trim($_POST['country'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
-            'kvk_number' => trim($_POST['kvk_number'] ?? ''),
+            'kvk_number' => trim($_POST['kvk_number'] ?? $_POST['business_registration_number'] ?? ''),
+            'business_registration_number' => trim($_POST['business_registration_number'] ?? $_POST['kvk_number'] ?? ''),
+            'business_registration_type' => trim($_POST['business_registration_type'] ?? ''),
+            'tax_number' => trim($_POST['tax_number'] ?? $_POST['btw_number'] ?? ''),
+            'business_type' => trim($_POST['business_type'] ?? 'eenmanszaak'),
+            'employee_count' => (int)($_POST['employee_count'] ?? 0),
             'terms_accepted' => isset($_POST['terms'])
         ];
 
@@ -286,8 +292,20 @@ class BusinessRegisterController extends Controller
             // Business has its own password_hash - separate from customer accounts
             $earlyBirdNumber = $isPromo ? ($promoInfo['early_bird_number'] ?? null) : null;
 
+            // Use country from form if provided, otherwise fall back to GeoIP
+            $formCountry = $data['country'] ?? '';
+            if (!empty($formCountry) && $formCountry !== 'OTHER') {
+                $businessCountry = $formCountry;
+            } else {
+                $businessCountry = $countryCode;
+            }
+
             // Get timezone for this country
-            $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($countryCode);
+            $businessTimezone = $location['timezone'] ?? $this->geoIP->getTimezoneForCountry($businessCountry);
+
+            // Determine business type
+            $businessType = in_array($data['business_type'], ['eenmanszaak', 'bv']) ? $data['business_type'] : 'eenmanszaak';
+            $employeeCount = max(0, $data['employee_count']);
 
             // Insert with retry loop to handle slug uniqueness race condition (TOCTOU)
             $slugInserted = false;
@@ -297,19 +315,21 @@ class BusinessRegisterController extends Controller
                         "INSERT INTO businesses (
                             uuid, company_name, slug, email, password_hash, phone,
                             street, house_number, postal_code, city, country, timezone, language,
-                            description, kvk_number,
+                            description, kvk_number, business_registration_number, business_registration_type, tax_number,
+                            business_type, employee_count,
                             is_early_adopter, is_early_bird, early_bird_number, registration_fee_paid, status,
                             trial_ends_at, subscription_status, subscription_price, welcome_discount,
                             referral_code, referred_by_sales_partner,
                             registration_country, registration_ip, promo_applied
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [
                             $businessUuid, $data['company_name'], $slug, $data['email'], $passwordHash, $data['phone'],
-                            $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $countryCode, $businessTimezone, $detectedLanguage,
-                            $data['description'], $data['kvk_number'],
+                            $data['street'], $data['house_number'], $data['postal_code'], $data['city'], $businessCountry, $businessTimezone, $detectedLanguage,
+                            $data['description'], $data['kvk_number'], $data['business_registration_number'], $data['business_registration_type'], $data['tax_number'],
+                            $businessType, $employeeCount,
                             $isPromo ? 1 : 0, $isPromo ? 1 : 0, $earlyBirdNumber,
                             $trialEndsAt, $subscriptionStatus, $regFee, $welcomeDiscount, $referralCode ?: null, $referredBy,
-                            $countryCode, $location['ip'], $isPromo ? 1 : 0
+                            $businessCountry, $location['ip'], $isPromo ? 1 : 0
                         ]
                     );
                     $slugInserted = true;
@@ -674,6 +694,10 @@ GlamourSchedule
             $errors['postal_code'] = $t['validation_postal_required'] ?? 'Postal code is required';
         }
 
+        if (empty($data['country'])) {
+            $errors['country'] = $t['validation_country_required'] ?? 'Please select a country';
+        }
+
         if (!$data['terms_accepted']) {
             $errors['terms'] = $t['validation_terms_required'] ?? 'You must agree to the terms';
         }
@@ -682,9 +706,10 @@ GlamourSchedule
             $errors['category_id'] = $t['validation_category_required'] ?? 'Please select a category';
         }
 
-        // KVK is optional but if provided, must be 8 digits
-        if (!empty($data['kvk_number']) && !preg_match('/^\d{8}$/', $data['kvk_number'])) {
-            $errors['kvk_number'] = $t['validation_kvk_invalid'] ?? 'Registration number must be 8 digits';
+        // Business registration number is optional but if provided, basic length check
+        $regNumber = $data['business_registration_number'] ?? $data['kvk_number'] ?? '';
+        if (!empty($regNumber) && strlen($regNumber) < 2) {
+            $errors['kvk_number'] = $t['validation_reg_number_invalid'] ?? 'Registration number is too short';
         }
 
         return $errors;

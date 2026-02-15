@@ -620,44 +620,63 @@
                     <h4><?= $__('location') ?></h4>
                 </div>
 
+                <?php
+                    $selectedCountry = $data['country'] ?? $countryCode ?? '';
+                    $countries = [
+                        'NL' => 'Nederland',
+                        'BE' => 'België / Belgique',
+                        'DE' => 'Deutschland',
+                        'FR' => 'France',
+                        'GB' => 'United Kingdom',
+                        'ES' => 'España',
+                        'IT' => 'Italia',
+                        'PT' => 'Portugal',
+                        'AT' => 'Österreich',
+                        'CH' => 'Schweiz / Suisse',
+                        'LU' => 'Luxembourg',
+                        'PL' => 'Polska',
+                        'US' => 'United States',
+                        'CA' => 'Canada',
+                        'AU' => 'Australia',
+                        'TR' => 'Türkiye',
+                        'MA' => 'المغرب / Maroc',
+                        'AE' => 'الإمارات / UAE',
+                    ];
+                    $flags = [
+                        'NL' => '🇳🇱', 'BE' => '🇧🇪', 'DE' => '🇩🇪', 'FR' => '🇫🇷', 'GB' => '🇬🇧',
+                        'ES' => '🇪🇸', 'IT' => '🇮🇹', 'PT' => '🇵🇹', 'AT' => '🇦🇹', 'CH' => '🇨🇭',
+                        'LU' => '🇱🇺', 'PL' => '🇵🇱', 'US' => '🇺🇸', 'CA' => '🇨🇦', 'AU' => '🇦🇺',
+                        'TR' => '🇹🇷', 'MA' => '🇲🇦', 'AE' => '🇦🇪',
+                    ];
+                ?>
                 <div class="form-group">
                     <label><i class="fas fa-globe"></i> <?= $__('country') ?? 'Land' ?> *</label>
                     <select name="country" id="country-select" class="form-control" required onchange="updateBusinessFields()">
                         <option value="">-- <?= $__('select_country') ?? 'Selecteer land' ?> --</option>
-                        <option value="NL" <?= ($data['country'] ?? '') === 'NL' ? 'selected' : '' ?>>🇳🇱 Nederland</option>
-                        <option value="BE" <?= ($data['country'] ?? '') === 'BE' ? 'selected' : '' ?>>🇧🇪 België</option>
-                        <option value="DE" <?= ($data['country'] ?? '') === 'DE' ? 'selected' : '' ?>>🇩🇪 Deutschland</option>
-                        <option value="FR" <?= ($data['country'] ?? '') === 'FR' ? 'selected' : '' ?>>🇫🇷 France</option>
-                        <option value="GB" <?= ($data['country'] ?? '') === 'GB' ? 'selected' : '' ?>>🇬🇧 United Kingdom</option>
-                        <option value="ES" <?= ($data['country'] ?? '') === 'ES' ? 'selected' : '' ?>>🇪🇸 España</option>
-                        <option value="IT" <?= ($data['country'] ?? '') === 'IT' ? 'selected' : '' ?>>🇮🇹 Italia</option>
-                        <option value="PT" <?= ($data['country'] ?? '') === 'PT' ? 'selected' : '' ?>>🇵🇹 Portugal</option>
-                        <option value="AT" <?= ($data['country'] ?? '') === 'AT' ? 'selected' : '' ?>>🇦🇹 Österreich</option>
-                        <option value="CH" <?= ($data['country'] ?? '') === 'CH' ? 'selected' : '' ?>>🇨🇭 Schweiz</option>
-                        <option value="LU" <?= ($data['country'] ?? '') === 'LU' ? 'selected' : '' ?>>🇱🇺 Luxembourg</option>
-                        <option value="PL" <?= ($data['country'] ?? '') === 'PL' ? 'selected' : '' ?>>🇵🇱 Polska</option>
-                        <option value="US" <?= ($data['country'] ?? '') === 'US' ? 'selected' : '' ?>>🇺🇸 United States</option>
-                        <option value="CA" <?= ($data['country'] ?? '') === 'CA' ? 'selected' : '' ?>>🇨🇦 Canada</option>
-                        <option value="AU" <?= ($data['country'] ?? '') === 'AU' ? 'selected' : '' ?>>🇦🇺 Australia</option>
-                        <option value="TR" <?= ($data['country'] ?? '') === 'TR' ? 'selected' : '' ?>>🇹🇷 Türkiye</option>
-                        <option value="MA" <?= ($data['country'] ?? '') === 'MA' ? 'selected' : '' ?>>🇲🇦 Morocco</option>
-                        <option value="AE" <?= ($data['country'] ?? '') === 'AE' ? 'selected' : '' ?>>🇦🇪 UAE</option>
-                        <option value="OTHER" <?= ($data['country'] ?? '') === 'OTHER' ? 'selected' : '' ?>>🌍 <?= $__('other_country') ?? 'Ander land' ?></option>
+                        <?php foreach ($countries as $code => $name): ?>
+                            <option value="<?= $code ?>" <?= $selectedCountry === $code ? 'selected' : '' ?>><?= $flags[$code] ?? '' ?> <?= $name ?></option>
+                        <?php endforeach; ?>
+                        <option value="OTHER" <?= ($selectedCountry === 'OTHER' || (!isset($countries[$selectedCountry]) && !empty($selectedCountry))) ? 'selected' : '' ?>>🌍 <?= $__('other_country') ?? 'Other' ?></option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-road"></i> <?= $__('address') ?> *</label>
+                    <label><i class="fas fa-road"></i> <span id="street-label"><?= $__('address') ?> *</span></label>
                     <input type="text" name="address" class="form-control" placeholder="<?= $__('street_example') ?>" value="<?= htmlspecialchars($data['address'] ?? '') ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> <span id="house-label"><?= $__('house_number') ?? 'Huisnummer' ?></span></label>
+                    <input type="text" name="house_number" class="form-control" placeholder="123" value="<?= htmlspecialchars($data['house_number'] ?? '') ?>">
                 </div>
 
                 <div class="grid grid-2">
                     <div class="form-group">
-                        <label><i class="fas fa-mail-bulk"></i> <?= $__('postal_code') ?> *</label>
+                        <label><i class="fas fa-mail-bulk"></i> <span id="postal-label"><?= $__('postal_code') ?> *</span></label>
                         <input type="text" name="postal_code" class="form-control" placeholder="1234 AB" value="<?= htmlspecialchars($data['postal_code'] ?? '') ?>" required>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-city"></i> <?= $__('city') ?> *</label>
+                        <label><i class="fas fa-city"></i> <span id="city-label"><?= $__('city') ?> *</span></label>
                         <input type="text" name="city" class="form-control" placeholder="Amsterdam" value="<?= htmlspecialchars($data['city'] ?? '') ?>" required>
                     </div>
                 </div>
@@ -821,82 +840,121 @@ function updatePricing() {
 }
 
 // Country-specific business registration configurations
+// Labels are in the native language of each country
 const countryConfig = {
     'NL': {
-        registration: { type: 'KVK', label: 'KVK-nummer', placeholder: '12345678', help: 'Je 8-cijferig KVK-nummer', maxlength: 8 },
-        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'NL123456789B01', help: 'Format: NL + 9 cijfers + B + 2 cijfers', maxlength: 14 }
+        registration: { type: 'KVK', label: 'KVK-nummer', placeholder: '12345678', help: 'Je 8-cijferig KVK-nummer (Kamer van Koophandel)', maxlength: 8, pattern: '\\d{8}' },
+        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'NL123456789B01', help: 'Format: NL + 9 cijfers + B + 2 cijfers', maxlength: 14 },
+        address: { street: 'Straat', house: 'Huisnummer', postal: 'Postcode', city: 'Plaats', postalPlaceholder: '1234 AB', cityPlaceholder: 'Amsterdam', streetPlaceholder: 'Keizersgracht' },
+        sole: 'Eenmanszaak', company: 'BV / VOF', soleDesc: 'Ik werk alleen', companyDesc: 'Ik heb personeel'
     },
     'BE': {
-        registration: { type: 'KBO', label: 'Ondernemingsnummer (KBO)', placeholder: '0123456789', help: 'Je 10-cijferig ondernemingsnummer', maxlength: 10 },
-        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'BE0123456789', help: 'Format: BE + ondernemingsnummer', maxlength: 12 }
+        registration: { type: 'KBO', label: 'Ondernemingsnummer (KBO)', placeholder: '0123.456.789', help: 'Je 10-cijferig KBO-ondernemingsnummer', maxlength: 12, pattern: '\\d{4}\\.?\\d{3}\\.?\\d{3}' },
+        tax: { type: 'BTW', label: 'BTW-nummer', placeholder: 'BE0123456789', help: 'Format: BE + 10 cijfers', maxlength: 12 },
+        address: { street: 'Straat', house: 'Huisnummer', postal: 'Postcode', city: 'Gemeente', postalPlaceholder: '1000', cityPlaceholder: 'Brussel', streetPlaceholder: 'Nieuwstraat' },
+        sole: 'Eenmanszaak', company: 'BV / NV', soleDesc: 'Ik werk alleen', companyDesc: 'Ik heb personeel'
     },
     'DE': {
-        registration: { type: 'HRB', label: 'Handelsregisternummer', placeholder: 'HRB 12345', help: 'Ihr Handelsregisternummer', maxlength: 20 },
-        tax: { type: 'USt-IdNr', label: 'Umsatzsteuer-ID', placeholder: 'DE123456789', help: 'Format: DE + 9 Ziffern', maxlength: 11 }
+        registration: { type: 'HRB', label: 'Handelsregisternummer', placeholder: 'HRB 12345', help: 'Ihr Handelsregisternummer (HRA/HRB)', maxlength: 20 },
+        tax: { type: 'USt-IdNr', label: 'Umsatzsteuer-Identifikationsnummer', placeholder: 'DE123456789', help: 'Format: DE + 9 Ziffern', maxlength: 11 },
+        address: { street: 'Straße', house: 'Hausnummer', postal: 'Postleitzahl', city: 'Stadt', postalPlaceholder: '10115', cityPlaceholder: 'Berlin', streetPlaceholder: 'Friedrichstraße' },
+        sole: 'Einzelunternehmen', company: 'GmbH / UG', soleDesc: 'Ich arbeite allein', companyDesc: 'Ich habe Mitarbeiter'
     },
     'FR': {
-        registration: { type: 'SIRET', label: 'Numéro SIRET', placeholder: '12345678901234', help: 'Votre numéro SIRET à 14 chiffres', maxlength: 14 },
-        tax: { type: 'TVA', label: 'Numéro de TVA', placeholder: 'FR12345678901', help: 'Format: FR + 2 chiffres + SIREN', maxlength: 13 }
+        registration: { type: 'SIRET', label: 'Numéro SIRET', placeholder: '123 456 789 01234', help: 'Votre numéro SIRET à 14 chiffres', maxlength: 17, pattern: '\\d{3}\\s?\\d{3}\\s?\\d{3}\\s?\\d{5}' },
+        tax: { type: 'TVA', label: 'Numéro de TVA intracommunautaire', placeholder: 'FR12345678901', help: 'Format: FR + 2 caractères + SIREN (9 chiffres)', maxlength: 13 },
+        address: { street: 'Adresse', house: 'N°', postal: 'Code postal', city: 'Ville', postalPlaceholder: '75001', cityPlaceholder: 'Paris', streetPlaceholder: 'Rue de Rivoli' },
+        sole: 'Auto-entrepreneur', company: 'SARL / SAS', soleDesc: 'Je travaille seul(e)', companyDesc: "J'ai des employés"
     },
     'GB': {
-        registration: { type: 'CRN', label: 'Company Registration Number', placeholder: '12345678', help: 'Your Companies House registration number', maxlength: 10 },
-        tax: { type: 'VAT', label: 'VAT Registration Number', placeholder: 'GB123456789', help: 'Format: GB + 9 or 12 digits', maxlength: 14 }
+        registration: { type: 'CRN', label: 'Company Registration Number', placeholder: '12345678', help: 'Your Companies House registration number (8 digits)', maxlength: 10 },
+        tax: { type: 'VAT', label: 'VAT Registration Number', placeholder: 'GB123456789', help: 'Format: GB + 9 or 12 digits', maxlength: 14 },
+        address: { street: 'Street address', house: 'Unit/Suite', postal: 'Postcode', city: 'City', postalPlaceholder: 'SW1A 1AA', cityPlaceholder: 'London', streetPlaceholder: '10 Downing Street' },
+        sole: 'Sole Trader', company: 'Limited Company', soleDesc: 'I work alone', companyDesc: 'I have employees'
     },
     'ES': {
-        registration: { type: 'NIF', label: 'NIF/CIF', placeholder: 'B12345678', help: 'Tu Número de Identificación Fiscal', maxlength: 9 },
-        tax: { type: 'IVA', label: 'Número de IVA', placeholder: 'ESB12345678', help: 'Format: ES + NIF', maxlength: 11 }
+        registration: { type: 'NIF', label: 'NIF / CIF', placeholder: 'B12345678', help: 'Tu Número de Identificación Fiscal', maxlength: 9 },
+        tax: { type: 'IVA', label: 'Número de IVA', placeholder: 'ESB12345678', help: 'Format: ES + NIF', maxlength: 11 },
+        address: { street: 'Dirección', house: 'Número', postal: 'Código postal', city: 'Ciudad', postalPlaceholder: '28001', cityPlaceholder: 'Madrid', streetPlaceholder: 'Calle Gran Vía' },
+        sole: 'Autónomo', company: 'Sociedad Limitada (SL)', soleDesc: 'Trabajo solo/a', companyDesc: 'Tengo empleados'
     },
     'IT': {
-        registration: { type: 'REA', label: 'Numero REA', placeholder: 'MI-1234567', help: 'Il tuo numero REA', maxlength: 15 },
-        tax: { type: 'P.IVA', label: 'Partita IVA', placeholder: 'IT12345678901', help: 'Format: IT + 11 cifre', maxlength: 13 }
+        registration: { type: 'REA', label: 'Numero REA', placeholder: 'MI-1234567', help: 'Il tuo numero REA (Repertorio Economico Amministrativo)', maxlength: 15 },
+        tax: { type: 'P.IVA', label: 'Partita IVA', placeholder: 'IT12345678901', help: 'Format: IT + 11 cifre', maxlength: 13 },
+        address: { street: 'Indirizzo', house: 'Civico', postal: 'CAP', city: 'Città', postalPlaceholder: '00100', cityPlaceholder: 'Roma', streetPlaceholder: 'Via del Corso' },
+        sole: 'Ditta individuale', company: 'SRL / SPA', soleDesc: 'Lavoro da solo/a', companyDesc: 'Ho dei dipendenti'
     },
     'PT': {
         registration: { type: 'NIPC', label: 'NIPC', placeholder: '123456789', help: 'O seu NIPC de 9 dígitos', maxlength: 9 },
-        tax: { type: 'NIF', label: 'Número de IVA', placeholder: 'PT123456789', help: 'Format: PT + 9 dígitos', maxlength: 11 }
+        tax: { type: 'NIF', label: 'Número de contribuinte (NIF)', placeholder: 'PT123456789', help: 'Format: PT + 9 dígitos', maxlength: 11 },
+        address: { street: 'Morada', house: 'Número', postal: 'Código postal', city: 'Cidade', postalPlaceholder: '1000-001', cityPlaceholder: 'Lisboa', streetPlaceholder: 'Rua Augusta' },
+        sole: 'Empresário individual', company: 'Sociedade (Lda)', soleDesc: 'Trabalho sozinho/a', companyDesc: 'Tenho funcionários'
     },
     'AT': {
         registration: { type: 'FN', label: 'Firmenbuchnummer', placeholder: '123456a', help: 'Ihre Firmenbuchnummer', maxlength: 10 },
-        tax: { type: 'UID', label: 'UID-Nummer', placeholder: 'ATU12345678', help: 'Format: ATU + 8 Ziffern', maxlength: 11 }
+        tax: { type: 'UID', label: 'UID-Nummer', placeholder: 'ATU12345678', help: 'Format: ATU + 8 Ziffern', maxlength: 11 },
+        address: { street: 'Straße', house: 'Hausnummer', postal: 'PLZ', city: 'Ort', postalPlaceholder: '1010', cityPlaceholder: 'Wien', streetPlaceholder: 'Kärntner Straße' },
+        sole: 'Einzelunternehmen', company: 'GmbH / KG', soleDesc: 'Ich arbeite allein', companyDesc: 'Ich habe Mitarbeiter'
     },
     'CH': {
-        registration: { type: 'UID', label: 'UID-Nummer', placeholder: 'CHE-123.456.789', help: 'Ihre Unternehmens-ID', maxlength: 15 },
-        tax: { type: 'MWST', label: 'MWST-Nummer', placeholder: 'CHE-123.456.789 MWST', help: 'Format: UID + MWST', maxlength: 20 }
+        registration: { type: 'UID', label: 'UID-Nummer (Handelsregister)', placeholder: 'CHE-123.456.789', help: 'Ihre Unternehmens-Identifikationsnummer', maxlength: 15 },
+        tax: { type: 'MWST', label: 'MWST-Nummer', placeholder: 'CHE-123.456.789 MWST', help: 'Format: UID + MWST', maxlength: 24 },
+        address: { street: 'Strasse', house: 'Nr.', postal: 'PLZ', city: 'Ort', postalPlaceholder: '8001', cityPlaceholder: 'Zürich', streetPlaceholder: 'Bahnhofstrasse' },
+        sole: 'Einzelunternehmen', company: 'GmbH / AG', soleDesc: 'Ich arbeite allein', companyDesc: 'Ich habe Mitarbeiter'
     },
     'LU': {
-        registration: { type: 'RCS', label: 'Numéro RCS', placeholder: 'B123456', help: 'Votre numéro RCS Luxembourg', maxlength: 10 },
-        tax: { type: 'TVA', label: 'Numéro TVA', placeholder: 'LU12345678', help: 'Format: LU + 8 chiffres', maxlength: 10 }
+        registration: { type: 'RCS', label: 'Numéro RCS', placeholder: 'B123456', help: 'Votre numéro au Registre de Commerce et des Sociétés', maxlength: 10 },
+        tax: { type: 'TVA', label: 'Numéro TVA', placeholder: 'LU12345678', help: 'Format: LU + 8 chiffres', maxlength: 10 },
+        address: { street: 'Adresse', house: 'N°', postal: 'Code postal', city: 'Ville', postalPlaceholder: '1111', cityPlaceholder: 'Luxembourg', streetPlaceholder: 'Grand-Rue' },
+        sole: 'Indépendant', company: 'SARL / SA', soleDesc: 'Je travaille seul(e)', companyDesc: "J'ai des employés"
     },
     'PL': {
-        registration: { type: 'KRS', label: 'Numer KRS', placeholder: '0000123456', help: 'Twój numer KRS', maxlength: 10 },
-        tax: { type: 'NIP', label: 'Numer NIP', placeholder: 'PL1234567890', help: 'Format: PL + 10 cyfr', maxlength: 12 }
+        registration: { type: 'KRS/REGON', label: 'Numer KRS lub REGON', placeholder: '0000123456', help: 'Twój numer KRS (10 cyfr) lub REGON (9/14 cyfr)', maxlength: 14 },
+        tax: { type: 'NIP', label: 'Numer NIP', placeholder: 'PL1234567890', help: 'Format: PL + 10 cyfr', maxlength: 12 },
+        address: { street: 'Ulica', house: 'Nr', postal: 'Kod pocztowy', city: 'Miasto', postalPlaceholder: '00-001', cityPlaceholder: 'Warszawa', streetPlaceholder: 'ul. Marszałkowska' },
+        sole: 'Jednoosobowa działalność', company: 'Spółka z o.o.', soleDesc: 'Pracuję sam/sama', companyDesc: 'Mam pracowników'
     },
     'US': {
-        registration: { type: 'EIN', label: 'EIN (Employer ID)', placeholder: '12-3456789', help: 'Your IRS Employer Identification Number', maxlength: 10 },
-        tax: { type: 'Sales Tax', label: 'Sales Tax ID', placeholder: 'State-specific', help: 'Your state sales tax permit number', maxlength: 20 }
+        registration: { type: 'EIN', label: 'EIN (Employer Identification Number)', placeholder: '12-3456789', help: 'Your IRS Employer Identification Number (XX-XXXXXXX)', maxlength: 10 },
+        tax: { type: 'Sales Tax', label: 'State Sales Tax Permit', placeholder: 'State-specific', help: 'Your state sales tax permit number (if applicable)', maxlength: 20 },
+        address: { street: 'Street address', house: 'Suite/Apt', postal: 'ZIP Code', city: 'City', postalPlaceholder: '10001', cityPlaceholder: 'New York', streetPlaceholder: '123 Main Street' },
+        sole: 'Sole Proprietor', company: 'LLC / Corporation', soleDesc: 'I work alone', companyDesc: 'I have employees'
     },
     'CA': {
-        registration: { type: 'BN', label: 'Business Number', placeholder: '123456789', help: 'Your 9-digit CRA Business Number', maxlength: 9 },
-        tax: { type: 'GST/HST', label: 'GST/HST Number', placeholder: '123456789RT0001', help: 'Format: BN + RT + 4 digits', maxlength: 15 }
+        registration: { type: 'BN', label: 'Business Number (BN)', placeholder: '123456789', help: 'Your 9-digit CRA Business Number', maxlength: 9 },
+        tax: { type: 'GST/HST', label: 'GST/HST Registration Number', placeholder: '123456789RT0001', help: 'Format: BN + RT + 4 digits', maxlength: 15 },
+        address: { street: 'Street address', house: 'Unit', postal: 'Postal Code', city: 'City', postalPlaceholder: 'M5V 2T6', cityPlaceholder: 'Toronto', streetPlaceholder: '123 Queen Street' },
+        sole: 'Sole Proprietor', company: 'Corporation / Inc.', soleDesc: 'I work alone', companyDesc: 'I have employees'
     },
     'AU': {
-        registration: { type: 'ABN', label: 'ABN', placeholder: '12345678901', help: 'Your 11-digit Australian Business Number', maxlength: 11 },
-        tax: { type: 'GST', label: 'GST Registration', placeholder: '12345678901', help: 'Same as ABN if GST registered', maxlength: 11 }
+        registration: { type: 'ABN', label: 'ABN (Australian Business Number)', placeholder: '12 345 678 901', help: 'Your 11-digit Australian Business Number', maxlength: 14 },
+        tax: { type: 'GST', label: 'GST Registration', placeholder: '12345678901', help: 'Same as ABN if GST registered', maxlength: 11 },
+        address: { street: 'Street address', house: 'Unit', postal: 'Postcode', city: 'Suburb/City', postalPlaceholder: '2000', cityPlaceholder: 'Sydney', streetPlaceholder: '123 George Street' },
+        sole: 'Sole Trader', company: 'Pty Ltd / Company', soleDesc: 'I work alone', companyDesc: 'I have employees'
     },
     'TR': {
-        registration: { type: 'VKN', label: 'Vergi Kimlik Numarası', placeholder: '1234567890', help: '10 haneli Vergi Kimlik Numaranız', maxlength: 10 },
-        tax: { type: 'KDV', label: 'KDV Numarası', placeholder: 'TR1234567890', help: 'Format: TR + VKN', maxlength: 12 }
+        registration: { type: 'VKN', label: 'Vergi Kimlik Numarası (VKN)', placeholder: '1234567890', help: '10 haneli Vergi Kimlik Numaranız', maxlength: 10 },
+        tax: { type: 'KDV', label: 'KDV Numarası', placeholder: 'TR1234567890', help: 'Format: TR + VKN', maxlength: 12 },
+        address: { street: 'Adres', house: 'No', postal: 'Posta kodu', city: 'İl / İlçe', postalPlaceholder: '34000', cityPlaceholder: 'İstanbul', streetPlaceholder: 'İstiklal Caddesi' },
+        sole: 'Şahıs şirketi', company: 'Limited / Anonim Şirket', soleDesc: 'Tek başıma çalışıyorum', companyDesc: 'Çalışanlarım var'
     },
     'MA': {
-        registration: { type: 'RC', label: 'رقم السجل التجاري / Registre de Commerce', placeholder: '123456', help: 'Numéro du Registre de Commerce', maxlength: 15 },
-        tax: { type: 'IF', label: 'رقم التعريف الضريبي / Identifiant Fiscal', placeholder: '12345678', help: 'Identifiant Fiscal', maxlength: 15 }
+        registration: { type: 'RC', label: 'السجل التجاري / Registre de Commerce (RC)', placeholder: '123456', help: 'Numéro du Registre de Commerce / رقم السجل التجاري', maxlength: 15 },
+        tax: { type: 'IF', label: 'المعرف الضريبي / Identifiant Fiscal (IF)', placeholder: '12345678', help: 'Identifiant Fiscal / رقم التعريف الضريبي', maxlength: 15 },
+        address: { street: 'العنوان / Adresse', house: 'الرقم / N°', postal: 'الرمز البريدي / Code postal', city: 'المدينة / Ville', postalPlaceholder: '20000', cityPlaceholder: 'Casablanca', streetPlaceholder: 'Boulevard Mohammed V' },
+        sole: 'Auto-entrepreneur / مقاول ذاتي', company: 'SARL / شركة', soleDesc: 'أعمل وحدي / Je travaille seul(e)', companyDesc: 'لدي موظفون / J\'ai des employés'
     },
     'AE': {
-        registration: { type: 'License', label: 'رقم الرخصة التجارية / Trade License', placeholder: '123456', help: 'Your Trade License Number', maxlength: 20 },
-        tax: { type: 'TRN', label: 'رقم التسجيل الضريبي / TRN', placeholder: '100000000000003', help: '15-digit Tax Registration Number', maxlength: 15 }
+        registration: { type: 'License', label: 'الرخصة التجارية / Trade License Number', placeholder: '123456', help: 'Your Trade License Number / رقم الرخصة التجارية', maxlength: 20 },
+        tax: { type: 'TRN', label: 'رقم التسجيل الضريبي / Tax Registration Number (TRN)', placeholder: '100000000000003', help: '15-digit Tax Registration Number', maxlength: 15 },
+        address: { street: 'العنوان / Address', house: 'الوحدة / Unit', postal: 'الرمز البريدي / P.O. Box', city: 'الإمارة / Emirate', postalPlaceholder: '00000', cityPlaceholder: 'Dubai', streetPlaceholder: 'Sheikh Zayed Road' },
+        sole: 'مؤسسة فردية / Sole Establishment', company: 'شركة ذ.م.م / LLC', soleDesc: 'أعمل وحدي / I work alone', companyDesc: 'لدي موظفون / I have employees'
     },
     'OTHER': {
         registration: { type: 'Business ID', label: 'Business Registration Number', placeholder: '', help: 'Your official business registration number', maxlength: 30 },
-        tax: { type: 'Tax ID', label: 'Tax/VAT Number', placeholder: '', help: 'Your tax or VAT registration number', maxlength: 20 }
+        tax: { type: 'Tax ID', label: 'Tax / VAT Number', placeholder: '', help: 'Your tax or VAT registration number', maxlength: 20 },
+        address: { street: 'Street address', house: 'Number', postal: 'Postal code', city: 'City', postalPlaceholder: '', cityPlaceholder: '', streetPlaceholder: '' },
+        sole: 'Sole proprietor', company: 'Company', soleDesc: 'I work alone', companyDesc: 'I have employees'
     }
 };
 
@@ -907,15 +965,46 @@ function updateBusinessFields() {
     // Update registration field
     document.getElementById('business-reg-label-text').textContent = config.registration.label;
     document.getElementById('business-reg-input').placeholder = config.registration.placeholder;
-    document.getElementById('business-reg-input').maxLength = config.registration.maxlength;
+    document.getElementById('business-reg-input').maxLength = Math.max(config.registration.maxlength || 30, 30);
     document.getElementById('business-reg-help').textContent = config.registration.help;
     document.getElementById('business-reg-type').value = config.registration.type;
 
     // Update tax field
     document.getElementById('tax-label-text').textContent = config.tax.label;
     document.getElementById('tax-input').placeholder = config.tax.placeholder;
-    document.getElementById('tax-input').maxLength = config.tax.maxlength;
+    document.getElementById('tax-input').maxLength = Math.max(config.tax.maxlength || 30, 30);
     document.getElementById('tax-help').textContent = config.tax.help;
+
+    // Update address labels per country
+    if (config.address) {
+        const streetLabel = document.getElementById('street-label');
+        const houseLabel = document.getElementById('house-label');
+        const postalLabel = document.getElementById('postal-label');
+        const cityLabel = document.getElementById('city-label');
+        const streetInput = document.querySelector('input[name="address"]');
+        const postalInput = document.querySelector('input[name="postal_code"]');
+        const cityInput = document.querySelector('input[name="city"]');
+
+        if (streetLabel) streetLabel.textContent = config.address.street + ' *';
+        if (houseLabel) houseLabel.textContent = config.address.house;
+        if (postalLabel) postalLabel.textContent = config.address.postal + ' *';
+        if (cityLabel) cityLabel.textContent = config.address.city + ' *';
+        if (streetInput && config.address.streetPlaceholder) streetInput.placeholder = config.address.streetPlaceholder;
+        if (postalInput && config.address.postalPlaceholder) postalInput.placeholder = config.address.postalPlaceholder;
+        if (cityInput && config.address.cityPlaceholder) cityInput.placeholder = config.address.cityPlaceholder;
+    }
+
+    // Update business type labels per country
+    if (config.sole) {
+        const soleTitle = document.querySelector('#type-eenmanszaak .type-title');
+        const soleDesc = document.querySelector('#type-eenmanszaak .type-desc');
+        const companyTitle = document.querySelector('#type-bv .type-title');
+        const companyDesc = document.querySelector('#type-bv .type-desc');
+        if (soleTitle) soleTitle.textContent = config.sole;
+        if (soleDesc) soleDesc.textContent = config.soleDesc;
+        if (companyTitle) companyTitle.textContent = config.company;
+        if (companyDesc) companyDesc.textContent = config.companyDesc;
+    }
 }
 
 // Initialize on page load

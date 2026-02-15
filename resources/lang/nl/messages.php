@@ -3667,4 +3667,14 @@ return [
     'setup_reminder_missing_mollie' => 'Mollie betaalaccount koppelen',
     'setup_reminder_missing_mollie_desc' => 'Hiermee kunnen klanten online betalen en ontvang jij automatisch je geld.',
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS REGISTRATION - COUNTRY SPECIFIC
+    // ═══════════════════════════════════════════════════════════════════════
+    'select_country' => 'Selecteer je land',
+    'other_country' => 'Ander land',
+    'house_number' => 'Huisnummer',
+    'business_registration' => 'Bedrijfsregistratie',
+    'validation_country_required' => 'Selecteer je land',
+    'validation_reg_number_invalid' => 'Registratienummer is te kort',
+
 ];

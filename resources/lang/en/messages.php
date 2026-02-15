@@ -3674,4 +3674,14 @@ return [
     'setup_reminder_missing_mollie' => 'Link your Mollie payment account',
     'setup_reminder_missing_mollie_desc' => 'This allows customers to pay online and you to receive your money automatically.',
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // BUSINESS REGISTRATION - COUNTRY SPECIFIC
+    // ═══════════════════════════════════════════════════════════════════════
+    'select_country' => 'Select your country',
+    'other_country' => 'Other country',
+    'house_number' => 'House number',
+    'business_registration' => 'Business Registration',
+    'validation_country_required' => 'Please select your country',
+    'validation_reg_number_invalid' => 'Registration number is too short',
+
 ];

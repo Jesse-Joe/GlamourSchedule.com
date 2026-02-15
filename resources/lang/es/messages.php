@@ -2869,4 +2869,10 @@ return array (
     'setup_reminder_missing_mollie' => 'Vincular tu cuenta de pago Mollie',
     'setup_reminder_missing_mollie_desc' => 'Esto permite a los clientes pagar en línea y tú recibes tu dinero automáticamente.',
 
+    'select_country' => 'Selecciona tu país',
+    'other_country' => 'Otro país',
+    'house_number' => 'Número',
+    'business_registration' => 'Registro mercantil',
+    'validation_country_required' => 'Por favor selecciona tu país',
+    'validation_reg_number_invalid' => 'El número de registro es demasiado corto',
 );

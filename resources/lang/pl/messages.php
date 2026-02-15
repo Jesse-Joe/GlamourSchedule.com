@@ -2869,4 +2869,10 @@ return array (
     'setup_reminder_missing_mollie' => 'Połącz konto płatnicze Mollie',
     'setup_reminder_missing_mollie_desc' => 'Umożliwia klientom płatności online, a Tobie automatyczne otrzymywanie pieniędzy.',
 
+    'select_country' => 'Wybierz swój kraj',
+    'other_country' => 'Inny kraj',
+    'house_number' => 'Numer',
+    'business_registration' => 'Rejestracja firmy',
+    'validation_country_required' => 'Proszę wybrać kraj',
+    'validation_reg_number_invalid' => 'Numer rejestracyjny jest za krótki',
 );

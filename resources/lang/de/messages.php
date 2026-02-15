@@ -2869,4 +2869,10 @@ return array (
     'setup_reminder_missing_mollie' => 'Mollie-Zahlungskonto verknüpfen',
     'setup_reminder_missing_mollie_desc' => 'Damit können Kunden online bezahlen und du erhältst automatisch dein Geld.',
 
+    'select_country' => 'Wählen Sie Ihr Land',
+    'other_country' => 'Anderes Land',
+    'house_number' => 'Hausnummer',
+    'business_registration' => 'Gewerbeanmeldung',
+    'validation_country_required' => 'Bitte wählen Sie Ihr Land',
+    'validation_reg_number_invalid' => 'Registrierungsnummer ist zu kurz',
 );
