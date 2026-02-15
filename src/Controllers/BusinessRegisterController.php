@@ -1073,6 +1073,10 @@ GlamourSchedule
                 'data' => $data,
                 'referralCode' => $referralCode,
                 'salesPartner' => $salesPartner,
+                'isSalesEarlyAdopter' => $isSalesEarlyAdopter,
+                'salesEarlyAdopterCount' => $salesEarlyAdopterCount,
+                'salesEarlyAdopterSpots' => 100 - $salesEarlyAdopterCount,
+                'regFee' => $isSalesEarlyAdopter ? 0.99 : 74.99,
                 'csrfToken' => $this->csrf()
             ]);
         }
