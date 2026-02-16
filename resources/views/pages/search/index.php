@@ -1811,7 +1811,7 @@ body .biz-card .biz-card-footer {
             </div>
             <h3><?= $translations['no_businesses_in_country'] ?? 'Momenteel nog geen bedrijven in uw land' ?></h3>
             <p><?= $translations['no_businesses_in_country_desc'] ?? 'Wees de eerste! Registreer uw salon en bereik nieuwe klanten.' ?></p>
-            <a href="/register?type=business" class="btn btn-primary">
+            <a href="/business/register" class="btn btn-primary">
                 <i class="fas fa-rocket"></i> <?= $translations['register_your_salon'] ?? 'Registreer uw salon' ?>
             </a>
         </div>
@@ -1909,7 +1909,11 @@ body .biz-card .biz-card-footer {
                                 <?php if (!empty($biz['distance'])): ?>
                                     <span class="biz-card-distance">
                                         <i class="fas fa-route"></i>
-                                        <?= $biz['distance'] ?> km
+                                        <?php if ($biz['distance'] < 1): ?>
+                                            <?= round($biz['distance'] * 1000) ?> m
+                                        <?php else: ?>
+                                            <?= $biz['distance'] ?> km
+                                        <?php endif; ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
