@@ -43,7 +43,7 @@ $charsLen = strlen($chars);
 /**
  * Generate a unique account code
  */
-function generateAccountCode(\PDO $db, string $chars, int $charsLen): string
+function generateAccountCode(Database $db, string $chars, int $charsLen): string
 {
     for ($attempt = 0; $attempt < 20; $attempt++) {
         $code = 'GS-';
@@ -52,8 +52,7 @@ function generateAccountCode(\PDO $db, string $chars, int $charsLen): string
         }
 
         // Check uniqueness
-        $stmt = $db->prepare("SELECT id FROM users WHERE account_code = ?");
-        $stmt->execute([$code]);
+        $stmt = $db->query("SELECT id FROM users WHERE account_code = ?", [$code]);
         if (!$stmt->fetch()) {
             return $code;
         }
@@ -75,8 +74,7 @@ foreach ($users as $user) {
     $code = generateAccountCode($db, $chars, $charsLen);
 
     if (!$dryRun) {
-        $stmt = $db->prepare("UPDATE users SET account_code = ? WHERE id = ? AND account_code IS NULL");
-        $stmt->execute([$code, $user['id']]);
+        $db->query("UPDATE users SET account_code = ? WHERE id = ? AND account_code IS NULL", [$code, $user['id']]);
     }
 
     $codesGenerated++;
@@ -106,8 +104,7 @@ echo "Found " . count($matches) . " pos_customers to link.\n";
 $linked = 0;
 foreach ($matches as $match) {
     if (!$dryRun) {
-        $stmt = $db->prepare("UPDATE pos_customers SET user_id = ?, account_code = ? WHERE id = ?");
-        $stmt->execute([$match['user_id'], $match['account_code'], $match['id']]);
+        $db->query("UPDATE pos_customers SET user_id = ?, account_code = ? WHERE id = ?", [$match['user_id'], $match['account_code'], $match['id']]);
     }
 
     $linked++;
