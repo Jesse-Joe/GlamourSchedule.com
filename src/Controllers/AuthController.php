@@ -257,11 +257,15 @@ class AuthController extends Controller
         $countryCode = $location['country_code'] ?? 'NL';
         $promo = $geoIP->getPromotionPriceWithCurrency($countryCode);
 
+        // Pre-fill email from query parameter (e.g. from POS email prompt)
+        $prefillEmail = filter_var($_GET['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: '';
+
         return $this->view('pages/auth/register', [
             'pageTitle' => $this->t('page_register'),
             'categories' => $categories,
             'promo' => $promo,
-            'showDualCurrency' => $promo['show_dual'] ?? false
+            'showDualCurrency' => $promo['show_dual'] ?? false,
+            'data' => ['email' => $prefillEmail]
         ]);
     }
 
@@ -444,6 +448,7 @@ class AuthController extends Controller
         // Complete registration
         $data = $_SESSION['pending_registration'];
         $uuid = $this->generateUuid();
+        $accountCode = $this->generateAccountCode();
 
         // Detect user's language from IP location
         $geoIP = new GeoIP($this->db);
@@ -457,14 +462,20 @@ class AuthController extends Controller
         }
 
         $this->db->query(
-            "INSERT INTO users (uuid, email, password_hash, first_name, last_name, phone,
+            "INSERT INTO users (uuid, account_code, email, password_hash, first_name, last_name, phone,
                                email_verified, email_verified_at, terms_accepted_at, terms_version, status, language)
-             VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW(), ?, 'active', ?)",
-            [$uuid, $data['email'], $data['password_hash'], $data['first_name'],
+             VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW(), NOW(), ?, 'active', ?)",
+            [$uuid, $accountCode, $data['email'], $data['password_hash'], $data['first_name'],
              $data['last_name'], $data['phone'], $data['terms_version'], $userLanguage]
         );
 
         $userId = $this->db->lastInsertId();
+
+        // Link existing pos_customers with the same email to this user
+        $this->db->query(
+            "UPDATE pos_customers SET user_id = ?, account_code = ? WHERE email = ? AND user_id IS NULL",
+            [$userId, $accountCode, $data['email']]
+        );
 
         // Regenerate session ID to prevent session fixation
         session_regenerate_id(true);
@@ -647,6 +658,32 @@ HTML;
         );
 
         return true;
+    }
+
+    /**
+     * Generate a unique account code in format GS-XXXXXX
+     * Uses unambiguous characters: 23456789ABCDEFGHJKMNPQRSTUVWXYZ
+     */
+    private function generateAccountCode(): string
+    {
+        $chars = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+        $charsLen = strlen($chars);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $code = 'GS-';
+            for ($i = 0; $i < 6; $i++) {
+                $code .= $chars[random_int(0, $charsLen - 1)];
+            }
+
+            // Check uniqueness
+            $stmt = $this->db->query("SELECT id FROM users WHERE account_code = ?", [$code]);
+            if (!$stmt->fetch()) {
+                return $code;
+            }
+        }
+
+        // Fallback: extremely unlikely to reach here
+        throw new \RuntimeException('Could not generate unique account code after 10 attempts');
     }
 
     private function generateUuid(): string

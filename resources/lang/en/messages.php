@@ -2419,7 +2419,7 @@ return [
     // POS SYSTEM - ADDITIONAL KEYS
     // ═══════════════════════════════════════════════════════════════════════
     'remove' => 'Remove',
-    'search_customer_placeholder' => 'Search customer by ID, name, email or phone...',
+    'search_customer_placeholder' => 'Search customer by code (GS-...), name, email or phone...',
     'email_optional' => 'Email (optional)',
     'phone_optional' => 'Phone (optional)',
     'no_specific_employee' => 'No specific employee',
@@ -3540,8 +3540,8 @@ return [
     'booking_fee_desc' => 'Only for the first 25 bookings per month. After that, every booking is free. No bookings = no costs.',
     'free_after_25' => 'Free after 25 bookings',
     'free_after_25_desc' => 'From the 26th booking in the same month, you pay no transaction fees. The counter resets every month.',
-    'no_hidden_costs' => 'No hidden costs',
-    'no_hidden_costs_desc' => 'No monthly subscriptions, no setup fees, no minimum bookings.',
+    'no_hidden_costs' => 'Transparent pricing',
+    'no_hidden_costs_desc' => 'One-time registration fee, no monthly subscriptions and no minimum bookings.',
     'automatic_payout' => 'Automatic payout',
     'automatic_payout_desc' => 'You receive your money automatically after the appointment to your linked bank account.',
     'transparent_pricing' => 'Transparent pricing',
@@ -3695,5 +3695,11 @@ return [
     'dashboard_fee_title' => 'Booking fees this month',
     'dashboard_fee_free_now' => 'All remaining bookings this month are FREE!',
     'dashboard_fee_remaining' => ':count more bookings at :fee, then free',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ACCOUNT CODE SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════
+    'settings_account_code' => 'Account Code',
+    'settings_account_code_hint' => 'Share this code with your salon for quick identification',
 
 ];

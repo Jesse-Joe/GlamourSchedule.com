@@ -2412,7 +2412,7 @@ return [
     // POS SYSTEM - ADDITIONAL KEYS
     // ═══════════════════════════════════════════════════════════════════════
     'remove' => 'Verwijderen',
-    'search_customer_placeholder' => 'Zoek klant op ID, naam, email of telefoon...',
+    'search_customer_placeholder' => 'Zoek klant op code (GS-...), naam, email of telefoon...',
     'email_optional' => 'E-mail (optioneel)',
     'phone_optional' => 'Telefoon (optioneel)',
     'no_specific_employee' => 'Geen specifieke medewerker',
@@ -3533,8 +3533,8 @@ return [
     'booking_fee_desc' => 'Alleen voor de eerste 25 boekingen per maand. Daarna is elke boeking gratis. Geen boekingen = geen kosten.',
     'free_after_25' => 'Na 25 boekingen gratis',
     'free_after_25_desc' => 'Vanaf de 26e boeking in dezelfde maand betaal je geen transactiekosten meer. De teller reset elke maand.',
-    'no_hidden_costs' => 'Geen verborgen kosten',
-    'no_hidden_costs_desc' => 'Geen maandelijkse abonnementen, geen opstartkosten, geen minimum aantal boekingen.',
+    'no_hidden_costs' => 'Transparante prijzen',
+    'no_hidden_costs_desc' => 'Eenmalige registratiebijdrage, geen maandelijkse abonnementen en geen minimum aantal boekingen.',
     'automatic_payout' => 'Automatische uitbetaling',
     'automatic_payout_desc' => 'Je ontvangt je geld automatisch na de afspraak op je gekoppelde bankrekening.',
     'transparent_pricing' => 'Transparante prijzen',
@@ -3688,5 +3688,11 @@ return [
     'dashboard_fee_title' => 'Boekingskosten deze maand',
     'dashboard_fee_free_now' => 'Alle overige boekingen deze maand zijn GRATIS!',
     'dashboard_fee_remaining' => 'Nog :count boekingen met :fee kosten, daarna gratis',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ACCOUNT CODE SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════
+    'settings_account_code' => 'Accountcode',
+    'settings_account_code_hint' => 'Deel deze code met je salon voor snelle identificatie',
 
 ];

@@ -3036,9 +3036,21 @@ HTML;
         $email = filter_var($input['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: null;
         $phone = trim($input['phone'] ?? '') ?: null;
         $notes = trim($input['notes'] ?? '') ?: null;
+        $userId = !empty($input['user_id']) ? (int)$input['user_id'] : null;
+        $accountCode = trim($input['account_code'] ?? '') ?: null;
 
         if (empty($name)) {
             return json_encode(['success' => false, 'error' => 'Naam is verplicht']);
+        }
+
+        // If user_id provided, verify user exists and get account_code
+        if ($userId) {
+            $stmt = $this->db->query("SELECT id, account_code FROM users WHERE id = ? AND status = 'active'", [$userId]);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (!$user) {
+                return json_encode(['success' => false, 'error' => 'Gebruiker niet gevonden']);
+            }
+            $accountCode = $user['account_code'];
         }
 
         // Check if customer already exists (by email or phone)
@@ -3053,25 +3065,27 @@ HTML;
         }
 
         $this->db->query(
-            "INSERT INTO pos_customers (business_id, name, email, phone, notes) VALUES (?, ?, ?, ?, ?)",
-            [$this->business['id'], $name, $email, $phone, $notes]
+            "INSERT INTO pos_customers (business_id, user_id, account_code, name, email, phone, notes) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [$this->business['id'], $userId, $accountCode, $name, $email, $phone, $notes]
         );
 
         $customerId = $this->db->lastInsertId();
 
         return json_encode([
             'success' => true,
+            'csrf_token' => $this->getCurrentCsrfToken(),
             'customer' => [
                 'id' => $customerId,
                 'name' => $name,
                 'email' => $email,
-                'phone' => $phone
+                'phone' => $phone,
+                'account_code' => $accountCode
             ]
         ]);
     }
 
     /**
-     * Zoek klanten (op naam, email, telefoon of klant-ID)
+     * Zoek klanten (op naam, email, telefoon, klant-ID of accountcode)
      */
     public function posSearchCustomers(): string
     {
@@ -3084,11 +3098,42 @@ HTML;
         }
 
         $likeQuery = "%$query%";
+        $isAccountCode = preg_match('/^GS-[23456789A-HJ-NP-Z]{0,6}$/i', strtoupper($query));
 
-        // Search pos_customers
+        // If query looks like an account code, prioritize account_code search
+        if ($isAccountCode) {
+            $upperQuery = strtoupper($query);
+
+            // First: search pos_customers by account_code
+            $stmt = $this->db->query(
+                "SELECT id, name, email, phone, account_code, total_appointments, 'pos' as source
+                 FROM pos_customers
+                 WHERE business_id = ? AND account_code LIKE ?
+                 ORDER BY CASE WHEN account_code = ? THEN 0 ELSE 1 END, name LIMIT 10",
+                [$this->business['id'], $upperQuery . '%', $upperQuery]
+            );
+            $posCustomers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Also search users table for matching account_code not yet in this business's pos_customers
+            $stmt = $this->db->query(
+                "SELECT u.id as user_id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.phone, u.account_code,
+                        0 as total_appointments, 'user' as source
+                 FROM users u
+                 WHERE u.account_code LIKE ? AND u.status = 'active'
+                   AND u.id NOT IN (SELECT user_id FROM pos_customers WHERE business_id = ? AND user_id IS NOT NULL)
+                 LIMIT 5",
+                [$upperQuery . '%', $this->business['id']]
+            );
+            $userResults = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $allResults = array_merge($posCustomers, $userResults);
+            return json_encode(['customers' => array_slice($allResults, 0, 15)]);
+        }
+
+        // Search pos_customers by numeric ID, name, email, phone, or account_code
         if (is_numeric($query)) {
             $stmt = $this->db->query(
-                "SELECT id, name, email, phone, total_appointments, 'pos' as source
+                "SELECT id, name, email, phone, account_code, total_appointments, 'pos' as source
                  FROM pos_customers
                  WHERE business_id = ? AND (id = ? OR name LIKE ? OR email LIKE ? OR phone LIKE ?)
                  ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, name LIMIT 10",
@@ -3099,11 +3144,11 @@ HTML;
                 return json_encode(['customers' => []]);
             }
             $stmt = $this->db->query(
-                "SELECT id, name, email, phone, total_appointments, 'pos' as source
+                "SELECT id, name, email, phone, account_code, total_appointments, 'pos' as source
                  FROM pos_customers
-                 WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)
+                 WHERE business_id = ? AND (name LIKE ? OR email LIKE ? OR phone LIKE ? OR account_code LIKE ?)
                  ORDER BY name LIMIT 10",
-                [$this->business['id'], $likeQuery, $likeQuery, $likeQuery]
+                [$this->business['id'], $likeQuery, $likeQuery, $likeQuery, $likeQuery]
             );
         }
         $posCustomers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -3144,6 +3189,79 @@ HTML;
 
         if (!$service) {
             return json_encode(['success' => false, 'error' => 'Dienst niet gevonden']);
+        }
+
+        // Validate opening hours
+        $dayOfWeek = date('w', strtotime($appointmentDate)); // 0=Sunday, 6=Saturday
+        $stmt = $this->db->query(
+            "SELECT open_time, close_time, is_closed FROM business_hours WHERE business_id = ? AND day_of_week = ?",
+            [$this->business['id'], $dayOfWeek]
+        );
+        $hours = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if ($hours && $hours['is_closed']) {
+            return json_encode(['success' => false, 'csrf_token' => $this->getCurrentCsrfToken(), 'error' => 'De salon is gesloten op deze dag']);
+        }
+
+        if ($hours && $hours['open_time'] && $hours['close_time']) {
+            $appointmentStart = strtotime($appointmentTime);
+            $appointmentEnd = $appointmentStart + ((int)$service['duration_minutes'] * 60);
+            $openTime = strtotime($hours['open_time']);
+            $closeTime = strtotime($hours['close_time']);
+
+            if ($appointmentStart < $openTime || $appointmentEnd > $closeTime) {
+                $open = date('H:i', $openTime);
+                $close = date('H:i', $closeTime);
+                return json_encode(['success' => false, 'csrf_token' => $this->getCurrentCsrfToken(), 'error' => "Tijd valt buiten openingstijden ({$open} - {$close})"]);
+            }
+        }
+
+        // Check for double bookings (regular bookings + pos bookings)
+        $duration = (int)$service['duration_minutes'];
+        $employeeCheck = !empty($input['employee_id']) ? (int)$input['employee_id'] : null;
+
+        // Check regular bookings
+        if ($employeeCheck) {
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration FROM bookings
+                 WHERE business_id = ? AND appointment_date = ? AND employee_id = ? AND status NOT IN ('cancelled', 'rejected')",
+                [$this->business['id'], $appointmentDate, $employeeCheck]
+            );
+        } else {
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration FROM bookings
+                 WHERE business_id = ? AND appointment_date = ? AND status NOT IN ('cancelled', 'rejected')",
+                [$this->business['id'], $appointmentDate]
+            );
+        }
+        $bookedSlots = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Check POS bookings
+        if ($employeeCheck) {
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration FROM pos_bookings
+                 WHERE business_id = ? AND appointment_date = ? AND employee_id = ? AND booking_status NOT IN ('cancelled')",
+                [$this->business['id'], $appointmentDate, $employeeCheck]
+            );
+        } else {
+            $stmt = $this->db->query(
+                "SELECT appointment_time as time, duration_minutes as duration FROM pos_bookings
+                 WHERE business_id = ? AND appointment_date = ? AND booking_status NOT IN ('cancelled')",
+                [$this->business['id'], $appointmentDate]
+            );
+        }
+        $posSlots = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $allSlots = array_merge($bookedSlots, $posSlots);
+
+        $requestStart = strtotime($appointmentTime);
+        $requestEnd = $requestStart + ($duration * 60);
+
+        foreach ($allSlots as $slot) {
+            $slotStart = strtotime($slot['time']);
+            $slotEnd = $slotStart + ((int)$slot['duration'] * 60);
+            if ($requestStart < $slotEnd && $slotStart < $requestEnd) {
+                return json_encode(['success' => false, 'csrf_token' => $this->getCurrentCsrfToken(), 'error' => 'Dit tijdslot is al bezet. Kies een ander tijdstip.']);
+            }
         }
 
         // Calculate prices
@@ -3197,6 +3315,7 @@ HTML;
 
         return json_encode([
             'success' => true,
+            'csrf_token' => $this->getCurrentCsrfToken(),
             'booking' => [
                 'id' => $bookingId,
                 'uuid' => $uuid,
@@ -3260,6 +3379,7 @@ HTML;
 
         return json_encode([
             'success' => true,
+            'csrf_token' => $this->getCurrentCsrfToken(),
             'message' => 'Betalingslink verzonden naar ' . $booking['customer_email']
         ]);
     }
@@ -3280,6 +3400,22 @@ HTML;
         $cashNote = $booking['payment_method'] === 'cash'
             ? "<p style='color:#cccccc;font-size:14px;margin-top:15px;'><strong>Let op:</strong> Je betaalt €{$paymentAmount} online (reserveringskosten). Het resterende bedrag van €" . number_format($booking['total_price'] - $booking['service_fee'], 2, ',', '.') . " betaal je contant bij je afspraak.</p>"
             : "";
+
+        // Check if customer has an account - if not, add prompt to create one
+        $accountPrompt = '';
+        if (!empty($booking['customer_email'])) {
+            $stmt = $this->db->query("SELECT id FROM users WHERE email = ?", [$booking['customer_email']]);
+            if (!$stmt->fetch()) {
+                $registerUrl = 'https://glamourschedule.nl/register?email=' . urlencode($booking['customer_email']);
+                $accountPrompt = <<<PROMPT
+                            <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:20px;margin:25px 0;text-align:center;">
+                                <p style="color:#ffffff;font-size:15px;margin:0 0 10px;"><strong>Nog geen GlamourSchedule account?</strong></p>
+                                <p style="color:#999;font-size:13px;margin:0 0 15px;">Maak een gratis account aan en ontvang je persoonlijke klantcode voor snelle identificatie bij salons.</p>
+                                <a href="{$registerUrl}" style="display:inline-block;background:#ffffff;color:#000000;padding:12px 30px;border-radius:25px;text-decoration:none;font-weight:600;font-size:14px;">Gratis account aanmaken</a>
+                            </div>
+PROMPT;
+            }
+        }
 
         $subject = "Bevestig je afspraak bij {$booking['company_name']}";
         $htmlBody = <<<HTML
@@ -3322,6 +3458,8 @@ HTML;
                             <p style="color:#999;font-size:13px;text-align:center;">
                                 Deze link is 48 uur geldig.
                             </p>
+
+                            {$accountPrompt}
                         </td>
                     </tr>
                     <tr>
@@ -3425,7 +3563,7 @@ HTML;
             [$status, $uuid, $this->business['id']]
         );
 
-        return json_encode(['success' => true]);
+        return json_encode(['success' => true, 'csrf_token' => $this->getCurrentCsrfToken()]);
     }
 
     /**
@@ -3523,7 +3661,7 @@ HTML;
         // Send cancellation email to customer
         $this->sendPosCancellationEmail($booking);
 
-        $response = ['success' => true];
+        $response = ['success' => true, 'csrf_token' => $this->getCurrentCsrfToken()];
         if ($refundSuccess) {
             $response['message'] = 'Afspraak geannuleerd en betaling wordt teruggestort.';
         } elseif ($refundError) {

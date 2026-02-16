@@ -89,6 +89,9 @@ class WebhookController extends Controller
 
             // Stuur bevestigingsemails na succesvolle betaling
             $this->sendBookingEmails($bookingUuid);
+
+            // Automatisch klant toevoegen aan klantenbestand van de salon
+            $this->addCustomerToBusinessDatabase($bookingUuid);
         } elseif ($payment->isFailed()) {
             $this->db->query(
                 "UPDATE bookings SET payment_status = 'pending' WHERE uuid = ?",
@@ -494,6 +497,9 @@ HTML;
         }
 
         error_log("Stripe webhook: Payment confirmed for booking $bookingUuid");
+
+        // Automatisch klant toevoegen aan klantenbestand van de salon
+        $this->addCustomerToBusinessDatabase($bookingUuid);
     }
 
     /**
@@ -509,6 +515,97 @@ HTML;
                 [$bookingUuid]
             );
             error_log("Stripe webhook: Payment expired for booking $bookingUuid");
+        }
+    }
+
+    /**
+     * Automatisch klant toevoegen aan het klantenbestand (pos_customers) van de salon
+     */
+    private function addCustomerToBusinessDatabase(string $bookingUuid): void
+    {
+        try {
+            // Haal booking gegevens op
+            $stmt = $this->db->query(
+                "SELECT business_id, guest_name, guest_email, guest_phone FROM bookings WHERE uuid = ?",
+                [$bookingUuid]
+            );
+            $booking = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$booking || empty($booking['guest_name'])) {
+                return;
+            }
+
+            $businessId = (int)$booking['business_id'];
+            $name = $booking['guest_name'];
+            $email = $booking['guest_email'] ?: null;
+            $phone = $booking['guest_phone'] ?: null;
+
+            // Look up user by email to get user_id and account_code
+            $userId = null;
+            $accountCode = null;
+            if ($email) {
+                $stmt = $this->db->query(
+                    "SELECT id, account_code FROM users WHERE email = ? AND status = 'active'",
+                    [$email]
+                );
+                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($user) {
+                    $userId = (int)$user['id'];
+                    $accountCode = $user['account_code'];
+                }
+            }
+
+            // Check of klant al bestaat (op email)
+            if ($email) {
+                $stmt = $this->db->query(
+                    "SELECT id, user_id FROM pos_customers WHERE business_id = ? AND email = ?",
+                    [$businessId, $email]
+                );
+                $existing = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                if ($existing) {
+                    // Update bestaande klant stats + link user if not yet linked
+                    if ($userId && empty($existing['user_id'])) {
+                        $this->db->query(
+                            "UPDATE pos_customers SET total_appointments = total_appointments + 1, last_appointment_at = NOW(), user_id = ?, account_code = ? WHERE id = ?",
+                            [$userId, $accountCode, $existing['id']]
+                        );
+                    } else {
+                        $this->db->query(
+                            "UPDATE pos_customers SET total_appointments = total_appointments + 1, last_appointment_at = NOW() WHERE id = ?",
+                            [$existing['id']]
+                        );
+                    }
+                    return;
+                }
+            }
+
+            // Check op telefoonnummer als er geen email match is
+            if ($phone) {
+                $stmt = $this->db->query(
+                    "SELECT id FROM pos_customers WHERE business_id = ? AND phone = ?",
+                    [$businessId, $phone]
+                );
+                $existing = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                if ($existing) {
+                    $this->db->query(
+                        "UPDATE pos_customers SET total_appointments = total_appointments + 1, last_appointment_at = NOW() WHERE id = ?",
+                        [$existing['id']]
+                    );
+                    return;
+                }
+            }
+
+            // Nieuwe klant toevoegen
+            $this->db->query(
+                "INSERT INTO pos_customers (business_id, user_id, account_code, name, email, phone, total_appointments, last_appointment_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())",
+                [$businessId, $userId, $accountCode, $name, $email, $phone]
+            );
+
+            error_log("Auto-added customer '{$name}' to business {$businessId} customer database");
+        } catch (\Exception $e) {
+            error_log("Failed to auto-add customer to business database: " . $e->getMessage());
         }
     }
 }

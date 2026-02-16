@@ -1114,7 +1114,14 @@ $monthNames = [
 </div>
 
 <script>
-const csrfToken = '<?= $csrfToken ?>';
+let csrfToken = '<?= $csrfToken ?>';
+
+// Update CSRF token from API responses to prevent "Ongeldige sessie" errors
+function updateCsrfToken(data) {
+    if (data && data.csrf_token) {
+        csrfToken = data.csrf_token;
+    }
+}
 const T = <?= json_encode([
     'visits' => $__('visits'),
     'add_new_customer' => '<i class="fas fa-plus"></i> ' . $__('add_new_customer'),
@@ -1163,7 +1170,9 @@ document.getElementById('customerSearch').addEventListener('input', function() {
     clearTimeout(searchTimeout);
     const query = this.value.trim();
 
-    if (query.length < 2) {
+    // Allow shorter search for account codes (GS- prefix)
+    const minLength = query.toUpperCase().startsWith('GS-') ? 3 : 2;
+    if (query.length < minLength) {
         document.getElementById('customerResults').classList.remove('show');
         return;
     }
@@ -1187,10 +1196,12 @@ function searchCustomers(query) {
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'name';
                 nameDiv.textContent = c.name || '';
-                const idSpan = document.createElement('span');
-                idSpan.style.cssText = 'color:var(--text-light);font-size:0.75rem;font-weight:normal';
-                idSpan.textContent = ' #' + c.id;
-                nameDiv.appendChild(idSpan);
+                if (c.account_code) {
+                    const codeSpan = document.createElement('span');
+                    codeSpan.style.cssText = 'color:#999;font-size:0.75rem;font-weight:normal;font-family:monospace';
+                    codeSpan.textContent = ' ' + c.account_code;
+                    nameDiv.appendChild(codeSpan);
+                }
 
                 const detailsDiv = document.createElement('div');
                 detailsDiv.className = 'details';
@@ -1200,14 +1211,27 @@ function searchCustomers(query) {
                 infoDiv.appendChild(detailsDiv);
                 div.appendChild(infoDiv);
 
-                if (c.total_appointments > 0) {
+                if (c.source === 'user') {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.style.cssText = 'background:#4ade80;color:#000';
+                    badge.textContent = 'GS';
+                    div.appendChild(badge);
+                } else if (c.total_appointments > 0) {
                     const badge = document.createElement('span');
                     badge.className = 'badge';
                     badge.textContent = c.total_appointments + ' ' + T.visits;
                     div.appendChild(badge);
                 }
 
-                div.onclick = () => selectCustomer(c);
+                div.onclick = () => {
+                    if (c.source === 'user') {
+                        // Auto-create pos_customer from user data
+                        createPosCustomerFromUser(c);
+                    } else {
+                        selectCustomer(c);
+                    }
+                };
                 results.appendChild(div);
             });
 
@@ -1227,17 +1251,48 @@ function searchCustomers(query) {
         });
 }
 
+function createPosCustomerFromUser(user) {
+    fetch('/business/pos/customer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+            csrf_token: csrfToken,
+            name: user.name,
+            email: user.email || '',
+            phone: user.phone || '',
+            user_id: user.user_id,
+            account_code: user.account_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        updateCsrfToken(data);
+        if (data.success) {
+            selectCustomer(data.customer);
+        } else {
+            alert(data.error || T.could_not_add_customer);
+        }
+    })
+    .catch(err => {
+        console.error('Create customer from user error:', err);
+        alert(T.error_occurred);
+    });
+}
+
 function selectCustomer(customer) {
     selectedCustomer = customer;
     document.getElementById('selectedCustomerId').value = customer.id;
     document.getElementById('customerAvatar').textContent = (customer.name || 'G').charAt(0).toUpperCase();
-    // Safe way to set customer name with ID span
+    // Safe way to set customer name with account code or ID
     const nameEl = document.getElementById('customerName');
     nameEl.textContent = '';
     nameEl.appendChild(document.createTextNode(customer.name || T.guest));
     const idSpan = document.createElement('span');
     idSpan.style.cssText = 'color:var(--text-light);font-size:0.8rem;font-weight:normal';
-    idSpan.textContent = ' #' + customer.id;
+    idSpan.textContent = customer.account_code ? ' ' + customer.account_code : ' #' + customer.id;
     nameEl.appendChild(idSpan);
     document.getElementById('customerContact').textContent = [customer.email, customer.phone].filter(Boolean).join(' • ') || T.no_contact_details;
 
@@ -1363,6 +1418,7 @@ function createBooking() {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-plus-circle"></i> ' + T.create_appointment_send_link;
 
@@ -1443,6 +1499,7 @@ function sendPaymentLinkManual() {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         if (data.success) {
             document.getElementById('successSubtitle').textContent = data.message;
         } else {
@@ -1500,6 +1557,7 @@ function addNewCustomer() {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         if (data.success) {
             selectCustomer(data.customer);
             closeAddCustomerModal();
@@ -1527,6 +1585,7 @@ function resendPaymentLink(uuid) {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         alert(data.success ? data.message : (data.error || T.something_went_wrong));
     })
     .catch(err => {
@@ -1548,6 +1607,7 @@ function markCompleted(uuid) {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         if (data.success) location.reload();
         else alert(data.error || T.something_went_wrong);
     })
@@ -1570,6 +1630,7 @@ function cancelBooking(uuid) {
     })
     .then(r => r.json())
     .then(data => {
+        updateCsrfToken(data);
         if (data.success) location.reload();
         else alert(data.error || T.something_went_wrong);
     })

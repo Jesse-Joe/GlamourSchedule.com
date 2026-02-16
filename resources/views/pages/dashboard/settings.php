@@ -365,6 +365,19 @@
             </div>
         </div>
 
+        <?php if (!empty($user['account_code'])): ?>
+        <div class="form-group" style="margin-bottom:1.25rem">
+            <label class="form-label"><?= $translations['settings_account_code'] ?? 'Account Code' ?></label>
+            <div style="display:flex;gap:0.5rem;align-items:center">
+                <input type="text" class="form-control" value="<?= htmlspecialchars($user['account_code']) ?>" readonly style="opacity:0.85;font-weight:600;letter-spacing:1px;font-family:monospace;font-size:1.1rem">
+                <button type="button" onclick="copyAccountCode(this)" style="background:var(--primary);color:white;border:none;padding:0.6rem 1rem;border-radius:10px;cursor:pointer;white-space:nowrap;font-size:0.85rem">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <small style="color:var(--text-light);font-size:0.8rem"><?= $translations['settings_account_code_hint'] ?? 'Share this code with your salon for quick identification' ?></small>
+        </div>
+        <?php endif; ?>
+
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="hidden" name="action" value="update_profile">
@@ -634,6 +647,15 @@ const jsTranslations = {
     pushDisabledToast: '<?= addslashes($translations['settings_push_disabled_toast'] ?? 'Push notifications disabled') ?>',
     pushSomethingWrong: '<?= addslashes($translations['settings_push_something_wrong'] ?? 'Something went wrong') ?>'
 };
+
+function copyAccountCode(btn) {
+    const input = btn.parentElement.querySelector('input');
+    navigator.clipboard.writeText(input.value).then(() => {
+        const icon = btn.querySelector('i');
+        icon.className = 'fas fa-check';
+        setTimeout(() => { icon.className = 'fas fa-copy'; }, 2000);
+    });
+}
 
 function toggleDeleteConfirm() {
     const box = document.getElementById('deleteConfirmBox');
