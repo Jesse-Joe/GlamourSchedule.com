@@ -103,7 +103,7 @@ if (!isset($promo)) {
                 </a>
             </div>
             <div class="search-section-title"><?= $translations['pages'] ?? 'Pages' ?></div>
-            <a href="/register?type=business" class="search-quick-link" onclick="closeGlobalSearch()">
+            <a href="/business/register" class="search-quick-link" onclick="closeGlobalSearch()">
                 <i class="fas fa-rocket"></i>
                 <span><?= $translations['register_salon'] ?? 'Register Salon' ?></span>
             </a>
@@ -192,7 +192,7 @@ if (!isset($promo)) {
             <div class="sidebar-section">
                 <div class="sidebar-section-title"><?= $translations['for_business'] ?? 'For Business' ?></div>
             </div>
-            <a href="/register?type=business" class="sidebar-link">
+            <a href="/business/register" class="sidebar-link">
                 <i class="fas fa-rocket"></i> <?= $translations['register_salon'] ?? 'Register Salon' ?>
             </a>
             <a href="/sales/register" class="sidebar-link">
@@ -379,17 +379,22 @@ if (!isset($promo)) {
 
         <ul class="nav-links-prestige" id="navMenu">
             <li><a href="javascript:void(0)" class="nav-search-btn" onclick="openGlobalSearch()" title="<?= $translations['search'] ?? 'Search' ?>"><i class="fas fa-search"></i> <?= $translations['search'] ?? 'Search' ?></a></li>
-            <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
-            <li><a href="/sales/register"><?= $translations['become_partner'] ?? 'Become Partner' ?></a></li>
-            <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
-            <li><a href="/pricing"><?= $translations['pricing'] ?? 'Pricing' ?></a></li>
-            <li><a href="/marketing"><?= $translations['marketing'] ?? 'Marketing' ?></a></li>
-            <li><a href="/about"><?= $translations['features'] ?? 'Features' ?></a></li>
-            <li><a href="/contact"><?= $translations['contact'] ?? 'Contact' ?></a></li>
+            <li><a href="/pricing"><span><?= $translations['pricing'] ?? 'Pricing' ?></span></a></li>
+            <li><a href="/about"><span><?= $translations['features'] ?? 'Features' ?></span></a></li>
+            <li><a href="/contact"><span><?= $translations['contact'] ?? 'Contact' ?></span></a></li>
+            <li class="nav-dropdown">
+                <a href="javascript:void(0)" class="nav-dropdown-toggle"><span><?= $translations['for_business'] ?? 'For Business' ?></span> <i class="fas fa-chevron-down"></i></a>
+                <div class="nav-dropdown-menu">
+                    <a href="/business/register"><i class="fas fa-store"></i> <?= $translations['register_salon'] ?? 'Register Salon' ?></a>
+                    <a href="/sales/register"><i class="fas fa-handshake"></i> <?= $translations['become_partner'] ?? 'Become Partner' ?></a>
+                    <a href="/sales/login"><i class="fas fa-chart-line"></i> <?= $translations['sales_portal'] ?? 'Sales Portal' ?></a>
+                    <a href="/marketing"><i class="fas fa-bullhorn"></i> <?= $translations['marketing'] ?? 'Marketing' ?></a>
+                </div>
+            </li>
 
             <?php if (isset($user)): ?>
-                <li><a href="/dashboard"><?= $translations['dashboard'] ?? 'Dashboard' ?></a></li>
-                <li><a href="/dashboard/bookings"><?= $translations['my_bookings'] ?? 'My Bookings' ?></a></li>
+                <li><a href="/dashboard"><span><?= $translations['dashboard'] ?? 'Dashboard' ?></span></a></li>
+                <li><a href="/dashboard/bookings"><span><?= $translations['my_bookings'] ?? 'My Bookings' ?></span></a></li>
             <?php endif; ?>
         </ul>
 
@@ -501,7 +506,7 @@ if (!isset($promo)) {
                 <h4><?= $translations['platform'] ?? 'Platform' ?></h4>
                 <ul>
                     <li><a href="/search"><?= $translations['search'] ?? 'Search' ?></a></li>
-                    <li><a href="/register?type=business"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
+                    <li><a href="/business/register"><?= $translations['register_salon'] ?? 'Register Salon' ?></a></li>
                     <li><a href="/sales/login"><?= $translations['sales_portal'] ?? 'Sales Portal' ?></a></li>
                 </ul>
             </div>
@@ -681,7 +686,7 @@ if (!isset($promo)) {
             // Pages (static matches)
             const pages = [
                 { url: '/search', name: '<?= addslashes($translations['all_salons'] ?? 'All Salons') ?>', icon: 'fa-store', keywords: ['salon', 'zoek', 'vind', 'all', 'search', 'browse'] },
-                { url: '/register?type=business', name: '<?= addslashes($translations['register_salon'] ?? 'Register Salon') ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register', 'nieuw'] },
+                { url: '/business/register', name: '<?= addslashes($translations['register_salon'] ?? 'Register Salon') ?>', icon: 'fa-rocket', keywords: ['aanmeld', 'registr', 'start', 'salon', 'register', 'nieuw'] },
                 { url: '/sales/register', name: '<?= addslashes($translations['become_partner'] ?? 'Become Partner') ?>', icon: 'fa-handshake', keywords: ['partner', 'sales', 'verkoop', 'samenwerk'] },
                 { url: '/sales/login', name: '<?= addslashes($translations['sales_portal'] ?? 'Sales Portal') ?>', icon: 'fa-briefcase', keywords: ['sales', 'portal', 'verkoop', 'agent'] },
                 { url: '/marketing', name: '<?= addslashes($translations['marketing_services'] ?? 'Marketing Services') ?>', icon: 'fa-bullhorn', keywords: ['market', 'reclame', 'promot', 'advert', 'social'] },
@@ -837,7 +842,7 @@ if (!isset($promo)) {
                     <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_3'] ?? 'Your own business page' ?></li>
                     <li><i class="fas fa-check"></i> <?= $translations['early_bird_feature_4'] ?? 'No monthly costs' ?></li>
                 </ul>
-                <a href="/register?type=business" class="early-bird-btn">
+                <a href="/business/register" class="early-bird-btn">
                     <i class="fas fa-rocket"></i> <?= $translations['register_now'] ?? 'Register Now' ?>
                 </a>
                 <p class="early-bird-note"><?= str_replace(['€99.99', '€99,99'], $promo['local_original'] ?? '€99,99', $translations['early_bird_note'] ?? 'After this €99.99 for new businesses') ?></p>
@@ -864,6 +869,11 @@ if (!isset($promo)) {
     .early-bird-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 1rem; background: #fff; color: #000; border-radius: 50px; font-size: 1.1rem; font-weight: 700; text-decoration: none; transition: all 0.3s; }
     .early-bird-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
     .early-bird-note { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 1rem 0 0; }
+    @media (max-width: 480px) {
+        .early-bird-modal { padding: 1.5rem; }
+        .early-bird-price .amount { font-size: 2.25rem; }
+        .early-bird-content h2 { font-size: 1.25rem; }
+    }
     </style>
 
     <script>
