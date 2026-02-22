@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'ทางเลือก',
     'apply_filters' => 'ใช้ตัวกรอง',
     'find_salons_nearby' => 'ค้นหาร้านใกล้คุณ',
-    'enable_location_desc' => 'เปิดใช้ตำแหน่งเพื่อดูร้านที่ใกล้ที่สุดพร้อมระยะทางเป็นกิโลเมตร',
+    'enable_location_desc' => 'เปิดใช้ตำแหน่งเพื่อดูร้านที่ใกล้ที่สุดพร้อมระยะทางเป็น:unit',
     'enable_location' => 'เปิดใช้ตำแหน่ง',
     'no_salons_found' => 'ไม่พบร้าน',
     'try_other_search' => 'ลองค้นหาหรือสถานที่อื่น',

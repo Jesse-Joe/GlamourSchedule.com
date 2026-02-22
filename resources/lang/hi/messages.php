@@ -593,7 +593,7 @@ return [
     'group_alternative' => 'वैकल्पिक',
     'apply_filters' => 'फ़िल्टर लागू करें',
     'find_salons_nearby' => 'अपने पास सैलून खोजें',
-    'enable_location_desc' => 'किमी में दूरी के साथ निकटतम सैलून देखने के लिए स्थान सक्षम करें',
+    'enable_location_desc' => ':unit में दूरी के साथ निकटतम सैलून देखने के लिए स्थान सक्षम करें',
     'enable_location' => 'स्थान सक्षम करें',
     'no_salons_found' => 'कोई सैलून नहीं मिला',
     'try_other_search' => 'कोई अलग खोज या स्थान आज़माएं',

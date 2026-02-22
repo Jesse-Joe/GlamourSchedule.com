@@ -474,7 +474,7 @@ return array (
   'group_alternative' => 'Alternative',
   'apply_filters' => 'Apply filters',
   'find_salons_nearby' => 'Find salons near you',
-  'enable_location_desc' => 'Enable location to see nearest salons with distance in km',
+  'enable_location_desc' => 'Enable location to see nearest salons with distance in :unit',
   'enable_location' => 'Enable location',
   'no_salons_found' => 'No salons found',
   'try_other_search' => 'Try a different search or location',

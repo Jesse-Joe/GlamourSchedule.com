@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatīvais',
   'apply_filters' => 'Piemērot filtrus',
   'find_salons_nearby' => 'Atrodiet salonus savā tuvumā',
-  'enable_location_desc' => 'Iespējojiet atrašanās vietu, lai redzētu tuvākos salonus ar attālumu km',
+  'enable_location_desc' => 'Iespējojiet atrašanās vietu, lai redzētu tuvākos salonus ar attālumu :unit',
   'enable_location' => 'Iespējot atrašanās vietu',
   'no_salons_found' => 'Nav atrasti saloni',
   'try_other_search' => 'Izmēģiniet citu meklēšanu vai atrašanās vietu',

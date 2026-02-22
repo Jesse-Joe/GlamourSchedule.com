@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatibo',
   'apply_filters' => 'Ilapat ang mga filter',
   'find_salons_nearby' => 'Maghanap ng mga salon malapit sa iyo',
-  'enable_location_desc' => 'I-enable ang lokasyon para makita ang pinakamalapit na mga salon na may distansya sa km',
+  'enable_location_desc' => 'I-enable ang lokasyon para makita ang pinakamalapit na mga salon na may distansya sa :unit',
   'enable_location' => 'I-enable ang lokasyon',
   'no_salons_found' => 'Walang nahanap na salon',
   'try_other_search' => 'Subukan ang ibang paghahanap o lokasyon',

@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternativ',
     'apply_filters' => 'Szurok alkalmazasa',
     'find_salons_nearby' => 'Keress szalonokat a kozeledben',
-    'enable_location_desc' => 'Engedelyezd a helymeghatározast a legkozelebbi szalonok km-ben megadott tavolsaganak megtekintésehez',
+    'enable_location_desc' => 'Engedelyezd a helymeghatározast a legkozelebbi szalonok :unit-ben megadott tavolsaganak megtekintésehez',
     'enable_location' => 'Helymeghatározas engedelyezese',
     'no_salons_found' => 'Nem talalhato szalon',
     'try_other_search' => 'Probalj mas keresest vagy helyszint',

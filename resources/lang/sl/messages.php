@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternativno',
     'apply_filters' => 'Uporabi filtre',
     'find_salons_nearby' => 'Poiscite salone v blizini',
-    'enable_location_desc' => 'Omogocite lokacijo za ogled najblizjih salonov z razdaljo v km',
+    'enable_location_desc' => 'Omogocite lokacijo za ogled najblizjih salonov z razdaljo v :unit',
     'enable_location' => 'Omogoci lokacijo',
     'no_salons_found' => 'Ni najdenih salonov',
     'try_other_search' => 'Poskusite z drugim iskanjem ali lokacijo',

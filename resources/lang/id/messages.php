@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatif',
   'apply_filters' => 'Terapkan filter',
   'find_salons_nearby' => 'Temukan salon di dekat Anda',
-  'enable_location_desc' => 'Aktifkan lokasi untuk melihat salon terdekat dengan jarak dalam km',
+  'enable_location_desc' => 'Aktifkan lokasi untuk melihat salon terdekat dengan jarak dalam :unit',
   'enable_location' => 'Aktifkan lokasi',
   'no_salons_found' => 'Tidak ada salon ditemukan',
   'try_other_search' => 'Coba pencarian atau lokasi yang berbeda',

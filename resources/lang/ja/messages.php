@@ -472,7 +472,7 @@ return array (
   'group_alternative' => 'オルタナティブ',
   'apply_filters' => 'フィルターを適用',
   'find_salons_nearby' => 'お近くのサロンを探す',
-  'enable_location_desc' => '位置情報を有効にして、距離（km）で最寄りのサロンを表示',
+  'enable_location_desc' => '位置情報を有効にして、距離（:unit）で最寄りのサロンを表示',
   'enable_location' => '位置情報を有効にする',
   'no_salons_found' => 'サロンが見つかりません',
   'try_other_search' => '別の検索条件や場所をお試しください',

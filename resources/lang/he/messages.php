@@ -590,7 +590,7 @@ return [
     'group_alternative' => 'אלטרנטיבי',
     'apply_filters' => 'החלת סינון',
     'find_salons_nearby' => 'מצאו מכונים בקרבתכם',
-    'enable_location_desc' => 'אפשרו מיקום כדי לראות מכונים קרובים עם מרחק בק"מ',
+    'enable_location_desc' => 'אפשרו מיקום כדי לראות מכונים קרובים עם מרחק ב:unit',
     'enable_location' => 'אפשרו מיקום',
     'no_salons_found' => 'לא נמצאו מכונים',
     'try_other_search' => 'נסו חיפוש או מיקום אחר',

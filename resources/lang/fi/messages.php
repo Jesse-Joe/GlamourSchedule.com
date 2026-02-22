@@ -593,7 +593,7 @@ return [
     'group_alternative' => 'Vaihtoehtoinen',
     'apply_filters' => 'Käytä suodattimia',
     'find_salons_nearby' => 'Löydä hoitolat läheltäsi',
-    'enable_location_desc' => 'Ota sijainti käyttöön nähdäksesi lähimmät hoitolat etäisyyksineen',
+    'enable_location_desc' => 'Ota sijainti käyttöön nähdäksesi lähimmät hoitolat etäisyyksineen (:unit)',
     'enable_location' => 'Ota sijainti käyttöön',
     'no_salons_found' => 'Hoitoloita ei löytynyt',
     'try_other_search' => 'Kokeile eri hakusanoja tai sijaintia',

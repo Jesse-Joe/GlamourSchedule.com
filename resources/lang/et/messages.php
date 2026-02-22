@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternatiivne',
     'apply_filters' => 'Rakenda filtrid',
     'find_salons_nearby' => 'Leia salongid sinu lähedal',
-    'enable_location_desc' => 'Luba asukoht, et näha lähimaid salonge kaugusega kilomeetrites',
+    'enable_location_desc' => 'Luba asukoht, et näha lähimaid salonge kaugusega :unit',
     'enable_location' => 'Luba asukoht',
     'no_salons_found' => 'Salonge ei leitud',
     'try_other_search' => 'Proovi teist otsingut või asukohta',

@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatief',
   'apply_filters' => 'Pas filters toe',
   'find_salons_nearby' => 'Vind salonne naby jou',
-  'enable_location_desc' => 'Aktiveer ligging om naaste salonne met afstand in km te sien',
+  'enable_location_desc' => 'Aktiveer ligging om naaste salonne met afstand in :unit te sien',
   'enable_location' => 'Aktiveer ligging',
   'no_salons_found' => 'Geen salonne gevind nie',
   'try_other_search' => 'Probeer \'n ander soektog of ligging',

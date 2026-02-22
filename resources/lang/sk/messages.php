@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternatívna',
     'apply_filters' => 'Použiť filtre',
     'find_salons_nearby' => 'Nájsť salóny vo vašom okolí',
-    'enable_location_desc' => 'Povoľte polohu a uvidíte najbližšie salóny so vzdialenosťou v km',
+    'enable_location_desc' => 'Povoľte polohu a uvidíte najbližšie salóny so vzdialenosťou v :unit',
     'enable_location' => 'Povoliť polohu',
     'no_salons_found' => 'Žiadne salóny nenájdené',
     'try_other_search' => 'Skúste iné vyhľadávanie alebo lokalitu',

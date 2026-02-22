@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternativni',
     'apply_filters' => 'Pouzit filtry',
     'find_salons_nearby' => 'Najdete salony ve vasem okoli',
-    'enable_location_desc' => 'Povolte polohu pro zobrazeni nejblizsich salonu se vzdalenosti v km',
+    'enable_location_desc' => 'Povolte polohu pro zobrazeni nejblizsich salonu se vzdalenosti v :unit',
     'enable_location' => 'Povolit polohu',
     'no_salons_found' => 'Zadne salony nenalezeny',
     'try_other_search' => 'Zkuste jine vyhledavani nebo lokalitu',

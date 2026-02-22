@@ -472,7 +472,7 @@ return array (
   'group_alternative' => 'Alternativ',
   'apply_filters' => 'Filter anwenden',
   'find_salons_nearby' => 'Salons in Ihrer Nähe finden',
-  'enable_location_desc' => 'Standort aktivieren, um die nächsten Salons mit Entfernung anzuzeigen',
+  'enable_location_desc' => 'Standort aktivieren, um die nächsten Salons mit Entfernung in :unit anzuzeigen',
   'enable_location' => 'Standort aktivieren',
   'no_salons_found' => 'Keine Salons gefunden',
   'try_other_search' => 'Versuchen Sie eine andere Suche oder einen anderen Standort',

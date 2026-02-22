@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatyvi',
   'apply_filters' => 'Taikyti filtrus',
   'find_salons_nearby' => 'Raskite salonus šalia jūsų',
-  'enable_location_desc' => 'Įjunkite vietą, kad matytumėte artimiausius salonus su atstumu km',
+  'enable_location_desc' => 'Įjunkite vietą, kad matytumėte artimiausius salonus su atstumu :unit',
   'enable_location' => 'Įjungti vietą',
   'no_salons_found' => 'Salonų nerasta',
   'try_other_search' => 'Pabandykite kitą paiešką ar vietą',

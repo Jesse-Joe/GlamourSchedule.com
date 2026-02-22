@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatif',
   'apply_filters' => 'Filtreleri uygula',
   'find_salons_nearby' => 'Yakininizdaki salonlari bulun',
-  'enable_location_desc' => 'Km cinsinden mesafe ile en yakin salonlari gormek icin konumu etkinlestirin',
+  'enable_location_desc' => ':unit cinsinden mesafe ile en yakin salonlari gormek icin konumu etkinlestirin',
   'enable_location' => 'Konumu etkinlestir',
   'no_salons_found' => 'Salon bulunamadi',
   'try_other_search' => 'Farkli bir arama veya konum deneyin',

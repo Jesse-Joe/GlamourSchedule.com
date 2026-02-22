@@ -593,7 +593,7 @@ return [
     'group_alternative' => 'Thay the',
     'apply_filters' => 'Ap dung bo loc',
     'find_salons_nearby' => 'Tim salon gan ban',
-    'enable_location_desc' => 'Bat vi tri de xem cac salon gan nhat voi khoang cach tinh bang km',
+    'enable_location_desc' => 'Bat vi tri de xem cac salon gan nhat voi khoang cach tinh bang :unit',
     'enable_location' => 'Bat vi tri',
     'no_salons_found' => 'Khong tim thay salon',
     'try_other_search' => 'Thu tim kiem hoac vi tri khac',

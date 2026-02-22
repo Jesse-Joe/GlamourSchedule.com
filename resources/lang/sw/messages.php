@@ -593,7 +593,7 @@ return [
     'group_alternative' => 'Mbadala',
     'apply_filters' => 'Tumia vichujio',
     'find_salons_nearby' => 'Pata saluni karibu nawe',
-    'enable_location_desc' => 'Wezesha eneo kuona saluni za karibu na umbali kwa km',
+    'enable_location_desc' => 'Wezesha eneo kuona saluni za karibu na umbali kwa :unit',
     'enable_location' => 'Wezesha eneo',
     'no_salons_found' => 'Hakuna saluni zilizopatikana',
     'try_other_search' => 'Jaribu utafutaji au eneo tofauti',

@@ -469,7 +469,7 @@ return array (
   'group_alternative' => '替代疗法',
   'apply_filters' => '应用筛选',
   'find_salons_nearby' => '查找附近的店铺',
-  'enable_location_desc' => '启用位置服务以查看附近店铺及距离',
+  'enable_location_desc' => '启用位置服务以查看附近店铺及距离（:unit）',
   'enable_location' => '启用位置',
   'no_salons_found' => '未找到店铺',
   'try_other_search' => '尝试不同的搜索或地点',

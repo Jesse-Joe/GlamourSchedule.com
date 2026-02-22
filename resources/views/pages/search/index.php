@@ -1773,7 +1773,10 @@ body .biz-card .biz-card-footer {
             </div>
             <div class="location-banner-content">
                 <h4><i class="fas fa-location-arrow"></i> <?= $translations['find_salons_nearby'] ?? 'Find salons near you' ?></h4>
-                <p><?= $translations['enable_location_desc'] ?? 'Enable location to see nearest salons with distance' ?></p>
+                <p><?= $__(
+                    'enable_location_desc',
+                    ['unit' => ($distanceUnit ?? 'metric') === 'imperial' ? 'miles' : 'km']
+                ) ?></p>
             </div>
             <button class="location-banner-btn" onclick="requestLocationPermission()" id="location-banner-btn">
                 <i class="fas fa-crosshairs"></i>
@@ -1909,10 +1912,21 @@ body .biz-card .biz-card-footer {
                                 <?php if (!empty($biz['distance'])): ?>
                                     <span class="biz-card-distance">
                                         <i class="fas fa-route"></i>
+                                        <?php if (($distanceUnit ?? 'metric') === 'imperial'):
+                                            $miles = $biz['distance'] / 1.60934;
+                                            if ($miles < 0.1):
+                                                $feet = round($miles * 5280);
+                                        ?>
+                                            <?= $feet ?> ft
+                                        <?php else: ?>
+                                            <?= round($miles, 1) ?> mi
+                                        <?php endif; ?>
+                                        <?php else: ?>
                                         <?php if ($biz['distance'] < 1): ?>
                                             <?= round($biz['distance'] * 1000) ?> m
                                         <?php else: ?>
                                             <?= $biz['distance'] ?> km
+                                        <?php endif; ?>
                                         <?php endif; ?>
                                     </span>
                                 <?php endif; ?>
@@ -2504,6 +2518,7 @@ let salonMarkers = null;
 let allSalonData = [];
 const detectedLang = <?= json_encode($lang ?? 'nl', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 const searchCountry = <?= json_encode($searchCountry ?? '', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+const distanceUnit = <?= json_encode($distanceUnit ?? 'metric', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 
 // Language to country mapping - comprehensive list
 const langCountryDefaults = {

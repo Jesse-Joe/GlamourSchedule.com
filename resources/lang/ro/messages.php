@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'Alternativ',
     'apply_filters' => 'Aplica filtre',
     'find_salons_nearby' => 'Gaseste saloane din apropiere',
-    'enable_location_desc' => 'Activeaza locatia pentru a vedea cele mai apropiate saloane cu distanta in km',
+    'enable_location_desc' => 'Activeaza locatia pentru a vedea cele mai apropiate saloane cu distanta in :unit',
     'enable_location' => 'Activeaza locatia',
     'no_salons_found' => 'Niciun salon gasit',
     'try_other_search' => 'Incearca o alta cautare sau locatie',

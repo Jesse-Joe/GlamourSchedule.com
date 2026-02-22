@@ -597,7 +597,7 @@ return [
     'group_alternative' => 'Alternatief',
     'apply_filters' => 'Filters toepassen',
     'find_salons_nearby' => 'Vind salons bij jou in de buurt',
-    'enable_location_desc' => 'Zet locatie aan om de dichtstbijzijnde salons te zien met afstand in km',
+    'enable_location_desc' => 'Zet locatie aan om de dichtstbijzijnde salons te zien met afstand in :unit',
     'enable_location' => 'Locatie inschakelen',
     'no_salons_found' => 'Geen salons gevonden',
     'try_other_search' => 'Probeer een andere zoekopdracht of locatie',

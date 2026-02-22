@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternativno',
   'apply_filters' => 'Primijeni filtere',
   'find_salons_nearby' => 'Pronađite salone u vašoj blizini',
-  'enable_location_desc' => 'Omogućite lokaciju da vidite najbliže salone s udaljenošću u km',
+  'enable_location_desc' => 'Omogućite lokaciju da vidite najbliže salone s udaljenošću u :unit',
   'enable_location' => 'Omogući lokaciju',
   'no_salons_found' => 'Nije pronađen nijedan salon',
   'try_other_search' => 'Pokušajte s drugom pretragom ili lokacijom',

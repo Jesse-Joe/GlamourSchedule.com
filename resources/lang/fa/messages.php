@@ -588,7 +588,7 @@ return [
     'group_alternative' => 'جایگزین',
     'apply_filters' => 'اعمال فیلترها',
     'find_salons_nearby' => 'سالن‌های نزدیک خود را پیدا کنید',
-    'enable_location_desc' => 'موقعیت را فعال کنید تا نزدیک‌ترین سالن‌ها را با فاصله به کیلومتر ببینید',
+    'enable_location_desc' => 'موقعیت را فعال کنید تا نزدیک‌ترین سالن‌ها را با فاصله به :unit ببینید',
     'enable_location' => 'فعال‌سازی موقعیت',
     'no_salons_found' => 'سالنی یافت نشد',
     'try_other_search' => 'جستجو یا موقعیت دیگری امتحان کنید',

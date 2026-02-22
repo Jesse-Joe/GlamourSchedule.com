@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternativ',
   'apply_filters' => 'Anvend filtre',
   'find_salons_nearby' => 'Find saloner i nærheden',
-  'enable_location_desc' => 'Aktiver placering for at se nærmeste saloner med afstand i km',
+  'enable_location_desc' => 'Aktiver placering for at se nærmeste saloner med afstand i :unit',
   'enable_location' => 'Aktiver placering',
   'no_salons_found' => 'Ingen saloner fundet',
   'try_other_search' => 'Prøv en anden søgning eller placering',

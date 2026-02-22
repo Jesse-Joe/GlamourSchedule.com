@@ -113,6 +113,8 @@ class SearchController extends Controller
         $visitorCurrency = $currencyService->getCurrencyForCountry($visitorCountryCode);
         $showDualCurrency = ($visitorCurrency !== 'EUR');
 
+        $distanceUnit = $this->getDistanceUnit($userCountry ?: 'NL');
+
         return $this->view('pages/search/index', [
             'pageTitle' => $this->t('search'),
             'businesses' => $businesses,
@@ -129,7 +131,8 @@ class SearchController extends Controller
             'ipCountry' => $ipCountry,
             'currencyService' => $currencyService,
             'visitorCurrency' => $visitorCurrency,
-            'showDualCurrency' => $showDualCurrency
+            'showDualCurrency' => $showDualCurrency,
+            'distanceUnit' => $distanceUnit
         ]);
     }
 
@@ -382,6 +385,15 @@ class SearchController extends Controller
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return round($earthRadius * $c, 1);
+    }
+
+    /**
+     * Determine distance unit system based on country code
+     */
+    private function getDistanceUnit(string $countryCode): string
+    {
+        $imperialCountries = ['US', 'GB', 'MM', 'LR'];
+        return in_array(strtoupper($countryCode), $imperialCountries) ? 'imperial' : 'metric';
     }
 
     /**

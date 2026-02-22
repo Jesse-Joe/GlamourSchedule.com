@@ -469,7 +469,7 @@ return array (
   'group_alternative' => '대체요법',
   'apply_filters' => '필터 적용',
   'find_salons_nearby' => '가까운 살롱 찾기',
-  'enable_location_desc' => '위치를 활성화하면 거리(km)와 함께 가까운 살롱을 볼 수 있습니다',
+  'enable_location_desc' => '위치를 활성화하면 거리(:unit)와 함께 가까운 살롱을 볼 수 있습니다',
   'enable_location' => '위치 활성화',
   'no_salons_found' => '살롱을 찾을 수 없습니다',
   'try_other_search' => '다른 검색어나 지역을 시도해 보세요',

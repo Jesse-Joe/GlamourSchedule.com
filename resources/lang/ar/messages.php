@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'بديل',
   'apply_filters' => 'تطبيق الفلاتر',
   'find_salons_nearby' => 'اعثر على صالونات قريبة منك',
-  'enable_location_desc' => 'فعّل الموقع لرؤية أقرب الصالونات بالمسافة بالكيلومتر',
+  'enable_location_desc' => 'فعّل الموقع لرؤية أقرب الصالونات بالمسافة :unit',
   'enable_location' => 'تفعيل الموقع',
   'no_salons_found' => 'لم يتم العثور على صالونات',
   'try_other_search' => 'جرب بحثاً أو موقعاً مختلفاً',

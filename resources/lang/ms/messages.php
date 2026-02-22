@@ -469,7 +469,7 @@ return array (
   'group_alternative' => 'Alternatif',
   'apply_filters' => 'Gunakan penapis',
   'find_salons_nearby' => 'Cari salon berhampiran anda',
-  'enable_location_desc' => 'Dayakan lokasi untuk melihat salon terdekat dengan jarak dalam km',
+  'enable_location_desc' => 'Dayakan lokasi untuk melihat salon terdekat dengan jarak dalam :unit',
   'enable_location' => 'Dayakan lokasi',
   'no_salons_found' => 'Tiada salon ditemui',
   'try_other_search' => 'Cuba carian atau lokasi yang berbeza',
