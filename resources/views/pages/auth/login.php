@@ -52,13 +52,8 @@
     @media (max-width: 768px) {
         .login-container {
             max-width: 100%;
-            padding: 0;
+            padding: 0 20px;
             margin: 0;
-        }
-        .login-card {
-            border-radius: 0 !important;
-            border-left: none !important;
-            border-right: none !important;
         }
         .form-group {
             text-align: left;

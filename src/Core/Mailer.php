@@ -167,7 +167,7 @@ class Mailer
         $content = $texts[$this->lang] ?? $texts['en'] ?? $texts['nl'] ?? '';
 
         return <<<HTML
-        <div class="email-text" style="color:#000000;font-size:14px;line-height:1.6;">
+        <div class="email-text" style="color:#222222;font-size:15px;line-height:1.7;">
             {$content}
         </div>
 HTML;
@@ -625,9 +625,11 @@ HTML;
     private function getBookingConfirmationTemplate(array $data, array $settings = []): string
     {
         $primaryColor = $settings['primary_color'] ?? '#000000';
+        $buttonColor = ($primaryColor === '#000000') ? '#333333' : $primaryColor;
         $headerTitle = $this->t('booking_confirmed');
         $viewBookingBtn = $this->t('view_booking');
         $qrTitle = $this->t('checkin_qr');
+        $qrInstruction = $this->t('show_qr_or_number');
 
         $content = $this->getSingleLangContent([
             'nl' => "
@@ -862,34 +864,50 @@ HTML;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .email-body, .email-outer { background:#1a1a1a !important; }
+            .email-card { background:#2a2a2a !important; box-shadow:0 2px 8px rgba(0,0,0,0.3) !important; }
+            .email-content { background:#2a2a2a !important; color:#f0f0f0 !important; }
+            .email-text, .email-text p, .email-text strong { color:#f0f0f0 !important; }
+            .email-muted { color:#cccccc !important; }
+            .qr-box { background:#ffffff !important; border-color:#444444 !important; }
+            .qr-title { color:#f0f0f0 !important; }
+            .qr-instruction { color:#cccccc !important; }
+            .email-footer { background:#222222 !important; border-color:#444444 !important; }
+            .email-footer-text { color:#999999 !important; }
+        }
+        @media only screen and (max-width: 620px) {
+            .email-card { width:100% !important; border-radius:0 !important; }
+        }
+    </style>
 </head>
 <body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
     <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <table class="email-card" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
-                        <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
-                            <p style="margin:10px 0 0;opacity:0.9;font-size:16px;">#{$data['booking_number']}</p>
+                        <td style="background:{$buttonColor};color:#ffffff;padding:30px;text-align:center;">
+                            <h1 style="margin:0;font-size:24px;font-weight:700;color:#ffffff;">{$headerTitle}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;font-size:16px;color:#ffffff;">#{$data['booking_number']}</p>
                         </td>
                     </tr>
                     <!-- Content -->
                     <tr>
-                        <td style="padding:30px;color:#333333;">
+                        <td class="email-content" style="padding:30px;color:#222222;">
                             {$content}
 
                             <!-- QR Code -->
-                            <div style="text-align:center;padding:25px;background:#ffffff;border-radius:12px;margin:20px 0;border:1px solid #e5e7eb;">
-                                <p style="margin:0 0 15px;color:#333333;font-weight:bold;">{$qrTitle}</p>
+                            <div class="qr-box" style="text-align:center;padding:25px;background:#fafafa;border-radius:12px;margin:20px 0;border:2px solid #e5e7eb;">
+                                <p class="qr-title" style="margin:0 0 15px;color:#222222;font-weight:bold;font-size:16px;">{$qrTitle}</p>
                                 <img src="{$data['qr_code_url']}" alt="QR Code" style="width:200px;height:200px;display:block;margin:0 auto;">
-                                <p style="margin:10px 0 0;color:#666666;font-size:12px;">Toon deze QR code bij aankomst</p>
+                                <p class="qr-instruction" style="margin:12px 0 0;color:#555555;font-size:14px;">{$qrInstruction}</p>
                             </div>
 
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$buttonColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">
                                     {$viewBookingBtn}
                                 </a>
                             </p>
@@ -897,9 +915,9 @@ HTML;
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
-                            <p style="margin:0;color:#888888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
-                            <p style="margin:5px 0 0;color:#aaaaaa;font-size:11px;">glamourschedule.com</p>
+                        <td class="email-footer" style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p class="email-footer-text" style="margin:0;color:#888888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                            <p class="email-footer-text" style="margin:5px 0 0;color:#aaaaaa;font-size:11px;">glamourschedule.com</p>
                         </td>
                     </tr>
                 </table>
@@ -1184,38 +1202,52 @@ HTML;
             "
         ]);
 
+        $buttonColor = ($primaryColor === '#000000') ? '#333333' : $primaryColor;
+
         return <<<HTML
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .email-body, .email-outer { background:#1a1a1a !important; }
+            .email-card { background:#2a2a2a !important; }
+            .email-content { background:#2a2a2a !important; color:#f0f0f0 !important; }
+            .email-text, .email-text p, .email-text strong { color:#f0f0f0 !important; }
+            .email-footer { background:#222222 !important; border-color:#444444 !important; }
+            .email-footer-text { color:#999999 !important; }
+        }
+        @media only screen and (max-width: 620px) {
+            .email-card { width:100% !important; border-radius:0 !important; }
+        }
+    </style>
 </head>
-<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
-    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
+                <table class="email-card" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <tr>
-                        <td style="background:{$primaryColor};color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
-                            <p style="margin:10px 0 0;opacity:0.9;">{$subTitle}</p>
+                        <td style="background:{$buttonColor};color:#ffffff;padding:30px;text-align:center;">
+                            <h1 style="margin:0;font-size:24px;font-weight:700;color:#ffffff;">{$headerTitle}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;color:#ffffff;">{$subTitle}</p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#000000;">
+                        <td class="email-content" style="padding:30px;color:#222222;">
                             {$content}
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$buttonColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">
                                     {$viewBookingBtn}
                                 </a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
-                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p class="email-footer-text" style="margin:0;color:#888888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>
@@ -1381,38 +1413,52 @@ HTML;
             "
         ]);
 
+        $buttonColor = ($primaryColor === '#000000') ? '#333333' : $primaryColor;
+
         return <<<HTML
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>@media (prefers-color-scheme: dark) { .email-body, .email-outer { background:#000000 !important; } .email-content { background:#1a1a1a !important; border-color:#333333 !important; } .email-text { color:#ffffff !important; } .email-muted { color:#cccccc !important; } .email-footer { background:#111111 !important; border-color:#333333 !important; } .email-footer-text { color:#cccccc !important; } }</style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .email-body, .email-outer { background:#1a1a1a !important; }
+            .email-card { background:#2a2a2a !important; }
+            .email-content { background:#2a2a2a !important; color:#f0f0f0 !important; }
+            .email-text, .email-text p, .email-text strong { color:#f0f0f0 !important; }
+            .email-footer { background:#222222 !important; border-color:#444444 !important; }
+            .email-footer-text { color:#999999 !important; }
+        }
+        @media only screen and (max-width: 620px) {
+            .email-card { width:100% !important; border-radius:0 !important; }
+        }
+    </style>
 </head>
-<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#ffffff;">
-    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#ffffff;padding:20px;">
+<body class="email-body" style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f5;">
+    <table width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#f4f4f5;padding:20px;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" class="email-content" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
+                <table class="email-card" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;padding:30px;text-align:center;">
-                            <h1 style="margin:0;font-size:24px;font-weight:700;">{$headerTitle}</h1>
-                            <p style="margin:10px 0 0;opacity:0.9;">{$subTitle}</p>
+                            <h1 style="margin:0;font-size:24px;font-weight:700;color:#ffffff;">{$headerTitle}</h1>
+                            <p style="margin:10px 0 0;opacity:0.9;color:#ffffff;">{$subTitle}</p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:30px;color:#000000;">
+                        <td class="email-content" style="padding:30px;color:#222222;">
                             {$content}
                             <p style="text-align:center;margin:25px 0;">
-                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$primaryColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;">
+                                <a href="{$data['booking_url']}" style="display:inline-block;background:{$buttonColor};color:#ffffff;padding:14px 35px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">
                                     {$viewBookingBtn}
                                 </a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td class="email-footer" style="background:#f5f5f5;padding:20px;text-align:center;border-top:1px solid #e0e0e0;">
-                            <p class="email-footer-text" style="margin:0;color:#666666;font-size:12px;">&copy; 2026 GlamourSchedule</p>
+                        <td class="email-footer" style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p class="email-footer-text" style="margin:0;color:#888888;font-size:12px;">&copy; 2026 GlamourSchedule</p>
                         </td>
                     </tr>
                 </table>

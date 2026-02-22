@@ -281,6 +281,7 @@ class Application
         $this->router->post('/api/webhooks/stripe', 'WebhookController@stripe');
         
         // API endpoints
+        $this->router->get('/api/early-bird-spots', 'ApiController@earlyBirdSpots');
         $this->router->get('/api/translations/{lang}', 'ApiController@translations');
         $this->router->get('/api/services/{businessId}', 'ApiController@services');
         $this->router->get('/api/availability/{businessId}', 'ApiController@availability');

@@ -52,6 +52,32 @@ class ApiController extends Controller
     }
 
     /**
+     * Get early bird spots left for a country
+     */
+    public function earlyBirdSpots(): string
+    {
+        $countryCode = strtoupper($_GET['country'] ?? 'NL');
+        $stmt = $this->db->query(
+            "SELECT max_promo_registrations, current_registrations,
+                    (max_promo_registrations - current_registrations) AS spots_left
+             FROM country_promotions
+             WHERE country_code = ? AND is_active = 1",
+            [$countryCode]
+        );
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return $this->json(['spots_left' => 100, 'total' => 100, 'registered' => 0]);
+        }
+
+        return $this->json([
+            'spots_left' => (int) $row['spots_left'],
+            'total' => (int) $row['max_promo_registrations'],
+            'registered' => (int) $row['current_registrations'],
+        ]);
+    }
+
+    /**
      * Get translations for a language
      */
     public function translations(string $lang): string

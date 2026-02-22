@@ -664,6 +664,14 @@ abstract class Controller
     }
 
     /**
+     * Get the current CSRF token (after possible rotation)
+     */
+    protected function getCurrentCsrfToken(): string
+    {
+        return $_SESSION['csrf_token'] ?? '';
+    }
+
+    /**
      * Generate business URL using UUID
      */
     protected function businessUrl(string $uuid, string $path = ''): string

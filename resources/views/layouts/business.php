@@ -192,6 +192,65 @@
             background: #333333;
         }
 
+        /* Sidebar - Light Theme */
+        [data-theme="light"] .sidebar {
+            background: #ffffff !important;
+            border-right: 1px solid #e0e0e0 !important;
+        }
+        [data-theme="light"] .sidebar-header {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        [data-theme="light"] .sidebar-brand {
+            color: #000000;
+        }
+        [data-theme="light"] .sidebar-brand i {
+            color: #000000;
+        }
+        [data-theme="light"] .sidebar-business {
+            background: #f5f5f5;
+        }
+        [data-theme="light"] .sidebar-business-name {
+            color: #000000;
+        }
+        [data-theme="light"] .sidebar-business-status {
+            color: rgba(0,0,0,0.6);
+        }
+        [data-theme="light"] .nav-section-title {
+            color: rgba(0,0,0,0.5);
+        }
+        [data-theme="light"] .nav-item {
+            color: #000000;
+        }
+        [data-theme="light"] .nav-item i {
+            color: #000000;
+        }
+        [data-theme="light"] .nav-item:hover {
+            background: #f5f5f5;
+            color: #000000;
+        }
+        [data-theme="light"] .nav-item.active {
+            background: #000000;
+            color: #ffffff;
+        }
+        [data-theme="light"] .nav-item.active i {
+            color: #ffffff;
+        }
+        [data-theme="light"] .sidebar-footer {
+            border-top: 1px solid #e0e0e0;
+        }
+        [data-theme="light"] .view-page-btn {
+            background: #f5f5f5;
+            border-color: #e0e0e0;
+            color: #000000;
+        }
+        [data-theme="light"] .view-page-btn i {
+            color: #000000;
+        }
+        [data-theme="light"] .view-page-btn:hover {
+            border-color: #000000;
+            background: #e0e0e0;
+        }
+
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);

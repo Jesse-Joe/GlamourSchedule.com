@@ -87,9 +87,11 @@
     position: relative;
     transition: all 0.3s ease;
 }
-.pricing-card:hover {
-    border-color: #555555;
-    transform: translateY(-5px);
+@media (hover: hover) {
+    .pricing-card:hover {
+        border-color: #555555;
+        transform: translateY(-5px);
+    }
 }
 .pricing-card.featured {
     border-color: #22c55e;
@@ -498,6 +500,180 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .pricing-page {
+        padding-top: 0;
+    }
+    .pricing-hero {
+        padding: 2rem 1rem;
+    }
+    .pricing-hero h1 {
+        font-size: 1.5rem;
+    }
+    .pricing-hero p {
+        font-size: 0.95rem;
+    }
+    .pricing-container {
+        padding: 1.5rem 1rem;
+    }
+    .pricing-cards {
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+    .pricing-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    .pricing-card-header {
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+    .pricing-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    .pricing-card-icon i {
+        font-size: 1.2rem;
+    }
+    .pricing-card h3 {
+        font-size: 1.2rem;
+    }
+    .pricing-card-subtitle {
+        font-size: 0.85rem;
+    }
+    .pricing-price {
+        margin-bottom: 1.25rem;
+    }
+    .pricing-price-amount {
+        font-size: 2.5rem;
+    }
+    .pricing-price-amount .currency {
+        font-size: 1.25rem;
+    }
+    .pricing-price-period {
+        font-size: 0.85rem;
+    }
+    .pricing-features li {
+        font-size: 0.88rem;
+        padding: 0.4rem 0;
+    }
+    .pricing-features {
+        margin-bottom: 1.25rem;
+    }
+    .pricing-cta {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.92rem;
+        border-radius: 12px;
+    }
+    .transaction-fee {
+        padding: 1.25rem;
+        border-radius: 14px;
+        margin-bottom: 2rem;
+    }
+    .transaction-fee-header {
+        margin-bottom: 1rem;
+    }
+    .transaction-fee-header h3 {
+        font-size: 1.05rem;
+    }
+    .transaction-fee-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+    .transaction-fee-icon i {
+        font-size: 1rem;
+    }
+    .transaction-fee-item h4 {
+        font-size: 0.92rem;
+    }
+    .transaction-fee-item p {
+        font-size: 0.82rem;
+    }
+    .boost-pricing {
+        padding: 1.5rem 1rem;
+        border-radius: 14px;
+        margin-bottom: 2rem;
+    }
+    .boost-pricing-header h3 {
+        font-size: 1.25rem;
+    }
+    .boost-pricing-subtitle {
+        font-size: 0.9rem;
+    }
+    .boost-pricing-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+    }
+    .boost-pricing-icon i {
+        font-size: 1.3rem;
+    }
+    .boost-pricing-card {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+    .boost-price {
+        font-size: 2rem;
+    }
+    .boost-features li {
+        font-size: 0.88rem;
+    }
+    .pricing-faq {
+        margin-bottom: 2rem;
+    }
+    .pricing-faq h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.25rem;
+    }
+    .faq-item {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    .faq-item h4 {
+        font-size: 0.92rem;
+    }
+    .faq-item p {
+        font-size: 0.82rem;
+        padding-left: 1.5rem;
+    }
+    .pricing-bottom-cta {
+        padding: 1.5rem 1rem;
+        border-radius: 14px;
+    }
+    .pricing-bottom-cta h3 {
+        font-size: 1.2rem;
+    }
+    .pricing-bottom-cta p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    .pricing-bottom-cta-btns {
+        flex-direction: column;
+    }
+    .pricing-bottom-cta-btns .pricing-cta {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+@media (max-width: 375px) {
+    .pricing-card {
+        padding: 1rem;
+    }
+    .pricing-price-amount {
+        font-size: 2rem;
+    }
+    .pricing-bottom-cta {
+        padding: 1.25rem 0.75rem;
+    }
+    .faq-item {
+        padding: 0.875rem;
+    }
+}
 </style>
 
 <div class="pricing-page">
@@ -531,9 +707,9 @@
                     <?php if ($showDualCurrency ?? false): ?>
                     <div class="pricing-price-local">(<?= $promo['eur_price'] ?? '€0,99' ?>)</div>
                     <?php endif; ?>
-                    <div class="spots-left-badge">
+                    <div class="spots-left-badge" id="pricing-spots-badge">
                         <i class="fas fa-fire"></i>
-                        <?= sprintf($translations['spots_left'] ?? 'Nog %d plekken in %s', $promo['spots_left'] ?? 0, $promo['country'] ?? 'jouw land') ?>
+                        <span id="pricing-spots-text"><?= sprintf($translations['spots_left'] ?? 'Nog %d plekken in %s', $promo['spots_left'] ?? 0, $promo['country'] ?? 'jouw land') ?></span>
                     </div>
                 </div>
 
@@ -617,8 +793,8 @@
                 <div class="transaction-fee-item">
                     <i class="fas fa-check-circle"></i>
                     <div>
-                        <h4><?= $translations['no_hidden_costs'] ?? 'Geen verborgen kosten' ?></h4>
-                        <p><?= $translations['no_hidden_costs_desc'] ?? 'Geen maandelijkse abonnementen, geen opstartkosten, geen minimum aantal boekingen.' ?></p>
+                        <h4><?= $translations['no_hidden_costs'] ?? 'Transparante prijzen' ?></h4>
+                        <p><?= $translations['no_hidden_costs_desc'] ?? 'Eenmalige registratiebijdrage, geen maandelijkse abonnementen en geen minimum aantal boekingen.' ?></p>
                     </div>
                 </div>
                 <div class="transaction-fee-item">
@@ -702,6 +878,24 @@
         </div>
     </div>
 </div>
+
+<script>
+function updatePricingSpots() {
+    fetch('/api/early-bird-spots?country=<?= urlencode($promo['country_code'] ?? 'NL') ?>')
+        .then(r => r.json())
+        .then(data => {
+            const el = document.getElementById('pricing-spots-text');
+            if (el) {
+                el.textContent = '<?= addslashes($translations['spots_left_prefix'] ?? 'Nog') ?> ' + data.spots_left + ' <?= addslashes($translations['spots_left_suffix'] ?? 'plekken in ' . ($promo['country'] ?? 'jouw land')) ?>';
+            }
+        })
+        .catch(() => {});
+}
+document.addEventListener('DOMContentLoaded', function() {
+    updatePricingSpots();
+    setInterval(updatePricingSpots, 30000);
+});
+</script>
 
 <?php $content = ob_get_clean(); ?>
 <?php include BASE_PATH . '/resources/views/layouts/main.php'; ?>

@@ -199,7 +199,7 @@
                     </div>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <?= $translations['faq_a6'] ?? 'We rekenen €1,75 per voltooide boeking. Er zijn geen maandelijkse kosten of opstartkosten. Je betaalt alleen wanneer je daadwerkelijk klanten ontvangt.' ?>
+                            <?= $translations['faq_a6'] ?? 'We rekenen €1,75 per voltooide boeking voor de eerste 25 boekingen per maand, daarna gratis. Daarnaast betaal je een eenmalige registratiebijdrage. Er zijn geen maandelijkse abonnementen.' ?>
                         </div>
                     </div>
                 </div>

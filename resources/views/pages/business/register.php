@@ -9,37 +9,120 @@
     @media (max-width: 768px) {
         .register-container {
             max-width: 100%;
-            padding: 0;
+            padding: 0 20px;
             margin: 0;
-        }
-        .register-container .card {
-            border-radius: 0 !important;
-            border-left: none !important;
-            border-right: none !important;
         }
         .register-hero {
             border-radius: 0 !important;
             margin: 0 !important;
+            padding: 1.5rem 1rem !important;
+        }
+        .register-hero h2 {
+            font-size: 1.3rem;
+        }
+        .register-hero p {
+            font-size: 0.9rem;
+        }
+        .register-hero .early-adopter-badge {
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+        }
+        .register-container [style*="padding:2rem"] {
+            padding: 1.25rem 1rem !important;
         }
         .form-group {
             text-align: left;
+            margin-bottom: 1rem;
         }
         .form-group label {
             justify-content: flex-start;
+            font-size: 0.9rem;
         }
         .form-control {
             width: 100%;
             max-width: 100%;
             text-align: left;
+            font-size: 1rem;
+            padding: 0.75rem 0;
         }
         .grid-2 {
             grid-template-columns: 1fr !important;
         }
+        .grid {
+            gap: 0 !important;
+        }
         .section-header {
             justify-content: flex-start;
+            margin-bottom: 1rem;
+            padding: 0.75rem 0;
         }
         .password-wrapper {
             width: 100%;
+        }
+        .business-type-selector {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.5rem;
+        }
+        .business-type-card {
+            padding: 0.75rem 0.5rem;
+        }
+        .business-type-card i {
+            font-size: 1.3rem;
+        }
+        .business-type-card .type-title {
+            font-size: 0.82rem;
+        }
+        .business-type-card .type-desc {
+            font-size: 0.72rem;
+        }
+        .pricing-card {
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .price-amount {
+            font-size: 1.6rem;
+        }
+        .benefits-list {
+            grid-template-columns: 1fr !important;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+        .benefit-item {
+            font-size: 0.85rem;
+        }
+        .terms-box {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+        }
+        .terms-box span {
+            font-size: 0.82rem;
+        }
+        .qr-warning {
+            padding: 1rem;
+            margin: 1rem 0;
+            gap: 0.75rem;
+        }
+        .qr-warning-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        .qr-warning-content h4 {
+            font-size: 0.9rem;
+        }
+        .qr-warning-content p {
+            font-size: 0.82rem;
+        }
+        .submit-btn {
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .field-hint {
+            font-size: 0.8rem;
         }
     }
     .register-hero {
@@ -261,7 +344,7 @@
     }
     @media (max-width: 600px) {
         .business-type-selector {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
         }
     }
     .business-type-option {
@@ -290,10 +373,12 @@
         font-size: 1rem;
         font-weight: 600;
         color: #ffffff;
+        text-align: center;
     }
     .business-type-card .type-desc {
         font-size: 0.85rem;
         color: rgba(255, 255, 255, 0.6);
+        text-align: center;
     }
     .business-type-option input:checked + .business-type-card {
         background: rgba(255, 255, 255, 0.15);
@@ -499,7 +584,7 @@
             <?php if ($isEarlyAdopter): ?>
                 <div class="early-adopter-badge">
                     <i class="fas fa-star"></i>
-                    <span>Early Bird #<?= $earlyAdopterCount + 1 ?>/100:
+                    <span>Early Bird #<span id="early-bird-position"><?= $earlyAdopterCount + 1 ?></span>/100:
                         <?php if ($showDualCurrency ?? false): ?>
                             <?= $localPrice ?> (<?= $eurPrice ?>)
                         <?php else: ?>
@@ -507,7 +592,7 @@
                         <?php endif; ?>
                     </span>
                 </div>
-                <p style="color:#888;font-size:0.9rem;margin-top:0.5rem"><?= $__('spots_left', ['count' => $spotsLeft, 'country' => htmlspecialchars($countryName)]) ?></p>
+                <p style="color:#888;font-size:0.9rem;margin-top:0.5rem" id="spots-left-text"><?= $__('spots_left', ['count' => $spotsLeft, 'country' => htmlspecialchars($countryName)]) ?></p>
             <?php endif; ?>
 
             <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;margin-top:1rem;font-size:0.85rem">
@@ -1038,10 +1123,28 @@ function updateBusinessFields() {
     }
 }
 
+// Real-time early bird spots update
+function updateEarlyBirdSpots() {
+    const country = document.getElementById('country-select')?.value || '<?= $countryCode ?? "NL" ?>';
+    if (!country || country === 'OTHER') return;
+
+    fetch('/api/early-bird-spots?country=' + encodeURIComponent(country))
+        .then(r => r.json())
+        .then(data => {
+            const posEl = document.getElementById('early-bird-position');
+            const spotsEl = document.getElementById('spots-left-text');
+            if (posEl) posEl.textContent = data.registered + 1;
+            if (spotsEl) spotsEl.textContent = data.spots_left + ' <?= addslashes($__('spots_remaining') ?? 'spots remaining') ?>';
+        })
+        .catch(() => {});
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateBusinessType();
     updateBusinessFields();
+    updateEarlyBirdSpots();
+    setInterval(updateEarlyBirdSpots, 30000);
 });
 </script>
 

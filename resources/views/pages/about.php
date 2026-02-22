@@ -336,6 +336,125 @@
 .func-cta-btn-outline:hover {
     border-color: #ffffff;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .func-page {
+        padding-top: 0;
+    }
+    .func-hero {
+        padding: 2rem 1rem;
+    }
+    .func-hero h1 {
+        font-size: 1.5rem;
+    }
+    .func-hero p {
+        font-size: 0.95rem;
+    }
+    .func-section {
+        padding: 2rem 1rem;
+    }
+    .func-section-header {
+        margin-bottom: 1.5rem;
+    }
+    .func-section-header h2 {
+        font-size: 1.3rem;
+    }
+    .func-section-header p {
+        font-size: 0.9rem;
+    }
+    .func-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .func-card {
+        padding: 1.25rem;
+        border-radius: 14px;
+    }
+    .func-card-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+    .func-card-icon i {
+        font-size: 1.1rem;
+    }
+    .func-card h3 {
+        font-size: 1.05rem;
+    }
+    .func-card p {
+        font-size: 0.88rem;
+    }
+    .func-card-features li {
+        font-size: 0.82rem;
+    }
+    .func-highlight {
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    .func-highlight-content h3 {
+        font-size: 1.25rem;
+    }
+    .func-highlight-content p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    .func-highlight-visual {
+        min-height: 160px;
+        padding: 1.5rem;
+        border-radius: 14px;
+    }
+    .func-highlight-visual i {
+        font-size: 3rem;
+    }
+    .func-stat {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    .func-stat-number {
+        font-size: 1.5rem;
+    }
+    .func-stat-label {
+        font-size: 0.78rem;
+    }
+    .func-stats {
+        margin: 1.5rem 0;
+        gap: 0.75rem;
+    }
+    .business-features {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .business-feature {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+    .business-feature h4 {
+        font-size: 0.92rem;
+    }
+    .business-feature p {
+        font-size: 0.8rem;
+    }
+    .func-cta {
+        padding: 1.5rem 1rem;
+        border-radius: 14px;
+        margin-top: 1.5rem;
+    }
+    .func-cta h3 {
+        font-size: 1.2rem;
+    }
+    .func-cta p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    .func-cta-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
 </style>
 
 <div class="func-page">
@@ -597,7 +716,7 @@
             <h3><?= $translations['cta_start_salon'] ?? 'Start with your salon today' ?></h3>
             <p><?= $translations['cta_start_salon_desc'] ?? 'Register your salon for only &euro;0.99 and enjoy all features.' ?></p>
             <div class="func-cta-btns">
-                <a href="/register?type=business" class="func-cta-btn func-cta-btn-white">
+                <a href="/business/register" class="func-cta-btn func-cta-btn-white">
                     <i class="fas fa-store"></i> <?= $translations['register_salon'] ?? 'Register Salon' ?>
                 </a>
                 <a href="/search" class="func-cta-btn func-cta-btn-outline">

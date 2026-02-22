@@ -298,7 +298,7 @@ ob_start();
 }
 
 .connect-header p {
-    color: #666;
+    color: var(--text-light, #666);
 }
 
 .alert {
@@ -320,10 +320,12 @@ ob_start();
 }
 
 .connect-card {
-    background: #fff;
+    background: var(--card-bg, #fff);
+    color: var(--text, #000);
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid var(--border, #e0e0e0);
 }
 
 .connect-card.connected {
@@ -362,7 +364,7 @@ ob_start();
 
 .connect-card > p {
     text-align: center;
-    color: #666;
+    color: var(--text-light, #666);
     margin-bottom: 25px;
 }
 
@@ -371,14 +373,15 @@ ob_start();
 }
 
 .connected-info code {
-    background: #f5f5f5;
+    background: var(--secondary, #f5f5f5);
+    color: var(--text, #000);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.8rem;
 }
 
 .payout-info {
-    background: #f9fafb;
+    background: var(--secondary, #f9fafb);
     border-radius: 12px;
     padding: 20px;
     margin: 25px 0;
@@ -388,7 +391,7 @@ ob_start();
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border, #eee);
 }
 
 .info-item:last-child {
@@ -396,11 +399,12 @@ ob_start();
 }
 
 .info-item .label {
-    color: #666;
+    color: var(--text-light, #666);
 }
 
 .info-item .value {
     font-weight: 600;
+    color: var(--text, #000);
 }
 
 .actions {
@@ -431,30 +435,31 @@ ob_start();
 .benefit {
     text-align: center;
     padding: 15px 10px;
-    background: #f9fafb;
+    background: var(--secondary, #f9fafb);
     border-radius: 12px;
 }
 
 .benefit-icon {
     width: 48px;
     height: 48px;
-    background: #000;
+    background: var(--primary, #000);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 10px;
-    color: #fff;
+    color: var(--white, #fff);
 }
 
 .benefit-text strong {
     display: block;
     font-size: 0.9rem;
+    color: var(--text, #000);
 }
 
 .benefit-text span {
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text-light, #666);
 }
 
 .how-it-works {
@@ -481,8 +486,8 @@ ob_start();
 .step-number {
     width: 32px;
     height: 32px;
-    background: #000;
-    color: #fff;
+    background: var(--primary, #000);
+    color: var(--white, #fff);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -493,18 +498,20 @@ ob_start();
 
 .step-content strong {
     display: block;
+    color: var(--text, #000);
 }
 
 .step-content span {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--text-light, #666);
 }
 
 .pricing-example {
-    background: #f9fafb;
+    background: var(--secondary, #f9fafb);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 25px;
+    color: var(--text, #000);
 }
 
 .pricing-example h3 {
@@ -534,7 +541,7 @@ ob_start();
 }
 
 .pricing-example .total {
-    border-top: 2px solid #ddd;
+    border-top: 2px solid var(--border, #ddd);
     font-weight: bold;
 }
 
@@ -557,23 +564,23 @@ ob_start();
 }
 
 .btn-primary {
-    background: #000;
-    color: #fff;
+    background: var(--primary, #000);
+    color: var(--white, #fff);
 }
 
 .btn-primary:hover {
-    background: #333;
+    background: var(--primary-dark, #333);
 }
 
 .btn-mollie {
     width: 100%;
-    background: #000;
-    color: #fff;
+    background: var(--primary, #000);
+    color: var(--white, #fff);
     font-size: 1rem;
 }
 
 .btn-mollie:hover {
-    background: #333;
+    background: var(--primary-dark, #333);
 }
 
 .btn-outline-danger {
@@ -590,7 +597,7 @@ ob_start();
 .note {
     text-align: center;
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-light, #999);
     margin-top: 15px;
 }
 

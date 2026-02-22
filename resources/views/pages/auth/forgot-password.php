@@ -9,13 +9,8 @@
     @media (max-width: 768px) {
         .auth-container {
             max-width: 100%;
-            padding: 0;
+            padding: 0 20px;
             margin: 0;
-        }
-        .auth-card {
-            border-radius: 0 !important;
-            border-left: none !important;
-            border-right: none !important;
         }
     }
     .auth-card {

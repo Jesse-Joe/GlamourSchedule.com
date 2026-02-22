@@ -110,6 +110,31 @@
         @media (max-width: 600px) {
             .boosted-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .boosted-card-image {
+                height: 150px;
+            }
+            .boosted-card-body {
+                padding: 1rem;
+            }
+            .boosted-slot-available {
+                min-height: 220px;
+                padding: 1.25rem;
+            }
+            .boosted-slot-icon {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 1rem;
+            }
+            .boosted-slot-icon i {
+                font-size: 1.5rem;
+            }
+            .boosted-slot-title {
+                font-size: 1.05rem;
+            }
+            .boosted-slot-desc {
+                font-size: 0.82rem;
             }
         }
         .boosted-card {
@@ -653,7 +678,7 @@
         <h2><?= $translations['cta_title'] ?? 'Grow Your Salon' ?></h2>
         <p><?= $translations['cta_subtitle'] ?? 'Join the premium booking platform.' ?></p>
     </div>
-    <a href="/register?type=business" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Now' ?></a>
+    <a href="/business/register" class="btn btn-primary btn-lg"><?= $translations['cta_start'] ?? 'Start Now' ?></a>
 </div>
 
 <script>

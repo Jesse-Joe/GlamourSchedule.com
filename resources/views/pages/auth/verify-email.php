@@ -24,9 +24,16 @@
         border-color: rgba(16, 185, 129, 0.3) !important;
         color: #6ee7b7 !important;
     }
+    @media (max-width: 400px) {
+        .verify-email-card .code-input {
+            width: 40px !important;
+            height: 50px !important;
+            font-size: 1.25rem !important;
+        }
+    }
 </style>
 
-<div class="container" style="max-width:500px;margin-top:3rem">
+<div class="container" style="max-width:500px;margin-top:3rem;padding:0 20px">
     <div class="card verify-email-card" style="text-align:center">
         <div style="margin-bottom:2rem">
             <div style="width:80px;height:80px;background:linear-gradient(135deg,#000000,#000000);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">

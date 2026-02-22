@@ -9,7 +9,7 @@
     .verify-container {
         max-width: 450px;
         margin: 0 auto;
-        padding: 0 1.5rem;
+        padding: 0 20px;
     }
     .verify-card {
         background: #111111;
@@ -137,6 +137,29 @@
         background: rgba(239,68,68,0.2);
         border: 1px solid rgba(239,68,68,0.3);
         color: #f87171;
+    }
+    @media (max-width: 400px) {
+        .code-input {
+            width: 40px;
+            height: 50px;
+            font-size: 1.25rem;
+            border-radius: 10px;
+        }
+        .code-inputs {
+            gap: 0.35rem;
+        }
+        .verify-body {
+            padding: 1.25rem;
+        }
+        .verify-header {
+            padding: 1.5rem;
+        }
+        .verify-header i {
+            font-size: 2rem;
+        }
+        .verify-header h2 {
+            font-size: 1.25rem;
+        }
     }
 </style>
 
